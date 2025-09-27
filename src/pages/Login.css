@@ -1,0 +1,42 @@
+/* src/pages/Login.css */
+.login-page {
+    background-image: url("https://tse2.mm.bing.net/th/id/OIP.QlLjOgcqUTotvkzr06TudwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.login-card {
+    max-width: 700px;
+    min-width: 200px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 360px;
+    background: #fff;
+}
+
+.login-card h1,
+.login-card label {
+    font-weight: bold;
+    color: #000;
+}
+
+.form-control:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 8px rgba(106, 17, 203, 0.5);
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 12px;
+}

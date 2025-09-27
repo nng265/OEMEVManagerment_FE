@@ -1,0 +1,26 @@
+/* Navbar */
+.custom-navbar {
+    background: rgba(15, 23, 42, 0.6);
+    /* xanh đen trong suốt */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #e5e7eb;
+}
+
+.custom-navbar .logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.custom-navbar .dropdown-list {
+    min-width: 150px;
+}
+
+.custom-navbar .rounded-circle {
+    font-weight: 600;
+}

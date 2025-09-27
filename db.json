@@ -1,0 +1,13 @@
+{
+  "accounts": [
+    { "id": 1, "username": "admin", "password": "123", "role": "admin" },
+    { "id": 2, "username": "staff", "password": "123", "role": "staff" },
+    { "id": 3, "username": "tech", "password": "123", "role": "tech" }
+  ],
+  "vehicles": [
+    { "vin": "VIN001", "model": "Toyota Vios", "purchaseDate": "2022-01-10", "status": "Active", "history": ["Thay dầu 2023-01-05"] },
+    { "vin": "VIN002", "model": "Honda City", "purchaseDate": "2021-06-20", "status": "Active", "history": ["Thay lốp 2023-02-10"] },
+    { "vin": "VIN003", "model": "Honda", "purchaseDate": "2022-06-20", "status": "Active", "history": ["Thay nhớt 2023-03-10"] }
+  ],
+  "claims": []
+}
