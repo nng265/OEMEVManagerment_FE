@@ -7,6 +7,8 @@ import Button from "../components/Button";
 import InputText from "../components/InputText";
 import CreateWarrantyRequest from "./CreateWarrantyRequest";
 import "./Dashboard.css";
+import AssignTechnician from "./AssignTechnician";
+import TechView from "./TechView";
 
 function WarrantyRecords({ onCreate }) {
   const [vehicles, setVehicles] = useState([]);
@@ -106,7 +108,9 @@ export default function Dashboard() {
       case "yeu cau":
         return <CreateWarrantyRequest vinProp={selectedVin} />;
       case "phan cong":
-        return <div>👷 Trang Phân công kỹ thuật viên</div>;
+        return <AssignTechnician />;
+      case "technician":
+        return <TechView />;
       case "tinh trang":
         return <div>🔧 Trang Cập nhật tình trạng xe</div>;
       default:

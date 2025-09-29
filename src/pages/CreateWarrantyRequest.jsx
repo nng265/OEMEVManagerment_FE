@@ -110,9 +110,15 @@ export default function CreateWarrantyRequest({ vinProp }) {
 
         {vehicle && (
           <div className="vehicle-info">
-            <p><strong>Mẫu xe:</strong> {vehicle.model}</p>
-            <p><strong>Ngày mua:</strong> {vehicle.purchaseDate}</p>
-            <p><strong>Trạng thái:</strong> {vehicle.status}</p>
+            <p>
+              <strong>Mẫu xe:</strong> {vehicle.model}
+            </p>
+            <p>
+              <strong>Ngày mua:</strong> {vehicle.purchaseDate}
+            </p>
+            <p>
+              <strong>Trạng thái:</strong> {vehicle.status}
+            </p>
           </div>
         )}
 
