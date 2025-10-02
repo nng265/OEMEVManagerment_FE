@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateWarrantyRequest from "./pages/CreateWarrantyRequest";
 import AssignTechnician from "./pages/AssignTechnician";
-import TechView from "./pages/TechView";
+import EvmApproval from "./pages/EvmApproval";
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem("token");
@@ -43,10 +43,10 @@ export default function App() {
       />
 
       <Route
-        path="/techview"
+        path="/evm_approval"
         element={
           <RequireAuth>
-            <TechView />
+            <EvmApproval />
           </RequireAuth>
         }
       />

@@ -66,61 +66,103 @@
       "id": "1",
       "vin": "VIN001",
       "title": "Xe không nổ máy",
-      "status": "in_progress",
+      "description": "Khách báo xe không đề được sau 2 ngày để ngoài trời",
       "priority": "Cao",
-      "notes": "Khách báo xe không đề được sau 2 ngày để ngoài trời",
+      "status": "completed",
       "assignedTechnicianId": "1",
-      "assignedDate": "2025-09-28",
-      "approvedDate": "2025-09-28T14:39:31.490Z",
-      "completedDate": null
+      "assignedDate": "2025-09-30",
+      "approvedDate": "2025-09-30T06:18:40.007Z",
+      "completedDate": null,
+      "note": "aaaaaaa",
+      "updatedDate": "2025-09-30T06:19:02.581Z"
     },
     {
       "id": "2",
       "vin": "VIN002",
       "title": "Đèn báo lỗi pin",
-      "status": "assigned_pending",
+      "description": "Khách phản ánh đèn báo pin sáng bất thường",
       "priority": "Trung bình",
-      "notes": "Khách phản ánh đèn báo pin sáng bất thường",
-      "assignedTechnicianId": "1",
-      "assignedDate": "2025-09-28",
-      "approvedDate": null,
+      "status": "approved",
+      "assignedTechnicianId": "3",
+      "assignedDate": "2025-09-30",
+      "approvedDate": "2025-10-01T13:59:42.709Z",
       "completedDate": null
     },
     {
       "id": "3",
       "vin": "VIN003",
       "title": "Thay nhớt định kỳ",
-      "status": "in_progress",
+      "description": "Hoàn thành thay nhớt",
       "priority": "Thấp",
-      "notes": "Hoàn thành thay nhớt",
-      "assignedTechnicianId": "2",
-      "assignedDate": "2025-09-28",
-      "approvedDate": "2025-09-28T14:39:32.742Z",
+      "status": "assigned_pending",
+      "assignedTechnicianId": "1",
+      "assignedDate": "2025-10-01",
+      "approvedDate": null,
       "completedDate": null
     },
     {
       "id": "4",
       "vin": "VIN004",
       "title": "Pin bị chai",
-      "status": "rejected",
+      "description": "Xe đã hết hạn bảo hành",
       "priority": "Cao",
-      "notes": "Xe đã hết hạn bảo hành",
-      "assignedTechnicianId": "3",
-      "assignedDate": "2025-09-28",
+      "status": "assigned_pending",
+      "assignedTechnicianId": "1",
+      "assignedDate": "2025-10-01",
       "approvedDate": null,
       "completedDate": null
     },
     {
       "id": "5",
-      "vin": "VIN001",
+      "vin": "VIN005",
       "title": "Cần kiểm tra hệ thống phanh",
-      "status": null,
+      "description": "",
       "priority": "Cao",
-      "notes": "",
-      "assignedTechnicianId": null,
-      "assignedDate": null,
+      "status": "assigned_pending",
+      "assignedTechnicianId": "1",
+      "assignedDate": "2025-10-01",
       "approvedDate": null,
       "completedDate": null
+    },
+    {
+      "id": "27af",
+      "vin": "VIN003",
+      "date": "2025-10-02T05:37:10.729Z",
+      "description": "aaaaaaaaaaaaaaaaaaaaaaa",
+      "attachments": [
+        {
+          "type": "image",
+          "url": "https://www.w3schools.com/w3images/lights.jpg"
+        },
+        {
+          "type": "video",
+          "url": "https://www.w3schools.com/html/mov_bbb.mp4"
+        }
+      ],
+      "status": "approved",
+      "assignedTechnicianId": "1",
+      "assignedDate": "2025-10-02",
+      "approvedDate": "2025-10-02T06:07:36.730Z"
+    },
+    {
+      "id": "6fb5",
+      "vin": "VIN001",
+      "date": "2025-10-02T06:16:28.174Z",
+      "description": "1",
+      "attachments": [
+        {
+          "type": "image",
+          "url": "https://www.w3schools.com/w3images/lights.jpg"
+        },
+        {
+          "type": "video",
+          "url": "https://www.w3schools.com/html/mov_bbb.mp4"
+        }
+      ],
+      "status": "approved",
+      "assignedTechnicianId": "1",
+      "assignedDate": "2025-10-02",
+      "approvedDate": "2025-10-02T06:17:01.614Z"
     }
   ],
   "technicians": [
