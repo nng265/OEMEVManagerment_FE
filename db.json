@@ -1,190 +1,139 @@
 {
-  "accounts": [
-    {
-      "id": "1",
-      "username": "admin",
-      "password": "123",
-      "role": "admin"
-    },
-    {
-      "id": "2",
-      "username": "staff",
-      "password": "123",
-      "role": "staff"
-    },
-    {
-      "id": "3",
-      "username": "tech",
-      "password": "123",
-      "role": "tech"
-    }
-  ],
-  "vehicles": [
-    {
-      "id": "a7e5",
-      "vin": "VIN001",
-      "model": "Toyota Vios",
-      "purchaseDate": "2022-01-10",
-      "status": "Active",
-      "history": [
-        "Thay dầu 2023-01-05"
-      ]
-    },
-    {
-      "id": "160e",
-      "vin": "VIN002",
-      "model": "Honda City",
-      "purchaseDate": "2021-06-20",
-      "status": "Active",
-      "history": [
-        "Thay lốp 2023-02-10"
-      ]
-    },
-    {
-      "id": "c234",
-      "vin": "VIN003",
-      "model": "Honda Civic",
-      "purchaseDate": "2022-06-20",
-      "status": "Active",
-      "history": [
-        "Thay nhớt 2023-03-10"
-      ]
-    },
-    {
-      "id": "d678",
-      "vin": "VIN004",
-      "model": "VinFast VF8",
-      "purchaseDate": "2023-05-15",
-      "status": "Warranty Expired",
-      "history": [
-        "Thay pin 2024-05-20"
-      ]
-    }
-  ],
   "claims": [
     {
       "id": "1",
       "vin": "VIN001",
       "title": "Xe không nổ máy",
-      "description": "Khách báo xe không đề được sau 2 ngày để ngoài trời",
+      "description": "Xe đã sửa xong",
       "priority": "Cao",
-      "status": "completed",
-      "assignedTechnicianId": "1",
       "assignedDate": "2025-09-30",
-      "approvedDate": "2025-09-30T06:18:40.007Z",
-      "completedDate": null,
-      "note": "aaaaaaa",
-      "updatedDate": "2025-09-30T06:19:02.581Z"
+      "status": "tech_in_progress",
+      "jobType": "Sửa chữa",
+      "vehicle": {
+        "vin": "VIN001",
+        "model": "Toyota Vios",
+        "purchaseDate": "2022-01-10",
+        "status": "Active"
+      }
     },
     {
       "id": "2",
       "vin": "VIN002",
       "title": "Đèn báo lỗi pin",
-      "description": "Khách phản ánh đèn báo pin sáng bất thường",
-      "priority": "Trung bình",
-      "status": "approved",
-      "assignedTechnicianId": "3",
+      "description": "Đèn pin sáng bất thường",
       "assignedDate": "2025-09-30",
-      "approvedDate": "2025-10-01T13:59:42.709Z",
-      "completedDate": null
+      "status": "waiting_staff",
+      "jobType": "Bảo hành",
+      "vehicle": {
+        "vin": "VIN002",
+        "model": "Honda City",
+        "purchaseDate": "2021-06-20",
+        "status": "Active"
+      }
     },
     {
       "id": "3",
       "vin": "VIN003",
-      "title": "Thay nhớt định kỳ",
-      "description": "Hoàn thành thay nhớt",
-      "priority": "Thấp",
-      "status": "assigned_pending",
-      "assignedTechnicianId": "1",
+      "title": "Hệ thống điều hòa không mát",
+      "description": "Điều hòa không hoạt động",
       "assignedDate": "2025-10-01",
-      "approvedDate": null,
-      "completedDate": null
+      "status": "Pending",
+      "jobType": "Sửa chữa"
     },
     {
       "id": "4",
       "vin": "VIN004",
-      "title": "Pin bị chai",
-      "description": "Xe đã hết hạn bảo hành",
-      "priority": "Cao",
-      "status": "assigned_pending",
-      "assignedTechnicianId": "1",
-      "assignedDate": "2025-10-01",
-      "approvedDate": null,
-      "completedDate": null
+      "title": "Âm thanh lạ từ động cơ",
+      "description": "Có tiếng kêu lạch cạch",
+      "assignedDate": "2025-10-02",
+      "status": "Active",
+      "jobType": "Sửa chữa"
     },
     {
       "id": "5",
       "vin": "VIN005",
-      "title": "Cần kiểm tra hệ thống phanh",
-      "description": "",
-      "priority": "Cao",
-      "status": "assigned_pending",
-      "assignedTechnicianId": "1",
-      "assignedDate": "2025-10-01",
-      "approvedDate": null,
-      "completedDate": null
+      "title": "Lỗi hệ thống phanh",
+      "description": "Phanh kém hiệu quả",
+      "assignedDate": "2025-10-02",
+      "status": "Active",
+      "jobType": "Bảo hành"
     },
     {
-      "id": "27af",
-      "vin": "VIN003",
-      "date": "2025-10-02T05:37:10.729Z",
-      "description": "aaaaaaaaaaaaaaaaaaaaaaa",
-      "attachments": [
-        {
-          "type": "image",
-          "url": "https://www.w3schools.com/w3images/lights.jpg"
-        },
-        {
-          "type": "video",
-          "url": "https://www.w3schools.com/html/mov_bbb.mp4"
-        }
-      ],
-      "status": "approved",
-      "assignedTechnicianId": "1",
-      "assignedDate": "2025-10-02",
-      "approvedDate": "2025-10-02T06:07:36.730Z"
+      "id": "6",
+      "vin": "VIN006",
+      "title": "Màn hình trung tâm bị đen",
+      "description": "Không hiển thị giao diện",
+      "assignedDate": "2025-10-03",
+      "status": "Pending",
+      "jobType": "Sửa chữa"
     },
     {
-      "id": "6fb5",
-      "vin": "VIN001",
-      "date": "2025-10-02T06:16:28.174Z",
-      "description": "1",
-      "attachments": [
-        {
-          "type": "image",
-          "url": "https://www.w3schools.com/w3images/lights.jpg"
-        },
-        {
-          "type": "video",
-          "url": "https://www.w3schools.com/html/mov_bbb.mp4"
-        }
-      ],
-      "status": "approved",
-      "assignedTechnicianId": "1",
-      "assignedDate": "2025-10-02",
-      "approvedDate": "2025-10-02T06:17:01.614Z"
+      "id": "7",
+      "vin": "VIN007",
+      "title": "Hệ thống sạc không nhận",
+      "description": "Không thể sạc pin",
+      "assignedDate": "2025-10-03",
+      "status": "Active",
+      "jobType": "Bảo hành"
+    },
+    {
+      "id": "8",
+      "vin": "VIN008",
+      "title": "Kính cửa sổ không hoạt động",
+      "description": "Cửa kính lái bị kẹt",
+      "assignedDate": "2025-10-04",
+      "status": "Closed",
+      "jobType": "khác"
     }
   ],
-  "technicians": [
+  "vehicles": [
     {
-      "id": "1",
-      "name": "Nguyễn Văn A",
-      "specialty": "Động cơ điện"
+      "vin": "VIN001",
+      "model": "Toyota Vios",
+      "purchaseDate": "2022-01-10",
+      "status": "Active"
     },
     {
-      "id": "2",
-      "name": "Trần Văn B",
-      "specialty": "Pin & Hệ thống điện"
+      "vin": "VIN002",
+      "model": "Honda City",
+      "purchaseDate": "2021-06-20",
+      "status": "Active"
     },
     {
-      "id": "3",
-      "name": "Lê Thị C",
-      "specialty": "Hệ thống phanh"
+      "vin": "VIN003",
+      "model": "Mazda 3",
+      "purchaseDate": "2023-02-15",
+      "status": "Active"
     },
     {
-      "id": "4",
-      "name": "Phạm Văn D",
-      "specialty": "Điều hòa & Cảm biến"
+      "vin": "VIN004",
+      "model": "Hyundai Accent",
+      "purchaseDate": "2022-09-10",
+      "status": "Active"
+    },
+    {
+      "vin": "VIN005",
+      "model": "Kia Morning",
+      "purchaseDate": "2020-12-01",
+      "status": "Inactive"
+    },
+    {
+      "vin": "VIN006",
+      "model": "VinFast Lux A2.0",
+      "purchaseDate": "2021-11-11",
+      "status": "Active"
+    },
+    {
+      "vin": "VIN007",
+      "model": "Mitsubishi Xpander",
+      "purchaseDate": "2023-05-22",
+      "status": "Active"
+    },
+    {
+      "vin": "VIN008",
+      "model": "Ford Ranger",
+      "purchaseDate": "2019-08-30",
+      "status": "Inactive"
     }
   ]
 }

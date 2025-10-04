@@ -71,10 +71,14 @@ export default function WarrantyRecords({ onCreate }) {
                 <td>{v.model}</td>
                 <td>{v.purchaseDate}</td>
                 <td>{v.status}</td>
-                <td>{Array.isArray(v.history) ? v.history.join(", ") : v.history}</td>
+                <td>
+                  {Array.isArray(v.history) ? v.history.join(", ") : v.history}
+                </td>
                 <td>
                   {/* Gọi onCreate để Dashboard chuyển sang menu "yeu cau" và giữ VIN */}
-                  <Button onClick={() => onCreate(v.vin)}>+ Yêu cầu bảo hành</Button>
+                  <Button onClick={() => onCreate(v.vin)}>
+                    + Yêu cầu bảo hành
+                  </Button>
                 </td>
               </tr>
             ))

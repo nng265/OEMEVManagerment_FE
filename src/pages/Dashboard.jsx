@@ -9,6 +9,8 @@ import CreateWarrantyRequest from "./CreateWarrantyRequest";
 import "./Dashboard.css";
 import AssignTechnician from "./AssignTechnician";
 import EvmApproval from "./EvmApproval";
+import UpdateStatus from "./UpdateStatus";
+import SendToEvm from "./SendToStaff";
 
 function WarrantyRecords({ onCreate }) {
   const [vehicles, setVehicles] = useState([]);
@@ -111,6 +113,10 @@ export default function Dashboard() {
         return <AssignTechnician />;
       case "evm_approval":
         return <EvmApproval />;
+      case "update_status":
+        return <UpdateStatus />;
+      case "send_update":
+        return <SendToEvm />;
       default:
         return <div>Chọn một chức năng</div>;
     }

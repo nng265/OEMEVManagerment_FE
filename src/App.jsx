@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import CreateWarrantyRequest from "./pages/CreateWarrantyRequest";
 import AssignTechnician from "./pages/AssignTechnician";
 import EvmApproval from "./pages/EvmApproval";
+import UpdateStatus from "./pages/UpdateStatus";
+import SendToEvm from "./pages/SendToStaff";
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem("token");
@@ -50,7 +52,23 @@ export default function App() {
           </RequireAuth>
         }
       />
+      <Route
+        path="/update_status"
+        element={
+          <RequireAuth>
+            <UpdateStatus />
+          </RequireAuth>
+        }
+      />
 
+      <Route
+        path="send_update"
+        element={
+          <RequireAuth>
+            <SendToEvm />
+          </RequireAuth>
+        }
+      />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
