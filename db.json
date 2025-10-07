@@ -4,17 +4,23 @@
       "id": "1",
       "vin": "VIN001",
       "title": "Xe không nổ máy",
-      "description": "Xe đã sửa xong",
+      "description": "xe k đẹp",
       "priority": "Cao",
       "assignedDate": "2025-09-30",
-      "status": "tech_in_progress",
+      "status": "approved",
       "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN001",
         "model": "Toyota Vios",
         "purchaseDate": "2022-01-10",
-        "status": "Active"
-      }
+        "status": "Active",
+        "id": "ccf1"
+      },
+      "approvedDate": "2025-10-07T04:15:28.741Z",
+      "attachments": [
+        "blob:http://localhost:5174/8cc61565-9444-49bb-82ca-f811aea50a01",
+        "blob:http://localhost:5174/bcf7d67d-2f41-43ff-b7e0-e7c612a77735"
+      ]
     },
     {
       "id": "2",
@@ -22,41 +28,66 @@
       "title": "Đèn báo lỗi pin",
       "description": "Đèn pin sáng bất thường",
       "assignedDate": "2025-09-30",
-      "status": "waiting_staff",
+      "status": "approved",
       "jobType": "Bảo hành",
       "vehicle": {
         "vin": "VIN002",
         "model": "Honda City",
         "purchaseDate": "2021-06-20",
         "status": "Active"
-      }
+      },
+      "approvedDate": "2025-10-06T15:23:09.409Z"
     },
     {
       "id": "3",
       "vin": "VIN003",
       "title": "Hệ thống điều hòa không mát",
-      "description": "Điều hòa không hoạt động",
+      "description": "Điều hòa hoạt động",
       "assignedDate": "2025-10-01",
-      "status": "Pending",
-      "jobType": "Sửa chữa"
+      "status": "waiting_staff",
+      "jobType": "Sửa chữa",
+      "vehicle": {
+        "vin": "VIN003",
+        "model": "Mazda 3",
+        "purchaseDate": "2023-02-15",
+        "status": "Active",
+        "id": "c68c"
+      },
+      "approvedDate": "2025-10-06T16:43:13.343Z"
     },
     {
       "id": "4",
       "vin": "VIN004",
       "title": "Âm thanh lạ từ động cơ",
-      "description": "Có tiếng kêu lạch cạch",
+      "description": "aaaaaaaaaaaaaaa",
       "assignedDate": "2025-10-02",
-      "status": "Active",
-      "jobType": "Sửa chữa"
+      "status": "rejected",
+      "jobType": "Sửa chữa",
+      "vehicle": {
+        "vin": "VIN004",
+        "model": "Hyundai Accent",
+        "purchaseDate": "2022-09-10",
+        "status": "Active",
+        "id": "5043"
+      },
+      "approvedDate": null
     },
     {
       "id": "5",
       "vin": "VIN005",
       "title": "Lỗi hệ thống phanh",
-      "description": "Phanh kém hiệu quả",
+      "description": "Phanh oke",
       "assignedDate": "2025-10-02",
-      "status": "Active",
-      "jobType": "Bảo hành"
+      "status": "waiting_staff",
+      "jobType": "Bảo hành",
+      "vehicle": {
+        "vin": "VIN005",
+        "model": "Kia Morning",
+        "purchaseDate": "2020-12-01",
+        "status": "Inactive",
+        "id": "6fa1"
+      },
+      "approvedDate": null
     },
     {
       "id": "6",
@@ -64,8 +95,16 @@
       "title": "Màn hình trung tâm bị đen",
       "description": "Không hiển thị giao diện",
       "assignedDate": "2025-10-03",
-      "status": "Pending",
-      "jobType": "Sửa chữa"
+      "status": "rejected",
+      "jobType": "Sửa chữa",
+      "vehicle": {
+        "vin": "VIN006",
+        "model": "VinFast Lux A2.0",
+        "purchaseDate": "2021-11-11",
+        "status": "Active",
+        "id": "f707"
+      },
+      "approvedDate": null
     },
     {
       "id": "7",
@@ -73,8 +112,16 @@
       "title": "Hệ thống sạc không nhận",
       "description": "Không thể sạc pin",
       "assignedDate": "2025-10-03",
-      "status": "Active",
-      "jobType": "Bảo hành"
+      "status": "approved",
+      "jobType": "Bảo hành",
+      "vehicle": {
+        "vin": "VIN007",
+        "model": "Mitsubishi Xpander",
+        "purchaseDate": "2023-05-22",
+        "status": "Active",
+        "id": "e5c6"
+      },
+      "approvedDate": "2025-10-06T15:49:50.328Z"
     },
     {
       "id": "8",
@@ -82,8 +129,16 @@
       "title": "Kính cửa sổ không hoạt động",
       "description": "Cửa kính lái bị kẹt",
       "assignedDate": "2025-10-04",
-      "status": "Closed",
-      "jobType": "khác"
+      "status": "rejected",
+      "jobType": "khác",
+      "vehicle": {
+        "vin": "VIN008",
+        "model": "Ford Ranger",
+        "purchaseDate": "2019-08-30",
+        "status": "Inactive",
+        "id": "c513"
+      },
+      "approvedDate": null
     }
   ],
   "vehicles": [
@@ -91,49 +146,57 @@
       "vin": "VIN001",
       "model": "Toyota Vios",
       "purchaseDate": "2022-01-10",
-      "status": "Active"
+      "status": "Active",
+      "id": "ccf1"
     },
     {
       "vin": "VIN002",
       "model": "Honda City",
       "purchaseDate": "2021-06-20",
-      "status": "Active"
+      "status": "Active",
+      "id": "6a37"
     },
     {
       "vin": "VIN003",
       "model": "Mazda 3",
       "purchaseDate": "2023-02-15",
-      "status": "Active"
+      "status": "Active",
+      "id": "c68c"
     },
     {
       "vin": "VIN004",
       "model": "Hyundai Accent",
       "purchaseDate": "2022-09-10",
-      "status": "Active"
+      "status": "Active",
+      "id": "5043"
     },
     {
       "vin": "VIN005",
       "model": "Kia Morning",
       "purchaseDate": "2020-12-01",
-      "status": "Inactive"
+      "status": "Inactive",
+      "id": "6fa1"
     },
     {
       "vin": "VIN006",
       "model": "VinFast Lux A2.0",
       "purchaseDate": "2021-11-11",
-      "status": "Active"
+      "status": "Active",
+      "id": "f707"
     },
     {
       "vin": "VIN007",
       "model": "Mitsubishi Xpander",
       "purchaseDate": "2023-05-22",
-      "status": "Active"
+      "status": "Active",
+      "id": "e5c6"
     },
     {
       "vin": "VIN008",
       "model": "Ford Ranger",
       "purchaseDate": "2019-08-30",
-      "status": "Inactive"
+      "status": "Inactive",
+      "id": "c513"
     }
   ]
 }

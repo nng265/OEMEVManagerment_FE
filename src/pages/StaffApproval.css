@@ -1,0 +1,258 @@
+/* --- Container chính --- */
+.staff-approval-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.staff-approval-title {
+    text-align: center;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.staff-approval-empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* --- Bảng chính --- */
+.staff-approval-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    table-layout: fixed;
+}
+
+.staff-approval-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.staff-approval-table th,
+.staff-approval-table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 14px 16px;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
+    font-size: 15px;
+    color: #333;
+}
+
+.staff-approval-table th {
+    background: #f1f1f1;
+    font-weight: 600;
+    color: #444;
+}
+
+/* Flex container cho các nút */
+.staff-approval-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- Cột hành động --- */
+.staff-approval-table th:last-child,
+.staff-approval-table td:last-child {
+    width: 25%;
+    text-align: center;
+}
+
+/* Đảm bảo nút luôn căn giữa tuyệt đối trong ô */
+.staff-approval-table td.staff-approval-actions {
+    display: flex;
+    justify-content: center;
+    /* căn ngang */
+    align-items: center;
+    /* căn dọc */
+    gap: 8px;
+    padding: 10px 0;
+}
+
+/* --- Nút hành động --- */
+.staff-approval-btn-view,
+.staff-approval-btn-accept,
+.staff-approval-btn-reject {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s ease;
+}
+
+/* Màu và hiệu ứng */
+.staff-approval-btn-view {
+    background: #e2e8f0;
+    color: #333;
+}
+
+.staff-approval-btn-view:hover {
+    background: #cbd5e1;
+}
+
+.staff-approval-btn-accept {
+    background: #10b981;
+    color: #fff;
+}
+
+.staff-approval-btn-accept:hover {
+    background: #059669;
+}
+
+.staff-approval-btn-reject {
+    background: #ef4444;
+    color: #fff;
+}
+
+.staff-approval-btn-reject:hover {
+    background: #dc2626;
+}
+
+/* --- Modal chi tiết --- */
+.staff-approval-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 25px;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    animation: fadeIn 0.3s ease;
+}
+
+.staff-approval-modal-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.staff-approval-modal-close {
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+}
+
+.staff-approval-modal-close:hover {
+    color: #000;
+}
+
+.staff-approval-modal p {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+/* --- Ảnh đính kèm --- */
+.staff-approval-attachments {
+    margin-top: 15px;
+}
+
+.staff-approval-attachments-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.staff-approval-attachment-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.staff-approval-attachment-img:hover {
+    transform: scale(1.05);
+}
+
+.staff-approval-attachment-file {
+    display: inline-block;
+    background: #f1f1f1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+}
+
+.staff-approval-attachment-file:hover {
+    background: #e2e2e2;
+}
+
+/* --- Modal hành động --- */
+.staff-approval-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* --- Nền xem ảnh --- */
+.staff-approval-preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.staff-approval-preview-content {
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.staff-approval-preview-content img {
+    max-width: 80vw;
+    max-height: 80vh;
+    border-radius: 8px;
+}
+
+.staff-approval-preview-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.staff-approval-preview-close:hover {
+    color: #000;
+}
+
+/* --- Animation --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

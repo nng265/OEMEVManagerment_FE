@@ -26,19 +26,23 @@ export default function SendToStaff() {
   }, []);
 
   const filteredClaims = claims.filter(
-    (c) => c.status === "waiting_staff" || c.status === "sent_to_manufacturer"
+    (c) =>
+      c.status === "waiting_staff" ||
+      c.status === "sent_to_manufacturer" ||
+      c.status === "approved" ||
+      c.status === "rejected"
   );
 
   if (loading) return <p>Đang tải dữ liệu...</p>;
 
   return (
-    <div className="send-container">
-      <h2>Danh sách công việc đã gửi cho Staff</h2>
+    <div className="send-wrapper">
+      <h2 className="send-title">Danh sách công việc đã gửi cho Staff</h2>
 
       {filteredClaims.length === 0 ? (
-        <p>Không có công việc nào.</p>
+        <p className="send-empty">Không có công việc nào.</p>
       ) : (
-        <table className="custom-table">
+        <table className="send-table">
           <thead>
             <tr>
               <th>VIN</th>
@@ -55,11 +59,24 @@ export default function SendToStaff() {
                 <td>{vehicles.find((v) => v.vin === c.vin)?.model || "-"}</td>
                 <td>{c.jobType || "-"}</td>
                 <td>{c.description || "(Không có mô tả)"}</td>
-                <td className="status-cell">
+                <td className="send-status-cell">
                   {c.status === "waiting_staff" && (
-                    <span className="status badge waiting">
+                    <span className="send-status send-waiting">
                       Chờ Staff xử lý
                     </span>
+                  )}
+                  {c.status === "approved" && (
+                    <span className="send-status send-approved">
+                      Đã được Staff duyệt
+                    </span>
+                  )}
+                  {c.status === "rejected" && (
+                    <span className="send-status send-rejected">
+                      Bị Staff từ chối
+                    </span>
+                  )}
+                  {c.status === "sent_to_manufacturer" && (
+                    <span className="send-status send-sent">Đã gửi hãng</span>
                   )}
                 </td>
               </tr>

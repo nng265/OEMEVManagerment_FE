@@ -5,7 +5,7 @@
     max-width: 1200px;
     margin: 20px auto;
     padding: 0 16px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .update-container h2 {
@@ -19,39 +19,37 @@
 /* ===========================
    CONTROLS BAR (search + filter)
 =========================== */
-.controls-bar {
+.update-controls-bar {
     display: flex;
     justify-content: space-between;
-    /* search trái, filter phải */
     align-items: center;
     margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-/* Search box */
-.search-box {
+.update-search-box {
     position: relative;
     flex: 1;
     max-width: 300px;
 }
 
-.search-box input {
+.update-search-box input {
     width: 100%;
     padding: 8px 35px 8px 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
     outline: none;
-    transition: border 0.2s ease;
+    transition: 0.2s;
 }
 
-.search-box input:focus {
+.update-search-box input:focus {
     border-color: #0d6efd;
     box-shadow: 0 0 4px rgba(13, 110, 253, 0.3);
 }
 
-.search-box .reset-btn {
+.update-reset-btn {
     position: absolute;
     right: 8px;
     top: 50%;
@@ -60,14 +58,14 @@
     background: transparent;
     cursor: pointer;
     color: #777;
+    font-size: 16px;
 }
 
-.search-box .reset-btn:hover {
+.update-reset-btn:hover {
     color: #dc3545;
 }
 
-/* Dropdown filter */
-.filter-dropdown {
+.update-filter-dropdown {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -75,10 +73,10 @@
     cursor: pointer;
     background-color: #fff;
     width: 180px;
-    transition: border 0.2s ease;
+    transition: 0.2s;
 }
 
-.filter-dropdown:focus {
+.update-filter-dropdown:focus {
     border-color: #0d6efd;
     box-shadow: 0 0 4px rgba(13, 110, 253, 0.3);
 }
@@ -86,35 +84,35 @@
 /* ===========================
    TABLE
 =========================== */
-.custom-table {
+.update-table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    table-layout: fixed;
 }
 
-.custom-table th,
-.custom-table td {
+.update-table th,
+.update-table td {
     padding: 12px 16px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #eee;
     font-size: 14px;
 }
 
-.custom-table th {
+.update-table th {
     background-color: #f5f5f5;
     font-weight: 600;
     color: #333;
 }
 
-.custom-table tr:hover {
+.update-table tr:hover {
     background: #fafafa;
 }
 
-/* Action buttons */
-.custom-table button {
+.update-table button {
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
@@ -124,60 +122,153 @@
     transition: 0.2s;
 }
 
-.custom-table button:nth-child(1) {
+.update-table button:nth-child(1) {
     background-color: #17a2b8;
-    /* Xem */
     color: #fff;
 }
 
-.custom-table button:nth-child(2) {
+.update-table button:nth-child(2) {
     background-color: #28a745;
-    /* Cập nhật */
     color: #fff;
 }
 
-.custom-table button:hover {
+.update-table button:hover {
     opacity: 0.85;
 }
 
 /* ===========================
-   FORM INPUTS
+   MODAL
 =========================== */
-.input-textarea {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    resize: vertical;
-    margin-bottom: 12px;
-    font-size: 14px;
+.update-modal__overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.25s ease;
 }
 
-.input-file {
-    width: 100%;
-    margin-bottom: 12px;
+.update-modal__container {
+    background: #fff;
+    border-radius: 12px;
+    width: 650px;
+    max-width: 95%;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    padding: 24px;
+}
+
+.update-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.update-modal__header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.update-modal__close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #444;
+    transition: 0.2s;
+}
+
+.update-modal__close:hover {
+    color: #dc3545;
+}
+
+.update-modal__body {
+    margin-bottom: 20px;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
 /* ===========================
-   IMAGE PREVIEW LIST
+   GRID INFO
 =========================== */
-.preview-list {
+.update-modal__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.update-modal__section {
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.update-modal__section h5 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.update-modal__row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.update-modal__row span:first-child {
+    font-weight: 500;
+    color: #555;
+}
+
+/* ===========================
+   UPDATE MODE
+=========================== */
+.update-modal__textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    margin-top: 10px;
+}
+
+.update-modal__textarea:focus {
+    border-color: #198754;
+    box-shadow: 0 0 4px rgba(25, 135, 84, 0.3);
+}
+
+.update-modal__file {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.update-modal__preview-list {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 10px;
 }
 
-.preview-item {
+.update-modal__preview-item {
     position: relative;
     width: 100px;
     height: 100px;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid #ccc;
 }
 
-.preview-item img {
+.update-modal__preview-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -185,11 +276,11 @@
     transition: transform 0.2s;
 }
 
-.preview-item img:hover {
-    transform: scale(1.1);
+.update-modal__preview-item img:hover {
+    transform: scale(1.08);
 }
 
-.btn-remove {
+.update-modal__remove {
     position: absolute;
     top: -6px;
     right: -6px;
@@ -204,157 +295,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.2s;
 }
 
-.btn-remove:hover {
+.update-modal__remove:hover {
     background: #b02a37;
 }
 
 /* ===========================
-   MODAL
+   FOOTER BUTTONS
 =========================== */
-/* Overlay phủ nền mờ */
-.claim-modal__overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* nền mờ */
+.update-modal__footer {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-}
-
-/* Hộp nội dung modal */
-.claim-modal__container {
-    background: #fff;
-    /* nền trắng, không trong suốt */
-    color: #000;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 95%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    animation: fadeIn 0.3s ease;
-}
-
-.claim-modal__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.claim-modal__close {
-    background: none;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color: #444;
-}
-
-.claim-modal__body {
-    margin-bottom: 20px;
-    max-height: 60vh;
-    /* giới hạn chiều cao thân modal */
-    overflow-y: auto;
-    /* cho phép scroll nếu quá dài */
-    padding-right: 5px;
-    /* chừa khoảng cho scrollbar */
-}
-
-.claim-modal__body p {
-    margin: 8px 0;
-    /* cách đều giữa các dòng */
-}
-
-.claim-modal__body h5 {
-    margin-top: 16px;
-    /* cách ra trước heading */
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.claim-modal__grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.claim-modal__section {
-    border: 1px solid #ddd;
-    padding: 12px 16px;
-    border-radius: 8px;
-    background: #f9f9f9;
-}
-
-.claim-modal__section h5 {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #333;
-}
-
-.claim-modal__row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
-}
-
-.claim-modal__row span:first-child {
-    font-weight: 500;
-    color: #555;
-}
-
-.claim-modal__textarea {
-    width: 100%;
-    margin: 8px 0;
-    padding: 6px;
-}
-
-.claim-modal__file {
-    margin: 8px 0;
-}
-
-.claim-modal__preview-list {
-    display: flex;
-    flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 16px;
 }
 
-.claim-modal__preview-item {
-    position: relative;
-}
-
-.claim-modal__preview-item img {
-    max-width: 100px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.claim-modal__remove {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-
-/* Modal buttons */
-.btn {
-    padding: 6px 14px;
+.update-btn {
+    padding: 8px 16px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
@@ -362,40 +321,49 @@
     transition: all 0.2s;
 }
 
-.btn-secondary {
+.update-btn-secondary {
     background: #6c757d;
     color: #fff;
-    margin-right: 8px;
 }
 
-.btn-secondary:hover {
+.update-btn-secondary:hover {
     background: #5a6268;
 }
 
-.btn-primary {
+.update-btn-outline {
+    background: transparent;
+    color: #198754;
+    border: 1px solid #198754;
+}
+
+.update-btn-outline:hover {
     background: #198754;
     color: #fff;
 }
 
-.btn-primary:hover {
+.update-btn-primary {
+    background: #198754;
+    color: #fff;
+}
+
+.update-btn-primary:hover {
     background: #157347;
 }
 
 /* ===========================
    IMAGE FULLSCREEN PREVIEW
 =========================== */
-.image-preview-overlay {
+.update-image-preview-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
-    animation: fadeIn 0.3s ease-out;
+    z-index: 3000;
 }
 
-.image-preview-content {
+.update-image-preview-content {
     position: relative;
     max-width: 90vw;
     max-height: 90vh;
@@ -404,7 +372,7 @@
     align-items: center;
 }
 
-.image-preview-content img {
+.update-image-preview-content img {
     max-width: 100%;
     max-height: 90vh;
     border-radius: 10px;
@@ -412,7 +380,7 @@
     object-fit: contain;
 }
 
-.image-preview-close {
+.update-image-preview-close {
     position: absolute;
     top: -10px;
     right: -10px;
@@ -428,9 +396,10 @@
     justify-content: center;
     align-items: center;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: 0.2s;
 }
 
-.image-preview-close:hover {
+.update-image-preview-close:hover {
     background: #eee;
 }
 
@@ -447,61 +416,48 @@
     }
 }
 
-@keyframes scaleIn {
-    from {
-        transform: scale(0.9);
-        opacity: 0.8;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.controls-bar {
+/* 🟢 Hiệu ứng zoom ảnh */
+.zoom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    justify-content: center;
     align-items: center;
+    z-index: 9999;
+    cursor: zoom-out;
 }
 
-.search-box {
-    flex: 1;
-    max-width: 320px;
-    display: flex;
-    align-items: center;
-    position: relative;
+.zoomed-img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
 }
 
-.search-box input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
+.zoomed-img:hover {
+    transform: scale(1.02);
 }
 
-.search-box .reset-btn {
-    position: absolute;
-    right: 8px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #777;
+/* 🖼️ Ảnh trong chế độ xem (view mode) */
+.update-modal__preview-list img {
+    width: 100px;
+    /* 👈 thu nhỏ ảnh hiển thị */
+    height: 100px;
+    object-fit: cover;
+    /* giữ tỉ lệ, không méo ảnh */
+    border-radius: 8px;
+    margin: 6px;
+    cursor: zoom-in;
+    /* hiển thị icon kính lúp khi hover */
+    transition: transform 0.2s ease;
 }
 
-.search-box .reset-btn:hover {
-    color: #dc3545;
-}
-
-.filter-dropdown {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    background-color: #fff;
-    width: 200px;
+.update-modal__preview-list img:hover {
+    transform: scale(1.05);
+    /* phóng nhẹ khi hover */
 }

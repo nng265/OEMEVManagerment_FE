@@ -1,75 +1,23 @@
-// src/App.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import CreateWarrantyRequest from "./pages/CreateWarrantyRequest";
-import AssignTechnician from "./pages/AssignTechnician";
-import EvmApproval from "./pages/EvmApproval";
+import StaffApproval from "./pages/StaffApproval";
 import UpdateStatus from "./pages/UpdateStatus";
 import SendToEvm from "./pages/SendToStaff";
-
-function RequireAuth({ children }) {
-  const token = localStorage.getItem("token");
-  if (!token) return <Navigate to="/" replace />;
-  return children;
-}
 
 export default function App() {
   return (
     <Routes>
+      {/* Mặc định mở Dashboard */}
       <Route path="/" element={<Dashboard />} />
-      <Route
-        path="/dashboard"
-        element={
-          <RequireAuth>
-            <Dashboard />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/create-claim"
-        element={
-          <RequireAuth>
-            <CreateWarrantyRequest />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/assign-technician"
-        element={
-          <RequireAuth>
-            <AssignTechnician />
-          </RequireAuth>
-        }
-      />
 
-      <Route
-        path="/evm_approval"
-        element={
-          <RequireAuth>
-            <EvmApproval />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/update_status"
-        element={
-          <RequireAuth>
-            <UpdateStatus />
-          </RequireAuth>
-        }
-      />
+      {/* Các trang chức năng */}
+      <Route path="/update_status" element={<UpdateStatus />} />
+      <Route path="/send_update" element={<SendToEvm />} />
+      <Route path="/staff_approval" element={<StaffApproval />} />
 
-      <Route
-        path="send_update"
-        element={
-          <RequireAuth>
-            <SendToEvm />
-          </RequireAuth>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" />} />
+      {/* Nếu đường dẫn không tồn tại → quay về Dashboard */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
