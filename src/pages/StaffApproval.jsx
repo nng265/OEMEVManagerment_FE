@@ -141,58 +141,90 @@ export default function StaffApproval() {
       )}
 
       {selectedClaim && (
-        <div className="staff-approval-modal">
-          <h3 className="staff-approval-modal-title">
-            Chi tiết hồ sơ bảo hành / sửa chữa
-            <span
-              className="staff-approval-modal-close"
-              onClick={() => setSelectedClaim(null)}
-            >
-              ×
-            </span>
-          </h3>
+        <div
+          className="staff-approval-overlay"
+          onClick={() => setSelectedClaim(null)}
+        >
+          <div
+            className="staff-approval-modal"
+            onClick={(e) => e.stopPropagation()} // tránh tắt khi click vào trong modal
+          >
+            <h3 className="staff-approval-modal-title">
+              Chi tiết hồ sơ bảo hành / sửa chữa
+              <span
+                className="staff-approval-modal-close"
+                onClick={() => setSelectedClaim(null)}
+              >
+                ×
+              </span>
+            </h3>
 
-          <p>
-            <strong>VIN:</strong> {selectedClaim.vin}
-          </p>
-          <p>
-            <strong>Mô tả:</strong> {selectedClaim.description}
-          </p>
-          <p>
-            <strong>Ngày tạo:</strong>{" "}
-            {selectedClaim.date
-              ? new Date(selectedClaim.date).toLocaleDateString("vi-VN")
-              : "-"}
-          </p>
-          <p>
-            <strong>Sổ bảo hành:</strong>{" "}
-            {selectedClaim.warrantyBook || "Không có"}
-          </p>
+            <p>
+              <strong>VIN:</strong> {selectedClaim.vin}
+            </p>
+            <p>
+              <strong>Mô tả:</strong> {selectedClaim.description}
+            </p>
+            <p>
+              <strong>Ngày tạo:</strong>{" "}
+              {selectedClaim.date
+                ? new Date(selectedClaim.date).toLocaleDateString("vi-VN")
+                : "-"}
+            </p>
+            <p>
+              <strong>Sổ bảo hành:</strong>{" "}
+              {selectedClaim.warrantyBook || "Không có"}
+            </p>
 
-          {selectedClaim.attachments?.length > 0 && (
-            <div className="staff-approval-attachments">
-              <h4>Tài liệu đính kèm:</h4>
-              <div className="staff-approval-attachments-list">
-                {renderAttachments(selectedClaim.attachments)}
+            {selectedClaim.attachments?.length > 0 && (
+              <div className="staff-approval-attachments">
+                <h4>Tài liệu đính kèm:</h4>
+                <div className="staff-approval-attachments-list">
+                  {renderAttachments(selectedClaim.attachments)}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div className="staff-approval-modal-actions">
-            <Button
-              className="staff-approval-btn-accept"
-              onClick={() => updateClaimStatus(selectedClaim.id, "approved")}
-              disabled={loading}
-            >
-              <FaCheck /> Chấp nhận gửi yêu cầu lên hãng
-            </Button>
-            <Button
-              className="staff-approval-btn-reject"
-              onClick={() => updateClaimStatus(selectedClaim.id, "rejected")}
-              disabled={loading}
-            >
-              <FaTimes /> Từ chối
-            </Button>
+            {selectedClaim.parts?.length > 0 && (
+              <div className="staff-approval-parts">
+                <h4>Linh kiện sửa chữa / thay thế:</h4>
+                <table className="staff-approval-parts-table">
+                  <thead>
+                    <tr>
+                      <th>Tên linh kiện</th>
+                      <th>Số lượng</th>
+                      <th>Loại</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedClaim.parts.map((part, index) => (
+                      <tr key={index}>
+                        <td>{part.category}</td>
+                        <td>{part.quantity}</td>
+                        <td>{part.type}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="staff-approval-modal-actions">
+              <Button
+                className="staff-approval-btn-accept"
+                onClick={() => updateClaimStatus(selectedClaim.id, "approved")}
+                disabled={loading}
+              >
+                <FaCheck /> Chấp nhận gửi yêu cầu lên hãng
+              </Button>
+              <Button
+                className="staff-approval-btn-reject"
+                onClick={() => updateClaimStatus(selectedClaim.id, "rejected")}
+                disabled={loading}
+              >
+                <FaTimes /> Từ chối
+              </Button>
+            </div>
           </div>
         </div>
       )}

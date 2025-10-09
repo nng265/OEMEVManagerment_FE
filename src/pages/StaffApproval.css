@@ -33,11 +33,6 @@
     table-layout: fixed;
 }
 
-.staff-approval-table td {
-    text-align: center;
-    vertical-align: middle;
-}
-
 .staff-approval-table th,
 .staff-approval-table td {
     text-align: center;
@@ -55,30 +50,11 @@
     color: #444;
 }
 
-/* Flex container cho các nút */
 .staff-approval-actions {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-}
-
-/* --- Cột hành động --- */
-.staff-approval-table th:last-child,
-.staff-approval-table td:last-child {
-    width: 25%;
-    text-align: center;
-}
-
-/* Đảm bảo nút luôn căn giữa tuyệt đối trong ô */
-.staff-approval-table td.staff-approval-actions {
-    display: flex;
-    justify-content: center;
-    /* căn ngang */
-    align-items: center;
-    /* căn dọc */
-    gap: 8px;
-    padding: 10px 0;
 }
 
 /* --- Nút hành động --- */
@@ -93,7 +69,6 @@
     transition: 0.2s ease;
 }
 
-/* Màu và hiệu ứng */
 .staff-approval-btn-view {
     background: #e2e8f0;
     color: #333;
@@ -121,20 +96,34 @@
     background: #dc2626;
 }
 
-/* --- Modal chi tiết --- */
-.staff-approval-modal {
+/* ===================== MODAL ===================== */
+
+/* Nền mờ bao phủ toàn màn hình */
+.staff-approval-overlay {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Hộp modal ở giữa màn hình */
+.staff-approval-modal {
     background: #fff;
     padding: 25px;
-    width: 90%;
-    max-width: 600px;
     border-radius: 12px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
-    animation: fadeIn 0.3s ease;
+    position: relative;
+    animation: fadeInUp 0.25s ease;
 }
 
 .staff-approval-modal-title {
@@ -147,7 +136,10 @@
 }
 
 .staff-approval-modal-close {
-    font-size: 24px;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 22px;
     cursor: pointer;
     color: #888;
 }
@@ -198,6 +190,16 @@
     background: #e2e2e2;
 }
 
+.staff-approval-attachments h4 {
+    font-size: 18px;
+    /* hoặc 13px nếu muốn nhỏ hơn nữa */
+    font-weight: 600;
+    /* vẫn giữ đậm nhẹ cho rõ */
+    margin-bottom: 6px;
+    /* cách nhẹ bên dưới */
+}
+
+
 /* --- Modal hành động --- */
 .staff-approval-modal-actions {
     display: flex;
@@ -206,7 +208,7 @@
     margin-top: 20px;
 }
 
-/* --- Nền xem ảnh --- */
+/* --- Modal xem ảnh --- */
 .staff-approval-preview-overlay {
     position: fixed;
     inset: 0;
@@ -244,7 +246,39 @@
     color: #000;
 }
 
-/* --- Animation --- */
+/* --- Bảng linh kiện --- */
+.staff-approval-parts {
+    margin-top: 16px;
+    background: #f9f9f9;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.staff-approval-parts h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.staff-approval-parts-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.staff-approval-parts-table th,
+.staff-approval-parts-table td {
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    text-align: left;
+}
+
+.staff-approval-parts-table th {
+    background-color: #f0f0f0;
+    font-weight: 600;
+}
+
+/* --- Hiệu ứng --- */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -254,5 +288,17 @@
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
     }
 }
