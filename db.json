@@ -4,34 +4,28 @@
       "id": "1",
       "vin": "VIN001",
       "title": "Xe không nổ máy",
-      "description": "Xe không nổ được, kiểm tra aaaaaaaaaaa",
-      "priority": "Cao",
+      "description": "Xe không nổ được, kiểm tra hệ thống đánh lửa.",
+      "techDescription": "",
       "assignedDate": "2025-09-30",
-      "status": "waiting_staff",
+      "status": "approved_by_manufacturer",
       "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN001",
         "model": "Toyota Vios",
         "purchaseDate": "2022-01-10",
-        "status": "Active",
         "id": "ccf1"
       },
-      "approvedDate": "2025-10-09T08:36:27.990Z",
-      "attachments": [
-        "blob:http://localhost:5173/5c176a8c-39ee-4d12-af98-739f4ae36d76"
-      ],
+      "approvedDate": "2025-10-11T07:37:49.804Z",
+      "attachments": [],
       "parts": [
         {
-          "type": "sửa chữa",
-          "category": "Đèn",
-          "model": "Model A",
-          "quantity": 2
-        },
-        {
-          "type": "sửa chữa",
+          "type": "Sửa chữa",
           "category": "Gương",
-          "model": "Model B",
-          "quantity": 1
+          "model": "A",
+          "quantity": 1,
+          "serials": [
+            ""
+          ]
         }
       ]
     },
@@ -39,33 +33,46 @@
       "id": "2",
       "vin": "VIN002",
       "title": "Đèn báo lỗi pin",
-      "description": "Đèn pin sáng ",
+      "description": "Đèn báo pin sáng liên tục, kiểm tra mạch sạc.",
+      "techDescription": "xe hư hỏng",
       "assignedDate": "2025-09-30",
-      "status": "waiting_staff",
-      "jobType": "Bảo hành",
+      "status": "approved_by_manufacturer",
+      "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN002",
         "model": "Honda City",
         "purchaseDate": "2021-06-20",
-        "status": "Active",
         "id": "6a37"
       },
-      "approvedDate": "2025-10-06T15:23:09.409Z",
+      "approvedDate": "2025-10-11T15:38:43.842Z",
+      "attachments": [
+        "blob:http://localhost:5173/bca68774-b42c-4f04-b28b-e0e5494ff90e"
+      ],
       "parts": [
         {
           "type": "sửa chữa",
+          "category": "Đèn",
+          "model": "A",
+          "quantity": 2,
+          "serials": []
+        },
+        {
+          "type": "sửa chữa",
           "category": "Gương",
-          "model": "Model A",
-          "quantity": 1
+          "model": "B",
+          "quantity": 2,
+          "serials": [
+            ""
+          ]
         }
-      ],
-      "attachments": []
+      ]
     },
     {
       "id": "3",
       "vin": "VIN003",
-      "title": "Hệ thống điều hòa không mát",
-      "description": "Kiểm tra điều hòa không lạnh",
+      "title": "Điều hòa không mát",
+      "description": "Cần thay mới block lạnh và kiểm tra gas điều hòa.",
+      "techDescription": "bị hư hỏng",
       "assignedDate": "2025-10-01",
       "status": "waiting_staff",
       "jobType": "Sửa chữa",
@@ -73,16 +80,39 @@
         "vin": "VIN003",
         "model": "Mazda 3",
         "purchaseDate": "2023-02-15",
-        "status": "Active",
         "id": "c68c"
       },
-      "approvedDate": "2025-10-06T16:43:13.343Z",
+      "approvedDate": "2025-10-02T09:00:00.000Z",
+      "attachments": [
+        "blob:http://localhost:5173/702ee67c-ab6e-4543-912e-e1002b04060b"
+      ],
       "parts": [
         {
-          "type": "",
-          "category": "",
-          "model": "",
-          "quantity": 1
+          "type": "sửa chữa",
+          "category": "Đèn",
+          "model": "A",
+          "quantity": 2,
+          "serials": [
+            ""
+          ]
+        },
+        {
+          "type": "thay thế",
+          "category": "Pin",
+          "model": "B",
+          "quantity": 1,
+          "serials": [
+            ""
+          ]
+        },
+        {
+          "type": "thay thế",
+          "category": "Bánh xe",
+          "model": "C",
+          "quantity": 2,
+          "serials": [
+            ""
+          ]
         }
       ]
     },
@@ -90,24 +120,28 @@
       "id": "4",
       "vin": "VIN004",
       "title": "Lỗi hệ thống phanh ABS",
-      "description": "Cảnh báo lỗi phanh ABS trên bảng điều khiển",
+      "description": "Kiểm tra cảm biến ABS và dây tín hiệu.",
+      "techDescription": "",
       "assignedDate": "2025-10-02",
-      "status": "in_progress",
-      "jobType": "Bảo hành",
+      "status": "rejected",
+      "jobType": "Kiểm tra",
       "vehicle": {
         "vin": "VIN004",
         "model": "Ford Focus",
         "purchaseDate": "2020-11-05",
-        "status": "Inactive",
         "id": "d4e5"
       },
-      "approvedDate": "2025-10-07T04:20:45.123Z",
+      "approvedDate": null,
+      "attachments": [],
       "parts": [
         {
-          "type": "",
-          "category": "",
-          "model": "",
-          "quantity": 1
+          "type": "kiểm tra",
+          "category": "Cảm biến ABS",
+          "model": "ABS-01",
+          "quantity": 2,
+          "serials": [
+            ""
+          ]
         }
       ]
     }
@@ -117,28 +151,24 @@
       "vin": "VIN001",
       "model": "Toyota Vios",
       "purchaseDate": "2022-01-10",
-      "status": "Active",
       "id": "ccf1"
     },
     {
       "vin": "VIN002",
       "model": "Honda City",
       "purchaseDate": "2021-06-20",
-      "status": "Active",
       "id": "6a37"
     },
     {
       "vin": "VIN003",
       "model": "Mazda 3",
       "purchaseDate": "2023-02-15",
-      "status": "Active",
       "id": "c68c"
     },
     {
       "vin": "VIN004",
       "model": "Ford Focus",
       "purchaseDate": "2020-11-05",
-      "status": "Inactive",
       "id": "d4e5"
     }
   ]

@@ -158,92 +158,96 @@
     margin-top: 15px;
 }
 
+.staff-approval-attachments h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Hiển thị ảnh theo hàng ngang, scroll ngang nếu quá dài */
 .staff-approval-attachments-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    /* buộc nằm 1 hàng */
     gap: 10px;
+    overflow-x: auto;
+    /* scroll ngang nếu ảnh quá dài */
+    padding-bottom: 5px;
 }
 
-.staff-approval-attachment-img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 6px;
+/* Thumb ảnh nhỏ */
+.staff-approval-image-thumb {
+    flex: 0 0 auto;
+    width: 110px;
+    height: 110px;
+    border-radius: 8px;
+    overflow: hidden;
     cursor: pointer;
-    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
 }
 
-.staff-approval-attachment-img:hover {
+.staff-approval-image-thumb:hover {
     transform: scale(1.05);
 }
 
-.staff-approval-attachment-file {
-    display: inline-block;
-    background: #f1f1f1;
-    padding: 6px 10px;
-    border-radius: 6px;
-    text-decoration: none;
-    color: #333;
+.staff-approval-image-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-.staff-approval-attachment-file:hover {
-    background: #e2e2e2;
-}
-
-.staff-approval-attachments h4 {
-    font-size: 18px;
-    /* hoặc 13px nếu muốn nhỏ hơn nữa */
-    font-weight: 600;
-    /* vẫn giữ đậm nhẹ cho rõ */
-    margin-bottom: 6px;
-    /* cách nhẹ bên dưới */
-}
-
-
-/* --- Modal hành động --- */
-.staff-approval-modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-/* --- Modal xem ảnh --- */
+/* --- Popup xem ảnh lớn --- */
 .staff-approval-preview-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1100;
+    z-index: 2000;
+    animation: fadeIn 0.25s ease;
 }
 
 .staff-approval-preview-content {
     position: relative;
-    background: #fff;
-    border-radius: 10px;
-    padding: 10px;
-    animation: fadeIn 0.3s ease;
+    max-width: 90vw;
+    max-height: 90vh;
+
+    border-radius: 16px;
+    /* bo góc */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    /* thêm bóng */
+    overflow: hidden;
+    /* để ảnh không tràn ra ngoài bo góc */
 }
 
+
 .staff-approval-preview-content img {
-    max-width: 80vw;
-    max-height: 80vh;
-    border-radius: 8px;
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    display: block;
 }
 
 .staff-approval-preview-close {
     position: absolute;
-    top: 6px;
-    right: 10px;
-    font-size: 24px;
+    top: 8px;
+    right: 12px;
+    font-size: 26px;
     cursor: pointer;
-    color: #666;
+    color: #555;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    padding: 2px 8px;
+    line-height: 1;
+    transition: background 0.2s, color 0.2s;
 }
 
 .staff-approval-preview-close:hover {
     color: #000;
+    background: #fff;
 }
 
 /* --- Bảng linh kiện --- */
@@ -276,6 +280,16 @@
 .staff-approval-parts-table th {
     background-color: #f0f0f0;
     font-weight: 600;
+}
+
+/* --- Nút hành động ở modal căn giữa --- */
+.staff-approval-modal-actions {
+    display: flex;
+    justify-content: center;
+    /* căn giữa */
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
 }
 
 /* --- Hiệu ứng --- */
