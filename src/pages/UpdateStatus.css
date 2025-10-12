@@ -244,13 +244,44 @@
 .update-modal__row {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 8px;
 }
 
-.update-modal__row span:first-child {
-    font-weight: 500;
-    color: #555;
+.description-row {
+    align-items: flex-start;
 }
+
+/* Label bên trái */
+.description-row span:first-child {
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+/* Ô chứa nội dung mô tả */
+.description-content {
+    flex: 1;
+    text-align: right;
+    max-height: 120px;
+    /* Giới hạn chiều cao để không kéo dài popup */
+    overflow-y: auto;
+    /* Tự hiện thanh scroll khi vượt quá */
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 4px;
+    /* Giúp scroll bar không đè chữ */
+}
+
+/* (Tùy chọn) làm đẹp thanh cuộn */
+.description-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.description-content::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
 
 /* ===========================
    UPDATE MODE
@@ -605,4 +636,51 @@
 /* Responsive: scroll ngang nếu quá nhỏ */
 .update-parts-section {
     overflow-x: auto;
+}
+
+/* ===== Footer button alignment ===== */
+.update-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.update-btn,
+.update-complete-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* Nút đóng */
+.update-btn-secondary {
+    background: #eee;
+    color: #333;
+}
+
+.update-btn-secondary:hover {
+    background: #ddd;
+}
+
+/* Nút hoàn tất sửa chữa */
+.update-complete-btn {
+    background: #007bff;
+    color: #fff;
+}
+
+.update-complete-btn:hover {
+    background: #0056b3;
+}
+
+/* Nút hoàn tất kiểm tra (check-btn) */
+.update-complete-btn.check-btn {
+    background: #28a745;
+    /* Xanh lá */
+}
+
+.update-complete-btn.check-btn:hover {
+    background: #1e7e34;
 }

@@ -23,9 +23,7 @@
           "category": "Gương",
           "model": "A",
           "quantity": 1,
-          "serials": [
-            ""
-          ]
+          "serials": [""]
         }
       ]
     },
@@ -61,9 +59,7 @@
           "category": "Gương",
           "model": "B",
           "quantity": 2,
-          "serials": [
-            ""
-          ]
+          "serials": [""]
         }
       ]
     },
@@ -92,27 +88,21 @@
           "category": "Đèn",
           "model": "A",
           "quantity": 2,
-          "serials": [
-            ""
-          ]
+          "serials": [""]
         },
         {
           "type": "thay thế",
           "category": "Pin",
           "model": "B",
           "quantity": 1,
-          "serials": [
-            ""
-          ]
+          "serials": [""]
         },
         {
           "type": "thay thế",
           "category": "Bánh xe",
           "model": "C",
           "quantity": 2,
-          "serials": [
-            ""
-          ]
+          "serials": [""]
         }
       ]
     },
@@ -123,7 +113,7 @@
       "description": "Kiểm tra cảm biến ABS và dây tín hiệu.",
       "techDescription": "",
       "assignedDate": "2025-10-02",
-      "status": "rejected",
+      "status": "approved_by_manufacturer",
       "jobType": "Kiểm tra",
       "vehicle": {
         "vin": "VIN004",
@@ -135,13 +125,11 @@
       "attachments": [],
       "parts": [
         {
-          "type": "kiểm tra",
-          "category": "Cảm biến ABS",
-          "model": "ABS-01",
+          "type": "Kiểm tra",
+          "category": "Gương",
+          "model": "A",
           "quantity": 2,
-          "serials": [
-            ""
-          ]
+          "serials": [""]
         }
       ]
     }

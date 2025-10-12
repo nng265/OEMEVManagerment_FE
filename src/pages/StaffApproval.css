@@ -252,7 +252,7 @@
 
 /* --- Bảng linh kiện --- */
 .staff-approval-parts {
-    margin-top: 16px;
+
     background: #f9f9f9;
     padding: 12px 16px;
     border: 1px solid #ddd;
@@ -315,4 +315,107 @@
         transform: translateY(0);
         opacity: 1;
     }
+}
+
+/* ====== KHUNG THÔNG TIN TRONG MODAL (THEO PHONG CÁCH UPDATESTATUS) ====== */
+.staff-approval-section {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+/* Tiêu đề phần — ví dụ: “Thông tin xe”, “Mô tả khách hàng” */
+.staff-approval-section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+/* Dòng thông tin trong từng section */
+.staff-approval-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 8px;
+    gap: 12px;
+}
+
+.staff-approval-row span:first-child,
+.staff-approval-row span:last-child {
+    text-align: center;
+}
+
+
+.staff-approval-row span:first-child {
+    color: #555;
+    font-weight: 500;
+    flex: 0 0 40%;
+}
+
+.staff-approval-row span:last-child {
+    flex: 1;
+    text-align: right;
+    color: #333;
+    word-wrap: break-word;
+}
+
+/* Phần mô tả khách hàng có cuộn nếu quá dài */
+.staff-approval-description {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 12px;
+    max-height: 120px;
+    overflow-y: auto;
+    text-align: right;
+    color: #333;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+/* Giữ cho phần ảnh đính kèm gọn, bo góc giống khung thông tin */
+.staff-approval-attachments {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+/* ✅ Chỉ áp dụng cho bảng linh kiện trong modal StaffApproval */
+.staff-approval-parts-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    /* căn giữa theo chiều ngang */
+}
+
+.staff-approval-parts-table th,
+.staff-approval-parts-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    /* căn giữa ngang */
+    vertical-align: middle;
+    /* căn giữa dọc */
+}
+
+.staff-approval-parts-table th {
+    background-color: #f6f6f6;
+    font-weight: 600;
+}
+
+.staff-approval-parts-table td {
+    font-size: 14px;
+}
+
+/* Làm bo góc cho khung bảng linh kiện */
+.staff-approval-parts {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }

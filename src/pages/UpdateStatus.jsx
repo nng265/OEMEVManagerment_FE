@@ -176,7 +176,9 @@ export default function UpdateStatus() {
                   <>
                     {c.status === "approved_by_manufacturer" ? (
                       <button onClick={() => openModal(c, "serial")}>
-                        Nhập Serial
+                        {c.jobType?.toLowerCase() === "kiểm tra"
+                          ? "Hoàn tất"
+                          : "Nhập Serial"}
                       </button>
                     ) : (
                       <button onClick={() => openModal(c, "update")}>
@@ -223,9 +225,10 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
 
   const isApproved = claim.status === "approved_by_manufacturer";
   const isRepairJob = claim.jobType?.toLowerCase() === "sửa chữa";
-  const allSerialsFilled = parts.every(
-    (p) => p.serials && p.serials[0]?.trim() !== ""
-  );
+  const allSerialsFilled =
+    claim.jobType?.toLowerCase() === "kiểm tra"
+      ? true
+      : parts.every((p) => p.serials && p.serials[0]?.trim() !== "");
 
   // Preview ảnh mới
   useEffect(() => {
@@ -355,6 +358,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                   <span>{claim.vehicle?.purchaseDate || "-"}</span>
                 </div>
               </section>
+
               <section className="update-modal__section">
                 <h5>Chi tiết công việc</h5>
                 <div className="update-modal__row">
@@ -365,10 +369,14 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                   <span>Ngày phân công:</span>
                   <span>{claim.assignedDate || "-"}</span>
                 </div>
-                <div className="update-modal__row">
+                <div className="update-modal__row description-row">
                   <span>Mô tả khách hàng:</span>
-                  <span>{claim.description || "-"}</span>
+                  <div className="description-content">
+                    {claim.description || "-"}
+                  </div>
                 </div>
+
+                {/* TODO - thanh cuộn nếu nội dung quá dài*/}
               </section>
             </div>
           ) : mode === "serial" ? (
@@ -415,7 +423,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                       <th>Tên linh kiện</th>
                       <th>Mẫu</th>
                       <th>Số lượng</th>
-                      <th>Serial</th>
+                      {isRepairJob && <th>Serial</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -425,17 +433,19 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                         <td>{p.category}</td>
                         <td>{p.model}</td>
                         <td>{p.quantity}</td>
-                        <td>
-                          <input
-                            type="text"
-                            className="update-serial-input"
-                            placeholder="Số serial"
-                            value={p.serials?.[0] || ""}
-                            onChange={(e) =>
-                              handleSerialChange(i, e.target.value)
-                            }
-                          />
-                        </td>
+                        {isRepairJob && (
+                          <td>
+                            <input
+                              type="text"
+                              className="update-serial-input"
+                              placeholder="Số serial"
+                              value={p.serials?.[0] || ""}
+                              onChange={(e) =>
+                                handleSerialChange(i, e.target.value)
+                              }
+                            />
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -451,11 +461,19 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                   Đóng
                 </button>
                 <button
-                  className="update-complete-btn"
-                  onClicock={() => handleSubmit("complete_repair")}
+                  className={`update-complete-btn ${
+                    claim.jobType?.toLowerCase() === "kiểm tra"
+                      ? "check-btn"
+                      : ""
+                  }`}
+                  onClick={() => handleSubmit("complete_repair")}
                   disabled={!allSerialsFilled || uploading}
                 >
-                  {uploading ? "Đang hoàn tất..." : "Hoàn tất sửa chữa"}
+                  {uploading
+                    ? "Đang hoàn tất..."
+                    : claim.jobType?.toLowerCase() === "kiểm tra"
+                    ? "Hoàn tất kiểm tra"
+                    : "Hoàn tất sửa chữa"}
                 </button>
               </div>
             </>
@@ -627,7 +645,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                           <span className="part-info">{p.category}</span>
                           <span className="part-info">{p.model}</span>
                           <span className="part-info">{p.quantity}</span>
-                          {isRepairJob && (
+                          {claim.jobType?.toLowerCase() === "sửa chữa" && (
                             <input
                               type="text"
                               className="update-serial-input"
