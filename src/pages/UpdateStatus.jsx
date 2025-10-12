@@ -46,6 +46,8 @@ export default function UpdateStatus() {
         description: payload.description ?? selectedClaim.description,
         attachments: payload.attachments ?? selectedClaim.attachments ?? [],
         parts: payload.parts ?? selectedClaim.parts ?? [],
+        techDescription:
+          payload.techDescription ?? selectedClaim.techDescription, // ✅ thêm dòng này
       };
 
       // ✅ Cập nhật trạng thái đúng quy trình
@@ -213,7 +215,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
   const [techDescription, setTechDescription] = useState(
     claim.techDescription || ""
   );
-  const [attachments, setAttachments] = useState(claim.attachments || []);
+  // const [attachments, setAttachments] = useState(claim.attachments || []);
   const [newFiles, setNewFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [zoomedImage, setZoomedImage] = useState(null);
@@ -301,17 +303,15 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
   };
 
   const handleSubmit = async (actionType) => {
-    // Lưu mô tả lỗi trước
-    await fetch(`http://localhost:3001/claims/${claim.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ techDescription }),
-    });
-
     const newFileUrls = newFiles.map((f) => URL.createObjectURL(f));
+    // const payload = {
+    //   techDescription,
+    //   attachments: [...attachments, ...newFileUrls],
+    //   parts,
+    // };
     const payload = {
       techDescription,
-      attachments: [...attachments, ...newFileUrls],
+      attachments: newFiles.map((f) => URL.createObjectURL(f)), // nếu muốn lưu file mới
       parts,
     };
 
@@ -325,8 +325,8 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
 
   const isValidForSend = techDescription.trim().length > 0 && allPartsValid;
 
-  const removeOldAttachment = (index) =>
-    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  // const removeOldAttachment = (index) =>
+  //   setAttachments((prev) => prev.filter((_, i) => i !== index));
   const removeNewFile = (index) =>
     setNewFiles((prev) => prev.filter((_, i) => i !== index));
 
@@ -334,7 +334,13 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
     <div className="update-modal__overlay">
       <div className="update-modal__container">
         <div className="update-modal__header">
-          <h5>{mode === "view" ? "Thông tin" : "Cập nhật tình trạng xe"}</h5>
+          <h5>
+            {claim.status === "approved_by_manufacturer"
+              ? "Quá trình sửa xe"
+              : mode === "view"
+              ? "Thông tin"
+              : "Cập nhật tình trạng xe"}
+          </h5>
           <button className="update-modal__close" onClick={onClose}>
             ×
           </button>
@@ -375,6 +381,16 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                     {claim.description || "-"}
                   </div>
                 </div>
+                {claim.techDescription && (
+                  <div className="update-modal__row">
+                    <span className="update-modal__label">
+                      Mô tả kỹ thuật viên:
+                    </span>
+                    <span className="desc-cell tech-desc">
+                      {claim.techDescription}
+                    </span>
+                  </div>
+                )}
 
                 {/* TODO - thanh cuộn nếu nội dung quá dài*/}
               </section>
@@ -419,17 +435,22 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                 <table className="update-parts-table">
                   <thead>
                     <tr>
-                      <th>Loại công việc</th>
-                      <th>Tên linh kiện</th>
+                      <th>Hạng mục công việc</th>
+                      <th>Phụ tùng</th>
                       <th>Mẫu</th>
                       <th>Số lượng</th>
-                      {isRepairJob && <th>Serial</th>}
+                      {isRepairJob && <th>Serial phụ tùng</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {parts.map((p, i) => (
                       <tr key={i}>
-                        <td>{p.type}</td>
+                        <td>
+                          {p.type
+                            ? p.type.charAt(0).toUpperCase() +
+                              p.type.slice(1).toLowerCase()
+                            : "-"}
+                        </td>
                         <td>{p.category}</td>
                         <td>{p.model}</td>
                         <td>{p.quantity}</td>
@@ -506,7 +527,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
               {!isApproved && (
                 <>
                   <div className="update-modal__section">
-                    <div className="update-modal__label">Mô tả kiểm tra</div>
+                    <div className="update-modal__label">Mô tả kỹ thuật</div>
                     <textarea
                       className="update-modal__textarea"
                       rows={4}
@@ -514,7 +535,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                       onChange={(e) => setTechDescription(e.target.value)}
                     />
                   </div>
-                  {/* Ảnh đã lưu */}
+                  {/* Ảnh đã lưu
                   <div className="update-modal__section">
                     <div className="update-modal__label">Ảnh đã lưu</div>
                     <div className="update-modal__content">
@@ -542,7 +563,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                         </p>
                       )}
                     </div>
-                  </div>
+                  </div> */}
                   {/* Thêm ảnh mới */}
 
                   <div className="update-modal__section">
@@ -581,9 +602,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
 
               {/* 🧰 Phần linh kiện */}
               <div className="update-modal__section update-parts-section">
-                <div className="update-modal__label">
-                  Linh kiện sửa chữa / thay thế
-                </div>
+                <div className="update-modal__label">Linh kiện</div>
                 <div className="update-parts-content">
                   {parts.map((p, i) => (
                     <div key={i} className="update-parts-row">
@@ -595,9 +614,10 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                               handlePartChange(i, "type", e.target.value)
                             }
                           >
-                            <option value="">Sửa chữa/Thay thế</option>
+                            <option value="">Loại công việc</option>
                             <option value="sửa chữa">Sửa chữa</option>
                             <option value="thay thế">Thay thế</option>
+                            <option value="kiểm tra">Kiểm tra</option>
                           </select>
                           <select
                             value={p.category}
@@ -605,7 +625,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                               handlePartChange(i, "category", e.target.value)
                             }
                           >
-                            <option value="">Category</option>
+                            <option value="">Phụ tùng</option>
                             <option value="Gương">Gương</option>
                             <option value="Đèn">Đèn</option>
                             <option value="Pin">Pin</option>
@@ -617,7 +637,7 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                               handlePartChange(i, "model", e.target.value)
                             }
                           >
-                            <option value="">Model</option>
+                            <option value="">Mẫu</option>
                             <option value="A">A</option>
                             <option value="B">B</option>
                             <option value="C">C</option>
@@ -679,26 +699,19 @@ function ClaimModal({ claim, mode, onClose, onSave, uploading }) {
                 >
                   Đóng
                 </button>
+
                 {!isApproved && (
-                  <>
-                    <button
-                      className="update-btn update-btn-outline"
-                      onClick={() => handleSubmit("save_only")}
-                      disabled={uploading}
-                    >
-                      {uploading ? "Đang lưu..." : "Lưu"}
-                    </button>
-                    <button
-                      className={`update-btn update-btn-send ${
-                        isValidForSend ? "active" : ""
-                      }`}
-                      onClick={() => handleSubmit("send_staff")}
-                      disabled={!isValidForSend || uploading}
-                    >
-                      {uploading ? "Đang gửi..." : "Gửi Staff duyệt"}
-                    </button>
-                  </>
+                  <button
+                    className={`update-btn update-btn-send ${
+                      isValidForSend ? "active" : ""
+                    }`}
+                    onClick={() => handleSubmit("send_staff")}
+                    disabled={!isValidForSend || uploading}
+                  >
+                    {uploading ? "Đang gửi..." : "Gửi Staff duyệt"}
+                  </button>
                 )}
+
                 {isApproved && (
                   <button
                     className={`update-btn update-btn-complete ${

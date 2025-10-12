@@ -110,6 +110,7 @@ export default function StaffApproval() {
               .map((claim) => (
                 <tr key={claim.id}>
                   <td>{claim.vin}</td>
+
                   <td>{claim.techDescription || "(Chưa có mô tả kỹ thuật)"}</td>
                   <td>
                     <div className="staff-approval-actions">
@@ -174,6 +175,11 @@ export default function StaffApproval() {
                 <span>{selectedClaim.vin}</span>
               </div>
               <div className="staff-approval-row">
+                <span>Model:</span>
+                <span>{selectedClaim.vehicle?.model || "(Chưa có)"}</span>
+              </div>
+
+              <div className="staff-approval-row">
                 <span>Mô tả kỹ thuật:</span>
                 <span>{selectedClaim.techDescription || "(Chưa có)"}</span>
               </div>
@@ -195,12 +201,12 @@ export default function StaffApproval() {
 
             {selectedClaim.parts?.length > 0 && (
               <div className="staff-approval-parts">
-                <h4>Linh kiện sửa chữa / thay thế:</h4>
+                <h4>Linh kiện:</h4>
                 <table className="staff-approval-parts-table">
                   <thead>
                     <tr>
-                      <th>Tên công việc</th>
-                      <th>Tên linh kiện</th>
+                      <th>Hạng mục công việc</th>
+                      <th>Phụ tùng</th>
                       <th>Mẫu</th>
                       <th>Số lượng</th>
                     </tr>

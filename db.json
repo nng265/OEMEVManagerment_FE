@@ -5,7 +5,7 @@
       "vin": "VIN001",
       "title": "Xe không nổ máy",
       "description": "Xe không nổ được, kiểm tra hệ thống đánh lửa.",
-      "techDescription": "",
+      "techDescription": "Bị hư nhiều",
       "assignedDate": "2025-09-30",
       "status": "approved_by_manufacturer",
       "jobType": "Sửa chữa",
@@ -15,13 +15,30 @@
         "purchaseDate": "2022-01-10",
         "id": "ccf1"
       },
-      "approvedDate": "2025-10-11T07:37:49.804Z",
-      "attachments": [],
+      "approvedDate": "2025-10-12T13:15:15.718Z",
+      "attachments": [
+        "blob:http://localhost:5173/8254a037-f323-4af4-9a00-b8e293a2ebbb",
+        "blob:http://localhost:5173/bb5215b6-09a6-4c88-b1de-36b60e75eb66"
+      ],
       "parts": [
         {
-          "type": "Sửa chữa",
+          "type": "thay thế",
           "category": "Gương",
           "model": "A",
+          "quantity": 2,
+          "serials": [""]
+        },
+        {
+          "type": "thay thế",
+          "category": "Bánh xe",
+          "model": "B",
+          "quantity": 4,
+          "serials": [""]
+        },
+        {
+          "type": "sửa chữa",
+          "category": "Đèn",
+          "model": "C",
           "quantity": 1,
           "serials": [""]
         }
@@ -32,9 +49,9 @@
       "vin": "VIN002",
       "title": "Đèn báo lỗi pin",
       "description": "Đèn báo pin sáng liên tục, kiểm tra mạch sạc.",
-      "techDescription": "xe hư hỏng",
+      "techDescription": "",
       "assignedDate": "2025-09-30",
-      "status": "approved_by_manufacturer",
+      "status": "assign_pending",
       "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN002",
@@ -43,22 +60,13 @@
         "id": "6a37"
       },
       "approvedDate": "2025-10-11T15:38:43.842Z",
-      "attachments": [
-        "blob:http://localhost:5173/bca68774-b42c-4f04-b28b-e0e5494ff90e"
-      ],
+      "attachments": [],
       "parts": [
         {
-          "type": "sửa chữa",
-          "category": "Đèn",
-          "model": "A",
-          "quantity": 2,
-          "serials": []
-        },
-        {
-          "type": "sửa chữa",
-          "category": "Gương",
-          "model": "B",
-          "quantity": 2,
+          "type": "",
+          "category": "",
+          "model": "",
+          "quantity": 1,
           "serials": [""]
         }
       ]
@@ -68,9 +76,9 @@
       "vin": "VIN003",
       "title": "Điều hòa không mát",
       "description": "Cần thay mới block lạnh và kiểm tra gas điều hòa.",
-      "techDescription": "bị hư hỏng",
+      "techDescription": "",
       "assignedDate": "2025-10-01",
-      "status": "waiting_staff",
+      "status": "assign_pending",
       "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN003",
@@ -79,29 +87,13 @@
         "id": "c68c"
       },
       "approvedDate": "2025-10-02T09:00:00.000Z",
-      "attachments": [
-        "blob:http://localhost:5173/702ee67c-ab6e-4543-912e-e1002b04060b"
-      ],
+      "attachments": [],
       "parts": [
         {
-          "type": "sửa chữa",
-          "category": "Đèn",
-          "model": "A",
-          "quantity": 2,
-          "serials": [""]
-        },
-        {
-          "type": "thay thế",
-          "category": "Pin",
-          "model": "B",
+          "type": "",
+          "category": "",
+          "model": "",
           "quantity": 1,
-          "serials": [""]
-        },
-        {
-          "type": "thay thế",
-          "category": "Bánh xe",
-          "model": "C",
-          "quantity": 2,
           "serials": [""]
         }
       ]
@@ -111,7 +103,7 @@
       "vin": "VIN004",
       "title": "Lỗi hệ thống phanh ABS",
       "description": "Kiểm tra cảm biến ABS và dây tín hiệu.",
-      "techDescription": "",
+      "techDescription": "Không có hư, bị nước vào",
       "assignedDate": "2025-10-02",
       "status": "approved_by_manufacturer",
       "jobType": "Kiểm tra",
@@ -121,14 +113,43 @@
         "purchaseDate": "2020-11-05",
         "id": "d4e5"
       },
-      "approvedDate": null,
+      "approvedDate": "2025-10-12T13:15:18.797Z",
+      "attachments": [
+        "blob:http://localhost:5173/c92d4f69-c36e-4de7-9609-7866b657d817"
+      ],
+      "parts": [
+        {
+          "type": "kiểm tra",
+          "category": "Pin",
+          "model": "A",
+          "quantity": 1,
+          "serials": [""]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "vin": "VIN005",
+      "title": "Lỗi hệ thống đèn pha",
+      "description": "Đèn pha không hoạt động, kiểm tra mạch điện.",
+      "techDescription": "",
+      "assignedDate": "2025-10-03",
+      "status": "assign_pending",
+      "jobType": "Kiểm tra",
+      "vehicle": {
+        "vin": "VIN005",
+        "model": "Chevrolet Spark",
+        "purchaseDate": "2021-08-12",
+        "id": "f9a1"
+      },
+      "approvedDate": "2025-10-11T10:45:00.000Z",
       "attachments": [],
       "parts": [
         {
-          "type": "Kiểm tra",
-          "category": "Gương",
-          "model": "A",
-          "quantity": 2,
+          "type": "",
+          "category": "",
+          "model": "",
+          "quantity": 1,
           "serials": [""]
         }
       ]
@@ -158,6 +179,12 @@
       "model": "Ford Focus",
       "purchaseDate": "2020-11-05",
       "id": "d4e5"
+    },
+    {
+      "vin": "VIN005",
+      "model": "Chevrolet Spark",
+      "purchaseDate": "2021-08-12",
+      "id": "f9a1"
     }
   ]
 }
