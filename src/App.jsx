@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import StaffApproval from "./pages/StaffApproval";
 import UpdateStatus from "./pages/UpdateStatus";
 import SendToEvm from "./pages/SendToStaff";
+import TechnicianVehicleStatus from "./pages/TechnicianVehicleStatus";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/update_status" element={<UpdateStatus />} />
       <Route path="/send_update" element={<SendToEvm />} />
       <Route path="/staff_approval" element={<StaffApproval />} />
+      <Route path="/technician_vehicle_status" element={<TechnicianVehicleStatus />} />
 
       {/* Nếu đường dẫn không tồn tại → quay về Dashboard */}
       <Route path="*" element={<Navigate to="/" replace />} />

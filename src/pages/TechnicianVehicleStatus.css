@@ -1,0 +1,219 @@
+.technician-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.technician-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+}
+
+/* Controls Bar */
+.technician-controls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.technician-search {
+  flex: 1;
+  min-width: 300px;
+  position: relative;
+}
+
+.technician-search-input {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.technician-search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.technician-search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #9ca3af;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.technician-search-clear:hover {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.technician-filter {
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  outline: none;
+  min-width: 200px;
+  transition: border-color 0.2s;
+}
+
+.technician-filter:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Table */
+.technician-table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.technician-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.technician-table thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.technician-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+}
+
+.technician-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.technician-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.technician-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.technician-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.technician-issue {
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.technician-task-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.technician-task-badge.inspection {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.technician-task-badge.repair {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.technician-view-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.technician-view-btn:hover {
+  background: #2563eb;
+}
+
+.technician-view-btn:active {
+  transform: scale(0.98);
+}
+
+.technician-empty {
+  text-align: center;
+  color: #9ca3af;
+  padding: 48px 16px !important;
+  font-style: italic;
+}
+
+.technician-loading {
+  text-align: center;
+  padding: 48px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .technician-container {
+    padding: 16px;
+  }
+
+  .technician-title {
+    font-size: 24px;
+  }
+
+  .technician-controls {
+    flex-direction: column;
+  }
+
+  .technician-search,
+  .technician-filter {
+    width: 100%;
+  }
+
+  .technician-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .technician-table {
+    min-width: 600px;
+  }
+}
