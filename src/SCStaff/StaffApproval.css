@@ -1,8 +1,8 @@
-/* --- Container chính --- */
+/* ======================= CONTAINER CHÍNH ======================= */
 .staff-approval-container {
-    padding: 20px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 20px auto;
+    padding: 20px;
     background: #f8f9fa;
     border-radius: 10px;
     font-family: "Segoe UI", sans-serif;
@@ -22,7 +22,7 @@
     margin-top: 10px;
 }
 
-/* --- Bảng chính --- */
+/* ======================= BẢNG CHÍNH ======================= */
 .staff-approval-table {
     width: 100%;
     border-collapse: collapse;
@@ -50,6 +50,7 @@
     color: #444;
 }
 
+/* ======================= BUTTONS ======================= */
 .staff-approval-actions {
     display: flex;
     justify-content: center;
@@ -57,15 +58,14 @@
     gap: 8px;
 }
 
-/* --- Nút hành động --- */
 .staff-approval-btn-view,
 .staff-approval-btn-accept,
 .staff-approval-btn-reject {
     border: none;
     border-radius: 6px;
     padding: 6px 12px;
-    cursor: pointer;
     font-size: 14px;
+    cursor: pointer;
     transition: 0.2s ease;
 }
 
@@ -96,23 +96,17 @@
     background: #dc2626;
 }
 
-/* ===================== MODAL ===================== */
-
-/* Nền mờ bao phủ toàn màn hình */
+/* ======================= MODAL ======================= */
 .staff-approval-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
-/* Hộp modal ở giữa màn hình */
 .staff-approval-modal {
     background: #fff;
     padding: 25px;
@@ -148,34 +142,64 @@
     color: #000;
 }
 
-.staff-approval-modal p {
-    margin: 8px 0;
-    line-height: 1.4;
+/* ======================= SECTIONS ======================= */
+.staff-approval-section {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
 }
 
-/* --- Ảnh đính kèm --- */
-.staff-approval-attachments {
-    margin-top: 15px;
-}
-
-.staff-approval-attachments h4 {
+.staff-approval-section h4 {
     font-size: 16px;
     font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.staff-approval-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 8px;
 }
 
-/* Hiển thị ảnh theo hàng ngang, scroll ngang nếu quá dài */
+.staff-approval-row span:first-child {
+    color: #555;
+    font-weight: 500;
+    flex: 0 0 40%;
+}
+
+.staff-approval-row span:last-child {
+    flex: 1;
+    text-align: right;
+    color: #333;
+    word-wrap: break-word;
+}
+
+.staff-approval-description {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 12px;
+    max-height: 120px;
+    overflow-y: auto;
+    text-align: right;
+    color: #333;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+/* ======================= ATTACHMENTS ======================= */
 .staff-approval-attachments-list {
     display: flex;
     flex-wrap: nowrap;
-    /* buộc nằm 1 hàng */
     gap: 10px;
     overflow-x: auto;
-    /* scroll ngang nếu ảnh quá dài */
     padding-bottom: 5px;
 }
 
-/* Thumb ảnh nhỏ */
 .staff-approval-image-thumb {
     flex: 0 0 auto;
     width: 110px;
@@ -198,7 +222,7 @@
     display: block;
 }
 
-/* --- Popup xem ảnh lớn --- */
+/* ======================= IMAGE PREVIEW ======================= */
 .staff-approval-preview-overlay {
     position: fixed;
     inset: 0;
@@ -214,15 +238,10 @@
     position: relative;
     max-width: 90vw;
     max-height: 90vh;
-
     border-radius: 16px;
-    /* bo góc */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    /* thêm bóng */
     overflow: hidden;
-    /* để ảnh không tràn ra ngoài bo góc */
 }
-
 
 .staff-approval-preview-content img {
     max-width: 100%;
@@ -250,49 +269,70 @@
     background: #fff;
 }
 
-/* --- Bảng linh kiện --- */
+/* ======================= BẢNG LINH KIỆN ======================= */
 .staff-approval-parts {
-
-    background: #f9f9f9;
-    padding: 12px 16px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background: #f9fafb;
+    /* nền đồng bộ */
+    border: 1px solid #e5e7eb;
+    /* viền đồng bộ */
+    border-radius: 12px;
+    /* bo góc */
+    padding: 16px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
 }
 
+/* Tiêu đề nhỏ hơn */
 .staff-approval-parts h4 {
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 8px;
+    color: #333;
+    margin-bottom: 12px;
 }
 
+/* Bảng linh kiện */
 .staff-approval-parts-table {
     width: 100%;
     border-collapse: collapse;
+    text-align: center;
+    table-layout: auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .staff-approval-parts-table th,
 .staff-approval-parts-table td {
-    border: 1px solid #ddd;
-    padding: 6px 8px;
-    text-align: left;
+    border: 1px solid #ccc;
+    /* viền nhẹ giống bảng serial */
+    padding: 8px 12px;
+    /* padding giống bảng serial */
+    text-align: center;
+    font-size: 15px;
+    /* chữ giống bảng serial */
+    word-wrap: break-word;
 }
 
 .staff-approval-parts-table th {
-    background-color: #f0f0f0;
+    background-color: #f5f5f5;
+    /* đồng bộ header */
     font-weight: 600;
+    color: #333;
 }
 
-/* --- Nút hành động ở modal căn giữa --- */
+/* Hover hiệu ứng cho dòng */
+.staff-approval-parts-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+/* ======================= MODAL ACTION BUTTONS ======================= */
 .staff-approval-modal-actions {
     display: flex;
     justify-content: center;
-    /* căn giữa */
     align-items: center;
     gap: 16px;
     margin-top: 20px;
 }
 
-/* --- Hiệu ứng --- */
+/* ======================= ANIMATIONS ======================= */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -307,110 +347,12 @@
 
 @keyframes fadeInUp {
     from {
-        transform: translateY(20px);
         opacity: 0;
+        transform: translateY(20px);
     }
 
     to {
-        transform: translateY(0);
         opacity: 1;
+        transform: translateY(0);
     }
-}
-
-/* ====== KHUNG THÔNG TIN TRONG MODAL (THEO PHONG CÁCH UPDATESTATUS) ====== */
-.staff-approval-section {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 16px 20px;
-}
-
-/* Tiêu đề phần — ví dụ: “Thông tin xe”, “Mô tả khách hàng” */
-.staff-approval-section h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 12px;
-}
-
-/* Dòng thông tin trong từng section */
-.staff-approval-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 8px;
-    gap: 12px;
-}
-
-
-
-.staff-approval-row span:first-child {
-    color: #555;
-    font-weight: 500;
-    flex: 0 0 40%;
-}
-
-.staff-approval-row span:last-child {
-    flex: 1;
-    text-align: right;
-    color: #333;
-    word-wrap: break-word;
-}
-
-/* Phần mô tả khách hàng có cuộn nếu quá dài */
-.staff-approval-description {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 10px 12px;
-    max-height: 120px;
-    overflow-y: auto;
-    text-align: right;
-    color: #333;
-    line-height: 1.5;
-    word-wrap: break-word;
-}
-
-/* Giữ cho phần ảnh đính kèm gọn, bo góc giống khung thông tin */
-.staff-approval-attachments {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 16px 20px;
-}
-
-/* ✅ Chỉ áp dụng cho bảng linh kiện trong modal StaffApproval */
-.staff-approval-parts-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    /* căn giữa theo chiều ngang */
-}
-
-.staff-approval-parts-table th,
-.staff-approval-parts-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    /* căn giữa ngang */
-    vertical-align: middle;
-    /* căn giữa dọc */
-}
-
-.staff-approval-parts-table th {
-    background-color: #f6f6f6;
-    font-weight: 600;
-}
-
-.staff-approval-parts-table td {
-    font-size: 14px;
-}
-
-/* Làm bo góc cho khung bảng linh kiện */
-.staff-approval-parts {
-    background: #f6f6f6;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }

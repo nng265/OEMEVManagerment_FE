@@ -209,15 +209,31 @@ export default function StaffApproval() {
                       <th>Phụ tùng</th>
                       <th>Mẫu</th>
                       <th>Số lượng</th>
+                      <th>Số Serial</th>
                     </tr>
                   </thead>
                   <tbody>
                     {selectedClaim.parts.map((part, i) => (
                       <tr key={i}>
-                        <td>{part.type || "-"}</td>
+                        <td>
+                          {part.type
+                            ? part.type
+                                .toLowerCase()
+                                .split(" ")
+                                .map(
+                                  (w) => w.charAt(0).toUpperCase() + w.slice(1)
+                                )
+                                .join(" ")
+                            : "-"}
+                        </td>
                         <td>{part.category || "-"}</td>
                         <td>{part.model || "-"}</td>
                         <td>{part.quantity || 1}</td>
+                        <td>
+                          {Array.isArray(part.serials)
+                            ? part.serials.filter(Boolean).join(" / ")
+                            : part.serial || "-"}
+                        </td>{" "}
                       </tr>
                     ))}
                   </tbody>

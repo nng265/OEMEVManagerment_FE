@@ -5,9 +5,9 @@
       "vin": "VIN001",
       "title": "Xe không nổ máy",
       "description": "Xe không nổ được, kiểm tra hệ thống đánh lửa.",
-      "techDescription": "Bị hư nhiều",
+      "techDescription": "aaaaaaaaaaaa",
       "assignedDate": "2025-09-30",
-      "status": "approved_by_manufacturer",
+      "status": "waiting_staff",
       "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN001",
@@ -15,32 +15,40 @@
         "purchaseDate": "2022-01-10",
         "id": "ccf1"
       },
-      "approvedDate": "2025-10-12T13:15:15.718Z",
-      "attachments": [
-        "blob:http://localhost:5173/8254a037-f323-4af4-9a00-b8e293a2ebbb",
-        "blob:http://localhost:5173/bb5215b6-09a6-4c88-b1de-36b60e75eb66"
-      ],
+      "approvedDate": "2025-10-15T13:49:36.539Z",
+      "attachments": [],
       "parts": [
         {
           "type": "thay thế",
           "category": "Gương",
           "model": "A",
-          "quantity": 2,
-          "serials": [""]
+          "quantity": 1,
+          "serialInput": "",
+          "serial": "SN002"
         },
         {
           "type": "thay thế",
-          "category": "Bánh xe",
+          "category": "Đèn",
           "model": "B",
-          "quantity": 4,
-          "serials": [""]
+          "quantity": 1,
+          "serial": "SN001",
+          "serialInput": ""
+        },
+        {
+          "type": "kiểm tra",
+          "category": "Đèn",
+          "model": "A",
+          "quantity": 1,
+          "serial": "SN002",
+          "serialInput": ""
         },
         {
           "type": "sửa chữa",
-          "category": "Đèn",
+          "category": "Bánh xe",
           "model": "C",
-          "quantity": 1,
-          "serials": [""]
+          "quantity": 4,
+          "serial": "SN003",
+          "serialInput": ""
         }
       ]
     },
@@ -49,9 +57,9 @@
       "vin": "VIN002",
       "title": "Đèn báo lỗi pin",
       "description": "Đèn báo pin sáng liên tục, kiểm tra mạch sạc.",
-      "techDescription": "",
+      "techDescription": "aaaaaaaaa",
       "assignedDate": "2025-09-30",
-      "status": "assign_pending",
+      "status": "completed",
       "jobType": "Sửa chữa",
       "vehicle": {
         "vin": "VIN002",
@@ -59,15 +67,32 @@
         "purchaseDate": "2021-06-20",
         "id": "6a37"
       },
-      "approvedDate": "2025-10-11T15:38:43.842Z",
+      "approvedDate": "2025-10-15T13:08:56.177Z",
       "attachments": [],
       "parts": [
         {
-          "type": "",
-          "category": "",
-          "model": "",
+          "type": "sửa chữa",
+          "category": "Gương",
+          "model": "B",
           "quantity": 1,
-          "serials": [""]
+          "serialInput": "",
+          "serial": "SN001"
+        },
+        {
+          "type": "thay thế",
+          "category": "Gương",
+          "model": "B",
+          "quantity": 1,
+          "serial": "111111",
+          "serialInput": "111111"
+        },
+        {
+          "type": "kiểm tra",
+          "category": "Pin",
+          "model": "C",
+          "quantity": 1,
+          "serial": "SN003",
+          "serialInput": ""
         }
       ]
     },
@@ -76,115 +101,135 @@
       "vin": "VIN003",
       "title": "Điều hòa không mát",
       "description": "Cần thay mới block lạnh và kiểm tra gas điều hòa.",
-      "techDescription": "",
+      "techDescription": "aaaaaaaa",
       "assignedDate": "2025-10-01",
-      "status": "assign_pending",
-      "jobType": "Sửa chữa",
+      "status": "approved_by_manufacturer",
+      "jobType": "Kiểm tra",
       "vehicle": {
         "vin": "VIN003",
         "model": "Mazda 3",
         "purchaseDate": "2023-02-15",
         "id": "c68c"
       },
-      "approvedDate": "2025-10-02T09:00:00.000Z",
-      "attachments": [],
-      "parts": [
-        {
-          "type": "",
-          "category": "",
-          "model": "",
-          "quantity": 1,
-          "serials": [""]
-        }
-      ]
-    },
-    {
-      "id": "4",
-      "vin": "VIN004",
-      "title": "Lỗi hệ thống phanh ABS",
-      "description": "Kiểm tra cảm biến ABS và dây tín hiệu.",
-      "techDescription": "Không có hư, bị nước vào",
-      "assignedDate": "2025-10-02",
-      "status": "approved_by_manufacturer",
-      "jobType": "Kiểm tra",
-      "vehicle": {
-        "vin": "VIN004",
-        "model": "Ford Focus",
-        "purchaseDate": "2020-11-05",
-        "id": "d4e5"
-      },
-      "approvedDate": "2025-10-12T13:15:18.797Z",
+      "approvedDate": "2025-10-15T12:36:25.378Z",
       "attachments": [
-        "blob:http://localhost:5173/c92d4f69-c36e-4de7-9609-7866b657d817"
+        "blob:http://localhost:5173/95a7bf5a-df39-4c60-8f2d-6114a03cc217"
       ],
       "parts": [
         {
-          "type": "kiểm tra",
-          "category": "Pin",
+          "type": "thay thế",
+          "category": "Gương",
           "model": "A",
           "quantity": 1,
-          "serials": [""]
-        }
-      ]
-    },
-    {
-      "id": "5",
-      "vin": "VIN005",
-      "title": "Lỗi hệ thống đèn pha",
-      "description": "Đèn pha không hoạt động, kiểm tra mạch điện.",
-      "techDescription": "",
-      "assignedDate": "2025-10-03",
-      "status": "assign_pending",
-      "jobType": "Kiểm tra",
-      "vehicle": {
-        "vin": "VIN005",
-        "model": "Chevrolet Spark",
-        "purchaseDate": "2021-08-12",
-        "id": "f9a1"
-      },
-      "approvedDate": "2025-10-11T10:45:00.000Z",
-      "attachments": [],
-      "parts": [
+          "serialInput": "",
+          "serial": "SN001"
+        },
         {
-          "type": "",
-          "category": "",
-          "model": "",
+          "type": "sửa chữa",
+          "category": "Gương",
+          "model": "A",
           "quantity": 1,
-          "serials": [""]
+          "serial": "SN001",
+          "serialInput": ""
         }
       ]
     }
   ],
   "vehicles": [
     {
-      "vin": "VIN001",
-      "model": "Toyota Vios",
-      "purchaseDate": "2022-01-10",
-      "id": "ccf1"
+      "vin": "1GKSK4ED5FR100001",
+      "model": "VF8",
+      "year": 2024,
+      "customerId": "751419d9-c16c-4cfa-b1e2-e6c841d36baf",
+      "customerPhoneNunmber": "0901112222",
+      "customerName": "Nguyen Van An",
+      "policyInformation": [
+        {
+          "policyName": "Standard Vehicle 7-Year",
+          "startDate": "2024-01-10T00:00:00",
+          "endDate": "2031-01-10T00:00:00"
+        },
+        {
+          "policyName": "Battery 10-Year",
+          "startDate": "2024-01-10T00:00:00",
+          "endDate": "2034-01-10T00:00:00"
+        }
+      ]
     },
     {
-      "vin": "VIN002",
-      "model": "Honda City",
-      "purchaseDate": "2021-06-20",
-      "id": "6a37"
+      "vin": "1GKSK4ED5FR100002",
+      "model": "VF9",
+      "year": 2023,
+      "customerId": "cb40d561-cbb8-4b35-933a-6fe20874a019",
+      "customerPhoneNunmber": "0902223333",
+      "customerName": "Tran Thi Binh",
+      "policyInformation": [
+        {
+          "policyName": "Standard Vehicle 7-Year",
+          "startDate": "2023-05-20T00:00:00",
+          "endDate": "2030-05-20T00:00:00"
+        }
+      ]
     },
     {
-      "vin": "VIN003",
-      "model": "Mazda 3",
-      "purchaseDate": "2023-02-15",
-      "id": "c68c"
+      "vin": "1GKSK4ED5FR100003",
+      "model": "VFe34",
+      "year": 2024,
+      "customerId": "0c268330-8df5-4555-b704-270d9f906e85",
+      "customerPhoneNunmber": "0903334444",
+      "customerName": "Le Van Cuong",
+      "policyInformation": [
+        {
+          "policyName": "Premium Plus 10-Year",
+          "startDate": "2024-02-15T00:00:00",
+          "endDate": "2034-02-15T00:00:00"
+        }
+      ]
     },
     {
-      "vin": "VIN004",
-      "model": "Ford Focus",
-      "purchaseDate": "2020-11-05",
-      "id": "d4e5"
+      "vin": "1GKSK4ED5FR100004",
+      "model": "VF8",
+      "year": 2023,
+      "customerId": "60452e3e-ff01-4d28-b01b-0a8071de57d5",
+      "customerPhoneNunmber": "0904445555",
+      "customerName": "Pham Thi Dung",
+      "policyInformation": [
+        {
+          "policyName": "Standard Vehicle 7-Year",
+          "startDate": "2023-08-01T00:00:00",
+          "endDate": "2030-08-01T00:00:00"
+        }
+      ]
     },
     {
-      "vin": "VIN005",
-      "model": "Chevrolet Spark",
-      "purchaseDate": "2021-08-12",
-      "id": "f9a1"
+      "vin": "1GKSK4ED5FR100005",
+      "model": "VF7",
+      "year": 2024,
+      "customerId": "4a126ac5-a886-43e9-8d33-a0e928e65ad9",
+      "customerPhoneNunmber": "0905556666",
+      "customerName": "Vo Van Em",
+      "policyInformation": [
+        {
+          "policyName": "Standard Vehicle 7-Year",
+          "startDate": "2024-03-01T00:00:00",
+          "endDate": "2031-03-01T00:00:00"
+        }
+      ]
+    },
+    {
+      "vin": "1GKSK4ED5FR100006",
+      "model": "VF9",
+      "year": 2024,
+      "customerId": "0483837a-cb4a-461a-bb48-b5ff1142d947",
+      "customerPhoneNunmber": "0906667777",
+      "customerName": "Do Thi Giau",
+      "policyInformation": [
+        {
+          "policyName": "Premium Plus 10-Year",
+          "startDate": "2024-06-20T00:00:00",
+          "endDate": "2034-06-20T00:00:00"
+        }
+      ]
     }
   ]
 }

@@ -1,11 +1,18 @@
+// src/components/Navbar.jsx
+import React from "react";
 import "./Navbar.css";
 import DropdownList from "./DropdownList";
 
-export default function Navbar({ role, setRole }) {
+export default function Navbar({ role, setRole, toggleSidebar }) {
   return (
-    <nav className="custom-navbar navbar navbar-expand-lg navbar-light px-3">
-      <span className="logo navbar-brand fw-bold">LOGO</span>
-      <div className="ms-auto d-flex align-items-center">
+    <header className="custom-navbar">
+      <div className="navbar-left-items">
+        <button onClick={toggleSidebar} className="navbar-toggle-btn">
+          &#9776;
+        </button>
+      </div>
+
+      <div className="navbar-right-items">
         <DropdownList
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -14,16 +21,10 @@ export default function Navbar({ role, setRole }) {
             { value: "sc staff", label: "SC Staff" },
             { value: "sc technican", label: "SC Technican" },
           ]}
-          className="me-3"
-          style={{ width: "150px" }}
+          className="role-dropdown"
         />
-        <div
-          className="rounded-circle bg-secondary d-flex justify-content-center align-items-center text-white"
-          style={{ width: "40px", height: "40px" }}
-        >
-          NA
-        </div>
+        <div className="user-avatar">NA</div>
       </div>
-    </nav>
+    </header>
   );
 }

@@ -1,0 +1,211 @@
+.parts-table-container {
+    width: 100%;
+}
+
+.parts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.parts-table thead {
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.parts-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #6b7280;
+    letter-spacing: 0.5px;
+}
+
+.parts-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+}
+
+.parts-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.parts-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.parts-table td {
+    padding: 12px;
+    vertical-align: middle;
+}
+
+.parts-empty {
+    text-align: center;
+    color: #9ca3af;
+    padding: 32px 16px !important;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* Form Elements */
+.parts-select,
+.parts-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+}
+
+.parts-select:focus,
+.parts-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.parts-select {
+    cursor: pointer;
+}
+
+/* Quantity Controls */
+.parts-quantity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.parts-quantity-btn {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.parts-quantity-btn:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.parts-quantity-btn:active {
+    transform: scale(0.95);
+}
+
+.parts-quantity-value {
+    min-width: 32px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+/* Remove Button */
+.parts-remove-btn {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin: 0 auto;
+}
+
+.parts-remove-btn:hover {
+    background: #fecaca;
+    border-color: #fca5a5;
+}
+
+.parts-remove-btn:active {
+    transform: scale(0.95);
+}
+
+/* Add Button */
+.parts-add-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    color: #6b7280;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.parts-add-btn:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+    color: #374151;
+}
+
+.parts-add-btn:active {
+    transform: scale(0.99);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .parts-table-container {
+        overflow-x: auto;
+    }
+
+    .parts-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .parts-table {
+        min-width: 700px;
+        font-size: 12px;
+    }
+
+    .parts-table th,
+    .parts-table td {
+        padding: 8px;
+    }
+
+    .parts-select,
+    .parts-input {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    .parts-quantity-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+    }
+
+    .parts-quantity-value {
+        min-width: 24px;
+        font-size: 12px;
+    }
+}

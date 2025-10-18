@@ -1,37 +1,45 @@
+import React from "react";
 import "./Sidebar.css";
-import InputText from "./InputText";
-import Button from "./Button";
+import { roleScreens } from "../configs/roleScreen";
 
 export default function Sidebar({
-  activeMenu,
-  setActiveMenu,
-  searchText,
-  setSearchText,
-  menuItems = [], // thêm menuItems
+  role,
+  selectedScreen,
+  setSelectedScreen,
+  logout,
+  username,
+  isOpen = true,
 }) {
-  return (
-    <div className="sidebar p-3">
-      {/* Search bar */}
-      <InputText
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        placeholder="Search..."
-        className="mb-3"
-      />
+  const screens = roleScreens[role] || [];
 
-      {/* Menu list */}
-      <ul className="sidebar-menu">
-        {menuItems.map((item) => (
-          <li key={item.id}>
-            <Button
-              className={activeMenu === item.id ? "active" : ""}
-              onClick={() => setActiveMenu(item.id)}
-            >
-              {item.label}
-            </Button>
-          </li>
+  return (
+    <aside className={`sidebar ${isOpen ? "" : "collapsed"}`}>
+      {/* Header */}
+      <div className="sidebar-header">
+        <div className="sidebar-user">
+          <span className="role">{role}</span>
+        </div>
+      </div>
+      {/* Navigation menu */}
+      <nav className="sidebar-nav">
+        {screens.map((screen) => (
+          <div
+            key={screen.id}
+            className={`sidebar-link ${
+              selectedScreen?.id === screen.id ? "active" : ""
+            }`}
+            onClick={() => setSelectedScreen(screen)}
+          >
+            {screen.label}
+          </div>
         ))}
-      </ul>
-    </div>
+      </nav>
+      {/* Logout section */}
+      <div className="sidebar-footer">
+        <button className="logout-btn" onClick={logout}>
+          Đăng xuất
+        </button>
+      </div>
+    </aside>
   );
 }

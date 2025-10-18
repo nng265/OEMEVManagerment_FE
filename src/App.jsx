@@ -1,23 +1,48 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import StaffApproval from "./pages/StaffApproval";
-import UpdateStatus from "./pages/UpdateStatus";
-import SendToEvm from "./pages/SendToStaff";
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from "./routes/PrivateRoutes";
+import Login from "./pages/auth/Login";
+import Dashboard from "./pages/auth/Dashboard";
+import StaffApproval from "./SCStaff/StaffApproval";
+import TechnicianVehicleStatus from "./SCTech/TechnicianVehicleStatus.jsx";
 
 export default function App() {
   return (
-    <Routes>
-      {/* Mặc định mở Dashboard */}
-      <Route path="/" element={<Dashboard />} />
+    <AuthProvider>
+      <Routes>
+        {/* Trang Login công khai */}
+        <Route path="/login" element={<Login />} />
 
-      {/* Các trang chức năng */}
-      <Route path="/update_status" element={<UpdateStatus />} />
-      <Route path="/send_update" element={<SendToEvm />} />
-      <Route path="/staff_approval" element={<StaffApproval />} />
+        {/* Các trang cần đăng nhập */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/staff_approval"
+          element={
+            <PrivateRoute>
+              <StaffApproval />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/technician_vehicle_status"
+          element={
+            <PrivateRoute>
+              <TechnicianVehicleStatus />
+            </PrivateRoute>
+          }
+        />
 
-      {/* Nếu đường dẫn không tồn tại → quay về Dashboard */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Route không tồn tại → quay về Dashboard */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
