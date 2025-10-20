@@ -1,6 +1,9 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api";
+// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; của D
+
+const API_BASE_URL =
+  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -8,7 +11,7 @@ export const ApiEnum = {
   GET_WARRANTY_RECORD: { path: "/warranty-record", method: "GET" },
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },
   GET_VEHICLES: { path: "/vehicle", method: "GET" },
-  GET_WORK_ORDERS_BY_TECH: { path: "/WorkOrder/by-tech", method: "GET" },
+  GET_WORK_ORDERS_BY_TECH: { path: "/workOrder/by-tech/detail", method: "GET" },
   GET_INSPECTION_ORDERS: {
     path: "/WorkOrder/by-tech/inspection",
     method: "GET",
@@ -17,7 +20,7 @@ export const ApiEnum = {
   UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
   GET_PART_CATEGORY: { path: "/Part/category", method: "GET" },
   GET_PART_MODEL: { path: "/Part/model", method: "GET" },
-  CREATE_PART_ORDER: { path: "/PartOrder", method: "POST" },
+  GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
   UPLOAD_IMAGE: { path: "/Image/multi", method: "POST" },
 };
@@ -26,57 +29,106 @@ export const ApiEnum = {
  * @param {Object} [data] - Payload (query hoặc body)
  * @param {Object} [extraHeaders] - Headers bổ sung (vd: Authorization)
  */
-export async function request(endpoint, data, extraHeaders = {}) {
+export async function request(endpoint, data = {}, extraHeaders = {}) {
   let url = `${API_BASE_URL}${endpoint.path}`;
   const token = localStorage.getItem("token");
-  let headers = {
+
+  // Thay placeholder trong path nếu có (vd: /user/:id -> /user/123)
+  if (data.params) {
+    Object.entries(data.params).forEach(([key, value]) => {
+      url = url.replace(`:${key}`, encodeURIComponent(value));
+    });
+    delete data.params; // tránh gửi params vào body hoặc query
+  }
+
+  const headers = {
     "Content-Type": "application/json",
     "ngrok-skip-browser-warning": "true",
+    ...(token && { Authorization: `Bearer ${token}` }),
     ...extraHeaders,
   };
 
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
+  const options = { method: endpoint.method, headers };
 
-  let options = {
-    method: endpoint.method,
-    headers,
-  };
-
-  if (endpoint.method.toUpperCase() === "GET" && data) {
+  if (endpoint.method.toUpperCase() === "GET" && Object.keys(data).length) {
     const queryString = new URLSearchParams(data).toString();
-    if (queryString) {
-      url += `?${queryString}`;
-    }
+    if (queryString) url += `?${queryString}`;
   } else if (
     ["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())
   ) {
-    if (data) {
-      options.body = JSON.stringify(data);
-    }
+    if (Object.keys(data).length) options.body = JSON.stringify(data);
   }
 
-  return fetch(url, options)
-    .then(async (response) => {
-      const responseData = await response.json();
-      if (!response.ok) {
-        throw { responseData };
-      }
-      return responseData;
-    })
-    .catch((error) => {
-      if (error instanceof TypeError) {
-        throw {
-          success: false,
-          code: 1000,
-          message: "Network error. Please try again later.",
-          data: null,
-        };
-      }
-      throw error;
-    });
+  try {
+    const response = await fetch(url, options);
+    const responseData = await response.json();
+
+    if (!response.ok) throw { responseData };
+    return responseData;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw {
+        success: false,
+        code: 1000,
+        message: "Network error. Please try again later.",
+        data: null,
+      };
+    }
+    throw error;
+  }
 }
+
+// export async function request(endpoint, data, extraHeaders = {}) {
+//   let url = `${API_BASE_URL}${endpoint.path}`;
+//   const token = localStorage.getItem("token");
+//   let headers = {
+//     "Content-Type": "application/json",
+//     "ngrok-skip-browser-warning": "true",
+//     ...extraHeaders,
+//   };
+
+//   if (token) {
+//     headers["Authorization"] = `Bearer ${token}`;
+//   }
+
+//   let options = {
+//     method: endpoint.method,
+//     headers,
+//   };
+
+//   if (endpoint.method.toUpperCase() === "GET" && data) {
+//     const queryString = new URLSearchParams(data).toString();
+//     if (queryString) {
+//       url += `?${queryString}`;
+//     }
+//   } else if (
+//     ["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())
+//   ) {
+//     if (data) {
+//       options.body = JSON.stringify(data);
+//     }
+//   }
+
+//   return fetch(url, options)
+//     .then(async (response) => {
+//       const responseData = await response.json();
+//       if (!response.ok) {
+//         throw { responseData };
+//       }
+//       return responseData;
+//     })
+//     .catch((error) => {
+//       if (error instanceof TypeError) {
+//         throw {
+//           success: false,
+//           code: 1000,
+//           message: "Network error. Please try again later.",
+//           data: null,
+//         };
+//       }
+//       throw error;
+//     });
+// }
 
 // /// ------------- VÍ DỤ --------------
 

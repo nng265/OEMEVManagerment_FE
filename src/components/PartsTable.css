@@ -9,6 +9,7 @@
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     overflow: hidden;
+
 }
 
 .parts-table thead {
@@ -18,7 +19,8 @@
 
 .parts-table th {
     padding: 12px;
-    text-align: left;
+    text-align: center;
+    /* ✅ Căn giữa tiêu đề */
     font-weight: 600;
     font-size: 12px;
     text-transform: uppercase;
@@ -42,7 +44,15 @@
 .parts-table td {
     padding: 12px;
     vertical-align: middle;
+    text-align: center;
+    /* 👈 Căn giữa nội dung */
 }
+
+.parts-table th,
+.parts-table td {
+    text-align: center;
+}
+
 
 .parts-empty {
     text-align: center;
@@ -208,4 +218,62 @@
         min-width: 24px;
         font-size: 12px;
     }
+}
+
+/* ✅ Cố định chiều rộng từng cột để tránh méo bảng */
+.parts-table th:nth-child(1),
+.parts-table td:nth-child(1) {
+    width: 160px;
+    /* Hạng mục công việc */
+}
+
+.parts-table th:nth-child(2),
+.parts-table td:nth-child(2) {
+    width: 200px;
+    /* Tên linh kiện */
+}
+
+.parts-table th:nth-child(3),
+.parts-table td:nth-child(3) {
+    width: 220px;
+    /* Mẫu */
+}
+
+.parts-table th:nth-child(4),
+.parts-table td:nth-child(4) {
+    width: 220px;
+    /* Serial */
+}
+
+.parts-table th:nth-child(5),
+.parts-table td:nth-child(5) {
+    width: 120px;
+    /* Số lượng */
+}
+
+.parts-table th:nth-child(6),
+.parts-table td:nth-child(6) {
+    width: 100px;
+    /* Thao tác */
+}
+
+/* ✅ Giới hạn nội dung dài trong select/input */
+.parts-select,
+.parts-input {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ✅ Đảm bảo select không tự kéo giãn bảng */
+.parts-select {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ✅ Khi hover vào select sẽ thấy tooltip nội dung đầy đủ */
+.parts-select[title] {
+    cursor: pointer;
 }

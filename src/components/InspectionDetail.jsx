@@ -1,40 +1,25 @@
 import React from "react";
-import "./InspectionDetail.css";
+import "./CommonSections.css";
 
-//  *   - detail: Object chứa { description: string, images: string[] }
-export default function InspectionDetail({ detail }) {
-  // Nếu không có dữ liệu inspection, hiển thị thông báo
-  if (!detail) {
-    return <p className="no-data">No inspection detail available</p>;
-  }
-
-  // Đảm bảo images là một mảng (tránh crash nếu BE trả null)
-  const images = Array.isArray(detail.images) ? detail.images : [];
-
+const InspectionDetail = ({ detail, images = [] }) => {
   return (
-    <div className="inspection-detail">
-      {/* Mô tả nội dung kiểm tra */}
-      <p className="inspection-text">
-        {detail.description || "No description available"}
-      </p>
+    <div className="section-container">
+      <h4 className="section-title">Inspection Detail</h4>
+      <p className="section-text">{detail || "No inspection details."}</p>
 
-      {/* Hiển thị danh sách ảnh nếu có */}
-      {images.length > 0 ? (
-        <div className="inspection-images">
-          {images.map((img, idx) => (
-            <img
-              key={idx}
-              src={img}
-              alt={`inspection-${idx}`}
-              className="inspection-img"
-              // Nếu ảnh lỗi (404...), ẩn nó đi
-              onError={(e) => (e.target.style.display = "none")}
-            />
-          ))}
-        </div>
-      ) : (
-        <p className="no-data">No images available</p>
-      )}
+      <div className="image-gallery">
+        {images.length > 0 ? (
+          images.map((img, i) => (
+            <div key={i} className="image-placeholder">
+              <img src={img} alt={`Inspection ${i + 1}`} />
+            </div>
+          ))
+        ) : (
+          <p className="section-text">No images provided.</p>
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default InspectionDetail;

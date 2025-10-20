@@ -1,0 +1,266 @@
+/* =====================================================
+   🌟 GLOBAL MODERN STYLE FOR ALL SECTIONS
+   Used by: CustomerVehicleInfo, InspectionDetail, 
+            IssueDescription, PartsToReplaceRepair, 
+            WarrantyRecords, Table
+===================================================== */
+
+/* ========== CARD BASE ========== */
+.section-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.section-container:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+/* ========== TITLES & TEXTS ========== */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.8rem;
+}
+
+.section-text {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+/* ========== CUSTOMER / VEHICLE INFO ========== */
+.info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 22px;
+}
+
+.info-section {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: #f9fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.3s ease;
+}
+
+.info-section:hover {
+    background: #f0f4ff;
+    border-color: #c7d2fe;
+}
+
+.icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.3);
+}
+
+.person-icon::before {
+    content: "👤";
+}
+
+.car-icon::before {
+    content: "🚗";
+}
+
+.info-section h3 {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.info-section p {
+    margin: 2px 0;
+    font-size: 0.93rem;
+    color: #475569;
+}
+
+.info-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1d4ed8;
+}
+
+.info-phone {
+    color: #6b7280;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .info-container {
+        flex-direction: column;
+    }
+}
+
+/* ========== INSPECTION DETAIL ========== */
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 1rem;
+}
+
+.image-placeholder {
+    flex: 1 1 160px;
+    max-width: 220px;
+    height: 150px;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+.image-placeholder:hover {
+    border-color: #3b82f6;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ========== PARTS TO REPLACE / REPAIR ========== */
+.parts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.parts-table th {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.parts-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 0.95rem;
+}
+
+.parts-table tr:hover {
+    background-color: #f8fafc;
+}
+
+.no-data {
+    font-style: italic;
+    color: #9ca3af;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* ========== WARRANTY RECORDS ========== */
+/* ========== WARRANTY RECORDS (ĐỀU KHUNG, CÂN ĐỐI) ========== */
+.warranty-records-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 0.75rem;
+    justify-content: flex-start;
+}
+
+/* Card từng record */
+.record-item {
+    flex: 1 1 calc(33.333% - 18px);
+    /* 3 ô mỗi hàng */
+    min-width: 200px;
+    max-width: 260px;
+    height: 120px;
+    /* Cố định chiều cao */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    gap: 10px;
+    background: #f9fafc;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.record-item:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(147, 197, 253, 0.3);
+}
+
+/* Icon & nội dung bên trong */
+.record-icon {
+    font-size: 1.4rem;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.record-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.98rem;
+    margin-top: 4px;
+}
+
+.record-date {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .record-item {
+        flex: 1 1 calc(50% - 18px);
+        /* 2 ô mỗi hàng */
+    }
+}
+
+@media (max-width: 600px) {
+    .record-item {
+        flex: 1 1 100%;
+        /* 1 ô mỗi hàng */
+    }
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./TaskModal.css";
 import PartsTable from "./PartsTable";
 import { request, ApiEnum } from "../services/NetworkUntil";
+import IssueDescription from "./IssueDescription";
 
 export default function TaskModal({ order, onClose, onSave }) {
   const [techDescription, setTechDescription] = useState(
@@ -150,12 +151,21 @@ export default function TaskModal({ order, onClose, onSave }) {
           </section>
 
           {/* Issue Description */}
-          <section className="task-section">
-            <h3> Mô tả lỗi của khách hàng</h3>
-            <p className="task-customer-issue">
-              {order.issueDescription || "Không có mô tả"}
-            </p>
-          </section>
+          <IssueDescription description={order.issueDescription} />
+
+          {/* Staff Request / Additional Info from Staff */}
+          {order.failureDesc && (
+            <section className="task-section">
+              <h3>Yêu cầu bổ sung thông tin</h3>
+              <p className="task-section-sub">
+                Nhân viên hãng đã yêu cầu kỹ thuật viên cung cấp thêm thông tin
+                sau:
+              </p>
+              <div className="task-request-box">
+                <p>{order.failureDesc}</p>
+              </div>
+            </section>
+          )}
 
           {/* Inspection/Repair Detail */}
           <section className="task-section">

@@ -23,8 +23,13 @@ export default function TechnicianVehicleStatus() {
     try {
       setLoading(true);
       const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH);
+      console.log("RESPONSE WORK ORDERS:", response);
+
       if (response.success) {
-        setWorkOrders(response.data || []);
+        const data = Array.isArray(response.data)
+          ? response.data
+          : [response.data];
+        setWorkOrders(data);
       }
     } catch (error) {
       console.error("Error fetching work orders:", error);
@@ -41,10 +46,10 @@ export default function TechnicianVehicleStatus() {
     if (searchTerm) {
       filtered = filtered.filter(
         (order) =>
-          order.vehicle?.vin
+          order.warrantyClaim?.vin
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          order.issueDescription
+          order.warrantyClaim?.description
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase())
       );
@@ -52,14 +57,33 @@ export default function TechnicianVehicleStatus() {
 
     // Filter by task type
     if (filterTask !== "all") {
-      filtered = filtered.filter((order) => order.taskType === filterTask);
+      filtered = filtered.filter(
+        (order) => order.type?.toLowerCase() === filterTask.toLowerCase()
+      );
     }
 
     setFilteredOrders(filtered);
   };
-
   const handleViewTask = (order) => {
-    setSelectedOrder(order);
+    const formattedOrder = {
+      id: order.workOrderId,
+      taskType: order.type?.toLowerCase(),
+      issueDescription: order.warrantyClaim?.description || "",
+      failureDesc: order.warrantyClaim?.failureDesc || "",
+      vehicle: {
+        model: order.warrantyClaim?.model || "N/A",
+        vin: order.warrantyClaim?.vin || "N/A",
+        year: order.warrantyClaim?.year || "N/A",
+      },
+      images:
+        order.warrantyClaim?.attachments?.map(
+          (att) => `https://maximum-glorious-ladybird.ngrok-free.app${att.url}`
+        ) || [],
+      techDescription: order.notes || "",
+      parts: order.parts || [], // nếu sau này có parts
+    };
+
+    setSelectedOrder(formattedOrder);
   };
 
   const handleCloseModal = () => {
@@ -68,11 +92,10 @@ export default function TechnicianVehicleStatus() {
 
   const handleSaveTask = async (updatedData) => {
     try {
-      // Update work order via API
       const response = await request(ApiEnum.UPDATE_WORK_ORDER, updatedData);
       if (response.success) {
         alert("Cập nhật thành công!");
-        await fetchWorkOrders(); // Refresh the list
+        await fetchWorkOrders();
         setSelectedOrder(null);
       }
     } catch (error) {
@@ -139,22 +162,20 @@ export default function TechnicianVehicleStatus() {
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.vehicle?.vin || "N/A"}</td>
+                  <tr key={order.workOrderId}>
+                    <td>{order.warrantyClaim?.vin || "N/A"}</td>
                     <td className="technician-issue">
-                      {order.issueDescription || "Chưa có mô tả"}
+                      {order.warrantyClaim?.description || "Chưa có mô tả"}
                     </td>
                     <td>
                       <span
                         className={`technician-task-badge ${
-                          order.taskType === "inspection"
+                          order.type?.toLowerCase() === "inspection"
                             ? "inspection"
                             : "repair"
                         }`}
                       >
-                        {order.taskType === "inspection"
-                          ? "Kiểm tra"
-                          : "Sửa chữa"}
+                        {order.type === "Inspection" ? "Kiểm tra" : "Sửa chữa"}
                       </span>
                     </td>
                     <td>

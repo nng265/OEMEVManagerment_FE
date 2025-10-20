@@ -73,7 +73,7 @@
 //           }
 //           return part;
 //         })
-//         .filter((part) => part.quantity > 0) // Remove parts with quantity 0
+//         .filter((part) => part.quantity > 0)
 //     );
 //   };
 
@@ -126,8 +126,8 @@
 //                     }
 //                   >
 //                     <option value="">-- Chọn --</option>
-//                     {categories.map((cat) => (
-//                       <option key={cat.id || cat.name} value={cat.name}>
+//                     {categories.map((cat, index) => (
+//                       <option key={`cat-${cat.id ?? index}`} value={cat.name}>
 //                         {cat.name}
 //                       </option>
 //                     ))}
@@ -144,8 +144,11 @@
 //                     }
 //                   >
 //                     <option value="">-- Chọn --</option>
-//                     {models.map((model) => (
-//                       <option key={model.id || model.name} value={model.name}>
+//                     {models.map((model, index) => (
+//                       <option
+//                         key={`model-${model.id ?? index}`}
+//                         value={model.name}
+//                       >
 //                         {model.name}
 //                       </option>
 //                     ))}
@@ -231,6 +234,7 @@ import { request, ApiEnum } from "../services/NetworkUntil";
 export default function PartsTable({ parts, setParts, isRepair }) {
   const [categories, setCategories] = useState([]);
   const [models, setModels] = useState([]);
+  const [serials, setSerials] = useState([]);
 
   useEffect(() => {
     fetchCategories();
@@ -240,8 +244,9 @@ export default function PartsTable({ parts, setParts, isRepair }) {
   const fetchCategories = async () => {
     try {
       const response = await request(ApiEnum.GET_PART_CATEGORY);
-      if (response.success) {
-        setCategories(response.data || []);
+      console.log("Category response:", response);
+      if (response.success && Array.isArray(response.data)) {
+        setCategories(response.data);
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -255,21 +260,47 @@ export default function PartsTable({ parts, setParts, isRepair }) {
         setModels([]);
         return;
       }
-      const response = await request(
-        `${ApiEnum.GET_PART_MODEL}?category=${encodeURIComponent(categoryName)}`
-      );
-      if (response.success) {
-        setModels(response.data || []);
+      const response = await request(ApiEnum.GET_PART_MODEL, {
+        category: categoryName,
+      });
+      console.log("Model response:", response);
+      if (response.success && Array.isArray(response.data)) {
+        setModels(response.data);
       }
     } catch (error) {
       console.error("Error fetching models:", error);
     }
   };
 
+  const fetchSerial = async (vin, modelName) => {
+    // cái vin này đang lấy ở đâu
+    try {
+      if (!vin || !modelName) {
+        setSerials([]);
+        return;
+      }
+
+      const response = await request(ApiEnum.GET_PART_SERIAL, {
+        vin: vin,
+        model: modelName,
+      });
+
+      console.log("Serial response:", response);
+      if (response.success && Array.isArray(response.data)) {
+        setSerials(response.data);
+      } else {
+        setSerials([]);
+      }
+    } catch (error) {
+      console.error("Error fetching serials:", error);
+      setSerials([]);
+    }
+  };
+
   const handleAddPart = () => {
     const newPart = {
       id: Date.now(),
-      action: "Replace",
+      action: "",
       category: "",
       model: "",
       serial: "",
@@ -283,10 +314,21 @@ export default function PartsTable({ parts, setParts, isRepair }) {
     setParts(parts.filter((part) => part.id !== id));
   };
 
-  const handleUpdatePart = (id, field, value) => {
-    setParts(
-      parts.map((part) => (part.id === id ? { ...part, [field]: value } : part))
+  const handleUpdatePart = async (id, field, value) => {
+    const updatedParts = parts.map((part) =>
+      part.id === id ? { ...part, [field]: value } : part
     );
+    setParts(updatedParts);
+
+    // Nếu user chọn Category -> gọi API model tương ứng
+    if (field === "category") {
+      await fetchModels(value);
+    }
+
+    // Nếu user chọn Model -> gọi API serial tương ứng
+    if (field === "model") {
+      await fetchSerial(value);
+    }
   };
 
   const handleQuantityChange = (id, delta) => {
@@ -317,6 +359,7 @@ export default function PartsTable({ parts, setParts, isRepair }) {
             <th>Thao tác</th>
           </tr>
         </thead>
+
         <tbody>
           {parts.length === 0 ? (
             <tr>
@@ -327,11 +370,12 @@ export default function PartsTable({ parts, setParts, isRepair }) {
           ) : (
             parts.map((part) => (
               <tr key={part.id}>
-                {/* Action */}
+                {/* Hạng mục công việc */}
                 <td>
                   <select
                     className="parts-select"
                     value={part.action}
+                    title={part.action} // ✅ Thêm dòng này để hiện tooltip
                     onChange={(e) =>
                       handleUpdatePart(part.id, "action", e.target.value)
                     }
@@ -347,14 +391,15 @@ export default function PartsTable({ parts, setParts, isRepair }) {
                   <select
                     className="parts-select"
                     value={part.category}
+                    title={part.category} // ✅ Thêm dòng này để hiện tooltip
                     onChange={(e) =>
                       handleUpdatePart(part.id, "category", e.target.value)
                     }
                   >
                     <option value="">-- Chọn --</option>
-                    {categories.map((cat, index) => (
-                      <option key={`cat-${cat.id ?? index}`} value={cat.name}>
-                        {cat.name}
+                    {categories.map((cat, idx) => (
+                      <option key={`cat-${idx}`} value={cat}>
+                        {cat}
                       </option>
                     ))}
                   </select>
@@ -365,17 +410,15 @@ export default function PartsTable({ parts, setParts, isRepair }) {
                   <select
                     className="parts-select"
                     value={part.model}
+                    title={part.model} // ✅ Thêm dòng này để hiện tooltip
                     onChange={(e) =>
                       handleUpdatePart(part.id, "model", e.target.value)
                     }
                   >
                     <option value="">-- Chọn --</option>
-                    {models.map((model, index) => (
-                      <option
-                        key={`model-${model.id ?? index}`}
-                        value={model.name}
-                      >
-                        {model.name}
+                    {models.map((model, idx) => (
+                      <option key={`model-${idx}`} value={model}>
+                        {model}
                       </option>
                     ))}
                   </select>
@@ -383,18 +426,26 @@ export default function PartsTable({ parts, setParts, isRepair }) {
 
                 {/* Serial */}
                 <td>
-                  <input
+                  <select
                     type="text"
                     className="parts-input"
                     placeholder="Nhập serial..."
                     value={part.serial}
+                    title={part.serial} // ✅ Thêm dòng này để hiện tooltip
                     onChange={(e) =>
                       handleUpdatePart(part.id, "serial", e.target.value)
                     }
-                  />
+                  >
+                    <option value="">-- Chọn --</option>
+                    {serials.map((serial, idx) => (
+                      <option key={`serial-${idx}`} value={serial}>
+                        {serial}
+                      </option>
+                    ))}
+                  </select>
                 </td>
 
-                {/* New Serial (only for Repair task) */}
+                {/* Serial mới (nếu là sửa chữa) */}
                 {isRepair && (
                   <td>
                     <input
@@ -409,7 +460,7 @@ export default function PartsTable({ parts, setParts, isRepair }) {
                   </td>
                 )}
 
-                {/* Quantity */}
+                {/* Số lượng */}
                 <td>
                   <div className="parts-quantity">
                     <button
@@ -430,7 +481,7 @@ export default function PartsTable({ parts, setParts, isRepair }) {
                   </div>
                 </td>
 
-                {/* Remove */}
+                {/* Xóa */}
                 <td>
                   <button
                     className="parts-remove-btn"

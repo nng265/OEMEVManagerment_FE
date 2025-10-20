@@ -1,17 +1,8 @@
+// src/components/PartsToReplaceRepair.jsx
 import React from "react";
-import "./PartsToReplaceRepair.css";
+import "./CommonSections.css";
 
-/**
- * Component: PartsToReplaceRepair
- * Mục đích:
- *   - Hiển thị danh sách linh kiện cần thay thế hoặc sửa chữa.
- *   - Chỉ để hiển thị (không cho thêm / sửa / xóa).
- *
- * Props:
- *   - parts: Mảng chứa các linh kiện [{ action, category, model, serial }, ...]
- */
-export default function PartsToReplaceRepair({ parts }) {
-  // Nếu không có dữ liệu hợp lệ, hiển thị thông báo "No data"
+const PartsToReplaceRepair = ({ parts = [] }) => {
   if (!Array.isArray(parts) || parts.length === 0) {
     return <p className="no-data">No parts to replace or repair</p>;
   }
@@ -26,10 +17,9 @@ export default function PartsToReplaceRepair({ parts }) {
           <th>Serial</th>
         </tr>
       </thead>
-
       <tbody>
-        {parts.map((p, idx) => (
-          <tr key={p.id || idx}>
+        {parts.map((p, i) => (
+          <tr key={p.id || i}>
             <td>{p.action || "—"}</td>
             <td>{p.category || "—"}</td>
             <td>{p.model || "—"}</td>
@@ -39,4 +29,5 @@ export default function PartsToReplaceRepair({ parts }) {
       </tbody>
     </table>
   );
-}
+};
+export default PartsToReplaceRepair;
