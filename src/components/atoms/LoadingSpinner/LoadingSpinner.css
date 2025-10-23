@@ -1,0 +1,89 @@
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner-border {
+  display: inline-block;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sizes */
+.spinner-sm .spinner-border {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.2em;
+}
+
+.spinner-md .spinner-border {
+  width: 2rem;
+  height: 2rem;
+  border-width: 0.25em;
+}
+
+.spinner-lg .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+}
+
+/* Variants */
+.spinner-primary .spinner-border {
+  border-color: var(--bs-primary);
+  border-right-color: transparent;
+}
+
+.spinner-secondary .spinner-border {
+  border-color: var(--bs-secondary);
+  border-right-color: transparent;
+}
+
+.spinner-success .spinner-border {
+  border-color: var(--bs-success);
+  border-right-color: transparent;
+}
+
+.spinner-danger .spinner-border {
+  border-color: var(--bs-danger);
+  border-right-color: transparent;
+}
+
+.spinner-warning .spinner-border {
+  border-color: var(--bs-warning);
+  border-right-color: transparent;
+}
+
+.spinner-info .spinner-border {
+  border-color: var(--bs-info);
+  border-right-color: transparent;
+}
+
+.spinner-light .spinner-border {
+  border-color: var(--bs-light);
+  border-right-color: transparent;
+}
+
+.spinner-dark .spinner-border {
+  border-color: var(--bs-dark);
+  border-right-color: transparent;
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

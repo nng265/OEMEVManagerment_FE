@@ -8,26 +8,37 @@ const API_BASE_URL =
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
   GET_FUNCTIONS: { path: "/functions", method: "GET" },
-  GET_WARRANTY_RECORD: { path: "/warranty-record", method: "GET" },
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },
+  GET_WARRANTY_CLAIM_DETAIL: { path: "/WarrantyClaim/detail", method: "GET" },
   GET_VEHICLES: { path: "/vehicle", method: "GET" },
+  CREATE_WARRANTY_CLAIM: { path: "/WarrantyClaim", method: "POST" },
+  GET_TECHNICIANS: { path: "/Employee", method: "GET" },
   GET_WORK_ORDERS_BY_TECH: { path: "/workOrder/by-tech/detail", method: "GET" },
-  GET_INSPECTION_ORDERS: {
-    path: "/WorkOrder/by-tech/inspection",
-    method: "GET",
-  },
+  GET_INSPECTION_ORDERS: { path: "/WorkOrder/by-tech/inspection", method: "GET" },
+  GET_WARRANTY_CLAIMS_BY_STATUS: { path: '/WarrantyClaim/filter/:status', method: 'GET' },
+  GET_WARRANTY_STATUSES: { path: '/WarrantyClaim/status', method: 'GET' },
   GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
   UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
   GET_PART_CATEGORY: { path: "/Part/category", method: "GET" },
   GET_PART_MODEL: { path: "/Part/model", method: "GET" },
   GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
+  BACK_WARRANTY_CLAIM: { path: '/BackWarrantyClaim/:claimId', method: 'POST' },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
   UPLOAD_IMAGE: { path: "/Image/multi", method: "POST" },
+  SEND_CLAIM_TO_MANUFACTURER: { path: '/WarrantyClaim/:claimId/send-to-manufacturer', method: 'PUT' },
+  DENY_WARRANTY_CLAIM: { path: '/WarrantyClaim/:claimId/deny', method: 'PUT' },
+  CUSTOMER_GET_CAR: { path: '/WarrantyClaim/:claimId/customer-get-car', method: 'PUT' },
+  DONE_WARRANTY: { path: '/WarrantyClaim/:claimId/done-warranty', method: 'PUT' },
+  CAR_BACK_HOME: { path: '/WarrantyClaim/:claimId/car-back-home', method: 'PUT' },
+  CAR_BACK_CENTER: { path: '/WarrantyClaim/:claimId/car-back-center', method: 'PUT' },
+  ASSIGN_TECHNICIAN: { path: '/workOrder/:targetId', method: 'POST' },
+  GET_ASSIGNED_TECHNICIANS: { path: '/workOrder/assigned-techs/:claimId', method: 'GET' },
 };
+
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)
  * @param {Object} [data] - Payload (query hoặc body)
- * @param {Object} [extraHeaders] - Headers bổ sung (vd: Authorization)
+ * @param {Object} [extraHeaders] - Headers bổ sung
  */
 export async function request(endpoint, data = {}, extraHeaders = {}) {
   let url = `${API_BASE_URL}${endpoint.path}`;
@@ -53,9 +64,7 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
   if (endpoint.method.toUpperCase() === "GET" && Object.keys(data).length) {
     const queryString = new URLSearchParams(data).toString();
     if (queryString) url += `?${queryString}`;
-  } else if (
-    ["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())
-  ) {
+  } else if (["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())) {
     if (Object.keys(data).length) options.body = JSON.stringify(data);
   }
 
@@ -77,6 +86,7 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
     throw error;
   }
 }
+
 
 // export async function request(endpoint, data, extraHeaders = {}) {
 //   let url = `${API_BASE_URL}${endpoint.path}`;
