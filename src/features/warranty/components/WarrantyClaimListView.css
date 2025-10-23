@@ -1,0 +1,57 @@
+/* --- SAO CHÉP VÀ DÁN CÁC CLASS NÀY VÀO CUỐI TỆP WarrantyClaimListView.css --- */
+
+/* Đổi tên class chính cho khớp với file .jsx */
+.warranty-claim-list-view {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.warranty-claim-list-view h2 {
+  margin-bottom: 24px;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+
+/* Class thông báo lỗi */
+.error-message {
+  color: #e74c3c;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fdeaea;
+  margin: 16px 0;
+  border: 1px solid #fadbd8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Class trạng thái Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  gap: 1rem;
+  color: #666;
+}
+
+.loading-container p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Class trạng thái rỗng */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #718096;
+}
+
+.empty-state p {
+  margin: 16px 0;
+  font-size: 1rem;
+}

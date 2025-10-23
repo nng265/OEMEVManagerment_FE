@@ -1,0 +1,24 @@
+/* Shared styles for Warranty Records Section */
+.policy-item {
+  background-color: #f7fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.policy-item:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+.policy-item h5 {
+  color: #3b82f6;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

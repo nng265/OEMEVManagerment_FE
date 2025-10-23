@@ -1,0 +1,130 @@
+/* Feature-specific styles for Create Warranty Claim Modal */
+
+/* Issue description textarea */
+.issue-description {
+  margin-bottom: 24px;
+}
+
+.issue-description textarea,
+.form-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: white;
+}
+
+.issue-description textarea:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Technician assignment */
+.assign-technicians {
+  margin-top: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #e2e8f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.checkbox-label input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.technicians-section {
+  background-color: #f8fafc;
+  padding: 24px;
+  border-radius: 12px;
+  margin-top: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.technicians-section h5 {
+  color: #2d3748;
+  margin-bottom: 16px;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.technician-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #edf2f7;
+}
+
+.tech-select,
+.form-select {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: white;
+}
+
+.tech-select:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.technician-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.select-loading,
+.select-error {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.select-loading {
+  color: #64748b;
+  font-style: italic;
+}
+
+.select-error {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+

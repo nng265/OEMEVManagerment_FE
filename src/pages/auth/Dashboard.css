@@ -1,3 +1,9 @@
+:root {
+  --navbar-height: 64px;
+  --sidebar-open-width: 280px;
+  --sidebar-collapsed-width: 80px;
+}
+
 /* ==== Tổng thể Dashboard layout ==== */
 .dashboard-wrapper {
   display: flex;
@@ -13,7 +19,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: var(--navbar-height); /* Dùng biến */
   background-color: #8c8c8c;
   z-index: 1000;
   display: flex;
@@ -26,21 +32,20 @@
 .dashboard-container {
   display: flex;
   flex: 1;
-  margin-top: 60px;
-  /* tránh bị Navbar che */
-  height: calc(100vh - 60px);
+  margin-top: var(--navbar-height); /* Dùng biến (sửa từ 60px) */
+  height: calc(100vh - var(--navbar-height)); /* Dùng biến (sửa từ 60px) */
   transition: all 0.3s ease;
   background-color: #f9f9fb;
 }
 
 /* ==== Sidebar ==== */
 .sidebar {
-  width: 240px;
+  /* Các giá trị width sẽ được định nghĩa trong Sidebar.css */
   transition: width 0.3s ease;
 }
 
 .sidebar.collapsed {
-  width: 70px;
+  /* Định nghĩa trong Sidebar.css */
 }
 
 /* ==== Khu vực nội dung chính ==== */
@@ -49,22 +54,21 @@
   transition: all 0.3s ease;
   padding: 32px 40px;
   overflow-y: auto;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - var(--navbar-height)); /* Dùng biến (sửa từ 60px) */
   background-color: #f9f9fb;
   box-sizing: border-box;
 }
 
 /* Khi sidebar mở */
 .content.with-sidebar {
-  margin-left: 240px;
+  margin-left: var(--sidebar-open-width); /* Dùng biến (sửa từ 240px) */
   margin-right: 40px;
 }
 
 /* Khi sidebar đóng */
 .content.full {
-  margin-left: 70px;
-  margin-right: 70px;
-  /* giữ 2 bên cân đối */
+  margin-left: var(--sidebar-collapsed-width); /* Dùng biến (sửa từ 70px) */
+  margin-right: 40px; /* Sửa 70px -> 40px cho cân đối */
 }
 
 /* Khi màn hình hẹp (mobile/tablet) */
