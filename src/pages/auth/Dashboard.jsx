@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import Sidebar from "../../components/Sidebar";
-import Navbar from "../../components/Navbar";
-
-// Import các component tương ứng
-import StaffApproval from "../../SCStaff/StaffApproval";
-import TechnicianVehicleStatus from "../../SCTech/TechnicianVehicleStatus";
+import { Sidebar } from "../../components/organisms/Sidebar/Sidebar";
+import { Navbar } from "../../components/organisms/Navbar/Navbar";
+import { WarrantyClaimListView } from "../../features/warranty/components/WarrantyClaimListView";
+import { CarListView } from "../../features/car/components/CarListView";
+import { TechnicianVehicleStatusContainer } from "../../features/technician/containers";
+import EVMStaffWarrantyList from "../../features/warranty/components/EVMStaffWarrantyList";
 
 import "./Dashboard.css";
 
-// Map tên component từ roleScreens sang component thực tế
 const componentMap = {
-  StaffApproval,
-  TechnicianVehicleStatus,
+  CarList: CarListView,
+  WarrantyList: WarrantyClaimListView,
+  TechnicianVehicleStatus: TechnicianVehicleStatusContainer,
+  WarrantyClaimList: EVMStaffWarrantyList,
 };
 
-export default function Dashboard() {
+export const Dashboard = () => {
   const { user, logout } = useAuth();
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -23,10 +24,8 @@ export default function Dashboard() {
   const SelectedComponent =
     selectedScreen && componentMap[selectedScreen.component];
 
-  // Toggle sidebar
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Role hiện tại (chuyển về lowercase để đồng bộ key)
   const currentRole = user?.role || "User";
 
   return (
@@ -36,19 +35,19 @@ export default function Dashboard() {
         role={currentRole}
         setRole={() => {}}
         toggleSidebar={toggleSidebar}
+        isSidebarOpen={isSidebarOpen}
       />
 
       <div className="dashboard-container">
         {/* Sidebar */}
-        {isSidebarOpen && (
-          <Sidebar
-            role={currentRole}
-            username={user?.username}
-            selectedScreen={selectedScreen}
-            setSelectedScreen={setSelectedScreen}
-            logout={logout}
-          />
-        )}
+        <Sidebar
+          isOpen={isSidebarOpen}
+          role={currentRole}
+          username={user?.username}
+          selectedScreen={selectedScreen}
+          setSelectedScreen={setSelectedScreen}
+          logout={logout}
+        />
 
         {/* Main content */}
         <main className={`content ${isSidebarOpen ? "with-sidebar" : "full"}`}>
@@ -56,12 +55,14 @@ export default function Dashboard() {
             <SelectedComponent />
           ) : (
             <div className="welcome">
-              <h3>Chào mừng, {user?.role || "người dùng"}</h3>
-              <p>Hãy chọn chức năng từ menu bên trái</p>
+              {" "}
+              {/* <--- Cái này sẽ bị ẩn đi */}
+              <h3>Welcome, {user?.role || "user"}</h3>
+              <p>Please select a function from the left menu</p>
             </div>
           )}
         </main>
       </div>
     </div>
   );
-}
+};
