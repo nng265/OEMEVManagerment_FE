@@ -36,7 +36,7 @@ export const EVMStaffWarrantyListContainer = () => {
     setIsActionLoading(true);
     try {
       const payload = { params: { claimId }, vehicleWarrantyId };
-      await request(ApiEnum.APPROVE_WARRANTY, payload);
+      await request(ApiEnum.APPROVE_WARRANTY_CLAIM, payload);
       setSelectedClaim(null);
       fetchClaims();
     } catch (err) {

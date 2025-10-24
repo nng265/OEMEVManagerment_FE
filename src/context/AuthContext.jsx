@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { request, ApiEnum } from "../services/NetworkUntil";
 
@@ -21,6 +22,8 @@ export const AuthProvider = ({ children }) => {
   // Hàm login
   const login = async (username, password) => {
     try {
+      localStorage.removeItem("token"); // Xóa token cũ trước khi login mới
+
       const res = await request(ApiEnum.LOGIN, { username, password });
       console.log("Login response:", res);
 
@@ -48,9 +51,8 @@ export const AuthProvider = ({ children }) => {
 
       return {
         success: false,
-        message: res.message || 'Invalid credentials'
+        message: res.message || "Invalid credentials",
       };
-
     } catch (err) {
       console.error("Login error:", err);
       return {

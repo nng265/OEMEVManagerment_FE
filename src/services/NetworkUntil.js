@@ -30,7 +30,7 @@ export const ApiEnum = {
   GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
-  UPLOAD_IMAGE: { path: "/Image/multi", method: "POST" },
+  UPLOAD_IMAGE: { path: "/Image/multi/:claimId", method: "POST" },
   SEND_CLAIM_TO_MANUFACTURER: {
     path: "/WarrantyClaim/:claimId/send-to-manufacturer",
     method: "PUT",
@@ -70,6 +70,11 @@ export const ApiEnum = {
   },
   DENY_WARRANTY: { path: "/WarrantyClaim/:claimId/deny", method: "PUT" },
   BACK_WARRANTY: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
+  WARRANTY_INSPECTION: {
+    path: "/WarrantyClaim/:claimId/inspection",
+    method: "PUT",
+  },
+  WARRANTY_REPAIR: { path: "/WarrantyClaim/:claimId/repair", method: "PUT" },
 };
 
 /**
@@ -101,9 +106,81 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
   if (endpoint.method.toUpperCase() === "GET" && Object.keys(data).length) {
     const queryString = new URLSearchParams(data).toString();
     if (queryString) url += `?${queryString}`;
-  } else if (["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())) {
+  } else if (
+    ["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())
+  ) {
     if (Object.keys(data).length) options.body = JSON.stringify(data);
   }
+
+  try {
+    const response = await fetch(url, options);
+    const responseData = await response.json();
+
+    if (!response.ok) throw { responseData };
+    return responseData;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw {
+        success: false,
+        code: 1000,
+        message: "Network error. Please try again later.",
+        data: null,
+      };
+    }
+    throw error;
+  }
+}
+
+/**
+ * @param {Object} endpoint - Định nghĩa endpoint (path + method)
+ * @param {FormData|Object} data - FormData object hoặc object chứa files và fields
+ * @param {Object} [extraHeaders] - Headers bổ sung
+ */
+export async function uploadFiles(endpoint, data = {}, extraHeaders = {}) {
+  let url = `${API_BASE_URL}${endpoint.path}`;
+  const token = localStorage.getItem("token");
+
+  // Thay placeholder trong path nếu có (vd: /Image/multi/:warrantyId)
+  if (data.params) {
+    Object.entries(data.params).forEach(([key, value]) => {
+      url = url.replace(`:${key}`, encodeURIComponent(value));
+    });
+    delete data.params;
+  }
+
+  const headers = {
+    "ngrok-skip-browser-warning": "true",
+    ...(token && { Authorization: `Bearer ${token}` }),
+    ...extraHeaders,
+  };
+
+  // Không set Content-Type khi gửi FormData, browser sẽ tự động set
+  // với boundary phù hợp
+
+  let formData;
+  if (data instanceof FormData) {
+    formData = data;
+  } else {
+    // Tạo FormData từ object nếu cần
+    formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value instanceof FileList) {
+        Array.from(value).forEach((file) => formData.append(key, file));
+      } else if (Array.isArray(value) && value[0] instanceof File) {
+        value.forEach((file) => formData.append(key, file));
+      } else if (value instanceof File) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, value);
+      }
+    });
+  }
+
+  const options = {
+    method: endpoint.method,
+    headers,
+    body: formData,
+  };
 
   try {
     const response = await fetch(url, options);
