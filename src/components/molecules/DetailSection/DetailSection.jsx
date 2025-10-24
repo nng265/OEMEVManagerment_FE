@@ -1,4 +1,3 @@
-// src/components/molecules/DetailSection/DetailSection.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import './DetailSection.css';

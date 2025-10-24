@@ -127,6 +127,3 @@ Popup.propTypes = {
 };
 
 export default Popup;
-
-
-

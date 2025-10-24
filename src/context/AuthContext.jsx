@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { request, ApiEnum } from "../services/NetworkUntil";
 
@@ -26,7 +25,6 @@ export const AuthProvider = ({ children }) => {
       console.log("Login response:", res);
 
       if (res.success && res.data && res.data.accessToken) {
-        // Đảm bảo response có đúng format
         const { role = 'user', accessToken } = res.data;
         
         const userData = { 

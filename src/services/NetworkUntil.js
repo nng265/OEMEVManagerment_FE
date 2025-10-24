@@ -64,7 +64,7 @@ export const ApiEnum = {
     path: "/warrantyClaim/vehicle-policies/:vin",
     method: "GET",
   },
-  APPROVE_WARRANTY: {
+  APPROVE_WARRANTY_CLAIM: {
     path: "/WarrantyClaim/:claimId/approve",
     method: "PUT",
   },
@@ -72,11 +72,9 @@ export const ApiEnum = {
   BACK_WARRANTY: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
 };
 
-
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)
  * @param {Object} [data] - Payload (query hoặc body)
- * @param {Object} [extraHeaders] - Headers bổ sung
  * @param {Object} [extraHeaders] - Headers bổ sung
  */
 export async function request(endpoint, data = {}, extraHeaders = {}) {
