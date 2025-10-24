@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { request, ApiEnum } from "../services/NetworkUntil";
 
@@ -21,27 +22,44 @@ export const AuthProvider = ({ children }) => {
   // Hàm login
   const login = async (username, password) => {
     try {
+      localStorage.removeItem("token"); // Xóa token cũ trước khi login mới
+
       const res = await request(ApiEnum.LOGIN, { username, password });
       console.log("Login response:", res);
 
-      if (res.success && res.data) {
-        const { role, accessToken } = res.data;
+      if (res.success && res.data && res.data.accessToken) {
+        // Đảm bảo response có đúng format
+        const { role = "user", accessToken } = res.data;
 
-        const userData = { username, role };
+        const userData = {
+          username,
+          role,
+          id: res.data.id || null,
+        };
+
         setUser(userData);
         setToken(accessToken);
 
-        // ✅ Lưu user + token vào localStorage
+        // Lưu user + token vào localStorage
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", accessToken);
 
-        return true;
+        return {
+          success: true,
+          message: res.message || "Login successful",
+        };
       }
 
-      return false;
+      return {
+        success: false,
+        message: res.message || "Invalid credentials",
+      };
     } catch (err) {
       console.error("Login error:", err);
-      return false;
+      return {
+        success: false,
+        message: err.message || "An error occurred during login",
+      };
     }
   };
 

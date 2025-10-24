@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import Sidebar from "../../components/Sidebar";
-import Navbar from "../../components/Navbar";
-
-// Import các component tương ứng
-import StaffApproval from "../../SCStaff/StaffApproval";
-import TechnicianVehicleStatus from "../../SCTech/TechnicianVehicleStatus";
-
+import { Sidebar } from "../../components/organisms/Sidebar/Sidebar";
+import { Navbar } from "../../components/organisms/Navbar/Navbar";
+import { WarrantyClaimListView } from "../../features/warranty/components/WarrantyClaimListView";
+import { CarListView } from "../../features/car/components/CarListView";
+import { TechnicianVehicleStatusContainer } from "../../features/technician/containers";
 import "./Dashboard.css";
 
-// Map tên component từ roleScreens sang component thực tế
+// Map component names to actual components
 const componentMap = {
-  StaffApproval,
-  TechnicianVehicleStatus,
+  CarList: CarListView,
+  WarrantyList: WarrantyClaimListView,
+  TechnicianVehicleStatus: TechnicianVehicleStatusContainer
 };
 
-export default function Dashboard() {
+export const Dashboard = () => {
   const { user, logout } = useAuth();
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -36,28 +35,29 @@ export default function Dashboard() {
         role={currentRole}
         setRole={() => {}}
         toggleSidebar={toggleSidebar}
+        isSidebarOpen={isSidebarOpen} /* THÊM PROP NÀY */
       />
 
       <div className="dashboard-container">
         {/* Sidebar */}
-        {isSidebarOpen && (
-          <Sidebar
-            role={currentRole}
-            username={user?.username}
-            selectedScreen={selectedScreen}
-            setSelectedScreen={setSelectedScreen}
-            logout={logout}
-          />
-        )}
+        <Sidebar
+          isOpen={isSidebarOpen} /* ĐẢM BẢO PROP NÀY ĐƯỢC TRUYỀN */
+          role={currentRole}
+          username={user?.username}
+          selectedScreen={selectedScreen}
+          setSelectedScreen={setSelectedScreen}
+          logout={logout}
+        />
 
         {/* Main content */}
+        {/* Sửa lại class `content` để khớp với logic mới */}
         <main className={`content ${isSidebarOpen ? "with-sidebar" : "full"}`}>
           {SelectedComponent ? (
             <SelectedComponent />
           ) : (
             <div className="welcome">
-              <h3>Chào mừng, {user?.role || "người dùng"}</h3>
-              <p>Hãy chọn chức năng từ menu bên trái</p>
+              <h3>Welcome, {user?.role || "user"}</h3>
+              <p>Please select a function from the left menu</p>
             </div>
           )}
         </main>

@@ -1,0 +1,22 @@
+.dashboard-layout {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.dashboard-content {
+  margin-left: 250px;
+  margin-top: 64px;
+  padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+
+.dashboard-content.content-expanded {
+  margin-left: 64px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,23 @@
+/* src/components/molecules/DetailModalActions/DetailModalActions.css */
+
+.detail-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.detail-modal-actions-right {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Single button - keep it on the left */
+.detail-modal-actions > *:first-child:last-child {
+  margin-right: auto;
+}
