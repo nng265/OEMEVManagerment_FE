@@ -1,0 +1,191 @@
+[
+  {
+    "workOrderId": "b7c8c1c2-1a1b-4d6a-baf2-d4e982a7f5b1",
+    "assignedTo": "aa1b2c3d-4e5f-6789-abcd-ef1234567890",
+    "type": "Repair",
+    "target": "Vehicle",
+    "targetId": "11111111-2222-3333-4444-555555555555",
+    "status": "In Progress",
+    "startDate": "2025-10-24T08:30:00Z",
+    "endDate": "2025-10-25T17:00:00Z",
+    "notes": "Brake pad replacement and rotor inspection.",
+    "warrantyClaim": {
+      "claimId": "a1b2c3d4-e5f6-7890-abcd-ef1112131415",
+      "vin": "1HGCM82633A004352",
+      "failureDesc": "Brake system squealing noise.",
+      "description": "Pads worn out, replacement approved.",
+      "status": "Under Repair",
+      "model": "Honda Civic",
+      "year": 2021,
+      "notes": "Waiting for spare parts.",
+      "claimParts": [
+        {
+          "claimPartId": "3b45e6f7-8a9b-4c2d-9e7f-1a2b3c4d5e6f",
+          "model": "Brake Pad",
+          "serialNumberOld": "BP-OLD-001",
+          "serialNumberNew": "BP-NEW-001",
+          "action": "replace",
+          "status": "Enough",
+          "category": "Brake System"
+        }
+      ],
+      "attachments": [
+        {
+          "attachmentId": "IMG-001",
+          "claimId": "a1b2c3d4-e5f6-7890-abcd-ef1112131415",
+          "url": "https://ik.imagekit.io/OEMEVWrtMng/warrantyclam/5964737d-511c-4871-f8bf-08de11400180/avt.jpg?updatedAt=1761232818152",
+          "uploadedBy": "7890abcd-ef12-3456-7890-abcd12345678"
+        }
+      ]
+    }
+  },
+  {
+    "workOrderId": "c8d9e0f1-2a3b-4c5d-9e0f-1a2b3c4d5e6f",
+    "assignedTo": "22334455-6677-8899-aabb-ccddeeff0011",
+    "type": "Repair",
+    "target": "Vehicle",
+    "targetId": "66666666-7777-8888-9999-000000000000",
+    "status": "In Progress",
+    "startDate": "2025-10-26T09:00:00Z",
+    "endDate": null,
+    "notes": "Awaiting confirmation for part replacement.",
+    "warrantyClaim": {
+      "claimId": "b2c3d4e5-f6a7-8901-bc23-de4567890123",
+      "vin": "1FAFP404XWF174625",
+      "failureDesc": "Air conditioning not cooling properly.",
+      "description": "Compressor malfunction suspected.",
+      "status": "Pending",
+      "model": "Ford Focus",
+      "year": 2020,
+      "notes": "Customer approval pending.",
+      "claimParts": [
+        {
+          "claimPartId": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+          "model": "AC Compressor",
+          "serialNumberOld": "AC-OLD-7789",
+          "serialNumberNew": "",
+          "action": "replace",
+          "status": "Enough",
+          "category": "HVAC"
+        }
+      ],
+      "attachments": [
+        {
+          "attachmentId": "IMG-001",
+          "claimId": "a1b2c3d4-e5f6-7890-abcd-ef1112131415",
+          "url": "https://ik.imagekit.io/OEMEVWrtMng/warrantyclam/5964737d-511c-4871-f8bf-08de11400180/avt.jpg?updatedAt=1761232818152",
+          "uploadedBy": "7890abcd-ef12-3456-7890-abcd12345678"
+        }
+      ]
+    }
+  },
+  {
+    "workOrderId": "d0e1f2a3-b4c5-6789-d0e1-f2a3b4c56789",
+    "assignedTo": "8899aabb-ccdd-eeff-0011-223344556677",
+    "type": "Repair",
+    "target": "Vehicle",
+    "targetId": "99999999-aaaa-bbbb-cccc-dddddddddddd",
+    "status": "Completed",
+    "startDate": "2025-10-20T07:00:00Z",
+    "endDate": "2025-10-21T16:00:00Z",
+    "notes": "Engine oil leak repaired successfully.",
+    "warrantyClaim": {
+      "claimId": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+      "vin": "JHMCM56557C404453",
+      "failureDesc": "Oil leak from engine block.",
+      "description": "Replaced gasket and tightened bolts.",
+      "status": "Completed",
+      "model": "Toyota Camry",
+      "year": 2019,
+      "notes": "No further issues detected.",
+      "claimParts": [
+        {
+          "claimPartId": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+          "model": "Gasket Set",
+          "serialNumberOld": "GS-OLD-3322",
+          "serialNumberNew": "GS-NEW-4455",
+          "action": "replace",
+          "status": "Enough",
+          "category": "Engine"
+        }
+      ],
+      "attachments": [
+        {
+          "attachmentId": "IMG-321",
+          "claimId": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+          "url": "https://ik.imagekit.io/OEMEVWrtMng/warrantyclam/5964737d-511c-4871-f8bf-08de11400180/avt.jpg?updatedAt=1761232818152",
+          "uploadedBy": "55aa66bb-77cc-88dd-99ee-00ff11223344"
+        }
+      ]
+    }
+  },
+  {
+    "workOrderId": "f1a2b3c4-d5e6-7f89-0a1b-2c3d4e5f6789",
+    "assignedTo": "aabbccdd-eeff-1122-3344-556677889900",
+    "type": "Inspection",
+    "target": "Vehicle",
+    "targetId": "e1111111-2222-3333-4444-555555555555",
+    "status": "Pending",
+    "startDate": "2025-10-28T09:00:00Z",
+    "endDate": null,
+    "notes": "Pre-delivery inspection scheduled.",
+    "warrantyClaim": {
+      "claimId": "d4e5f6a7-b8c9-d0e1-f2a3-b4c5d6e7f809",
+      "vin": "5FNYF4H92GB000789",
+      "failureDesc": null,
+      "description": "Inspect lights, wipers, and fluids.",
+      "status": "Pending",
+      "model": "Honda CR-V",
+      "year": 2023,
+      "notes": "Waiting for inspection slot.",
+      "claimParts": null,
+      "attachments": null
+    }
+  },
+  {
+    "workOrderId": "g2h3i4j5-k6l7-8m9n-0o1p-2q3r4s5t6789",
+    "assignedTo": "99887766-5544-3322-1100-aabbccddeeff",
+    "type": "Inspection",
+    "target": "Vehicle",
+    "targetId": "f6666666-7777-8888-9999-000000000000",
+    "status": "In Progress",
+    "startDate": "2025-10-23T10:00:00Z",
+    "endDate": null,
+    "notes": "Mid-warranty inspection ongoing.",
+    "warrantyClaim": {
+      "claimId": "e5f6a7b8-c9d0-e1f2-a3b4-c5d6e7f8g901",
+      "vin": "JTDKN3DU0D5678901",
+      "failureDesc": null,
+      "description": "Check tire wear and oil level.",
+      "status": "InProgress",
+      "model": "Toyota Prius",
+      "year": 2022,
+      "notes": "Technician assigned.",
+      "claimParts": null,
+      "attachments": null
+    }
+  },
+  {
+    "workOrderId": "h3i4j5k6-l7m8-n9o0-p1q2-r3s4t5u67890",
+    "assignedTo": "11223344-5566-7788-99aa-bbccddeeff00",
+    "type": "Inspection",
+    "target": "Vehicle",
+    "targetId": "a9999999-bbbb-cccc-dddd-eeeeeeeeeeee",
+    "status": "Completed",
+    "startDate": "2025-10-19T08:30:00Z",
+    "endDate": "2025-10-19T12:00:00Z",
+    "notes": "Final delivery inspection completed successfully.",
+    "warrantyClaim": {
+      "claimId": "f6a7b8c9-d0e1-f2a3-b4c5-d6e7f8g9h012",
+      "vin": "1N4AL3AP8JC123456",
+      "failureDesc": null,
+      "description": "Full vehicle inspection before customer handover.",
+      "status": "Completed",
+      "model": "Nissan Altima",
+      "year": 2024,
+      "notes": "No defects found.",
+      "claimParts": null,
+      "attachments": null
+    }
+  }
+]

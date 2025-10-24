@@ -1,0 +1,125 @@
+:root {
+  --navbar-height: 64px;
+  --sidebar-open-width: 280px;
+  --sidebar-collapsed-width: 80px;
+}
+
+/* ==== Tổng thể Dashboard layout ==== */
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f6f8;
+  overflow: hidden;
+}
+
+/* ==== Navbar ==== */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height); /* Dùng biến */
+  background-color: #8c8c8c;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+/* ==== Khu vực Sidebar + Content ==== */
+.dashboard-container {
+  display: flex;
+  flex: 1;
+  margin-top: var(--navbar-height); /* Dùng biến (sửa từ 60px) */
+  height: calc(100vh - var(--navbar-height)); /* Dùng biến (sửa từ 60px) */
+  transition: all 0.3s ease;
+  background-color: #f9f9fb;
+}
+
+/* ==== Sidebar ==== */
+.sidebar {
+  /* Các giá trị width sẽ được định nghĩa trong Sidebar.css */
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  /* Định nghĩa trong Sidebar.css */
+}
+
+/* ==== Khu vực nội dung chính ==== */
+.content {
+  flex-grow: 1;
+  transition: all 0.3s ease;
+  padding: 32px 40px;
+  overflow-y: auto;
+  min-height: calc(100vh - var(--navbar-height)); /* Dùng biến (sửa từ 60px) */
+  background-color: #f9f9fb;
+  box-sizing: border-box;
+}
+
+/* Khi sidebar mở */
+.content.with-sidebar {
+  margin-left: var(--sidebar-open-width); /* Dùng biến (sửa từ 240px) */
+  margin-right: 40px;
+}
+
+/* Khi sidebar đóng */
+.content.full {
+  margin-left: var(--sidebar-collapsed-width); /* Dùng biến (sửa từ 70px) */
+  margin-right: 40px; /* Sửa 70px -> 40px cho cân đối */
+}
+
+/* Khi màn hình hẹp (mobile/tablet) */
+@media (max-width: 992px) {
+
+  .content.with-sidebar,
+  .content.full {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 20px;
+  }
+}
+
+/* ==== Nội dung con ==== */
+.content .welcome,
+.content table,
+.content form,
+.content .card {
+  max-width: 100%;
+  width: 100%;
+}
+
+.content h3,
+.content h2 {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+}
+
+.content p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ==== Bảng ==== */
+table {
+  font-size: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+table th,
+table td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+}
