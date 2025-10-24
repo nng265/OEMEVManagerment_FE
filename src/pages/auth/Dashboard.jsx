@@ -5,13 +5,16 @@ import { Navbar } from "../../components/organisms/Navbar/Navbar";
 import { WarrantyClaimListView } from "../../features/warranty/components/WarrantyClaimListView";
 import { CarListView } from "../../features/car/components/CarListView";
 import { TechnicianVehicleStatusContainer } from "../../features/technician/containers";
+import EVMStaffWarrantyList from "../../features/warranty/components/EVMStaffWarrantyList";
+
 import "./Dashboard.css";
 
 // Map component names to actual components
 const componentMap = {
   CarList: CarListView,
   WarrantyList: WarrantyClaimListView,
-  TechnicianVehicleStatus: TechnicianVehicleStatusContainer
+  TechnicianVehicleStatus: TechnicianVehicleStatusContainer,
+  WarrantyClaimList: EVMStaffWarrantyList,
 };
 
 export const Dashboard = () => {
@@ -22,10 +25,8 @@ export const Dashboard = () => {
   const SelectedComponent =
     selectedScreen && componentMap[selectedScreen.component];
 
-  // Toggle sidebar
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Role hiện tại (chuyển về lowercase để đồng bộ key)
   const currentRole = user?.role || "User";
 
   return (
@@ -35,13 +36,13 @@ export const Dashboard = () => {
         role={currentRole}
         setRole={() => {}}
         toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen} /* THÊM PROP NÀY */
+        isSidebarOpen={isSidebarOpen}
       />
 
       <div className="dashboard-container">
         {/* Sidebar */}
         <Sidebar
-          isOpen={isSidebarOpen} /* ĐẢM BẢO PROP NÀY ĐƯỢC TRUYỀN */
+          isOpen={isSidebarOpen}
           role={currentRole}
           username={user?.username}
           selectedScreen={selectedScreen}
@@ -64,4 +65,4 @@ export const Dashboard = () => {
       </div>
     </div>
   );
-}
+};
