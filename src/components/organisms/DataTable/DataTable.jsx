@@ -89,18 +89,18 @@ export const DataTable = ({
   };
 
   // Handle row selection
-  const handleRowSelect = (row, isSelected) => {
-    setSelectedRows(prevSelected => {
-      const newSelected = isSelected
-        ? [...prevSelected, row.id]
-        : prevSelected.filter(id => id !== row.id);
+  // const handleRowSelect = (row, isSelected) => {
+  //   setSelectedRows(prevSelected => {
+  //     const newSelected = isSelected
+  //       ? [...prevSelected, row.id]
+  //       : prevSelected.filter(id => id !== row.id);
       
-      if (onRowSelect) {
-        onRowSelect(newSelected);
-      }
-      return newSelected;
-    });
-  };
+  //     if (onRowSelect) {
+  //       onRowSelect(newSelected);
+  //     }
+  //     return newSelected;
+  //   });
+  // };
 
   // Handle select all rows
   const handleSelectAll = (isSelected) => {

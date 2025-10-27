@@ -1,9 +1,9 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; của D
+const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api";
 
-const API_BASE_URL =
-  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+// const API_BASE_URL =
+//   "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -74,7 +74,29 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/inspection",
     method: "PUT",
   },
-  WARRANTY_REPAIR: { path: "/WarrantyClaim/:claimId/repair", method: "PUT" },
+  SHOW_REQUEST_PARTS_EVMSTAFF: {
+    path: "/PartOrder/evmstaff",
+    method: "GET",
+  },
+  SHOW_REQUEST_PARTS_SCSTAFF: {
+    path: "/PartOrder/scstaff",
+    method: "GET",
+  },
+
+  CONFIRM_PREPARE: {
+    path: "/PartOrder/:orderId/confirm",
+    method: "PUT",
+  },
+
+  DELIVERED_CLICK: {
+    path: "/PartOrder/:orderId/delivery",
+    method: "PUT",
+  },
+
+  UPDATE_REQUESTED_DATE: {
+    path: "/PartOrder/:orderId/expected-date",
+    method: "PUT",
+  },
 };
 
 /**

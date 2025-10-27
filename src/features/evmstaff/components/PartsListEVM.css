@@ -1,0 +1,193 @@
+/* === Overlay === */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s ease-in-out;
+  backdrop-filter: blur(2px);
+}
+
+/* === Popup Card === */
+.popup-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 800px;
+  padding: 24px 32px;
+  border: 1px solid #e2e8f0;
+  animation: slideUp 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* === Header === */
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #edf2f7;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #a0aec0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.close-btn:hover {
+  color: #e53e3e;
+}
+
+/* === Body === */
+.popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  font-size: 0.95rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #e2e8f0;
+  padding: 4px 0;
+}
+.info-row strong {
+  color: #2b6cb0;
+}
+
+/* === Table === */
+.parts-detail {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 0.95rem;
+}
+
+.parts-detail th,
+.parts-detail td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.parts-detail th {
+  background-color: #f7fafc;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.parts-detail tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* === Input & Date === */
+.expected-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.expected-date label {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.expected-date input[type="date"] {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+}
+.expected-date input[type="date"]:focus {
+  border-color: #3182ce;
+  outline: none;
+}
+
+/* === Buttons === */
+.popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-secondary,
+.btn-confirm {
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary {
+  background-color: #edf2f7;
+  color: #2d3748;
+}
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-confirm {
+  background-color: #3182ce;
+  color: #fff;
+}
+.btn-confirm:hover {
+  background-color: #2b6cb0;
+}
+
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Status Color Bar (optional) === */
+.popup-card.pending .popup-header {
+  border-color: #ecc94b;
+}
+.popup-card.waiting .popup-header {
+  border-color: #63b3ed;
+}
+.popup-card.delivered .popup-header {
+  border-color: #48bb78;
+}

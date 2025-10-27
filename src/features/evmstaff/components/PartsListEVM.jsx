@@ -1,0 +1,129 @@
+import React from "react";
+import { DataTable } from "../../../components/organisms/DataTable/DataTable";
+import { Button } from "../../../components/atoms/Button/Button";
+import { formatDate } from "../../../utils/helpers";
+import "./PartsListEVM.css";
+
+export default function PartsListEVM({
+  data = [],
+  loading = false,
+  error = null,
+  onView,
+}) {
+  const columns = [
+    { key: "serviceCenterName", label: "Service Center" },
+    { key: "createdByName", label: "Requested By" },
+    {
+      key: "totalItems",
+      label: "Items",
+      render: (val, row) =>
+        row.raw.partOrderItems?.length
+          ? row.raw.partOrderItems.length
+          : val || 0,
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (val) => (
+        <span
+          style={{
+            padding: "4px 8px",
+            borderRadius: "6px",
+            fontWeight: 500,
+            backgroundColor:
+              val === "Pending"
+                ? "#ffeeba"
+                : val === "Waiting"
+                ? "#b8daff"
+                : val === "Delivered"
+                ? "#c3e6cb"
+                : "#f5f5f5",
+          }}
+        >
+          {val || "-"}
+        </span>
+      ),
+    },
+    {
+      key: "requestDate",
+      label: "Requested Date",
+      render: (val) =>
+        val
+          ? formatDate(val, "en-US", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })
+          : "-",
+    },
+    {
+      key: "expectedDate",
+      label: "Expected Delivery",
+      render: (val) =>
+        val
+          ? formatDate(val, "en-US", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            })
+          : "-",
+    },
+    {
+      key: "actions",
+      label: "Actions",
+      render: (_, row) => (
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => onView && onView(row.raw)}
+        >
+          View
+        </Button>
+      ),
+    },
+  ];
+
+  const rows =
+    data.map((p) => ({
+      orderId: p.orderId || "-",
+      serviceCenterName: p.serviceCenterName || "-",
+      createdByName: p.createdByName || "-",
+      totalItems: p.totalItems || (p.partOrderItems?.length ?? 0),
+      status: p.status || "-",
+      requestDate: p.requestDate || "",
+      expectedDate: p.expectedDate || p.partDelivery || "",
+      raw: {
+        orderId: p.orderId,
+        status: p.status,
+        serviceCenter: p.serviceCenterName || "-",
+        requestedBy: p.createdByName,
+        requestedDate: p.requestDate,
+        expectedDate: p.expectedDate || p.partDelivery || "",
+        deliveredDate: p.deliveredDate || "",
+        parts: p.partOrderItems?.map((x) => ({
+          model: x.model,
+          requestedQty: x.requestedQty || x.quantity || 0,
+          oemStock: x.oemStock || 0,
+          scStock: x.scStock || 0,
+        })),
+        notes: p.remarks,
+      },
+    })) ?? [];
+
+  return (
+    <div style={{ padding: 8 }}>
+      <h2 style={{ marginBottom: 12 }}>Parts Requests from Service Centers</h2>
+      <DataTable
+        data={rows}
+        columns={columns}
+        isLoading={loading}
+        searchable
+        pagination
+        pageSize={10}
+        exportable={false}
+        noDataMessage={error || "No parts requests found"}
+        selectable={false}
+      />
+    </div>
+  );
+}

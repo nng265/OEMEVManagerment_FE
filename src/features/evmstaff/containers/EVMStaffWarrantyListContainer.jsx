@@ -17,8 +17,8 @@ export const EVMStaffWarrantyListContainer = () => {
     setError(null);
     try {
       const res = await request(ApiEnum.NEED_CONFIRM);
-      const data = res?.data ?? res ?? [];
-      setClaims(data);
+      const data = res?.data ?? {};
+      setClaims(data); // ✅ vẫn giữ nguyên object chứa { items, totalRecords, ... }
     } catch (err) {
       console.error("❌ EVMStaff fetch claims error:", err);
       setError("Unable to load claims");
@@ -97,4 +97,3 @@ export const EVMStaffWarrantyListContainer = () => {
 };
 
 export default EVMStaffWarrantyListContainer;
-
