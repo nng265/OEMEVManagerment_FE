@@ -8,6 +8,7 @@ import { TechnicianVehicleStatusContainer } from "../features/technician/contain
 import { WarrantyClaimListContainer } from "../features/warranty/containers";
 import { PrivateRoute } from "./PrivateRoutes";
 import EVMStaffWarrantyListContainer from "../features/evmstaff/containers/EVMStaffWarrantyListContainer";
+import { PartsRequestContainer } from "../features/evmstaff/containers";
 
 // Public routes that don't require authentication
 export const publicRoutes = [
@@ -53,6 +54,11 @@ export const privateRoutes = [
       {
         path: "evmstaff",
         element: <EVMStaffWarrantyListContainer />,
+      },
+
+      {
+        path: "parts-request",
+        element: <PartsRequestContainer />,
       },
     ],
   },

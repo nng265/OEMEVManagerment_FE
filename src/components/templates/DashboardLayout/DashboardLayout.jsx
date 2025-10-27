@@ -30,6 +30,10 @@ export const DashboardLayout = () => {
       case "evm_warranty_claims":
         navigate("/evmstaff");
         break;
+
+      case "staff_parts_request":
+        navigate("/parts-request");
+        break;
       default:
         navigate("/dashboard");
     }

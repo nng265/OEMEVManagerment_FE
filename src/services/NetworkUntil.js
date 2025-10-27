@@ -3,7 +3,8 @@
 // const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; của D
 
 const API_BASE_URL =
-  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+  // "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+  "https://maximum-glorious-ladybird.ngrok-free.app/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -75,6 +76,20 @@ export const ApiEnum = {
     method: "PUT",
   },
   WARRANTY_REPAIR: { path: "/WarrantyClaim/:claimId/repair", method: "PUT" },
+
+  SHOW_REQUEST_PARTS_EVMSTAFF: {
+    path: "/PartOrder/evmstaff",
+    method: "GET",
+  },
+  SHOW_REQUEST_PARTS_SCSTAFF: {
+    path: "/PartOrder/scstaff",
+    method: "GET",
+  },
+
+  CONFIRM_PART_ORDER_DELIVERED: {
+    path: "/PartOrder/:orderId/confirm-delivery",
+    method: "PUT",
+  },
 };
 
 /**
