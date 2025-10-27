@@ -1,8 +1,8 @@
 // src/features/technician/containers/TechnicianVehicleStatusContainer.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, uploadFiles, ApiEnum } from "../../../services/NetworkUntil";
 import { TechnicianVehicleStatusView } from "../components/TechnicianVehicleStatusView";
-import { formatDate } from "../../../utils/helpers"; // Assuming you have this helper
+import { formatDate, normalizePagedResult } from "../../../utils/helpers"; // Assuming you have this helper
 import { Button } from "../../../components/atoms"; // Import Button for actions
 import mockWorkOrders from "../mock/workOrdersMock.json";
 
@@ -16,6 +16,16 @@ export const TechnicianVehicleStatusContainer = () => {
   const [categories, setCategories] = useState([]);
   const [models, setModels] = useState([]);
   const [serials, setSerials] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageNumber: 0,
+    pageSize: 20,
+    totalRecords: 0,
+  });
+  const paginationRef = useRef(pagination);
+
+  useEffect(() => {
+    paginationRef.current = pagination;
+  }, [pagination]);
 
   // --- UPDATED COLUMNS DEFINITION ---
   const columns = [
@@ -85,31 +95,93 @@ export const TechnicianVehicleStatusContainer = () => {
     },
   ];
 
-  useEffect(() => {
-    fetchWorkOrders();
-    fetchCategories();
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await request(ApiEnum.GET_PART_CATEGORY);
+      console.log("Category response:", response);
+      // normalize possible shapes
+      const cats = Array.isArray(response)
+        ? response
+        : response?.success && Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response?.data)
+        ? response.data
+        : [];
+      setCategories(cats);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
   }, []);
 
-  const fetchWorkOrders = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH);
-      console.log("Work Orders Response:", response); // Debug log
-      if (response.success && Array.isArray(response.data)) {
-        setWorkOrders(response.data);
-      } else {
-        setError(response.message || "Unable to load work order list.");
+  const fetchWorkOrders = useCallback(
+    async (pageNumber = 0, pageSize) => {
+      const effectivePageSize =
+        typeof pageSize === "number"
+          ? pageSize
+          : paginationRef.current.pageSize;
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, {
+          Page: pageNumber,
+          Size: effectivePageSize,
+        });
+
+        const {
+          success,
+          items,
+          totalRecords,
+          page,
+          size,
+          message,
+        } = normalizePagedResult(response, []);
+
+        if (success) {
+          setWorkOrders(items);
+          setPagination({
+            pageNumber: typeof page === "number" ? page : pageNumber,
+            pageSize:
+              typeof size === "number" && size > 0 ? size : effectivePageSize,
+            totalRecords:
+              typeof totalRecords === "number" ? totalRecords : items.length,
+          });
+        } else {
+          setWorkOrders([]);
+          setPagination((prev) => ({
+            ...prev,
+            pageNumber,
+            pageSize: effectivePageSize,
+            totalRecords: 0,
+          }));
+          setError(message || "Unable to load work order list.");
+        }
+      } catch (err) {
+        console.error("Error fetching work orders:", err);
+        const message =
+          err?.responseData?.message ||
+          err?.message ||
+          "An error occurred while loading work order list.";
         setWorkOrders([]);
+        setPagination((prev) => ({
+          ...prev,
+          pageNumber,
+          pageSize: effectivePageSize,
+          totalRecords: 0,
+        }));
+        setError(message);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching work orders:", err);
-      setError("An error occurred while loading work order list.");
-      setWorkOrders([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    []
+  );
+
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
+    fetchWorkOrders(0, paginationRef.current.pageSize);
+    fetchCategories();
+  }, [fetchWorkOrders, fetchCategories]);
 
   // const fetchWorkOrders = async () => {
   //   setIsLoading(true);
@@ -126,25 +198,6 @@ export const TechnicianVehicleStatusContainer = () => {
   //     setIsLoading(false);
   //   }
   // };
-
-  //  Lấy danh mục linh kiện
-  const fetchCategories = async () => {
-    try {
-      const response = await request(ApiEnum.GET_PART_CATEGORY);
-      console.log("Category response:", response);
-      // normalize possible shapes
-      const cats = Array.isArray(response)
-        ? response
-        : response?.success && Array.isArray(response.data)
-        ? response.data
-        : Array.isArray(response?.data)
-        ? response.data
-        : [];
-      setCategories(cats);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
 
   // Lấy danh sách model theo category
   const fetchModels = async (categoryName) => {
@@ -249,6 +302,8 @@ export const TechnicianVehicleStatusContainer = () => {
       params: { claimId },
       ...payload,
     });
+    const { pageNumber, pageSize } = paginationRef.current;
+    await fetchWorkOrders(pageNumber, pageSize);
     return res;
   };
 
@@ -259,6 +314,8 @@ export const TechnicianVehicleStatusContainer = () => {
       params: { claimId },
       ...payload,
     });
+    const { pageNumber, pageSize } = paginationRef.current;
+    await fetchWorkOrders(pageNumber, pageSize);
     return res;
   };
 
@@ -274,12 +331,21 @@ export const TechnicianVehicleStatusContainer = () => {
     setSelectedWorkOrder(null);
   };
 
+  const handlePageChange = useCallback(
+    (page, size) => {
+      fetchWorkOrders(page, size);
+    },
+    [fetchWorkOrders]
+  );
+
   return (
     <TechnicianVehicleStatusView
       data={workOrders}
       columns={columns} // Pass the updated columns
       loading={isLoading}
       error={error}
+      pagination={pagination}
+      onPageChange={handlePageChange}
       selectedWorkOrder={selectedWorkOrder}
       showDetailModal={showDetailModal}
       onCloseDetailModal={handleCloseDetailModal}

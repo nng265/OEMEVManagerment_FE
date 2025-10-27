@@ -22,6 +22,8 @@ export const WarrantyClaimListView = ({
   columns,
   loading,
   error,
+  pagination,
+  onPageChange,
 
   // Filter props
   statusFilter,
@@ -121,6 +123,11 @@ export const WarrantyClaimListView = ({
             // Enable DataTable features
             searchable={true}
             pagination={true}
+            serverSide={true}
+            totalRecords={pagination?.totalRecords ?? data.length}
+            currentPage={pagination?.pageNumber ?? 0}
+            pageSize={pagination?.pageSize ?? 20}
+            onPageChange={onPageChange}
             sortable={true}
             hoverable={true}
             striped={true}
@@ -233,6 +240,12 @@ WarrantyClaimListView.propTypes = {
   statusFilter: PropTypes.string.isRequired,
   onStatusFilterChange: PropTypes.func.isRequired,
   statusOptions: PropTypes.array,
+  pagination: PropTypes.shape({
+    pageNumber: PropTypes.number,
+    pageSize: PropTypes.number,
+    totalRecords: PropTypes.number,
+  }),
+  onPageChange: PropTypes.func,
   selectedClaim: PropTypes.object,
   showDetailModal: PropTypes.bool.isRequired,
   onCloseDetailModal: PropTypes.func.isRequired,

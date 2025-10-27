@@ -144,3 +144,86 @@ export const throttle = (func, limit = 300) => {
     }
   };
 };
+
+/**
+ * Normalize different paginated API response shapes to a standard form.
+ * Supports both wrapped responses ({ success, data: { items, ... } }) and raw arrays.
+ * @param {object} response - Raw response returned from request().
+ * @param {Array} fallbackItems - Items to use when response does not contain data.
+ * @returns {{success: boolean, items: Array, page: number, size: number, totalRecords: number, message: string, raw: object}}
+ */
+export const normalizePagedResult = (response, fallbackItems = []) => {
+  const payload = response?.data ?? response;
+  const candidateItems = payload?.items ?? payload?.content ?? payload?.records;
+
+  let items = Array.isArray(candidateItems)
+    ? candidateItems
+    : Array.isArray(payload)
+    ? payload
+    : Array.isArray(response?.items)
+    ? response.items
+    : fallbackItems;
+
+  if (!Array.isArray(items)) {
+    items = fallbackItems;
+  }
+
+  const resolveNumber = (...values) => {
+    for (const value of values) {
+      if (typeof value === 'number' && !Number.isNaN(value)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+
+  const totalRecords = resolveNumber(
+    payload?.totalRecords,
+    payload?.total,
+    payload?.totalCount,
+    response?.totalRecords,
+    response?.total,
+    response?.totalCount,
+    items.length
+  ) ?? items.length;
+
+  const page = resolveNumber(
+    payload?.page,
+    payload?.pageNumber,
+    payload?.currentPage,
+    response?.page,
+    response?.pageNumber,
+    response?.currentPage,
+    0
+  ) ?? 0;
+
+  const sizeCandidate = resolveNumber(
+    payload?.size,
+    payload?.pageSize,
+    response?.size,
+    response?.pageSize,
+    items.length || undefined
+  );
+
+  const size =
+    sizeCandidate ?? (fallbackItems.length || items.length || 0);
+
+  const message =
+    response?.message ||
+    payload?.message ||
+    response?.responseData?.message ||
+    '';
+
+  const success =
+    typeof response?.success === 'boolean' ? response.success : true;
+
+  return {
+    success,
+    items,
+    page,
+  size,
+    totalRecords,
+    message,
+    raw: response,
+  };
+};

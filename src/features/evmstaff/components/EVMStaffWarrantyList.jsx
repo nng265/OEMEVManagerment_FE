@@ -1,5 +1,6 @@
 // src/features/evmStaff/components/EVMStaffWarrantyList.jsx
 import React from "react";
+import PropTypes from "prop-types";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
 import { Button } from "../../../components/atoms/Button/Button";
 import { formatDate } from "../../../utils/helpers";
@@ -9,6 +10,8 @@ export const EVMStaffWarrantyList = ({
   loading = false,
   error = null,
   onView,
+  pagination,
+  onPageChange,
 }) => {
   const columns = [
     { key: "vin", label: "VIN" },
@@ -72,13 +75,29 @@ export const EVMStaffWarrantyList = ({
         isLoading={loading}
         searchable
         pagination
-        pageSize={10}
+        serverSide
+        totalRecords={pagination?.totalRecords ?? rows.length}
+        currentPage={pagination?.pageNumber ?? 0}
+        pageSize={pagination?.pageSize ?? 10}
+        onPageChange={onPageChange}
         exportable={false}
         noDataMessage={error || "No claims found"}
-        selectable={false}
       />
     </div>
   );
+};
+
+EVMStaffWarrantyList.propTypes = {
+  data: PropTypes.array,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onView: PropTypes.func,
+  pagination: PropTypes.shape({
+    pageNumber: PropTypes.number,
+    pageSize: PropTypes.number,
+    totalRecords: PropTypes.number,
+  }),
+  onPageChange: PropTypes.func,
 };
 
 export default EVMStaffWarrantyList;
