@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../components/atoms/Button/Button";
 import { Modal } from "../../../components/molecules/Modal/Modal";
-import { formatDate } from "../../../utils/helpers";
+import { formatDate } from "../../../services/helpers";
 import { request, ApiEnum } from "../../../services/NetworkUntil";
 import "./WorkOrderDetailModal.css";
 

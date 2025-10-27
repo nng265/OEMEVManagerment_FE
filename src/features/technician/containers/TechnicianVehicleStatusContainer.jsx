@@ -2,9 +2,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, uploadFiles, ApiEnum } from "../../../services/NetworkUntil";
 import { TechnicianVehicleStatusView } from "../components/TechnicianVehicleStatusView";
-import { formatDate, normalizePagedResult } from "../../../utils/helpers"; // Assuming you have this helper
+import { formatDate, normalizePagedResult } from "../../../services/helpers"; // Assuming you have this helper
 import { Button } from "../../../components/atoms"; // Import Button for actions
-import mockWorkOrders from "../mock/workOrdersMock.json";
 
 export const TechnicianVehicleStatusContainer = () => {
   const [workOrders, setWorkOrders] = useState([]);

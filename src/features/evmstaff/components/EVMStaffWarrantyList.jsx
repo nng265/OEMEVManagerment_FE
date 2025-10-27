@@ -80,8 +80,8 @@ export const EVMStaffWarrantyList = ({
         data={rows}
         columns={columns}
         isLoading={loading}
+        pagination={false}
         searchable
-        pagination
         serverSide
         totalRecords={pagination?.totalRecords ?? rows.length}
         currentPage={pagination?.pageNumber ?? 0}

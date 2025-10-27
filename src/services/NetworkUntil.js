@@ -13,95 +13,42 @@ export const ApiEnum = {
   CREATE_WARRANTY_CLAIM: { path: "/WarrantyClaim", method: "POST" },
   GET_TECHNICIANS: { path: "/Employee", method: "GET" },
   GET_WORK_ORDERS_BY_TECH: { path: "/workOrder/by-tech/detail", method: "GET" },
-  GET_INSPECTION_ORDERS: {
-    path: "/WorkOrder/by-tech/inspection",
-    method: "GET",
-  },
-  GET_WARRANTY_CLAIMS_BY_STATUS: {
-    path: "/WarrantyClaim/filter/:status",
-    method: "GET",
-  },
+  GET_INSPECTION_ORDERS: { path: "/WorkOrder/by-tech/inspection", method: "GET" },
+  GET_WARRANTY_CLAIMS_BY_STATUS: { path: "/WarrantyClaim/filter/:status", method: "GET" },
   GET_WARRANTY_STATUSES: { path: "/WarrantyClaim/status", method: "GET" },
   GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
   UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
   GET_PART_CATEGORY: { path: "/Part/category", method: "GET" },
   GET_PART_MODEL: { path: "/Part/model", method: "GET" },
+  GET_PART_CATEGORY_BY_MODEL: { path: "/Part/category-by-model", method: "GET" },
+  GET_PART: { path: "/Part", method: "GET" },
   GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
   UPLOAD_IMAGE: { path: "/Image/multi/:claimId", method: "POST" },
-  SEND_CLAIM_TO_MANUFACTURER: {
-    path: "/WarrantyClaim/:claimId/send-to-manufacturer",
-    method: "PUT",
-  },
+  SEND_CLAIM_TO_MANUFACTURER: { path: "/WarrantyClaim/:claimId/send-to-manufacturer", method: "PUT" },
+  SUBMIT_PART_REQUEST: { path: "/PartOrderItem", method: "POST" },
   DENY_WARRANTY_CLAIM: { path: "/WarrantyClaim/:claimId/deny", method: "PUT" },
-  CUSTOMER_GET_CAR: {
-    path: "/WarrantyClaim/:claimId/customer-get-car",
-    method: "PUT",
-  },
-  DONE_WARRANTY: {
-    path: "/WarrantyClaim/:claimId/done-warranty",
-    method: "PUT",
-  },
-  CAR_BACK_HOME: {
-    path: "/WarrantyClaim/:claimId/car-back-home",
-    method: "PUT",
-  },
-  CAR_BACK_CENTER: {
-    path: "/WarrantyClaim/:claimId/car-back-center",
-    method: "PUT",
-  },
+  CUSTOMER_GET_CAR: { path: "/WarrantyClaim/:claimId/customer-get-car", method: "PUT" },
+  DONE_WARRANTY: { path: "/WarrantyClaim/:claimId/done-warranty", method: "PUT" },
+  CAR_BACK_HOME: {  path: "/WarrantyClaim/:claimId/car-back-home", method: "PUT", },
+  CAR_BACK_CENTER: { path: "/WarrantyClaim/:claimId/car-back-center", method: "PUT", },
   ASSIGN_TECHNICIAN: { path: "/workOrder/:targetId", method: "POST" },
-  GET_ASSIGNED_TECHNICIANS: {
-    path: "/workOrder/assigned-techs/:claimId",
-    method: "GET",
-  },
-
+  GET_ASSIGNED_TECHNICIANS: { path: "/workOrder/assigned-techs/:claimId", method: "GET" },
+  DELETE_IMAGE: { path: "/Image/:imageId", method: "DELETE" },
   NEED_CONFIRM: { path: "/WarrantyClaim/need-confirm", method: "GET" },
-
-  GET_VEHICLE_POLICIES: {
-    path: "/warrantyClaim/vehicle-policies/:vin",
-    method: "GET",
-  },
-  APPROVE_WARRANTY_CLAIM: {
-    path: "/WarrantyClaim/:claimId/approve",
-    method: "PUT",
-  },
+  GET_VEHICLE_POLICIES: { path: "/warrantyClaim/vehicle-policies/:vin", method: "GET" },
+  APPROVE_WARRANTY_CLAIM: { path: "/WarrantyClaim/:claimId/approve", method: "PUT", },
   DENY_WARRANTY: { path: "/WarrantyClaim/:claimId/deny", method: "PUT" },
   BACK_WARRANTY: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
-  WARRANTY_INSPECTION: {
-    path: "/WarrantyClaim/:claimId/inspection",
-    method: "PUT",
-  },
-  SHOW_REQUEST_PARTS_EVMSTAFF: {
-    path: "/PartOrder/evmstaff",
-    method: "GET",
-  },
-  SHOW_REQUEST_PARTS_SCSTAFF: {
-    path: "/PartOrder/scstaff",
-    method: "GET",
-  },
-
-  CONFIRM_PREPARE: {
-    path: "/PartOrder/:orderId/confirm",
-    method: "PUT",
-  },
-
-  DELIVERED_CLICK: {
-    path: "/PartOrder/:orderId/delivery",
-    method: "PUT",
-  },
-
-  UPDATE_REQUESTED_DATE: {
-    path: "/PartOrder/:orderId/expected-date",
-    method: "PUT",
-  },
+  WARRANTY_INSPECTION: { path: "/WarrantyClaim/:claimId/inspection", method: "PUT" },
+  SHOW_REQUEST_PARTS_EVMSTAFF: { path: "/PartOrder/evmstaff", method: "GET" },
+  SHOW_REQUEST_PARTS_SCSTAFF: { path: "/PartOrder/scstaff", method: "GET", },
+  CONFIRM_PREPARE: { path: "/PartOrder/:orderId/confirm", method: "PUT", },
+  DELIVERED_CLICK: { path: "/PartOrder/:orderId/delivery", method: "PUT", },
+  UPDATE_REQUESTED_DATE: { path: "/PartOrder/:orderId/expected-date", method: "PUT", },
   WARRANTY_REPAIR: { path: "/WarrantyClaim/:claimId/repair", method: "PUT" },
-
-  CONFIRM_PART_ORDER_DELIVERED: {
-    path: "/PartOrder/:orderId/confirm-delivery",
-    method: "PUT",
-  },
+  CONFIRM_PART_ORDER_DELIVERED: { path: "/PartOrder/:orderId/confirm-delivery", method: "PUT", },
 };
 
 /**

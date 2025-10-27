@@ -6,6 +6,7 @@ import { EVMStaffWarrantyList } from "../components/EVMStaffWarrantyList";
 import { EVMStaffConfirmationModal } from "../components/EVMStaffConfirmationModal";
 
 export const EVMStaffWarrantyListContainer = () => {
+  // === STATE cho Warranty Claims ===
   const [claims, setClaims] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -87,6 +88,7 @@ export const EVMStaffWarrantyListContainer = () => {
     []
   );
 
+  // === Load lần đầu ===
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
     fetchClaims(0, paginationRef.current.pageSize);
