@@ -3,12 +3,20 @@ import React from "react";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
 import { Button } from "../../../components/atoms/Button/Button";
 import { formatDate } from "../../../utils/helpers";
+import { Pagination } from "../../../components/molecules/Pagination/Pagination";
 
 export const EVMStaffWarrantyList = ({
   data = [],
   loading = false,
   error = null,
   onView,
+
+  pageNumber = 0,
+  totalPages = 1,
+  totalRecords = 0,
+  pageSize = 20,
+  onPageChange,
+  onPageSizeChange,
 }) => {
   const columns = [
     { key: "vin", label: "VIN" },
@@ -45,7 +53,7 @@ export const EVMStaffWarrantyList = ({
             }}
           >
             View
-          </Button> 
+          </Button>
         </div>
       ),
     },
@@ -55,10 +63,10 @@ export const EVMStaffWarrantyList = ({
   const rows =
     data.map((c) => ({
       id: c.id,
-      vin: c.vin || c.vehicle?.vin || "-",
-      createdDate: c.approvedDate || c.assignedDate || c.createdAt || "",
+      vin: c.vin || "",
+      createdDate: c.createdDate || " ",
       status: (c.status || "").replace(/_/g, " "),
-      description: c.description || c.title || "-",
+      description: c.description || " ",
       raw: c,
     })) ?? [];
 
@@ -70,16 +78,26 @@ export const EVMStaffWarrantyList = ({
         data={rows}
         columns={columns}
         isLoading={loading}
+        pagination={false}
         searchable
-        pagination
-        pageSize={10}
         exportable={false}
         noDataMessage={error || "No claims found"}
         selectable={false}
       />
+
+      {/* === Pagination Section === */}
+      <div style={{ marginTop: 16 }}>
+        <Pagination
+          pageNumber={pageNumber}
+          totalPages={totalPages} // TODO
+          totalRecords={totalRecords}
+          pageSize={pageSize}
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+        />
+      </div>
     </div>
   );
 };
 
 export default EVMStaffWarrantyList;
-

@@ -1,0 +1,81 @@
+/* List of added parts */
+.added-parts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    max-height: 150px;
+    /* Limit height and make scrollable if needed */
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.added-part-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+}
+
+.added-part-item span {
+    font-weight: 500;
+    color: #343a40;
+}
+
+.remove-part-btn {
+    padding: 2px 6px;
+    /* Smaller padding for remove button */
+    font-size: 0.8rem;
+}
+
+/* Form to add new parts */
+.add-part-form {
+    margin-top: 16px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* Model dropdown takes more space */
+    gap: 16px;
+    align-items: flex-end;
+    /* Align labels and inputs nicely */
+    margin-bottom: 16px;
+}
+
+/* Adjust Input component wrapper if necessary */
+.form-row .input-wrapper {
+    margin-bottom: 0;
+    /* Remove default margin if Input has it */
+}
+
+.part-model-select select,
+/* Target the select element if Input wraps it */
+.quantity-input input {
+    /* Target the input element */
+    height: 40px;
+    /* Consistent height */
+}
+
+.add-part-btn {
+    margin-top: 10px;
+}
+
+/* Modal Error Message */
+.modal-error-message {
+    color: var(--bs-danger);
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    text-align: center;
+}

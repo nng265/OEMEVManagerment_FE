@@ -1,9 +1,9 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; của D
+const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; // của D
 
-const API_BASE_URL =
-  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+// const API_BASE_URL =
+//   "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -27,6 +27,11 @@ export const ApiEnum = {
   UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
   GET_PART_CATEGORY: { path: "/Part/category", method: "GET" },
   GET_PART_MODEL: { path: "/Part/model", method: "GET" },
+  GET_PART_CATEGORY_BY_MODEL: {
+    path: "/Part/category-by-model",
+    method: "GET",
+  },
+  GET_PART: { path: "/Part", method: "GET" },
   GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
@@ -35,6 +40,7 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/send-to-manufacturer",
     method: "PUT",
   },
+  SUBMIT_PART_REQUEST: { path: "/PartOrderItem", method: "POST" },
   DENY_WARRANTY_CLAIM: { path: "/WarrantyClaim/:claimId/deny", method: "PUT" },
   CUSTOMER_GET_CAR: {
     path: "/WarrantyClaim/:claimId/customer-get-car",
@@ -57,6 +63,8 @@ export const ApiEnum = {
     path: "/workOrder/assigned-techs/:claimId",
     method: "GET",
   },
+
+  DELETE_IMAGE: { path: "/Image/:imageId", method: "DELETE" },
 
   NEED_CONFIRM: { path: "/WarrantyClaim/need-confirm", method: "GET" },
 
