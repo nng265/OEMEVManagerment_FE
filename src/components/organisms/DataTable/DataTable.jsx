@@ -10,7 +10,7 @@ export const DataTable = ({
   data = [],
   columns = [],
   isLoading = false,
-  noDataMessage = 'No data available',
+  noDataMessage = "No data available",
   onRowClick,
   serverSide = false,
   pagination = true,
@@ -119,7 +119,7 @@ export const DataTable = ({
                 <tr
                   key={row.id || index}
                   onClick={() => onRowClick && onRowClick(row)}
-                  className={onRowClick ? 'clickable' : ''}
+                  className={onRowClick ? "clickable" : ""}
                 >
                   {columns.map((column) => (
                     <td key={column.key}>
@@ -155,6 +155,7 @@ export const DataTable = ({
               ))}
             </select>
           </div>
+
 
           <div className="pagination-info">
             {serverSide ? (

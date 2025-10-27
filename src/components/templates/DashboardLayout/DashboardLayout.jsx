@@ -34,6 +34,11 @@ export const DashboardLayout = () => {
       case "evm_parts_list":
         navigate("/evmpartslist");
         break;
+
+      case "staff_parts_request":
+        navigate("/parts-request");
+        break;
+        
       default:
         navigate("/dashboard");
     }

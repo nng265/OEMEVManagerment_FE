@@ -96,6 +96,12 @@ export const ApiEnum = {
     path: "/PartOrder/:orderId/expected-date",
     method: "PUT",
   },
+  WARRANTY_REPAIR: { path: "/WarrantyClaim/:claimId/repair", method: "PUT" },
+
+  CONFIRM_PART_ORDER_DELIVERED: {
+    path: "/PartOrder/:orderId/confirm-delivery",
+    method: "PUT",
+  },
 };
 
 /**

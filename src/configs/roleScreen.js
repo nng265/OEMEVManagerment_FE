@@ -7,6 +7,11 @@ export const roleScreens = {
       component: "StaffApproval",
     },
     {
+      id: "staff_approval",
+      label: "Approve Requests",
+      component: "StaffApproval",
+    },
+    {
       id: "technician_vehicle_status",
       label: "Update Vehicle Status",
       component: "TechnicianVehicleStatus",
@@ -16,6 +21,11 @@ export const roleScreens = {
   SC_STAFF: [
     { id: "staff_vehicle", label: "Vehicle", component: "CarList" },
     { id: "staff_warranty", label: "Warranty", component: "WarrantyList" },
+    {
+      id: "staff_parts_request",
+      label: "Parts Request",
+      component: "PartsRequest",
+    },
   ],
   SC_TECH: [
     {
