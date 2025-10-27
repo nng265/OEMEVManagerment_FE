@@ -221,7 +221,7 @@ export const normalizePagedResult = (response, fallbackItems = []) => {
     success,
     items,
     page,
-  size,
+    size,
     totalRecords,
     message,
     raw: response,

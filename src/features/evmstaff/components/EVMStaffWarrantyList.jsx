@@ -1,4 +1,3 @@
-// src/features/evmStaff/components/EVMStaffWarrantyList.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
@@ -13,27 +12,29 @@ export const EVMStaffWarrantyList = ({
   pagination,
   onPageChange,
 }) => {
+  // ✅ Cấu hình cột hiển thị trong bảng
   const columns = [
     { key: "vin", label: "VIN" },
+    { key: "model", label: "Model" },
     {
       key: "createdDate",
       label: "Created Date",
       render: (val) =>
         val
-          ? formatDate(val, "en-US", {
+          ? formatDate(val, "en-GB", {
+              day: "2-digit",
+              month: "2-digit",
               year: "numeric",
-              month: "numeric",
-              day: "numeric",
             })
           : "-",
     },
-    { key: "status", label: "Status" },
     {
       key: "description",
-      label: "Description",
+      label: "Claim Description",
       render: (val) =>
-        val && val.length > 120 ? `${val.slice(0, 120)}...` : val,
+        val && val.length > 80 ? `${val.slice(0, 80)}...` : val || "-",
     },
+    { key: "status", label: "Status" },
     {
       key: "actions",
       label: "Actions",
@@ -48,26 +49,32 @@ export const EVMStaffWarrantyList = ({
             }}
           >
             View
-          </Button> 
+          </Button>
         </div>
       ),
     },
   ];
 
-  // Map data thành rows (ở đây xử lý đơn giản)
-  const rows =
-    data.map((c) => ({
-      id: c.id,
-      vin: c.vin || c.vehicle?.vin || "-",
-      createdDate: c.approvedDate || c.assignedDate || c.createdAt || "",
-      status: (c.status || "").replace(/_/g, " "),
-      description: c.description || c.title || "-",
-      raw: c,
-    })) ?? [];
+  const rows = data.map((item) => ({
+    id: item.claimId,
+    vin: item.vin || "-",
+    model: item.model || "-",
+    year: item.year || "-",
+    customerName: item.customerName || "-",
+    customerPhoneNumber: item.customerPhoneNumber || "-",
+    createdDate: item.createdDate || "",
+    failureDesc: item.failureDesc || "-",
+    description: item.description || "-",
+    status: item.status || "-",
+    showPolicy: item.showPolicy || [],
+    showClaimParts: item.showClaimParts || [],
+    attachments: item.attachments || [],
+    raw: item,
+  }));
 
   return (
     <div style={{ padding: 8 }}>
-      <h2 style={{ marginBottom: 12 }}>Vehicle / Warranty claims</h2>
+      <h2 style={{ marginBottom: 12 }}>Sent To Manufacturer Claims</h2>
 
       <DataTable
         data={rows}
@@ -101,4 +108,3 @@ EVMStaffWarrantyList.propTypes = {
 };
 
 export default EVMStaffWarrantyList;
-

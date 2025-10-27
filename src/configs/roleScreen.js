@@ -1,7 +1,11 @@
 // src/configs/roleScreen.js
 export const roleScreens = {
   ADMIN: [
-    { id: "staff_approval", label: "Approve Requests", component: "StaffApproval" },
+    {
+      id: "staff_approval",
+      label: "Approve Requests",
+      component: "StaffApproval",
+    },
     {
       id: "technician_vehicle_status",
       label: "Update Vehicle Status",
@@ -21,6 +25,15 @@ export const roleScreens = {
     },
   ],
   EVM_STAFF: [
-    { id: "evm_warranty_claims", label: "Warranty", component: "WarrantyClaimList" },
+    {
+      id: "evm_warranty_claims",
+      label: "Warranty",
+      component: "WarrantyClaimList",
+    },
+    {
+      id: "evm_parts_list",
+      label: "evmpartslist",
+      component: "EVMPartsList",
+    },
   ],
 };
