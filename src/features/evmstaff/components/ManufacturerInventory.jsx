@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
+import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/LoadingSpinner";
 
 /**
  * View cho Manufacturer Inventory (EVM staff)
@@ -15,12 +16,12 @@ export const ManufacturerInventory = ({
 }) => {
   const totalRecords = pagination?.totalRecords ?? data.length;
   const currentPage = pagination?.pageNumber ?? 0;
-  const pageSize = pagination?.pageSize ?? 20;
+  const pageSize = pagination?.pageSize ?? 10;
 
   const columns = [
     { key: "model", label: "Model" },
     { key: "category", label: "Category" },
-    { key: "stockQuantity", label: "Quantity" },
+  { key: "stockQuantity", label: "Quantity", sortType: "number" },
     { key: "status", label: "Status" },
   ];
 
@@ -47,21 +48,30 @@ export const ManufacturerInventory = ({
         View parts available at the Manufacturer's inventory.
       </p>
 
-      <DataTable
-        data={rows}
-        columns={columns}
-        isLoading={loading}
-        searchable={false}
-        pagination
-        serverSide
-        totalRecords={totalRecords}
-        currentPage={currentPage}
-        pageSize={pageSize}
-        onPageChange={handlePageChange}
-        exportable={false}
-        noDataMessage={error || "No records found"}
-        selectable={false}
-      />
+      <div style={{ position: "relative" }}>
+        {loading && (
+          <div className="data-table-loading">
+            <LoadingSpinner size="lg" />
+            <p className="data-table-loading-message">
+              Loading manufacturer inventory...
+            </p>
+          </div>
+        )}
+        <DataTable
+          data={rows}
+          columns={columns}
+          searchable={false}
+          pagination
+          serverSide
+          totalRecords={totalRecords}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          exportable={false}
+          noDataMessage={error || "No records found"}
+          selectable={false}
+        />
+      </div>
     </div>
   );
 };

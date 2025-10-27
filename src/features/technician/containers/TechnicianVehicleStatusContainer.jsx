@@ -17,7 +17,7 @@ export const TechnicianVehicleStatusContainer = () => {
   const [serials, setSerials] = useState([]);
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);
@@ -79,6 +79,7 @@ export const TechnicianVehicleStatusContainer = () => {
       // Actions column
       key: "actions",
       label: "Actions", // Changed label to match image
+      sortable: false,
       render: (_, row) => (
         <Button
           variant="primary" // Match 'View Details' button style

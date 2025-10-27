@@ -22,10 +22,18 @@
   padding: 1rem;
   gap: 1rem;
   border-bottom: 1px solid #dee2e6;
+  flex-wrap: wrap;
 }
 
 .data-table-search {
   min-width: 250px;
+}
+
+.data-table-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
 /* Table styles */
@@ -89,7 +97,6 @@
 
 .sort-icon.desc {
   opacity: 1;
-  transform: rotate(180deg);
 }
 
 /* Table cells */
@@ -163,6 +170,16 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .data-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-table-toolbar-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
   .data-table-footer {
     flex-direction: column;
     align-items: flex-start;
@@ -181,11 +198,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.85);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #4b5563;
   z-index: 1000;
+}
+
+.data-table-loading-message {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 /* Empty state */

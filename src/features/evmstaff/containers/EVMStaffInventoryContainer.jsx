@@ -17,7 +17,7 @@ export const EVMStaffInventoryContainer = () => {
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);

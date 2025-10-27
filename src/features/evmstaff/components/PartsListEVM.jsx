@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
 import { Button } from "../../../components/atoms/Button/Button";
-import { formatDate } from "../../../utils/helpers";
+import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/LoadingSpinner";
+import { formatDate } from "../../../services/helpers";
 import "./PartsListEVM.css";
 
 export default function PartsListEVM({
@@ -78,6 +79,7 @@ export default function PartsListEVM({
     {
       key: "actions",
       label: "Actions",
+      sortable: false,
       render: (_, row) => (
         <Button
           variant="primary"
@@ -120,21 +122,30 @@ export default function PartsListEVM({
   return (
     <div style={{ padding: 8 }}>
       <h2 style={{ marginBottom: 12 }}>Parts Requests from Service Centers</h2>
-      <DataTable
-        data={rows}
-        columns={columns}
-        isLoading={loading}
-        searchable
-        pagination
-        serverSide
-        totalRecords={pagination?.totalRecords ?? rows.length}
-        currentPage={pagination?.pageNumber ?? 0}
-        pageSize={pagination?.pageSize ?? 20}
-        onPageChange={onPageChange}
-        exportable={false}
-        noDataMessage={error || "No parts requests found"}
-        selectable={false}
-      />
+      <div style={{ position: "relative" }}>
+        {loading && (
+          <div className="data-table-loading">
+            <LoadingSpinner size="lg" />
+            <p className="data-table-loading-message">
+              Loading parts requests...
+            </p>
+          </div>
+        )}
+        <DataTable
+          data={rows}
+          columns={columns}
+          searchable
+          pagination
+          serverSide
+          totalRecords={pagination?.totalRecords ?? rows.length}
+          currentPage={pagination?.pageNumber ?? 0}
+          pageSize={pagination?.pageSize ?? 10}
+          onPageChange={onPageChange}
+          exportable={false}
+          noDataMessage={error || "No parts requests found"}
+          selectable={false}
+        />
+      </div>
     </div>
   );
 }

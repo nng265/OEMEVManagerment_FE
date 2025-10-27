@@ -1,16 +1,17 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { DashboardLayout } from "../components/templates";
-import Login from "../features/auth/components/Login";
-import Dashboard from "../features/auth/components/Dashboard";
-import { CarListContainer } from "../features/car/containers";
+// import Login from "../features/auth/components/Login";
+import Login from "../pages/Login.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
+import { CarListContainer ,WarrantyClaimListContainer, ServiceCenterInventoryContainer, PartsRequestContainer} from "../features/scstaff/containers";
 import { TechnicianVehicleStatusContainer } from "../features/technician/containers";
-import { WarrantyClaimListContainer } from "../features/warranty/containers";
+// import { WarrantyClaimListContainer } from "../features/sc/containers";
 import { PrivateRoute } from "./PrivateRoutes";
 import EVMStaffWarrantyListContainer from "../features/evmstaff/containers/EVMStaffWarrantyListContainer";
 import { EVMPartsListContainer } from "../features/evmstaff/containers/EVMPartsListContainer";
-import { PartsRequestContainer } from "../features/scstaff/containers";
-import { ServiceCenterInventoryContainer } from "../features/servicecenter/containers/ServiceCenterInventoryContainer";
+// import { PartsRequestContainer } from "../features/scstaff/containers";
+// import { ServiceCenterInventoryContainer } from "../features/servicecenter/containers/ServiceCenterInventoryContainer";
 import { EVMStaffInventoryContainer } from "../features/evmstaff/containers/EVMStaffInventoryContainer";
 
 // Public routes that don't require authentication

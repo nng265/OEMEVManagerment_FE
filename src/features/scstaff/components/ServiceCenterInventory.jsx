@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../components/atoms/Button/Button";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
+import "./ServiceCenterInventory.css";
 
 /**
  * View hiển thị Inventory của Service Center
@@ -31,22 +32,27 @@ export const ServiceCenterInventory = ({
 
   // Gọi search/filter mỗi khi thay đổi input
   useEffect(() => {
-    onSearch(query);
-  }, [query]);
+    if (typeof onSearch === "function") {
+      onSearch(query);
+    }
+  }, [query, onSearch]);
 
   useEffect(() => {
-    onFilter(category);
-  }, [category]);
+    if (typeof onFilter === "function") {
+      onFilter(category);
+    }
+  }, [category, onFilter]);
 
   // Cấu hình cột cho bảng
   const columns = [
     { key: "model", label: "Model" },
     { key: "category", label: "Category" },
     { key: "status", label: "Status" },
-    { key: "stockQuantity", label: "Quantity" },
+    { key: "stockQuantity", label: "Quantity", sortType: "number" },
     {
       key: "action",
       label: "Action",
+      sortable: false,
       render: (_v, row) => (
         <Button size="small" variant="primary" onClick={() => onRequest(row)}>
           Request Part
@@ -75,24 +81,24 @@ export const ServiceCenterInventory = ({
   };
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 4 }}>Service Center Inventory</h2>
-      <p style={{ marginBottom: 12, color: "#555" }}>
+    <div className="sc-inventory">
+      <h2 className="sc-inventory__title">Service Center Inventory</h2>
+      <p className="sc-inventory__subtitle">
         Manage and request parts from the Service Center inventory.
       </p>
 
-      <div style={{ marginBottom: 16, display: "flex", gap: 8 }}>
+      <div className="sc-inventory__filters">
         <input
           type="text"
           placeholder="Search by model..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 1, padding: 8 }}
+          className="sc-inventory__search"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          style={{ padding: 8 }}
+          className="sc-inventory__select"
         >
           <option value="">All Categories</option>
           {categories.map((c, i) => (
@@ -108,25 +114,28 @@ export const ServiceCenterInventory = ({
             setQuery("");
             setCategory("");
           }}
+          className="sc-inventory__clear"
         >
           Clear
         </Button>
       </div>
 
-      <DataTable
-        data={rows}
-        columns={columns}
-        isLoading={loading}
-        searchable={false}
-        pagination
-        serverSide={serverSide}
-        pageSize={pageSize}
-        totalRecords={totalRecords}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-        exportable={false}
-        noDataMessage={error || "No items found"}
-      />
+      <div className="sc-inventory__table-wrapper">
+        <DataTable
+          data={rows}
+          columns={columns}
+          isLoading={loading}
+          searchable={false}
+          pagination
+          serverSide={serverSide}
+          pageSize={pageSize}
+          totalRecords={totalRecords}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+          exportable={false}
+          noDataMessage={error || "No items found"}
+        />
+      </div>
     </div>
   );
 };

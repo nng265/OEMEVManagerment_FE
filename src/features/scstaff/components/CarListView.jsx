@@ -5,6 +5,7 @@ import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/Loading
 import { ErrorBoundary } from "../../../components/molecules/ErrorBoundary/ErrorBoundary";
 import { VehicleDetailModal } from "./VehicleDetailModal";
 import { CreateWarrantyClaimModal } from "./CreateWarrantyClaimModal";
+import "./CarListView.css";
 
 export const CarListView = ({
   vehicles,
@@ -22,6 +23,8 @@ export const CarListView = ({
 }) => {
   return (
     <div className="car-list-view">
+      <h2>Vehicles</h2>
+
       {/* --- Loading --- */}
       {loading && (
         <div className="text-center my-4">
@@ -41,11 +44,11 @@ export const CarListView = ({
             data={vehicles}
             columns={columns}
             isLoading={loading}
-            serverSide={true}
-            pagination={true}
-            totalRecords={pagination.totalRecords}
-            currentPage={pagination.pageNumber}
-            pageSize={pagination.pageSize}
+            serverSide
+            pagination
+            totalRecords={pagination?.totalRecords ?? vehicles.length}
+            currentPage={pagination?.pageNumber ?? 0}
+            pageSize={pagination?.pageSize ?? 10}
             onPageChange={onPageChange}
             noDataMessage="No vehicles found."
             responsive

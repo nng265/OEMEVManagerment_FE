@@ -1,5 +1,5 @@
 // src/components/molecules/DataTable/DataTable.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useId } from 'react';
 import PropTypes from 'prop-types';
 import './DataTable.css';
 import { LoadingSpinner } from '../../atoms/LoadingSpinner/LoadingSpinner';
@@ -16,18 +16,28 @@ export const DataTable = ({
   pagination = true,
   pageSize = 10,
   totalRecords = 0,
-  currentPage = 0, // ✅ Chuẩn hóa luôn nhận 0-based index
+  currentPage = 0, // 0-based index
   onPageChange,
   searchable = false,
   exportable = false,
+  sortable = true,
   responsive = true,
   striped = true,
   hoverable = true,
   dense = false,
+  searchPlaceholder = 'Search...',
+  onSearchChange,
+  toolbarActions,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const searchInputId = useId();
+  const searchInputName = useMemo(
+    () => `datatable-search-${String(searchInputId).replace(/:/g, '-')}`,
+    [searchInputId]
+  );
 
-  // ✅ Nếu client-side thì filter local
+  // ✅ Search local
   const filteredData = useMemo(() => {
     if (!searchable || serverSide || !searchTerm.trim()) return data;
     return data.filter((row) =>
@@ -37,34 +47,154 @@ export const DataTable = ({
     );
   }, [data, searchTerm, searchable, serverSide]);
 
-  // ✅ Tổng số trang
+  // ✅ Sort local
+  const sortedData = useMemo(() => {
+    if (!sortable || !sortConfig.key) return filteredData;
+
+    const activeColumn = columns.find((col) => col.key === sortConfig.key);
+    if (!activeColumn) return filteredData;
+
+    const resolveValue = (row) => {
+      if (typeof activeColumn.getSortValue === 'function') {
+        return activeColumn.getSortValue(row);
+      }
+      if (typeof activeColumn.sortValue === 'function') {
+        return activeColumn.sortValue(row[activeColumn.key], row);
+      }
+      return row[activeColumn.key];
+    };
+
+    const toComparable = (value) => {
+      if (value === null || value === undefined) {
+        return { type: 'null', value: null };
+      }
+
+      const { sortType } = activeColumn;
+
+      if (sortType === 'number') {
+        const numeric = Number(value);
+        return Number.isNaN(numeric)
+          ? { type: 'string', value: String(value).toLowerCase() }
+          : { type: 'number', value: numeric };
+      }
+
+      if (sortType === 'date') {
+        const timestamp = value instanceof Date ? value.getTime() : Date.parse(value);
+        return Number.isNaN(timestamp)
+          ? { type: 'string', value: String(value).toLowerCase() }
+          : { type: 'number', value: timestamp };
+      }
+
+      if (typeof value === 'number') {
+        return { type: 'number', value };
+      }
+
+      if (value instanceof Date) {
+        return { type: 'number', value: value.getTime() };
+      }
+
+      if (typeof value === 'boolean') {
+        return { type: 'number', value: value ? 1 : 0 };
+      }
+
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (sortType !== 'string' && trimmed !== '') {
+          const numericCandidate = Number(trimmed);
+          if (!Number.isNaN(numericCandidate)) {
+            return { type: 'number', value: numericCandidate };
+          }
+        }
+        return { type: 'string', value: trimmed.toLowerCase() };
+      }
+
+      return { type: 'string', value: String(value).toLowerCase() };
+    };
+
+    const sorted = [...filteredData].sort((a, b) => {
+      const aValue = resolveValue(a);
+      const bValue = resolveValue(b);
+
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+
+      const aComparable = toComparable(aValue);
+      const bComparable = toComparable(bValue);
+
+      let comparison = 0;
+
+      if (aComparable.type === 'number' && bComparable.type === 'number') {
+        comparison = aComparable.value - bComparable.value;
+      } else {
+        const aStr = String(aComparable.value);
+        const bStr = String(bComparable.value);
+        comparison = aStr.localeCompare(bStr, undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        });
+      }
+
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
+    });
+
+    return sorted;
+  }, [filteredData, sortConfig, sortable, columns]);
+
+  // ✅ Pagination client-side (0-based)
   const totalPages = serverSide
     ? Math.ceil(totalRecords / pageSize)
-    : Math.ceil(filteredData.length / pageSize);
+    : Math.ceil(sortedData.length / pageSize);
 
-  // ✅ Client-side tự cắt dữ liệu theo trang (SỬA 2: Dùng 0-based)
   const paginatedData = !serverSide && pagination
-    ? filteredData.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
-    : filteredData;
+    ? sortedData.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+    : sortedData;
 
-  // ✅ Gọi BE khi đổi trang / kích thước
-  // Handle page change
+  // ✅ Page change (gửi ra ngoài)
   const handlePageChange = (pageIndex) => {
-    if (onPageChange) {
-      onPageChange(pageIndex, pageSize); // ✅ gửi đúng pageIndex (0-based) cho BE
-    }
+    if (onPageChange) onPageChange(pageIndex, pageSize);
   };
-
 
   const handlePageSizeChange = (e) => {
     const newSize = Number(e.target.value);
-    if (onPageChange) {
-      onPageChange(0, newSize); // ✅ Reset về trang 0 khi đổi size
+    if (onPageChange) onPageChange(0, newSize);
+  };
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (typeof onSearchChange === 'function') {
+      onSearchChange(value);
     }
   };
 
+  // ✅ Sort handler
+  const handleSort = (column) => {
+    if (!sortable || column?.sortable === false) return;
+    const key = column.key;
+    if (!key) return;
+    setSortConfig((prev) => ({
+      key,
+      direction:
+        prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
 
-  // ✅ Loading state
+  // ✅ Export CSV (optional)
+  const handleExport = () => {
+    const csv = [
+      columns.map(c => c.label).join(','),
+      ...sortedData.map(row =>
+        columns.map(c => `"${row[c.key] ?? ''}"`).join(',')
+      ),
+    ].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'data.csv';
+    link.click();
+  };
+
+  // ✅ Loading
   if (isLoading) {
     return (
       <div className="data-table-loading">
@@ -82,35 +212,63 @@ export const DataTable = ({
     .filter(Boolean)
     .join(' ');
 
+  const shouldShowSearch =
+    searchable && (!serverSide || typeof onSearchChange === 'function');
+  const shouldShowToolbar = shouldShowSearch || exportable || toolbarActions;
+
   return (
     <div className="data-table-container">
       {/* Toolbar */}
-      <div className="data-table-toolbar">
-        {searchable && !serverSide && (
-          <div className="data-table-search">
-            <Input
-              type="search"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        )}
-        {exportable && (
-          <Button variant="secondary" size="sm">
-            Export CSV
-          </Button>
-        )}
-      </div>
+      {shouldShowToolbar && (
+        <div className="data-table-toolbar">
+          {shouldShowSearch && (
+            <div className="data-table-search">
+              <Input
+                type="search"
+                placeholder={searchPlaceholder}
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                name={searchInputName}
+                id={searchInputName}
+              />
+            </div>
+          )}
+
+          {(toolbarActions || exportable) && (
+            <div className="data-table-toolbar-actions">
+              {toolbarActions}
+              {exportable && (
+                <Button variant="secondary" size="sm" onClick={handleExport}>
+                  Export CSV
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Table */}
       <div className={responsive ? 'table-responsive' : ''}>
         <table className={tableClasses}>
           <thead>
             <tr>
-              {columns.map((column) => (
-                <th key={column.key}>{column.label}</th>
-              ))}
+              {columns.map((column) => {
+                const columnSortable = sortable && column?.sortable !== false;
+                return (
+                  <th
+                    key={column.key}
+                    onClick={() => handleSort(column)}
+                    className={columnSortable ? 'sortable' : ''}
+                  >
+                    {column.label}
+                    {columnSortable && sortConfig.key === column.key && (
+                      <span className={`sort-icon ${sortConfig.direction}`}>
+                        {sortConfig.direction === 'asc' ? '▲' : '▼'}
+                      </span>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -142,45 +300,38 @@ export const DataTable = ({
       </div>
 
       {/* Pagination */}
-      {/* ✅ SỬA 1: CHỈ CẦN KIỂM TRA pagination */}
       {pagination && (
         <div className="data-table-footer">
           <div className="page-size-selector">
             <span>Rows per page:</span>
             <select value={pageSize} onChange={handlePageSizeChange}>
-              {[20, 50, 100].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
+              {[10, 20, 50, 100].map((size) => (
+                <option key={size} value={size}>{size}</option>
               ))}
             </select>
           </div>
 
-
           <div className="pagination-info">
             {serverSide ? (
               <>
-                {/* (Sử dụng 0-based currentPage) */}
                 Showing {currentPage * pageSize + 1}–
                 {Math.min((currentPage + 1) * pageSize, totalRecords)} of {totalRecords}
               </>
             ) : (
               <>
-                {/* ✅ SỬA 2: Sửa logic client-side (dùng 0-based) */}
                 Showing {currentPage * pageSize + 1}–
-                {Math.min((currentPage + 1) * pageSize, filteredData.length)} of {filteredData.length}
+                {Math.min((currentPage + 1) * pageSize, sortedData.length)} of {sortedData.length}
               </>
             )}
           </div>
 
-          {/* ✅ SỬA 1: Bọc riêng các nút bằng totalPages > 1 */}
           {totalPages > 1 && (
             <div className="pagination">
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handlePageChange(0)} // ✅ SỬA 3: Về trang 0
-                disabled={currentPage === 0} // ✅ SỬA 3: Disable khi ở trang 0
+                onClick={() => handlePageChange(0)}
+                disabled={currentPage === 0}
               >
                 First
               </Button>
@@ -188,46 +339,40 @@ export const DataTable = ({
                 variant="secondary"
                 size="sm"
                 onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 0} // ✅ SỬA 3: Disable khi ở trang 0
+                disabled={currentPage === 0}
               >
                 Prev
               </Button>
 
               {Array.from({ length: totalPages }, (_, i) => i)
                 .slice(
-                  Math.max(0, currentPage - 2), // Giả sử currentPage là 0-based
+                  Math.max(0, currentPage - 2),
                   Math.min(totalPages, currentPage + 3)
                 )
-                .map((pageIndex) => {
-                  const displayPage = pageIndex + 1; // ✅ hiển thị từ 1
-                  const isActive = pageIndex === currentPage; // ✅ So sánh 0-based
-
-                  return (
-                    <Button
-                      key={pageIndex}
-                      variant={isActive ? 'primary' : 'secondary'}
-                      size="sm"
-                      onClick={() => handlePageChange(pageIndex)}
-                    >
-                      {displayPage}
-                    </Button>
-                  );
-                })}
-
+                .map((pageIndex) => (
+                  <Button
+                    key={pageIndex}
+                    variant={pageIndex === currentPage ? 'primary' : 'secondary'}
+                    size="sm"
+                    onClick={() => handlePageChange(pageIndex)}
+                  >
+                    {pageIndex + 1}
+                  </Button>
+                ))}
 
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= totalPages - 1} // ✅ SỬA 3: Disable khi ở trang cuối
+                disabled={currentPage >= totalPages - 1}
               >
                 Next
               </Button>
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => handlePageChange(totalPages - 1)} // ✅ SỬA 3: Về trang cuối (0-based)
-                disabled={currentPage >= totalPages - 1} // ✅ SỬA 3: Disable khi ở trang cuối
+                onClick={() => handlePageChange(totalPages - 1)}
+                disabled={currentPage >= totalPages - 1}
               >
                 Last
               </Button>
@@ -245,10 +390,14 @@ DataTable.propTypes = {
   isLoading: PropTypes.bool,
   noDataMessage: PropTypes.string,
   onRowClick: PropTypes.func,
+  sortable: PropTypes.bool,
   pagination: PropTypes.bool,
   serverSide: PropTypes.bool,
   totalRecords: PropTypes.number,
   pageSize: PropTypes.number,
-  currentPage: PropTypes.number, // Nên là 0-based
+  currentPage: PropTypes.number,
   onPageChange: PropTypes.func,
+  searchPlaceholder: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  toolbarActions: PropTypes.node,
 };

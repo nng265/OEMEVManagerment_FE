@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, ApiEnum } from "../../../services/NetworkUntil";
 import { Button } from "../../../components/atoms";
 import { WarrantyClaimListView } from "../components/WarrantyClaimListView";
-import { normalizePagedResult } from "../../../utils/helpers";
+import { normalizePagedResult } from "../../../services/helpers";
 
 export const WarrantyClaimListContainer = () => {
   const [warrantyClaims, setWarrantyClaims] = useState([]);
@@ -34,7 +34,7 @@ export const WarrantyClaimListContainer = () => {
   const [loadingAssignedTechs, setLoadingAssignedTechs] = useState(false);
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);
@@ -76,6 +76,7 @@ export const WarrantyClaimListContainer = () => {
     {
       key: "actions",
       label: "Actions",
+      sortable: false,
       render: (_, row) => (
         <Button
           variant="primary"

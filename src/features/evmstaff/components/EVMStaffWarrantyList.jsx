@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
 import { Button } from "../../../components/atoms/Button/Button";
-import { formatDate } from "../../../utils/helpers";
+import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/LoadingSpinner";
+import { formatDate } from "../../../services/helpers";
 
 export const EVMStaffWarrantyList = ({
   data = [],
@@ -38,6 +39,7 @@ export const EVMStaffWarrantyList = ({
     {
       key: "actions",
       label: "Actions",
+      sortable: false,
       render: (_, row) => (
         <div style={{ display: "flex", gap: 8 }}>
           <Button
@@ -76,20 +78,30 @@ export const EVMStaffWarrantyList = ({
     <div style={{ padding: 8 }}>
       <h2 style={{ marginBottom: 12 }}>Sent To Manufacturer Claims</h2>
 
-      <DataTable
-        data={rows}
-        columns={columns}
-        isLoading={loading}
-        pagination={false}
-        searchable
-        serverSide
-        totalRecords={pagination?.totalRecords ?? rows.length}
-        currentPage={pagination?.pageNumber ?? 0}
-        pageSize={pagination?.pageSize ?? 10}
-        onPageChange={onPageChange}
-        exportable={false}
-        noDataMessage={error || "No claims found"}
-      />
+      <div style={{ position: "relative" }}>
+        {loading && (
+          <div className="data-table-loading">
+            <LoadingSpinner size="lg" />
+            <p className="data-table-loading-message">
+              Loading warranty claims...
+            </p>
+          </div>
+        )}
+
+        <DataTable
+          data={rows}
+          columns={columns}
+          searchable={false}
+          pagination
+          serverSide
+          totalRecords={pagination?.totalRecords ?? rows.length}
+          currentPage={pagination?.pageNumber ?? 0}
+          pageSize={pagination?.pageSize ?? 10}
+          onPageChange={onPageChange}
+          exportable={false}
+          noDataMessage={error || "No claims found"}
+        />
+      </div>
     </div>
   );
 };

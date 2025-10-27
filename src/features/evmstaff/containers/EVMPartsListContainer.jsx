@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { request, ApiEnum } from "../../../services/NetworkUntil";
-import { normalizePagedResult } from "../../../utils/helpers";
+import { normalizePagedResult } from "../../../services/helpers";
 import PartsListEVM from "../components/PartsListEVM";
 import Pending from "../components/Pending";
 import Waiting from "../components/Waiting";
@@ -15,7 +15,7 @@ export const EVMPartsListContainer = () => {
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);

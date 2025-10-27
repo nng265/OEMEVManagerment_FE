@@ -21,12 +21,12 @@ export const ServiceCenterInventoryContainer = () => {
   // Pagination state (harmonized with ManufacturerInventory)
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const [clientPagination, setClientPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
   });
   const latestRequestRef = useRef(0);
   const paginationRef = useRef(pagination);
@@ -215,13 +215,13 @@ export const ServiceCenterInventoryContainer = () => {
     }
   }, [filtersActive, pagination.pageSize]);
 
-  const handleSearch = (query) => {
+  const handleSearch = useCallback((query) => {
     setSearchQuery(query || "");
-  };
+  }, []);
 
-  const handleFilter = (category) => {
+  const handleFilter = useCallback((category) => {
     setSelectedCategory(category || "");
-  };
+  }, []);
 
   // ========== 3️⃣ CREATE REQUEST ==========
   // Fetch all part models for dropdown (called initially)
@@ -397,7 +397,6 @@ export const ServiceCenterInventoryContainer = () => {
         onFilter={handleFilter}
         onRequest={handleRequestPart}
         serverSide={!filtersActive}
-        // pagination props
         pagination={derivedPagination}
         onPageChange={handlePageChange}
       />

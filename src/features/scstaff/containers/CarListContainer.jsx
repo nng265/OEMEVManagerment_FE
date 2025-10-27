@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { CarListView } from '../components/CarListView';
 import { request, ApiEnum } from '../../../services/NetworkUntil';
 import { Button } from '../../../components/atoms/Button/Button';
-import { normalizePagedResult } from '../../../utils/helpers';
+import { normalizePagedResult } from '../../../services/helpers';
 
 export const CarListContainer = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -17,7 +17,7 @@ export const CarListContainer = () => {
   // ✅ Pagination từ BE (page bắt đầu = 0, size = 20)
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);
@@ -145,10 +145,11 @@ export const CarListContainer = () => {
     { key: 'vin', label: 'VIN' },
     { key: 'customerName', label: 'Customer' },
     { key: 'model', label: 'Model' },
-    { key: 'year', label: 'Year' },
+    { key: 'year', label: 'Year', sortType: 'number' },
     {
       key: 'actions',
       label: 'Actions',
+      sortable: false,
       render: (_, row) => (
         <div className="action-buttons">
           <Button

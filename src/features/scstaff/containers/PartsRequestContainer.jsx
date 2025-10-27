@@ -3,7 +3,7 @@ import { request, ApiEnum } from "../../../services/NetworkUntil";
 import { PartsRequestList } from "../components/PartsRequestList";
 import { PartsRequestDetailModal } from "../components/PartsRequestDetailModal";
 import { Button } from "../../../components/atoms/Button/Button";
-import { formatDate } from "../../../utils/helpers";
+import { formatDate } from "../../../services/helpers";
 
 export const PartsRequestContainer = () => {
   const [requests, setRequests] = useState([]);
@@ -16,7 +16,7 @@ export const PartsRequestContainer = () => {
 
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const latestRequestRef = useRef(0);
@@ -238,6 +238,7 @@ export const PartsRequestContainer = () => {
       {
         key: "actions",
         label: "Actions",
+          sortable: false,
         render: (_, row) => (
           <Button
             variant="primary"

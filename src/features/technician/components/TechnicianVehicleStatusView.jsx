@@ -7,7 +7,7 @@ import { ErrorBoundary } from "../../../components/molecules/ErrorBoundary/Error
 import { WorkOrderDetailModal } from "./WorkOrderDetailModal"; // <-- 1. IMPORT MODAL
 
 // Import CSS cần thiết
-import "../../warranty/components/WarrantyClaimListView.css";
+// import "../../warranty/components/WarrantyClaimListView.css";
 import "./TechnicianVehicleStatusView.css";
 
 export const TechnicianVehicleStatusView = ({
@@ -58,22 +58,21 @@ export const TechnicianVehicleStatusView = ({
             <p>You have no assigned work orders yet.</p>
           </div>
         ) : (
-          // Render DataTable
           <DataTable
             data={data}
             columns={columns}
             isLoading={false}
             noDataMessage="No work orders"
-            searchable={true}
-            pagination={true}
-            serverSide={true}
+            searchable
+            pagination
+            serverSide
             totalRecords={pagination?.totalRecords ?? data.length}
             currentPage={pagination?.pageNumber ?? 0}
-            pageSize={pagination?.pageSize ?? 20}
+            pageSize={pagination?.pageSize ?? 10}
             onPageChange={onPageChange}
-            sortable={true}
-            hoverable={true}
-            striped={true}
+            hoverable
+            striped
+            loadingMessage="Loading work orders..."
           />
         )}
 

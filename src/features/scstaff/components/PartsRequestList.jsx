@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { DataTable } from "../../../components/organisms/DataTable/DataTable";
 import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { ErrorBoundary } from "../../../components/molecules/ErrorBoundary/ErrorBoundary";
-import "../../warranty/components/WarrantyClaimListView.css";
+import "./WarrantyClaimListView.css";
 
 export const PartsRequestList = ({
   data = [],
@@ -16,7 +16,7 @@ export const PartsRequestList = ({
 }) => {
   const totalRecords = pagination?.totalRecords ?? data.length;
   const currentPage = pagination?.pageNumber ?? 0;
-  const pageSize = pagination?.pageSize ?? 20;
+  const pageSize = pagination?.pageSize ?? 10;
 
   return (
     <ErrorBoundary>

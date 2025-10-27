@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Button } from '../../../components/atoms/Button/Button';
 import { Modal } from '../../../components/molecules/Modal/Modal';
 import { DetailSection } from '../../../components/molecules/DetailSection/DetailSection';
@@ -7,13 +8,20 @@ import { WarrantyRecordsSection } from '../../../components/molecules/WarrantyRe
 import { request, ApiEnum } from '../../../services/NetworkUntil';
 import './CreateWarrantyClaimModal.css';
 
-export const CreateWarrantyClaimModal = ({ show, onHide, vehicle, onSubmit }) => {
+export const CreateWarrantyClaimModal = ({ show, onClose, vehicle, onSubmit }) => {
   const [description, setDescription] = useState('');
   const [assignTech, setAssignTech] = useState(false);
   const [technicians, setTechnicians] = useState([{ id: 1, selectedValue: '' }]); // Initial tech slot
   const [availableTechs, setAvailableTechs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const resetForm = useCallback(() => {
+    setDescription('');
+    setAssignTech(false);
+    setTechnicians([{ id: 1, selectedValue: '' }]);
+    setError(null);
+  }, []);
 
   useEffect(() => {
     const fetchTechnicians = async () => {
@@ -62,6 +70,19 @@ export const CreateWarrantyClaimModal = ({ show, onHide, vehicle, onSubmit }) =>
     onSubmit(formData);
   };
 
+  useEffect(() => {
+    if (!show) {
+      resetForm();
+    }
+  }, [show, resetForm]);
+
+  const handleClose = () => {
+    resetForm();
+    if (typeof onClose === 'function') {
+      onClose();
+    }
+  };
+
   if (!vehicle) return null;
 
   // SỬA 1: Lấy danh sách các ID đã được chọn ở TẤT CẢ các hàng
@@ -70,7 +91,7 @@ export const CreateWarrantyClaimModal = ({ show, onHide, vehicle, onSubmit }) =>
   return (
     <Modal
       isOpen={show}
-      onClose={onHide}
+      onClose={handleClose}
       title="Create Warranty Claim"
       size="lg"
       showFooter={false}
@@ -204,7 +225,7 @@ export const CreateWarrantyClaimModal = ({ show, onHide, vehicle, onSubmit }) =>
           )}
         </DetailSection>
 
-        <DetailModalActions onBack={onHide} backLabel="Cancel">
+        <DetailModalActions onBack={handleClose} backLabel="Cancel">
           <Button variant="primary" type="submit">
             Create Warranty Claim
           </Button>
@@ -212,4 +233,11 @@ export const CreateWarrantyClaimModal = ({ show, onHide, vehicle, onSubmit }) =>
       </form>
     </Modal>
   );
+};
+
+CreateWarrantyClaimModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+  vehicle: PropTypes.object,
+  onSubmit: PropTypes.func.isRequired,
 };

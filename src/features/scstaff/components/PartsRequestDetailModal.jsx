@@ -4,7 +4,7 @@ import { Modal } from "../../../components/molecules/Modal/Modal";
 import { DetailSection } from "../../../components/molecules/DetailSection/DetailSection";
 import { DetailModalActions } from "../../../components/molecules/DetailModalActions/DetailModalActions";
 import { Button } from "../../../components/atoms/Button/Button";
-import { formatDate } from "../../../utils/helpers";
+import { formatDate } from "../../../services/helpers";
 import "./PartsRequest.css";
 
 export const PartsRequestDetailModal = ({

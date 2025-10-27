@@ -1,7 +1,7 @@
 // src/features/evmStaff/containers/EVMStaffWarrantyListContainer.jsx
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { request, ApiEnum } from "../../../services/NetworkUntil";
-import { normalizePagedResult } from "../../../utils/helpers";
+import { normalizePagedResult } from "../../../services/helpers";
 import { EVMStaffWarrantyList } from "../components/EVMStaffWarrantyList";
 import { EVMStaffConfirmationModal } from "../components/EVMStaffConfirmationModal";
 
@@ -14,7 +14,7 @@ export const EVMStaffWarrantyListContainer = () => {
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [pagination, setPagination] = useState({
     pageNumber: 0,
-    pageSize: 20,
+    pageSize: 10,
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);

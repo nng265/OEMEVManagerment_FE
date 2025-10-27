@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Modal } from "../../../components/molecules/Modal/Modal";
 import { Button } from "../../../components/atoms/Button/Button";
 import { DetailModalActions } from "../../../components/molecules/DetailModalActions/DetailModalActions";
-import { BaseWarrantyDetailSection } from "../../warranty/components/BaseWarrantyDetailSection"; // Sử dụng lại base
+import { BaseWarrantyDetailSection } from "../../scstaff/components/BaseWarrantyDetailSection"; // Sử dụng lại base
 import { Input } from "../../../components/atoms/Input/Input";
 
 export const EVMStaffConfirmationModal = ({
