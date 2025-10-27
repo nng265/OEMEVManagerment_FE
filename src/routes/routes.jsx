@@ -8,6 +8,10 @@ import { TechnicianVehicleStatusContainer } from "../features/technician/contain
 import { WarrantyClaimListContainer } from "../features/warranty/containers";
 import { PrivateRoute } from "./PrivateRoutes";
 import EVMStaffWarrantyListContainer from "../features/evmstaff/containers/EVMStaffWarrantyListContainer";
+import { EVMPartsListContainer } from "../features/evmstaff/containers/EVMPartsListContainer";
+import { PartsRequestContainer } from "../features/scstaff/containers";
+import { ServiceCenterInventoryContainer } from "../features/servicecenter/containers/ServiceCenterInventoryContainer";
+import { EVMStaffInventoryContainer } from "../features/evmstaff/containers/EVMStaffInventoryContainer";
 
 // Public routes that don't require authentication
 export const publicRoutes = [
@@ -53,6 +57,26 @@ export const privateRoutes = [
       {
         path: "evmstaff",
         element: <EVMStaffWarrantyListContainer />,
+      },
+
+      {
+        path: "evmpartslist",
+        element: <EVMPartsListContainer />,
+      },
+
+      {
+        path: "parts-request",
+        element: <PartsRequestContainer />,
+      },
+
+      {
+        path: "inventory",
+        element: <ServiceCenterInventoryContainer />,
+      },
+
+      {
+        path: "evmstaff_inventory",
+        element: <EVMStaffInventoryContainer />,
       },
     ],
   },

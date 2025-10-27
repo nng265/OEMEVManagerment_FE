@@ -1,16 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from '../../../components/molecules/Modal/Modal';
 import { DetailSection } from '../../../components/molecules/DetailSection/DetailSection';
 import { DetailModalActions } from '../../../components/molecules/DetailModalActions/DetailModalActions';
 import { WarrantyRecordsSection } from '../../../components/molecules/WarrantyRecordsSection/WarrantyRecordsSection';
 
-export const VehicleDetailModal = ({ show, onHide, vehicle }) => {
+export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
   if (!vehicle) return null;
 
   return (
     <Modal 
       isOpen={show} 
-      onClose={onHide}
+      onClose={onClose}
       title="Vehicle Details"
       size="lg"
       showFooter={false}
@@ -51,7 +52,21 @@ export const VehicleDetailModal = ({ show, onHide, vehicle }) => {
 
       <WarrantyRecordsSection warrantyRecords={vehicle.policyInformation} />
 
-      <DetailModalActions onBack={onHide} backLabel="Close" />
+      <DetailModalActions onBack={onClose} backLabel="Close" />
     </Modal>
   );
+};
+
+VehicleDetailModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  vehicle: PropTypes.shape({
+    vin: PropTypes.string,
+    model: PropTypes.string,
+    year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    customerName: PropTypes.string,
+    customerPhoneNunmber: PropTypes.string,
+    customerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    policyInformation: PropTypes.array
+  })
 };

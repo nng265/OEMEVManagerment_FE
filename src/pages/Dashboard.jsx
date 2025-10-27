@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { Sidebar } from "../../components/organisms/Sidebar/Sidebar";
-import { Navbar } from "../../components/organisms/Navbar/Navbar";
-import { WarrantyClaimListView } from "../../features/warranty/components/WarrantyClaimListView";
-import { CarListView } from "../../features/car/components/CarListView";
-import { TechnicianVehicleStatusContainer } from "../../features/technician/containers";
+import { useAuth } from "../context/AuthContext";
+import { Sidebar } from "../components/organisms/Sidebar/Sidebar";
+import { Navbar } from "../components/organisms/Navbar/Navbar";
+import { WarrantyClaimListView } from "../features/scstaff/components/WarrantyClaimListView";
+import { CarListView } from "../features/scstaff/components/CarListView";
+import { TechnicianVehicleStatusContainer } from "../features/technician/containers";
 import EVMStaffWarrantyList from "../../features/warranty/components/EVMStaffWarrantyList";
 
 import "./Dashboard.css";

@@ -15,6 +15,8 @@ export const TechnicianVehicleStatusView = ({
   columns,
   loading,
   error,
+  pagination,
+  onPageChange,
 
   // 2. NHẬN CÁC PROPS TỪ CONTAINER
   selectedWorkOrder,
@@ -64,6 +66,11 @@ export const TechnicianVehicleStatusView = ({
             noDataMessage="No work orders"
             searchable={true}
             pagination={true}
+            serverSide={true}
+            totalRecords={pagination?.totalRecords ?? data.length}
+            currentPage={pagination?.pageNumber ?? 0}
+            pageSize={pagination?.pageSize ?? 20}
+            onPageChange={onPageChange}
             sortable={true}
             hoverable={true}
             striped={true}
@@ -100,6 +107,12 @@ TechnicianVehicleStatusView.propTypes = {
   columns: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string,
+  pagination: PropTypes.shape({
+    pageNumber: PropTypes.number,
+    pageSize: PropTypes.number,
+    totalRecords: PropTypes.number,
+  }),
+  onPageChange: PropTypes.func,
   // Thêm prop types cho modal
   selectedWorkOrder: PropTypes.object,
   showDetailModal: PropTypes.bool,

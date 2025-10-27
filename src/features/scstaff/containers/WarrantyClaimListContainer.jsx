@@ -1,8 +1,9 @@
 // src/features/warranty/containers/WarrantyClaimListContainer.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, ApiEnum } from "../../../services/NetworkUntil";
 import { Button } from "../../../components/atoms";
 import { WarrantyClaimListView } from "../components/WarrantyClaimListView";
+import { normalizePagedResult } from "../../../utils/helpers";
 
 export const WarrantyClaimListContainer = () => {
   const [warrantyClaims, setWarrantyClaims] = useState([]);
@@ -31,6 +32,16 @@ export const WarrantyClaimListContainer = () => {
   // State for assigned technicians (for under inspection and under repair)
   const [assignedTechnicians, setAssignedTechnicians] = useState([]);
   const [loadingAssignedTechs, setLoadingAssignedTechs] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageNumber: 0,
+    pageSize: 20,
+    totalRecords: 0,
+  });
+  const paginationRef = useRef(pagination);
+
+  useEffect(() => {
+    paginationRef.current = pagination;
+  }, [pagination]);
 
   // ========================== TABLE COLUMNS ==========================
   const columns = [
@@ -116,26 +127,80 @@ export const WarrantyClaimListContainer = () => {
   }
 };
 
-  useEffect(() => {
-    fetchWarrantyClaims();
-  }, [statusFilter]);
+  const fetchWarrantyClaims = useCallback(
+    async (pageNumber = 0, pageSize) => {
+      const effectivePageSize =
+        typeof pageSize === "number"
+          ? pageSize
+          : paginationRef.current.pageSize;
+      setIsLoading(true);
+      setError(null);
 
-  const fetchWarrantyClaims = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = statusFilter
-        ? await request(ApiEnum.GET_WARRANTY_CLAIMS_BY_STATUS, { params: { status: statusFilter } })
-        : await request(ApiEnum.GET_WARRANTY_CLAIMS);
-      
-      setWarrantyClaims(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      setError("An error occurred. Please try again later.");
-      setWarrantyClaims([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        const response = statusFilter
+          ? await request(ApiEnum.GET_WARRANTY_CLAIMS_BY_STATUS, {
+              params: { status: statusFilter },
+              Page: pageNumber,
+              Size: effectivePageSize,
+            })
+          : await request(ApiEnum.GET_WARRANTY_CLAIMS, {
+              Page: pageNumber,
+              Size: effectivePageSize,
+            });
+
+        const {
+          success,
+          items,
+          totalRecords,
+          page,
+          size,
+          message,
+        } = normalizePagedResult(response, []);
+
+        if (success) {
+          setWarrantyClaims(items);
+          setPagination({
+            pageNumber: typeof page === "number" ? page : pageNumber,
+            pageSize:
+              typeof size === "number" && size > 0 ? size : effectivePageSize,
+            totalRecords:
+              typeof totalRecords === "number" ? totalRecords : items.length,
+          });
+        } else {
+          setWarrantyClaims([]);
+          setPagination((prev) => ({
+            ...prev,
+            pageNumber,
+            pageSize: effectivePageSize,
+            totalRecords: 0,
+          }));
+          setError(message || "Unable to load warranty claims.");
+        }
+      } catch (error) {
+        console.error("Error fetching warranty claims:", error);
+        const message =
+          error?.responseData?.message ||
+          error?.message ||
+          "An error occurred. Please try again later.";
+        setWarrantyClaims([]);
+        setPagination((prev) => ({
+          ...prev,
+          pageNumber,
+          pageSize: effectivePageSize,
+          totalRecords: 0,
+        }));
+        setError(message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [statusFilter]
+  );
+
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
+    fetchWarrantyClaims(0, paginationRef.current.pageSize);
+  }, [fetchWarrantyClaims]);
 
   // Fetch assigned technicians for a specific claim
   const fetchAssignedTechnicians = async (claimId) => {
@@ -236,7 +301,8 @@ export const WarrantyClaimListContainer = () => {
       const response = await request(ApiEnum.ASSIGN_TECHNICIAN, payload);
       if (response.success) {
         handleCloseAssign();
-        fetchWarrantyClaims();
+  const { pageNumber, pageSize } = paginationRef.current;
+  fetchWarrantyClaims(pageNumber, pageSize);
       } else {
         setError(response.message || "Assignment failed");
       }
@@ -312,7 +378,8 @@ export const WarrantyClaimListContainer = () => {
         handleCloseDeniedOrRepaired();
         handleCloseCarBackHome();
         handleCloseSentToManufacturer();
-        fetchWarrantyClaims();
+  const { pageNumber, pageSize } = paginationRef.current;
+  fetchWarrantyClaims(pageNumber, pageSize);
       } else {
         setError(response.message || "Operation failed. Please try again.");
       }
@@ -324,6 +391,13 @@ export const WarrantyClaimListContainer = () => {
     }
   };
 
+  const handlePageChange = useCallback(
+    (page, size) => {
+      fetchWarrantyClaims(page, size);
+    },
+    [fetchWarrantyClaims]
+  );
+
   // ========================== RENDER ==========================
   return (
     <WarrantyClaimListView
@@ -334,6 +408,8 @@ export const WarrantyClaimListContainer = () => {
       statusFilter={statusFilter}
       onStatusFilterChange={setStatusFilter}
       statusOptions={statusOptions}
+  pagination={pagination}
+  onPageChange={handlePageChange}
       selectedClaim={selectedWarrantyClaim}
       
       // Default detail modal
