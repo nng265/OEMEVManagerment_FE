@@ -74,6 +74,9 @@ export const WorkOrderDetailModal = ({
         model: p.model || "",
         serial: p.serialNumberOld || p.serial || "",
         newSerial: p.serialNumberNew || p.newSerial || "",
+        // Thêm models và serials riêng cho từng part
+        availableModels: [],
+        availableSerials: [],
       })
     );
 
@@ -81,7 +84,15 @@ export const WorkOrderDetailModal = ({
     if (apiParts.length > 0) return apiParts;
     if (initiallyShowOnePart)
       return [
-        { action: "", category: "", model: "", serial: "", newSerial: "" },
+        { 
+          action: "", 
+          category: "", 
+          model: "", 
+          serial: "", 
+          newSerial: "",
+          availableModels: [],
+          availableSerials: [],
+        },
       ];
     return [];
   });
@@ -96,7 +107,15 @@ export const WorkOrderDetailModal = ({
   const addPartRow = () => {
     setParts((prev) => [
       ...prev,
-      { action: "", category: "", model: "", serial: "", newSerial: "" },
+      { 
+        action: "", 
+        category: "", 
+        model: "", 
+        serial: "", 
+        newSerial: "",
+        availableModels: [],
+        availableSerials: [],
+      },
     ]);
   };
 
@@ -483,13 +502,29 @@ export const WorkOrderDetailModal = ({
                     <div className="col category">
                       <select
                         value={p.category}
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const newCategory = e.target.value;
                           updatePart(idx, "category", newCategory);
                           updatePart(idx, "model", "");
                           updatePart(idx, "serial", "");
-                          if (typeof fetchModels === "function")
-                            fetchModels(newCategory);
+                          
+                          // Fetch models riêng cho part này
+                          if (typeof fetchModels === "function") {
+                            try {
+                              const fetchedModels = await fetchModels(newCategory);
+                              // Cập nhật availableModels cho part này
+                              setParts((prev) => {
+                                const copy = [...prev];
+                                copy[idx] = { 
+                                  ...copy[idx], 
+                                  availableModels: fetchedModels || [] 
+                                };
+                                return copy;
+                              });
+                            } catch (err) {
+                              console.error("Error fetching models:", err);
+                            }
+                          }
                         }}
                       >
                         {!p.category && (
@@ -506,7 +541,7 @@ export const WorkOrderDetailModal = ({
                     <div className="col model">
                       <select
                         value={p.model}
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const newModel = e.target.value;
                           updatePart(idx, "model", newModel);
                           updatePart(idx, "serial", "");
@@ -514,13 +549,29 @@ export const WorkOrderDetailModal = ({
                             warrantyInfo?.vin ||
                             workOrderData?.warrantyClaim?.vin ||
                             "";
-                          if (typeof fetchSerial === "function")
-                            fetchSerial(vin, newModel);
+                          
+                          // Fetch serials riêng cho part này
+                          if (typeof fetchSerial === "function") {
+                            try {
+                              const fetchedSerials = await fetchSerial(vin, newModel);
+                              // Cập nhật availableSerials cho part này
+                              setParts((prev) => {
+                                const copy = [...prev];
+                                copy[idx] = { 
+                                  ...copy[idx], 
+                                  availableSerials: fetchedSerials || [] 
+                                };
+                                return copy;
+                              });
+                            } catch (err) {
+                              console.error("Error fetching serials:", err);
+                            }
+                          }
                         }}
                         disabled={!p.category}
                       >
                         {!p.model && <option value="">Select Model</option>}
-                        {models.map((m, i) => (
+                        {(p.availableModels || []).map((m, i) => (
                           <option key={i} value={m}>
                             {m}
                           </option>
@@ -537,7 +588,7 @@ export const WorkOrderDetailModal = ({
                         disabled={!p.model}
                       >
                         {!p.serial && <option value="">Select Serial</option>}
-                        {serials.map((s, i) => (
+                        {(p.availableSerials || []).map((s, i) => (
                           <option key={i} value={s}>
                             {s}
                           </option>

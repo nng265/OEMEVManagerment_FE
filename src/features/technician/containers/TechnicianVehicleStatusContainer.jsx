@@ -204,7 +204,7 @@ export const TechnicianVehicleStatusContainer = () => {
     try {
       if (!categoryName) {
         setModels([]);
-        return;
+        return [];
       }
       const response = await request(ApiEnum.GET_PART_MODEL, {
         category: categoryName,
@@ -218,8 +218,10 @@ export const TechnicianVehicleStatusContainer = () => {
         ? response.data
         : [];
       setModels(mods);
+      return mods; // Return data để modal có thể dùng
     } catch (error) {
       console.error("Error fetching models:", error);
+      return [];
     }
   };
 
@@ -228,7 +230,7 @@ export const TechnicianVehicleStatusContainer = () => {
     try {
       if (!vin || !modelName) {
         setSerials([]);
-        return;
+        return [];
       }
 
       console.log("fetchSerial called with:", { vin, modelName });
@@ -247,9 +249,11 @@ export const TechnicianVehicleStatusContainer = () => {
         ? response.data
         : [];
       setSerials(sers);
+      return sers; // Return data để modal có thể dùng
     } catch (error) {
       console.error("Error fetching serials:", error);
       setSerials([]);
+      return [];
     }
   };
 
