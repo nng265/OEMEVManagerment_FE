@@ -20,9 +20,11 @@ export const DashboardLayout = () => {
       case "staff_vehicle":
         navigate("/vehicles");
         break;
+        
       case "staff_warranty":
         navigate("/warranty");
         break;
+
       case "technician_vehicle_status":
         navigate("/technician");
         break;
@@ -30,6 +32,23 @@ export const DashboardLayout = () => {
       case "evm_warranty_claims":
         navigate("/evmstaff");
         break;
+        
+      case "evm_parts_list":
+        navigate("/evmpartslist");
+        break;
+
+      case "staff_parts_request":
+        navigate("/parts-request");
+        break;
+
+      case "service_center_inventory":
+        navigate("/inventory");
+        break;
+
+      case "manufacturer_inventory":
+        navigate("/evmstaff_inventory");
+        break;
+
       default:
         navigate("/dashboard");
     }

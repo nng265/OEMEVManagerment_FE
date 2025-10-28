@@ -7,7 +7,7 @@ import { ErrorBoundary } from "../../../components/molecules/ErrorBoundary/Error
 import { WorkOrderDetailModal } from "./WorkOrderDetailModal"; // <-- 1. IMPORT MODAL
 
 // Import CSS cần thiết
-import "../../warranty/components/WarrantyClaimListView.css";
+// import "../../warranty/components/WarrantyClaimListView.css";
 import "./TechnicianVehicleStatusView.css";
 
 export const TechnicianVehicleStatusView = ({
@@ -15,6 +15,8 @@ export const TechnicianVehicleStatusView = ({
   columns,
   loading,
   error,
+  pagination,
+  onPageChange,
 
   // 2. NHẬN CÁC PROPS TỪ CONTAINER
   selectedWorkOrder,
@@ -56,17 +58,21 @@ export const TechnicianVehicleStatusView = ({
             <p>You have no assigned work orders yet.</p>
           </div>
         ) : (
-          // Render DataTable
           <DataTable
             data={data}
             columns={columns}
             isLoading={false}
             noDataMessage="No work orders"
-            searchable={true}
-            pagination={true}
-            sortable={true}
-            hoverable={true}
-            striped={true}
+            searchable
+            pagination
+            serverSide
+            totalRecords={pagination?.totalRecords ?? data.length}
+            currentPage={pagination?.pageNumber ?? 0}
+            pageSize={pagination?.pageSize ?? 10}
+            onPageChange={onPageChange}
+            hoverable
+            striped
+            loadingMessage="Loading work orders..."
           />
         )}
 
@@ -100,6 +106,12 @@ TechnicianVehicleStatusView.propTypes = {
   columns: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string,
+  pagination: PropTypes.shape({
+    pageNumber: PropTypes.number,
+    pageSize: PropTypes.number,
+    totalRecords: PropTypes.number,
+  }),
+  onPageChange: PropTypes.func,
   // Thêm prop types cho modal
   selectedWorkOrder: PropTypes.object,
   showDetailModal: PropTypes.bool,

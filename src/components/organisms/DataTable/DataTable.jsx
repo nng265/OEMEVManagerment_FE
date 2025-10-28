@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+// src/components/molecules/DataTable/DataTable.jsx
+import React, { useState, useMemo, useId } from 'react';
 import PropTypes from 'prop-types';
 import './DataTable.css';
 import { LoadingSpinner } from '../../atoms/LoadingSpinner/LoadingSpinner';
@@ -6,140 +7,194 @@ import { Input } from '../../atoms/Input/Input';
 import { Button } from '../../atoms/Button/Button';
 
 export const DataTable = ({
-  data,
-  columns,
+  data = [],
+  columns = [],
   isLoading = false,
-  noDataMessage = 'No data available',
+  noDataMessage = "No data available",
   onRowClick,
-  sortable = true,
+  serverSide = false,
   pagination = true,
   pageSize = 10,
-  selectable = false,
+  totalRecords = 0,
+  currentPage = 0, // 0-based index
+  onPageChange,
   searchable = false,
   exportable = false,
+  sortable = true,
   responsive = true,
   striped = true,
   hoverable = true,
   dense = false,
-  onRowSelect
+  searchPlaceholder = 'Search...',
+  onSearchChange,
+  toolbarActions,
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: 'asc'
-  });
-
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [pageSizeOption, setPageSizeOption] = useState(pageSize);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const searchInputId = useId();
+  const searchInputName = useMemo(
+    () => `datatable-search-${String(searchInputId).replace(/:/g, '-')}`,
+    [searchInputId]
+  );
 
-  // Search and filter data
+  // ✅ Search local
   const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
+    if (!searchable || serverSide || !searchTerm.trim()) return data;
+    return data.filter((row) =>
+      Object.values(row).some((value) =>
+        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [data, searchTerm, searchable, serverSide]);
 
-    return data.filter(row => {
-      return columns.some(column => {
-        const value = row[column.key];
-        if (value === null || value === undefined) return false;
-        return String(value).toLowerCase().includes(searchTerm.toLowerCase());
-      });
-    });
-  }, [data, columns, searchTerm]);
-
-  // Sort data
+  // ✅ Sort local
   const sortedData = useMemo(() => {
-    if (!sortConfig.key) return filteredData;
+    if (!sortable || !sortConfig.key) return filteredData;
 
-    return [...filteredData].sort((a, b) => {
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
+    const activeColumn = columns.find((col) => col.key === sortConfig.key);
+    if (!activeColumn) return filteredData;
+
+    const resolveValue = (row) => {
+      if (typeof activeColumn.getSortValue === 'function') {
+        return activeColumn.getSortValue(row);
+      }
+      if (typeof activeColumn.sortValue === 'function') {
+        return activeColumn.sortValue(row[activeColumn.key], row);
+      }
+      return row[activeColumn.key];
+    };
+
+    const toComparable = (value) => {
+      if (value === null || value === undefined) {
+        return { type: 'null', value: null };
+      }
+
+      const { sortType } = activeColumn;
+
+      if (sortType === 'number') {
+        const numeric = Number(value);
+        return Number.isNaN(numeric)
+          ? { type: 'string', value: String(value).toLowerCase() }
+          : { type: 'number', value: numeric };
+      }
+
+      if (sortType === 'date') {
+        const timestamp = value instanceof Date ? value.getTime() : Date.parse(value);
+        return Number.isNaN(timestamp)
+          ? { type: 'string', value: String(value).toLowerCase() }
+          : { type: 'number', value: timestamp };
+      }
+
+      if (typeof value === 'number') {
+        return { type: 'number', value };
+      }
+
+      if (value instanceof Date) {
+        return { type: 'number', value: value.getTime() };
+      }
+
+      if (typeof value === 'boolean') {
+        return { type: 'number', value: value ? 1 : 0 };
+      }
+
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (sortType !== 'string' && trimmed !== '') {
+          const numericCandidate = Number(trimmed);
+          if (!Number.isNaN(numericCandidate)) {
+            return { type: 'number', value: numericCandidate };
+          }
+        }
+        return { type: 'string', value: trimmed.toLowerCase() };
+      }
+
+      return { type: 'string', value: String(value).toLowerCase() };
+    };
+
+    const sorted = [...filteredData].sort((a, b) => {
+      const aValue = resolveValue(a);
+      const bValue = resolveValue(b);
 
       if (aValue === null || aValue === undefined) return 1;
       if (bValue === null || bValue === undefined) return -1;
 
-      const aString = String(aValue).toLowerCase();
-      const bString = String(bValue).toLowerCase();
+      const aComparable = toComparable(aValue);
+      const bComparable = toComparable(bValue);
 
-      if (aString < bString) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aString > bString) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [filteredData, sortConfig]);
+      let comparison = 0;
 
-  // Paginate data
-  const totalPages = Math.ceil(sortedData.length / pageSizeOption);
-  const paginatedData = useMemo(() => {
-    if (!pagination) return sortedData;
-    const start = (currentPage - 1) * pageSizeOption;
-    return sortedData.slice(start, start + pageSizeOption);
-  }, [sortedData, currentPage, pageSizeOption, pagination]);
-
-  const handleSort = (key) => {
-    if (!sortable) return;
-
-    setSortConfig((prevConfig) => ({
-      key,
-      direction:
-        prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc'
-    }));
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Handle row selection
-  const handleRowSelect = (row, isSelected) => {
-    setSelectedRows(prevSelected => {
-      const newSelected = isSelected
-        ? [...prevSelected, row.id]
-        : prevSelected.filter(id => id !== row.id);
-      
-      if (onRowSelect) {
-        onRowSelect(newSelected);
+      if (aComparable.type === 'number' && bComparable.type === 'number') {
+        comparison = aComparable.value - bComparable.value;
+      } else {
+        const aStr = String(aComparable.value);
+        const bStr = String(bComparable.value);
+        comparison = aStr.localeCompare(bStr, undefined, {
+          numeric: true,
+          sensitivity: 'base',
+        });
       }
-      return newSelected;
+
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
     });
+
+    return sorted;
+  }, [filteredData, sortConfig, sortable, columns]);
+
+  // ✅ Pagination client-side (0-based)
+  const totalPages = serverSide
+    ? Math.ceil(totalRecords / pageSize)
+    : Math.ceil(sortedData.length / pageSize);
+
+  const paginatedData = !serverSide && pagination
+    ? sortedData.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+    : sortedData;
+
+  // ✅ Page change (gửi ra ngoài)
+  const handlePageChange = (pageIndex) => {
+    if (onPageChange) onPageChange(pageIndex, pageSize);
   };
 
-  // Handle select all rows
-  const handleSelectAll = (isSelected) => {
-    setSelectedRows(isSelected ? paginatedData.map(row => row.id) : []);
-    if (onRowSelect) {
-      onRowSelect(isSelected ? paginatedData.map(row => row.id) : []);
+  const handlePageSizeChange = (e) => {
+    const newSize = Number(e.target.value);
+    if (onPageChange) onPageChange(0, newSize);
+  };
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (typeof onSearchChange === 'function') {
+      onSearchChange(value);
     }
   };
 
-  // Handle export data
+  // ✅ Sort handler
+  const handleSort = (column) => {
+    if (!sortable || column?.sortable === false) return;
+    const key = column.key;
+    if (!key) return;
+    setSortConfig((prev) => ({
+      key,
+      direction:
+        prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  // ✅ Export CSV (optional)
   const handleExport = () => {
-    const exportData = selectedRows.length > 0
-      ? sortedData.filter(row => selectedRows.includes(row.id))
-      : sortedData;
-
-    const csvContent = [
-      columns.map(col => col.label).join(','),
-      ...exportData.map(row =>
-        columns.map(col => {
-          const value = row[col.key];
-          return typeof value === 'string' && value.includes(',')
-            ? `"${value}"`
-            : value;
-        }).join(',')
-      )
-    ].join('\\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const csv = [
+      columns.map(c => c.label).join(','),
+      ...sortedData.map(row =>
+        columns.map(c => `"${row[c.key] ?? ''}"`).join(',')
+      ),
+    ].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'table_data.csv';
+    link.download = 'data.csv';
     link.click();
   };
 
-  // Reset to first page when search term changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
-
+  // ✅ Loading
   if (isLoading) {
     return (
       <div className="data-table-loading">
@@ -152,80 +207,77 @@ export const DataTable = ({
     'table',
     striped && 'table-striped',
     hoverable && 'table-hover',
-    dense && 'table-sm'
-  ].filter(Boolean).join(' ');
+    dense && 'table-sm',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const shouldShowSearch =
+    searchable && (!serverSide || typeof onSearchChange === 'function');
+  const shouldShowToolbar = shouldShowSearch || exportable || toolbarActions;
 
   return (
     <div className="data-table-container">
-      <div className="data-table-toolbar">
-        {searchable && (
-          <div className="data-table-search">
-            <Input
-              type="search"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              prefix={
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              }
-            />
-          </div>
-        )}
-        {exportable && (
-          <Button
-            onClick={handleExport}
-            variant="secondary"
-            size="sm"
-            disabled={data.length === 0}
-          >
-            Export CSV
-          </Button>
-        )}
-      </div>
+      {/* Toolbar */}
+      {shouldShowToolbar && (
+        <div className="data-table-toolbar">
+          {shouldShowSearch && (
+            <div className="data-table-search">
+              <Input
+                type="search"
+                placeholder={searchPlaceholder}
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                name={searchInputName}
+                id={searchInputName}
+              />
+            </div>
+          )}
 
+          {(toolbarActions || exportable) && (
+            <div className="data-table-toolbar-actions">
+              {toolbarActions}
+              {exportable && (
+                <Button variant="secondary" size="sm" onClick={handleExport}>
+                  Export CSV
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Table */}
       <div className={responsive ? 'table-responsive' : ''}>
         <table className={tableClasses}>
           <thead>
             <tr>
-              {selectable && (
-                <th className="select-cell">
-                  <input
-                    type="checkbox"
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    checked={
-                      paginatedData.length > 0 &&
-                      paginatedData.every(row => selectedRows.includes(row.id))
-                    }
-                    disabled={paginatedData.length === 0}
-                  />
-                </th>
-              )}
-              {columns.map((column) => (
-                <th
-                  key={column.key}
-                  onClick={() => sortable && handleSort(column.key)}
-                  className={sortable ? 'sortable' : ''}
-                >
-                  {column.label}
-                  {sortable && sortConfig.key === column.key && (
-                    <span className={`sort-icon ${sortConfig.direction}`}>
-                      {sortConfig.direction === 'asc' ? '▲' : '▼'}
-                    </span>
-                  )}
-                </th>
-              ))}
+              {columns.map((column) => {
+                const columnSortable = sortable && column?.sortable !== false;
+                return (
+                  <th
+                    key={column.key}
+                    onClick={() => handleSort(column)}
+                    className={columnSortable ? 'sortable' : ''}
+                  >
+                    {column.label}
+                    {columnSortable && sortConfig.key === column.key && (
+                      <span className={`sort-icon ${sortConfig.direction}`}>
+                        {sortConfig.direction === 'asc' ? '▲' : '▼'}
+                      </span>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
-            {paginatedData.length > 0 ? (
+            {paginatedData && paginatedData.length > 0 ? (
               paginatedData.map((row, index) => (
                 <tr
                   key={row.id || index}
                   onClick={() => onRowClick && onRowClick(row)}
-                  className={onRowClick ? 'clickable' : ''}
+                  className={onRowClick ? "clickable" : ""}
                 >
                   {columns.map((column) => (
                     <td key={column.key}>
@@ -238,7 +290,7 @@ export const DataTable = ({
               ))
             ) : (
               <tr>
-                <td colSpan={selectable ? columns.length + 1 : columns.length} className="text-center">
+                <td colSpan={columns.length} className="text-center">
                   {noDataMessage}
                 </td>
               </tr>
@@ -247,86 +299,85 @@ export const DataTable = ({
         </table>
       </div>
 
-      {pagination && totalPages > 1 && (
+      {/* Pagination */}
+      {pagination && (
         <div className="data-table-footer">
           <div className="page-size-selector">
             <span>Rows per page:</span>
-            <select
-              value={pageSizeOption}
-              onChange={(e) => {
-                setPageSizeOption(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-            >
-              {[10, 25, 50, 100].map(size => (
+            <select value={pageSize} onChange={handlePageSizeChange}>
+              {[10, 20, 50, 100].map((size) => (
                 <option key={size} value={size}>{size}</option>
               ))}
             </select>
           </div>
-          
+
           <div className="pagination-info">
-            Showing {((currentPage - 1) * pageSizeOption) + 1} to {Math.min(currentPage * pageSizeOption, sortedData.length)} of {sortedData.length} entries
+            {serverSide ? (
+              <>
+                Showing {currentPage * pageSize + 1}–
+                {Math.min((currentPage + 1) * pageSize, totalRecords)} of {totalRecords}
+              </>
+            ) : (
+              <>
+                Showing {currentPage * pageSize + 1}–
+                {Math.min((currentPage + 1) * pageSize, sortedData.length)} of {sortedData.length}
+              </>
+            )}
           </div>
 
-          <div className="pagination">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => handlePageChange(1)}
-              disabled={currentPage === 1}
-            >
-              First
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
-            <div className="pagination-pages">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let pageNum;
-                if (totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
-                
-                return (
+          {totalPages > 1 && (
+            <div className="pagination">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handlePageChange(0)}
+                disabled={currentPage === 0}
+              >
+                First
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 0}
+              >
+                Prev
+              </Button>
+
+              {Array.from({ length: totalPages }, (_, i) => i)
+                .slice(
+                  Math.max(0, currentPage - 2),
+                  Math.min(totalPages, currentPage + 3)
+                )
+                .map((pageIndex) => (
                   <Button
-                    key={pageNum}
-                    variant={pageNum === currentPage ? 'primary' : 'secondary'}
+                    key={pageIndex}
+                    variant={pageIndex === currentPage ? 'primary' : 'secondary'}
                     size="sm"
-                    onClick={() => handlePageChange(pageNum)}
+                    onClick={() => handlePageChange(pageIndex)}
                   >
-                    {pageNum}
+                    {pageIndex + 1}
                   </Button>
-                );
-              })}
+                ))}
+
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage >= totalPages - 1}
+              >
+                Next
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handlePageChange(totalPages - 1)}
+                disabled={currentPage >= totalPages - 1}
+              >
+                Last
+              </Button>
             </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => handlePageChange(totalPages)}
-              disabled={currentPage === totalPages}
-            >
-              Last
-            </Button>
-          </div>
+          )}
         </div>
       )}
     </div>
@@ -334,27 +385,19 @@ export const DataTable = ({
 };
 
 DataTable.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      render: PropTypes.func,
-      sortable: PropTypes.bool
-    })
-  ).isRequired,
+  data: PropTypes.array.isRequired,
+  columns: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
   noDataMessage: PropTypes.string,
   onRowClick: PropTypes.func,
   sortable: PropTypes.bool,
   pagination: PropTypes.bool,
+  serverSide: PropTypes.bool,
+  totalRecords: PropTypes.number,
   pageSize: PropTypes.number,
-  selectable: PropTypes.bool,
-  searchable: PropTypes.bool,
-  exportable: PropTypes.bool,
-  responsive: PropTypes.bool,
-  striped: PropTypes.bool,
-  hoverable: PropTypes.bool,
-  dense: PropTypes.bool,
-  onRowSelect: PropTypes.func
+  currentPage: PropTypes.number,
+  onPageChange: PropTypes.func,
+  searchPlaceholder: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  toolbarActions: PropTypes.node,
 };
