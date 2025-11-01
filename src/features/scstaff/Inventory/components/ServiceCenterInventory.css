@@ -1,0 +1,51 @@
+/* Ép container sát lên top */
+.sc-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Giống style Vehicles */
+.sc-inventory {
+  margin-top: 0 !important;
+  padding: 24px !important;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Tiêu đề */
+.sc-inventory__title {
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Mô tả phụ */
+.sc-inventory__subtitle {
+  margin: 0 0 16px 0;
+  color: #4b5563;
+}
+
+/* Thanh lọc */
+.sc-inventory__filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.sc-inventory__search,
+.sc-inventory__select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.sc-inventory__table-wrapper {
+  margin-top: 8px;
+}

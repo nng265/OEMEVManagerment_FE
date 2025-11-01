@@ -1,68 +1,128 @@
+/* src/index.css */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  /* Colors */
+  --primary-color: #00509d; /* Deep Blue */
+  --primary-darker: #003666;
+  --secondary-color: #6c757d; /* Gray */
+  --secondary-darker: #5a6268;
+  --success-color: #28a745; /* Green */
+  --success-darker: #218838;
+  --danger-color: #dc3545; /* Red */
+  --danger-darker: #c82333;
+  --warning-color: #ffc107; /* Yellow */
+  --warning-darker: #e0a800;
+  --info-color: #17a2b8; /* Teal */
+  --info-darker: #138496;
+  --light-color: #f8f9fa; /* Off-white */
+  --light-darker: #e2e6ea;
+  --dark-color: #1a2035; /* Dark Blue/Gray for Sidebar */
+  --dark-darker: #131726;
+  --text-light: #ffffff;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+  --bs-primary: var(--primary-color);
+  --bs-primary-darker: var(--primary-darker);
+  --bs-secondary: var(--secondary-color);
+  --bs-secondary-darker: var(--secondary-darker);
+  --bs-success: var(--success-color);
+  --bs-success-darker: var(--success-darker);
+  --bs-danger: var(--danger-color);
+  --bs-danger-darker: var(--danger-darker);
+  --bs-warning: var(--warning-color);
+  --bs-warning-darker: var(--warning-darker);
+  --bs-info: var(--info-color);
+  --bs-info-darker: var(--info-darker);
+  --bs-light: var(--light-color);
+  --bs-light-darker: var(--light-darker);
+  --bs-dark: var(--dark-color);
+  --bs-dark-darker: var(--dark-darker);
+  --bs-primary-rgb: 0, 80, 157; /* RGB for primary color */
+
+  /* Layout */
+  --navbar-height: 64px;
+  --sidebar-open-width: 260px;
+  --sidebar-collapsed-width: 80px;
+
+  /* Transitions */
+  --transition-speed: 0.3s;
+  --transition-ease: ease;
+
+  /* Fonts */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.6;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  color: var(--text-dark);
+  background-color: #f4f7fc; /* Light background for the main content area */
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  background-color: #f4f7fc; /* Ensure body also has the light background */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Base styles for scrollbars for a more modern look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+/* Ensure smooth transitions globally */
+* {
+  transition: background-color var(--transition-speed) var(--transition-ease),
+    color var(--transition-speed) var(--transition-ease),
+    border-color var(--transition-speed) var(--transition-ease),
+    box-shadow var(--transition-speed) var(--transition-ease),
+    transform var(--transition-speed) var(--transition-ease),
+    width var(--transition-speed) var(--transition-ease),
+    left var(--transition-speed) var(--transition-ease);
 }
-button:hover {
-  border-color: #646cff;
+
+/* Main content area padding */
+.main-content {
+  padding: calc(var(--navbar-height) -50px) 24px 24px;
+  transition: margin-left var(--transition-speed) var(--transition-ease);
 }
+
+.main-content.sidebar-open {
+  margin-left: var(--sidebar-open-width);
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* Bootstrap overrides if needed */
+.form-control,
+.form-select {
+  font-size: 0.95rem;
+  border-radius: 6px;
+}
+
+/* Improved focus state */
 button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.2);
+  border-color: var(--primary-color);
 }

@@ -4,15 +4,24 @@ import { DashboardLayout } from "../components/templates";
 // import Login from "../features/auth/components/Login";
 import Login from "../pages/Login.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
-import { CarListContainer ,WarrantyClaimListContainer, ServiceCenterInventoryContainer, PartsRequestContainer} from "../features/scstaff/containers";
+
+import { CarListContainer} from "../features/scstaff/Vehicles/containers/CarListContainer.jsx"
+import { WarrantyClaimListContainer} from "../features/scstaff/Warranty/containers/WarrantyClaimListContainer.jsx"
+import { ServiceCenterInventoryContainer} from "../features/scstaff/Inventory/containers/ServiceCenterInventoryContainer.jsx"
+import { PartsRequestContainer} from "../features/scstaff/Parts Requests/containers/PartsRequestContainer.jsx"
+import  CampaignListContainer from "../features/scstaff/Campaign/containers/CampaignListContainer.jsx"
+import  Statuscampaign  from "../features/scstaff/StatusCampaign/container/CampaignListContainer.jsx"
+
+
+
 import { TechnicianVehicleStatusContainer } from "../features/technician/containers";
-// import { WarrantyClaimListContainer } from "../features/sc/containers";
+
 import { PrivateRoute } from "./PrivateRoutes";
-import EVMStaffWarrantyListContainer from "../features/evmstaff/containers/EVMStaffWarrantyListContainer";
-import { EVMPartsListContainer } from "../features/evmstaff/containers/EVMPartsListContainer";
-// import { PartsRequestContainer } from "../features/scstaff/containers";
-// import { ServiceCenterInventoryContainer } from "../features/servicecenter/containers/ServiceCenterInventoryContainer";
-import { EVMStaffInventoryContainer } from "../features/evmstaff/containers/EVMStaffInventoryContainer";
+import { EVMStaffWarrantyListContainer } from "../features/evmstaff/Warranty/containers/EVMStaffWarrantyListContainer.jsx";
+import { EVMPartsListContainer } from "../features/evmstaff/PartRequest/containers/EVMPartsListContainer.jsx";
+import { EVMStaffInventoryContainer } from "../features/evmstaff/Inventory/containers/EVMStaffInventoryContainer.jsx";
+import { EVMStaffCampaignContainer } from "../features/evmstaff/CampaignEVM/containers/EVMStaffCampaignContainer.jsx"
+import { element } from "prop-types";
 
 // Public routes that don't require authentication
 export const publicRoutes = [
@@ -78,6 +87,21 @@ export const privateRoutes = [
       {
         path: "evmstaff_inventory",
         element: <EVMStaffInventoryContainer />,
+      },
+
+      {
+        path: "campaign",
+        element: <CampaignListContainer />
+      },
+
+      {
+        path: "statuscampaign",
+        element: <Statuscampaign />
+      },
+
+      {
+        path: "evmstaff_campaign",
+        element: <EVMStaffCampaignContainer />,
       },
     ],
   },

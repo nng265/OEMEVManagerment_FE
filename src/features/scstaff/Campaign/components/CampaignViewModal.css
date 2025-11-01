@@ -1,0 +1,52 @@
+.campaign-modal {
+  padding: 20px;
+}
+
+.campaign-header {
+  margin-bottom: 16px;
+}
+
+.campaign-header .label {
+  font-weight: 600;
+}
+
+.campaign-info {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.campaign-info-item {
+  flex: 1;
+}
+
+.campaign-info-item .label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.campaign-summary-grid {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.campaign-summary-card {
+  flex: 1;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.campaign-summary-card .label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.campaign-footer {
+  display: flex;
+  justify-content: flex-end;
+}

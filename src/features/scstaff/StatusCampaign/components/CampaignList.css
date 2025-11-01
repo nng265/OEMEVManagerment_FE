@@ -1,0 +1,59 @@
+.campaign-list-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.campaign-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.campaign-list-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.campaign-status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  text-transform: capitalize;
+}
+
+.status-waiting {
+  background-color: #fbbf24; /* vàng */
+}
+
+.status-under {
+  background-color: #3b82f6; /* xanh dương */
+}
+
+.status-repaired {
+  background-color: #a855f7; /* tím */
+}
+
+.status-done {
+  background-color: #22c55e; /* xanh lá */
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.toolbar-actions input,
+.toolbar-actions select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+

@@ -1,147 +1,117 @@
+/* src/components/atoms/Button/Button.css */
+/* Yêu cầu 1: Cập nhật Button dùng CSS Variables */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: 0.5rem 1rem; /* Tăng padding 1 chút */
+  font-size: 0.95rem; /* Giảm font 1 chút */
+  font-weight: 600; /* Tăng font-weight */
   line-height: 1.5;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-sm); /* Dùng biến */
+  transition: all 0.2s ease-out; /* Dùng all 0.2s */
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-full-width {
   width: 100%;
   display: flex;
   text-align: center;
-  text-decoration: none;
-  vertical-align: middle;
-  cursor: pointer;
-  user-select: none;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out,
-              background-color 0.15s ease-in-out,
-              border-color 0.15s ease-in-out,
-              box-shadow 0.15s ease-in-out;
 }
 
 /* Button sizes */
 .btn-sm {
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
-  border-radius: 0.2rem;
-}
-
-.btn-md {
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  border-radius: 0.25rem;
 }
 
 .btn-lg {
-  padding: 0.5rem 1rem;
-  font-size: 1.25rem;
-  border-radius: 0.3rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 1.1rem;
 }
 
 /* Button variants */
 .btn-primary {
-  color: #fff;
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
+  color: var(--color-text-on-primary);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
-
 .btn-primary:hover {
-  background-color: var(--bs-primary-darker);
-  border-color: var(--bs-primary-darker);
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
 }
 
 .btn-secondary {
-  color: #fff;
-  background-color: var(--bs-secondary);
-  border-color: var(--bs-secondary);
+  color: var(--color-text-primary);
+  background-color: var(--color-secondary-light);
+  border-color: var(--color-secondary-light);
 }
-
 .btn-secondary:hover {
-  background-color: var(--bs-secondary-darker);
-  border-color: var(--bs-secondary-darker);
+  background-color: #e2e6ea; /* Darken light color */
+  border-color: #dae0e5;
 }
 
 .btn-success {
-  color: #fff;
-  background-color: var(--bs-success);
-  border-color: var(--bs-success);
+  color: var(--color-text-on-primary);
+  background-color: var(--color-success);
+  border-color: var(--color-success);
 }
-
 .btn-success:hover {
-  background-color: var(--bs-success-darker);
-  border-color: var(--bs-success-darker);
+  background-color: #218838;
+  border-color: #1e7e34;
 }
 
 .btn-danger {
-  color: #fff;
-  background-color: var(--bs-danger);
-  border-color: var(--bs-danger);
+  color: var(--color-text-on-primary);
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
 }
-
 .btn-danger:hover {
-  background-color: var(--bs-danger-darker);
-  border-color: var(--bs-danger-darker);
+  background-color: #c82333;
+  border-color: #bd2130;
 }
 
 .btn-warning {
-  color: #000;
-  background-color: var(--bs-warning);
-  border-color: var(--bs-warning);
+  color: var(--color-text-primary);
+  background-color: var(--color-warning);
+  border-color: var(--color-warning);
 }
-
 .btn-warning:hover {
-  background-color: var(--bs-warning-darker);
-  border-color: var(--bs-warning-darker);
+  background-color: #e0a800;
+  border-color: #d39e00;
 }
 
 .btn-info {
-  color: #000;
-  background-color: var(--bs-info);
-  border-color: var(--bs-info);
+  color: var(--color-text-on-primary);
+  background-color: var(--color-info);
+  border-color: var(--color-info);
 }
-
 .btn-info:hover {
-  background-color: var(--bs-info-darker);
-  border-color: var(--bs-info-darker);
-}
-
-.btn-light {
-  color: #000;
-  background-color: var(--bs-light);
-  border-color: var(--bs-light);
-}
-
-.btn-light:hover {
-  background-color: var(--bs-light-darker);
-  border-color: var(--bs-light-darker);
-}
-
-.btn-dark {
-  color: #fff;
-  background-color: var(--bs-dark);
-  border-color: var(--bs-dark);
-}
-
-.btn-dark:hover {
-  background-color: var(--bs-dark-darker);
-  border-color: var(--bs-dark-darker);
+  background-color: #138496;
+  border-color: #117a8b;
 }
 
 .btn-link {
-  color: var(--bs-primary);
-  text-decoration: underline;
+  color: var(--color-primary);
+  text-decoration: none;
   background: none;
   border: none;
+  box-shadow: none;
 }
-
 .btn-link:hover {
-  color: var(--bs-primary-darker);
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  transform: none;
 }
 
 /* Loading state */
@@ -149,7 +119,6 @@
   position: relative;
   pointer-events: none;
 }
-
 .btn-loading .btn-text {
   opacity: 0.65;
 }
@@ -159,10 +128,12 @@
 .btn.disabled {
   opacity: 0.65;
   pointer-events: none;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Focus state */
 .btn:focus {
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+  box-shadow: 0 0 0 0.2rem var(--color-primary-light);
 }

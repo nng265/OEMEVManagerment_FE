@@ -1,30 +1,38 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
-import './Button.css';
+// src/components/atoms/Button/Button.jsx
+import React from "react";
+import PropTypes from "prop-types";
+import { LoadingSpinner } from "../LoadingSpinner/LoadingSpinner";
+import "./Button.css";
 
 export const Button = ({
   children,
-  variant = 'primary',
-  size = 'md',
+  variant = "primary",
+  size = "md",
   onClick,
   disabled = false,
-  type = 'button',
-  className = '',
+  type = "button",
+  className = "",
   isLoading = false,
-  loadingText = 'Loading...',
+  loadingText = "Loading...",
   icon,
   fullWidth = false,
   ...props
 }) => {
-  const baseClass = 'btn';
+  const baseClass = "btn";
   const variantClass = `btn-${variant}`;
-  const sizeClass = size !== 'md' ? `btn-${size}` : '';
-  const loadingClass = isLoading ? 'btn-loading' : '';
-  
-  const classes = [baseClass, variantClass, sizeClass, loadingClass, fullWidth ? 'btn-full-width' : '', className]
+  const sizeClass = size !== "md" ? `btn-${size}` : "";
+  const loadingClass = isLoading ? "btn-loading" : "";
+
+  const classes = [
+    baseClass,
+    variantClass,
+    sizeClass,
+    loadingClass,
+    fullWidth ? "btn-full-width" : "",
+    className,
+  ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   const content = isLoading ? (
     <>
@@ -53,16 +61,26 @@ export const Button = ({
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark', 'link']),
-  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  variant: PropTypes.oneOf([
+    "primary",
+    "secondary",
+    "success",
+    "danger",
+    "warning",
+    "info",
+    "light",
+    "dark",
+    "link",
+  ]),
+  size: PropTypes.oneOf(["sm", "md", "lg"]),
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
-  type: PropTypes.oneOf(['button', 'submit', 'reset']),
+  type: PropTypes.oneOf(["button", "submit", "reset"]),
   className: PropTypes.string,
   isLoading: PropTypes.bool,
   loadingText: PropTypes.string,
   icon: PropTypes.node,
-  fullWidth: PropTypes.bool
+  fullWidth: PropTypes.bool,
 };
 
 export default Button;

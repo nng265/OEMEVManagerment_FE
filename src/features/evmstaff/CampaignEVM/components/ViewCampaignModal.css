@@ -1,0 +1,113 @@
+.campaign-modal {
+    font-family: sans-serif;
+    padding: 10px 5px;
+}
+
+.campaign-header {
+    margin-bottom: 16px;
+}
+
+.campaign-header .label {
+    font-weight: 700;
+    color: #1f2937;
+
+}
+
+.campaign-header .value {
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.campaign-info {
+    /* Hiển thị 3 cột đều nhau, có responsive bên dưới */
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.campaign-info-item {
+    /* Label trên, value dưới, căn giữa */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 8px;
+    background: #f9fafb;
+    /* gray-50 */
+    border: 1px solid #e5e7eb;
+    /* gray-300 */
+    border-radius: 8px;
+    min-height: 72px;
+}
+
+.campaign-info-item .label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1f2937;
+}
+
+.campaign-info-item .value {
+    display: block;
+    color: #1f2937;
+}
+
+/* Responsive: xuống 2 cột rồi 1 cột khi màn nhỏ */
+@media (max-width: 768px) {
+    .campaign-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .campaign-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+.campaign-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* 2 mục trên, 2 mục dưới, đều nhau */
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.campaign-summary-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 110px;
+}
+
+.campaign-summary-card .label {
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #1f2937;
+}
+
+.campaign-summary-card .value {
+    margin-bottom: 6px;
+    color: #1f2937;
+}
+
+
+.campaign-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Căn nút bên phải cho khu vực footer custom */
+.right {
+    display: flex;
+    justify-content: flex-end;
+}

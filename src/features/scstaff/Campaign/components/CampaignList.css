@@ -1,0 +1,27 @@
+.campaign-table {
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.campaign-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.campaign-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.campaign-filters input,
+.campaign-filters select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
