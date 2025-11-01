@@ -11,41 +11,59 @@ export const CampaignCreateModal = ({
   onSubmit,
   campaignOptions = [],
   technicianOptions = [],
+  initialCampaignId = "",
+  initialCampaign = null,
 }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    type: "",
+    campaignId: initialCampaignId || "",
+    type: initialCampaign?.type ?? "",
     vin: "",
-    technicians: [],
-    allowMultipleTech: false,
   });
 
+  const [selectedTechs, setSelectedTechs] = useState([""]);
   const [error, setError] = useState("");
 
+  // when modal opens or initialCampaign changes, prefill fields
+  React.useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        campaignId:
+          (initialCampaign &&
+            (initialCampaign.campaignId ?? initialCampaign.id)) ||
+          initialCampaignId ||
+          "",
+        type: initialCampaign?.type ?? "",
+        vin: "",
+      });
+      setSelectedTechs([""]);
+      setError("");
+    }
+  }, [isOpen, initialCampaign, initialCampaignId]);
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleTechSelect = (e) => {
-    const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
-    setFormData((prev) => ({
-      ...prev,
-      technicians: selected,
-    }));
+  const handleAddTech = () => setSelectedTechs((s) => [...s, ""]);
+  const handleChangeTech = (index, value) => {
+    const updated = [...selectedTechs];
+    updated[index] = value;
+    setSelectedTechs(updated);
+  };
+  const handleRemoveTech = (index) => {
+    setSelectedTechs((s) => s.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.type || formData.technicians.length === 0) {
+    const validTechs = selectedTechs.filter(Boolean);
+    if (!formData.campaignId || !formData.type || validTechs.length === 0) {
       setError("Vui lòng nhập đầy đủ thông tin bắt buộc");
       return;
     }
 
-    onSubmit(formData);
+    onSubmit({ ...formData, technicians: validTechs });
   };
 
   return (
@@ -61,24 +79,52 @@ export const CampaignCreateModal = ({
 
         <div className="form-group">
           <label>Campaign</label>
-          <select name="title" value={formData.title} onChange={handleChange} required>
-            <option value="" disabled>-- Select campaign --</option>
-            {campaignOptions.map((c) => (
-              <option key={c.id} value={c.title}>
-                {c.title}
+          {initialCampaign ? (
+            <div style={{ padding: 8 }}>
+              {initialCampaign.title ?? initialCampaign.name ?? "—"}
+            </div>
+          ) : (
+            <select
+              name="campaignId"
+              value={formData.campaignId}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                -- Select campaign --
               </option>
-            ))}
-          </select>
+              {campaignOptions.map((c) => (
+                <option key={c.campaignId ?? c.id} value={c.campaignId ?? c.id}>
+                  {c.title}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="form-group">
           <label>Campaign Type</label>
-          <select name="type" value={formData.type} onChange={handleChange} required>
-            <option value="" disabled>-- Select type --</option>
-            {[...new Set(campaignOptions.map((c) => c.type))].map((type, i) => (
-              <option key={i} value={type}>{type}</option>
-            ))}
-          </select>
+          {initialCampaign ? (
+            <div style={{ padding: 8 }}>{initialCampaign.type ?? "—"}</div>
+          ) : (
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                -- Select type --
+              </option>
+              {[...new Set(campaignOptions.map((c) => c.type))].map(
+                (type, i) => (
+                  <option key={i} value={type}>
+                    {type}
+                  </option>
+                )
+              )}
+            </select>
+          )}
         </div>
 
         <div className="form-group">
@@ -86,38 +132,57 @@ export const CampaignCreateModal = ({
           <Input name="vin" value={formData.vin} onChange={handleChange} />
         </div>
 
-        <div className="form-group toggle-row">
-          <label>+ Add more technician</label>
-          <input
-            type="checkbox"
-            name="allowMultipleTech"
-            checked={formData.allowMultipleTech}
-            onChange={handleChange}
-          />
-        </div>
-
         <div className="form-group">
           <label>Select Technician *</label>
-          <select
-            name="technicians"
-            value={formData.technicians}
-            onChange={handleTechSelect}
-            multiple={formData.allowMultipleTech}
-            required
-          >
-            {technicianOptions.map((tech) => (
-              <option key={tech.id} value={tech.id}>
-                {tech.name}
-              </option>
-            ))}
-          </select>
+          {selectedTechs.map((tech, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                marginBottom: 8,
+              }}
+            >
+              <select
+                value={tech}
+                onChange={(e) => handleChangeTech(index, e.target.value)}
+                style={{ flex: 1, padding: 8 }}
+                required
+              >
+                <option value="">Select technician...</option>
+                {technicianOptions.map((t) => (
+                  <option
+                    key={t.id ?? t.employeeId ?? t.userId}
+                    value={t.id ?? t.employeeId ?? t.userId}
+                  >
+                    {t.name ?? t.fullName ?? t.username}
+                  </option>
+                ))}
+              </select>
+
+              {selectedTechs.length > 1 && (
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleRemoveTech(index)}
+                >
+                  ✕
+                </Button>
+              )}
+            </div>
+          ))}
+
+          <Button variant="secondary" size="sm" onClick={handleAddTech}>
+            + Add more technician
+          </Button>
         </div>
 
         <div className="form-actions">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit">Create Warranty Claim</Button>
+          <Button type="submit">Create Campaign</Button>
         </div>
       </form>
     </Modal>

@@ -2,10 +2,14 @@
 
 /* Đổi tên class chính cho khớp với file .jsx */
 .warranty-claim-list-view {
-  padding: 24px;
+  padding: 30px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.008);
+}
+
+.size-h1 {
+  margin-bottom: 30px;
 }
 
 .warranty-claim-list-view h2 {

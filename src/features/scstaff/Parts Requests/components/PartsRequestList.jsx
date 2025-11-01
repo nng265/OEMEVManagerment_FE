@@ -21,8 +21,7 @@ export const PartsRequestList = ({
   return (
     <ErrorBoundary>
       <div className="warranty-claim-list-view">
-        <h1>Parts Requests</h1>
-        <p>Request and track parts from manufacturer</p>
+        <h1 className="size-h1">Parts Requests</h1>
 
         {loading ? (
           <div className="loading-container">

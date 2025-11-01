@@ -11,6 +11,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     title: "",
     type: "", // để hiển thị placeholder, không chọn sẵn
     target: "", // sẽ là Part Model được chọn
+    oldTarget: "", // old part model (left column)
     targetCategory: "", // Category được chọn
     startDate: "",
     endDate: "",
@@ -188,7 +189,16 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
 
         {/* Second row: place Target Part Model aligned under Target Category (right column) */}
         <div className="form-row">
-          <div className="form-group half spacer" aria-hidden="true"></div>
+          <div className="form-group half">
+            <label>Target Part Model (Old)</label>
+            {/* Temporary manual input until old-model API is available */}
+            <Input
+              name="oldTarget"
+              value={formData.oldTarget}
+              onChange={handleChange}
+              placeholder="Enter old part model (temporary)"
+            />
+          </div>
           <div className="form-group half">
             <label>Target Part Model *</label>
             <select

@@ -39,7 +39,7 @@ const CampaignList = ({
   const columns = [
     { key: "title", label: "Campaign" },
     { key: "type", label: "Type" },
-    { key: "partModel", label: "Target" },
+    { key: "description", label: "Target" },
     { key: "period", label: "Period" },
     { key: "status", label: "Status" },
     {
@@ -64,7 +64,7 @@ const CampaignList = ({
     id: c.id ?? i,
     title: c.title || "—",
     type: c.type || "—",
-    partModel: c.partModel || "_",
+    description: c.description || "_",
     period: c.period ?? `${c.startDate ?? ""} to ${c.endDate ?? ""}`,
     status: c.status || "—",
   }));
@@ -72,7 +72,7 @@ const CampaignList = ({
   return (
     <div className="campaign-table">
       <div className="campaign-table__header">
-        <h1>Campaign Management</h1>
+        <h2>Campaign Management</h2>
         {/* Nút Add Campaign đã bị loại bỏ khỏi header */}
       </div>
 

@@ -47,8 +47,8 @@ export const ServiceCenterInventory = ({
   const columns = [
     { key: "model", label: "Model" },
     { key: "category", label: "Category" },
-    { key: "status", label: "Status" },
     { key: "stockQuantity", label: "Quantity", sortType: "number" },
+    { key: "status", label: "Status" },
     {
       key: "action",
       label: "Action",
@@ -83,8 +83,8 @@ export const ServiceCenterInventory = ({
   return (
     <div className="sc-container" style={{ marginTop: 0 }}>
       <div className="sc-inventory">
-        <h1 className="sc-inventory__title">Service Center Inventory</h1>
-        <p className="sc-inventory__subtitle">
+        <h1 className="size-h1">Service Center Inventory</h1>
+        {/* <p className="sc-inventory__subtitle">
           Manage and request parts from the Service Center inventory.
         </p>
 
@@ -119,7 +119,7 @@ export const ServiceCenterInventory = ({
           >
             Clear
           </Button>
-        </div>
+        </div> */}
 
         <div className="sc-inventory__table-wrapper">
           <DataTable

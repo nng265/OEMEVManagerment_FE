@@ -6,6 +6,7 @@
   left: 0;
   right: 0;
   height: var(--navbar-height);
+  width: 179.5vh;
   z-index: 999;
   transition: left var(--transition-speed) var(--transition-ease);
   border-bottom: 1px solid var(--border-color);

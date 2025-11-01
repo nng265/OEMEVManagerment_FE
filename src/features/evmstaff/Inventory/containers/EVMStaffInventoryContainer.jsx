@@ -154,7 +154,7 @@ export const EVMStaffInventoryContainer = () => {
   // RENDER
   // =====================
   return (
-    <div style={{ marginTop: 40 }}>
+    <div>
       <ManufacturerInventory
         data={items}
         loading={loading}

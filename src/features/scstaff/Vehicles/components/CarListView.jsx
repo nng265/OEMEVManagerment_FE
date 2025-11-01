@@ -23,7 +23,7 @@ export const CarListView = ({
 }) => {
   return (
     <div className="car-list-view">
-      <h1>Vehicles</h1>
+      <h1 className="size-h1">Vehicles</h1>
 
       {/* --- Loading --- */}
       {loading && (

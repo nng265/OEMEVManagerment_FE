@@ -27,7 +27,7 @@ export const WarrantyClaimListView = ({
 
   // Filter props
   statusFilter,
-  onStatusFilterChange,
+  // onStatusFilterChange,
   statusOptions,
 
   // Modal state và handlers
@@ -37,7 +37,7 @@ export const WarrantyClaimListView = ({
   showAssignModal,
   onCloseAssignModal,
   onAssignSubmit,
-  
+
   // Status-specific modals
   showPendingConfirmationModal,
   onClosePendingConfirmationModal,
@@ -55,13 +55,13 @@ export const WarrantyClaimListView = ({
   onCloseUnderRepairModal,
   showDoneWarrantyModal,
   onCloseDoneWarrantyModal,
-  
+
   onAction,
-  
+
   technicians,
   onFetchTechnicians,
   loadingTechnicians,
-  
+
   // Assigned technicians (for under inspection/repair)
   assignedTechnicians,
   loadingAssignedTechs,
@@ -69,10 +69,9 @@ export const WarrantyClaimListView = ({
   return (
     <ErrorBoundary>
       <div className="warranty-claim-list-view">
-        {/* Header with Filter */}
+        <h1 className="size-h1">Warranty Claims List</h1>
         <div className="warranty-claim-header">
-          <h1>Warranty Claims List</h1>
-          <div className="warranty-filter-container">
+          {/* <div className="warranty-filter-container">
             <label htmlFor="status-filter">Filter by Status:</label>
             <select
               id="status-filter"
@@ -86,7 +85,7 @@ export const WarrantyClaimListView = ({
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
         </div>
 
         {/* Handle Loading / Error / Empty / Data */}
@@ -252,7 +251,7 @@ WarrantyClaimListView.propTypes = {
   showAssignModal: PropTypes.bool.isRequired,
   onCloseAssignModal: PropTypes.func.isRequired,
   onAssignSubmit: PropTypes.func.isRequired,
-  
+
   // Status-specific modals
   showPendingConfirmationModal: PropTypes.bool.isRequired,
   onClosePendingConfirmationModal: PropTypes.func.isRequired,
@@ -270,7 +269,7 @@ WarrantyClaimListView.propTypes = {
   onCloseUnderRepairModal: PropTypes.func.isRequired,
   showDoneWarrantyModal: PropTypes.bool.isRequired,
   onCloseDoneWarrantyModal: PropTypes.func.isRequired,
-  
+
   onAction: PropTypes.func.isRequired,
   technicians: PropTypes.array,
   onFetchTechnicians: PropTypes.func,

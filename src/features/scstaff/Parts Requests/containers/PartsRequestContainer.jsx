@@ -192,24 +192,6 @@ export const PartsRequestContainer = () => {
         render: (val) => `${val || 0} part(s)`,
       },
       {
-        key: "status",
-        label: "Status",
-        sortable: true,
-        render: (value) => {
-          const normalizedStatus = (value || "unknown").trim().toLowerCase();
-          let displayText = value;
-          if (normalizedStatus === "deliverd") {
-            displayText = "Delivered";
-          }
-          const statusClass = normalizedStatus.replace(/_/g, "-");
-          return (
-            <span className={`status-badge status-${statusClass}`}>
-              {displayText}
-            </span>
-          );
-        },
-      },
-      {
         key: "requestDate",
         label: "Requested Date",
         sortable: true,
@@ -236,19 +218,41 @@ export const PartsRequestContainer = () => {
             : "-",
       },
       {
+        key: "status",
+        label: "Status",
+        sortable: true,
+        render: (value) => {
+          const normalizedStatus = (value || "unknown").trim().toLowerCase();
+          let displayText = value;
+          if (normalizedStatus === "deliverd") {
+            displayText = "Delivered";
+          }
+          const statusClass = normalizedStatus.replace(/_/g, "-");
+          return (
+            <span className={`status-badge status-${statusClass}`}>
+              {displayText}
+            </span>
+          );
+        },
+      },
+      {
         key: "actions",
         label: "Actions",
           sortable: false,
         render: (_, row) => (
           <Button
-            variant="primary"
+            variant="light"
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
               handleViewDetail(row);
             }}
           >
-            View
+            <img
+              src="../../../../../public/eye.png"
+              className="eye-svg"
+              style={{ width: "22px" }}
+            />
           </Button>
         ),
       },

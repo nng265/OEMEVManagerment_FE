@@ -147,8 +147,9 @@ export const CarListContainer = () => {
     { key: 'model', label: 'Model' },
     { key: 'year', label: 'Year', sortType: 'number' },
     {
+      className: 'title',
       key: 'actions',
-      label: 'Actions',
+      label: ' Actions',
       sortable: false,
       render: (_, row) => (
         <div className="action-buttons">
@@ -167,7 +168,7 @@ export const CarListContainer = () => {
             />
           </Button>
           <Button
-            variant="success"
+            variant="primary"
             size="small"
             onClick={(e) => {
               e.stopPropagation();

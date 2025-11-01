@@ -264,7 +264,7 @@ export const EVMStaffCampaignContainer = () => {
 
   // ===== RENDER =====
   return (
-    <div style={{ marginTop: 40 }}>
+    <div>
       <Campaign
         data={filtersActive ? filteredCampaigns : campaigns}
         loading={loading}

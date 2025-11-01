@@ -15,12 +15,12 @@
     error = null,
     pagination = {},
     onPageChange,
-    onSearchVin,
-    onFilterStatus,
+    // onSearchVin,
+    // onFilterStatus,
     onRefresh, // passed from container
   }) => {
-    const [vinQuery, setVinQuery] = useState("");
-    const [statusFilter, setStatusFilter] = useState("");
+    // const [vinQuery, setVinQuery] = useState("");
+    // const [statusFilter, setStatusFilter] = useState("");
     const [selectedRow, setSelectedRow] = useState(null);
 
     const columns = useMemo(
@@ -36,10 +36,14 @@
           render: (_, row) => (
             <Button
               size="small"
-              variant="primary"
+              variant="light"
               onClick={() => setSelectedRow(row)}
             >
-              View
+              <img
+              src="../../../../../public/eye.png"
+              className="eye-svg"
+              style={{ width: "22px" }}
+            />
             </Button>
           ),
         },
@@ -51,51 +55,51 @@
     const pageNumber = pagination.pageNumber ?? 0;
     const pageSize = pagination.pageSize ?? 10;
 
-    const toolbarActions = (
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <input
-          type="text"
-          placeholder="Filter VIN..."
-          value={vinQuery}
-          onChange={(e) => {
-            setVinQuery(e.target.value);
-            onSearchVin?.(e.target.value);
-          }}
-          style={{ padding: 8, minWidth: 200 }}
-        />
+    // const toolbarActions = (
+    //   <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+    //     <input
+    //       type="text"
+    //       placeholder="Filter VIN..."
+    //       value={vinQuery}
+    //       onChange={(e) => {
+    //         setVinQuery(e.target.value);
+    //         onSearchVin?.(e.target.value);
+    //       }}
+    //       style={{ padding: 8, minWidth: 200 }}
+    //     />
 
-        <select
-          value={statusFilter}
-          onChange={(e) => {
-            setStatusFilter(e.target.value);
-            onFilterStatus?.(e.target.value);
-          }}
-          style={{ padding: 8 }}
-        >
-          <option value="">All Status</option>
-          <option value="WAITING_FOR_REPAIR">waiting for unassigned repair</option>
-          <option value="UNDER_REPAIR">under repair</option>
-          <option value="REPAIRED">repaired</option>
-          <option value="DONE">done</option>
-        </select>
+    //     <select
+    //       value={statusFilter}
+    //       onChange={(e) => {
+    //         setStatusFilter(e.target.value);
+    //         onFilterStatus?.(e.target.value);
+    //       }}
+    //       style={{ padding: 8 }}
+    //     >
+    //       <option value="">All Status</option>
+    //       <option value="WAITING_FOR_REPAIR">waiting for unassigned repair</option>
+    //       <option value="UNDER_REPAIR">under repair</option>
+    //       <option value="REPAIRED">repaired</option>
+    //       <option value="DONE">done</option>
+    //     </select>
 
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setVinQuery("");
-            setStatusFilter("");
-            onSearchVin?.("");
-            onFilterStatus?.("");
-          }}
-        >
-          Clear
-        </Button>
-      </div>
-    );
+    //     <Button
+    //       variant="secondary"
+    //       onClick={() => {
+    //         setVinQuery("");
+    //         setStatusFilter("");
+    //         onSearchVin?.("");
+    //         onFilterStatus?.("");
+    //       }}
+    //     >
+    //       Clear
+    //     </Button>
+    //   </div>
+    // );
 
     return (
-      <div>
-        <h1 style={{ marginBottom: 12 }}>Campaign Vehicles</h1>
+      <div className="campaign-table">
+        <h1 className="size-h1">Campaign Vehicles</h1>
 
         {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
 
@@ -109,7 +113,7 @@
           currentPage={pageNumber}
           pageSize={pageSize}
           onPageChange={onPageChange}
-          toolbarActions={toolbarActions}
+          // toolbarActions={toolbarActions}
           noDataMessage="No records found"
         />
 

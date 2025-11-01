@@ -377,7 +377,7 @@ export const ServiceCenterInventoryContainer = () => {
 
   // ========== 5️⃣ RENDER ==========
   return (
-    <div style={{ marginTop: 40 }}>
+    <div>
       {/* Nút tạo mới thủ công */}
       <div
         style={{

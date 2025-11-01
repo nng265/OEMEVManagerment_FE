@@ -1,9 +1,10 @@
 // src/features/warranty/components/BaseWarrantyDetailSection.jsx
 
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
 import { WarrantyRecordsSection } from "../../../../components/molecules/WarrantyRecordsSection/WarrantyRecordsSection";
+import { Modal } from "../../../../components/molecules/Modal/Modal";
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";
@@ -19,6 +20,19 @@ const formatDate = (dateString) => {
 };
 
 export const BaseWarrantyDetailSection = ({ warrantyData }) => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  const openPreview = (url) => {
+    setPreviewUrl(url);
+    setIsPreviewOpen(true);
+  };
+
+  const closePreview = () => {
+    setPreviewUrl(null);
+    setIsPreviewOpen(false);
+  };
+
   if (!warrantyData) return null;
 
   return (
@@ -91,25 +105,53 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
             style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
           >
             {warrantyData.attachments.map((a) => (
-              <a
-                key={a.attachmentId || a.id}
-                href={a.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <div key={a.attachmentId || a.id}>
                 <img
                   src={a.url}
                   alt="Attachment"
+                  onClick={() => openPreview(a.url)}
                   style={{
                     width: "150px",
                     height: "150px",
                     objectFit: "cover",
                     borderRadius: "8px",
                     border: "1px solid #ddd",
+                    cursor: "pointer",
                   }}
                 />
-              </a>
+              </div>
             ))}
+
+            {/* Preview modal */}
+            <Modal
+              isOpen={isPreviewOpen}
+              onClose={closePreview}
+              title=""
+              size="lg"
+              showFooter={false}
+              showCloseButton={false}
+              className="modal-image"
+              headerClassName="modal-no-header"
+              bodyClassName="modal-image-body"
+            >
+              {previewUrl && (
+                <div style={{ position: "relative", textAlign: "center" }}>
+                  <button
+                    type="button"
+                    className="image-close-btn"
+                    onClick={closePreview}
+                    aria-label="Close preview"
+                  >
+                    ×
+                  </button>
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    style={{ maxWidth: "100%", maxHeight: "80vh" }}
+                  />
+                </div>
+              )}
+            </Modal>
           </div>
         </DetailSection>
       )}

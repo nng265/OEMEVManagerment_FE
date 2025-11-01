@@ -11,24 +11,28 @@ export const WarrantyClaimListContainer = () => {
   const [error, setError] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
-  
+
   // Các modal mới cho từng trạng thái
-  const [showPendingConfirmationModal, setShowPendingConfirmationModal] = useState(false);
+  const [showPendingConfirmationModal, setShowPendingConfirmationModal] =
+    useState(false);
   const [showApprovedModal, setShowApprovedModal] = useState(false);
-  const [showDeniedOrRepairedModal, setShowDeniedOrRepairedModal] = useState(false);
+  const [showDeniedOrRepairedModal, setShowDeniedOrRepairedModal] =
+    useState(false);
   const [showCarBackHomeModal, setShowCarBackHomeModal] = useState(false);
-  const [showSentToManufacturerModal, setShowSentToManufacturerModal] = useState(false);
-  const [showUnderInspectionModal, setShowUnderInspectionModal] = useState(false);
+  const [showSentToManufacturerModal, setShowSentToManufacturerModal] =
+    useState(false);
+  const [showUnderInspectionModal, setShowUnderInspectionModal] =
+    useState(false);
   const [showUnderRepairModal, setShowUnderRepairModal] = useState(false);
   const [showDoneWarrantyModal, setShowDoneWarrantyModal] = useState(false);
-  
+
   const [selectedWarrantyClaim, setSelectedWarrantyClaim] = useState(null);
   const [statusFilter, setStatusFilter] = useState("");
   const [statusOptions, setStatusOptions] = useState([]);
 
   const [loadingTechnicians, setLoadingTechnicians] = useState(false);
   const [technicians, setTechnicians] = useState([]);
-  
+
   // State for assigned technicians (for under inspection and under repair)
   const [assignedTechnicians, setAssignedTechnicians] = useState([]);
   const [loadingAssignedTechs, setLoadingAssignedTechs] = useState(false);
@@ -59,6 +63,7 @@ export const WarrantyClaimListContainer = () => {
         }
       },
     },
+    { key: "description", label: "Description", sortable: false },
     {
       key: "status",
       label: "Status",
@@ -72,21 +77,24 @@ export const WarrantyClaimListContainer = () => {
         );
       },
     },
-    { key: "description", label: "Description", sortable: false },
     {
       key: "actions",
       label: "Actions",
       sortable: false,
       render: (_, row) => (
         <Button
-          variant="primary"
+          variant="light"
           size="small"
           onClick={(e) => {
             e.stopPropagation();
             handleViewDetail(row);
           }}
         >
-          View
+          <img
+            src="../../../../../public/eye.png"
+            className="eye-svg"
+            style={{ width: "22px" }}
+          />
         </Button>
       ),
     },
@@ -112,21 +120,21 @@ export const WarrantyClaimListContainer = () => {
   }, []);
 
   const fetchTechnicians = async () => {
-  setLoadingTechnicians(true);
-  try {
-    const response = await request(ApiEnum.GET_TECHNICIANS);
-    if (response.success && Array.isArray(response.data)) {
-      setTechnicians(response.data);
-    } else {
+    setLoadingTechnicians(true);
+    try {
+      const response = await request(ApiEnum.GET_TECHNICIANS);
+      if (response.success && Array.isArray(response.data)) {
+        setTechnicians(response.data);
+      } else {
+        setTechnicians([]);
+      }
+    } catch (error) {
+      console.error("Error fetching technicians:", error);
       setTechnicians([]);
+    } finally {
+      setLoadingTechnicians(false);
     }
-  } catch (error) {
-    console.error("Error fetching technicians:", error);
-    setTechnicians([]);
-  } finally {
-    setLoadingTechnicians(false);
-  }
-};
+  };
 
   const fetchWarrantyClaims = useCallback(
     async (pageNumber = 0, pageSize) => {
@@ -149,14 +157,8 @@ export const WarrantyClaimListContainer = () => {
               Size: effectivePageSize,
             });
 
-        const {
-          success,
-          items,
-          totalRecords,
-          page,
-          size,
-          message,
-        } = normalizePagedResult(response, []);
+        const { success, items, totalRecords, page, size, message } =
+          normalizePagedResult(response, []);
 
         if (success) {
           setWarrantyClaims(items);
@@ -213,7 +215,7 @@ export const WarrantyClaimListContainer = () => {
     setLoadingAssignedTechs(true);
     try {
       const response = await request(ApiEnum.GET_ASSIGNED_TECHNICIANS, {
-        params: { claimId }
+        params: { claimId },
       });
 
       if (response.success && Array.isArray(response.data)) {
@@ -222,7 +224,7 @@ export const WarrantyClaimListContainer = () => {
         setAssignedTechnicians([]);
       }
     } catch (error) {
-      console.error('Error fetching assigned technicians:', error);
+      console.error("Error fetching assigned technicians:", error);
       setAssignedTechnicians([]);
     } finally {
       setLoadingAssignedTechs(false);
@@ -232,7 +234,10 @@ export const WarrantyClaimListContainer = () => {
   // ========================== VIEW DETAIL ==========================
   const handleViewDetail = async (warrantyData) => {
     if (!warrantyData) return;
-    const status = warrantyData.status?.toLowerCase().replace(/[_\s]+/g, " ").trim();
+    const status = warrantyData.status
+      ?.toLowerCase()
+      .replace(/[_\s]+/g, " ")
+      .trim();
     setSelectedWarrantyClaim(warrantyData);
 
     // Đóng tất cả modal trước
@@ -248,7 +253,10 @@ export const WarrantyClaimListContainer = () => {
     setShowDetailModal(false);
 
     // Mở modal tương ứng với trạng thái
-    if (status === "waiting for unassigned" || status === "waiting for unassigned repair") {
+    if (
+      status === "waiting for unassigned" ||
+      status === "waiting for unassigned repair"
+    ) {
       setShowAssignModal(true);
     } else if (status === "under inspection") {
       await fetchAssignedTechnicians(warrantyData.claimId);
@@ -276,11 +284,13 @@ export const WarrantyClaimListContainer = () => {
   // ========================== MODAL CLOSE ==========================
   const handleCloseDetail = () => setShowDetailModal(false);
   const handleCloseAssign = () => setShowAssignModal(false);
-  const handleClosePendingConfirmation = () => setShowPendingConfirmationModal(false);
+  const handleClosePendingConfirmation = () =>
+    setShowPendingConfirmationModal(false);
   const handleCloseApproved = () => setShowApprovedModal(false);
   const handleCloseDeniedOrRepaired = () => setShowDeniedOrRepairedModal(false);
   const handleCloseCarBackHome = () => setShowCarBackHomeModal(false);
-  const handleCloseSentToManufacturer = () => setShowSentToManufacturerModal(false);
+  const handleCloseSentToManufacturer = () =>
+    setShowSentToManufacturerModal(false);
   const handleCloseUnderInspection = () => setShowUnderInspectionModal(false);
   const handleCloseUnderRepair = () => setShowUnderRepairModal(false);
   const handleCloseDoneWarranty = () => setShowDoneWarrantyModal(false);
@@ -293,17 +303,17 @@ export const WarrantyClaimListContainer = () => {
     try {
       const payload = {
         params: {
-          targetId: selectedWarrantyClaim.claimId
+          targetId: selectedWarrantyClaim.claimId,
         },
-        target: 'Warranty',
-        assignedTo: assignmentData.technicians
+        target: "Warranty",
+        assignedTo: assignmentData.technicians,
       };
 
       const response = await request(ApiEnum.ASSIGN_TECHNICIAN, payload);
       if (response.success) {
         handleCloseAssign();
-  const { pageNumber, pageSize } = paginationRef.current;
-  fetchWarrantyClaims(pageNumber, pageSize);
+        const { pageNumber, pageSize } = paginationRef.current;
+        fetchWarrantyClaims(pageNumber, pageSize);
       } else {
         setError(response.message || "Assignment failed");
       }
@@ -339,10 +349,10 @@ export const WarrantyClaimListContainer = () => {
 
       case "needMoreInfo":
         apiEndpoint = ApiEnum.BACK_WARRANTY_CLAIM;
-        requestData = { 
+        requestData = {
           params: { claimId },
           description: payload.description,
-          assignsTo: payload.assignsTo
+          assignsTo: payload.assignsTo,
         };
         break;
 
@@ -371,7 +381,7 @@ export const WarrantyClaimListContainer = () => {
 
     try {
       const response = await request(apiEndpoint, requestData);
-      
+
       if (response.success) {
         // Đóng tất cả modal
         handleClosePendingConfirmation();
@@ -379,8 +389,8 @@ export const WarrantyClaimListContainer = () => {
         handleCloseDeniedOrRepaired();
         handleCloseCarBackHome();
         handleCloseSentToManufacturer();
-  const { pageNumber, pageSize } = paginationRef.current;
-  fetchWarrantyClaims(pageNumber, pageSize);
+        const { pageNumber, pageSize } = paginationRef.current;
+        fetchWarrantyClaims(pageNumber, pageSize);
       } else {
         setError(response.message || "Operation failed. Please try again.");
       }
@@ -409,52 +419,39 @@ export const WarrantyClaimListContainer = () => {
       statusFilter={statusFilter}
       onStatusFilterChange={setStatusFilter}
       statusOptions={statusOptions}
-  pagination={pagination}
-  onPageChange={handlePageChange}
+      pagination={pagination}
+      onPageChange={handlePageChange}
       selectedClaim={selectedWarrantyClaim}
-      
       // Default detail modal
       showDetailModal={showDetailModal}
       onCloseDetailModal={handleCloseDetail}
-      
       // Assign modal
       showAssignModal={showAssignModal}
       onCloseAssignModal={handleCloseAssign}
       onAssignSubmit={handleAssignSubmit}
-      
       // Status-specific modals
       showPendingConfirmationModal={showPendingConfirmationModal}
       onClosePendingConfirmationModal={handleClosePendingConfirmation}
-      
       showApprovedModal={showApprovedModal}
       onCloseApprovedModal={handleCloseApproved}
-      
       showDeniedOrRepairedModal={showDeniedOrRepairedModal}
       onCloseDeniedOrRepairedModal={handleCloseDeniedOrRepaired}
-      
       showCarBackHomeModal={showCarBackHomeModal}
       onCloseCarBackHomeModal={handleCloseCarBackHome}
-      
       showSentToManufacturerModal={showSentToManufacturerModal}
       onCloseSentToManufacturerModal={handleCloseSentToManufacturer}
-      
       showUnderInspectionModal={showUnderInspectionModal}
       onCloseUnderInspectionModal={handleCloseUnderInspection}
-      
       showUnderRepairModal={showUnderRepairModal}
       onCloseUnderRepairModal={handleCloseUnderRepair}
-      
       showDoneWarrantyModal={showDoneWarrantyModal}
       onCloseDoneWarrantyModal={handleCloseDoneWarranty}
-      
       // Actions
       onAction={handleClaimAction}
-
       // Technicians
       technicians={technicians}
       onFetchTechnicians={fetchTechnicians}
       loadingTechnicians={loadingTechnicians}
-      
       // Assigned Technicians (for under inspection/repair)
       assignedTechnicians={assignedTechnicians}
       loadingAssignedTechs={loadingAssignedTechs}
