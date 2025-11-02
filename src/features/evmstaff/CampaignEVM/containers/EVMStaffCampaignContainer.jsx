@@ -62,7 +62,7 @@ export const EVMStaffCampaignContainer = () => {
     setError(null);
 
     try {
-      const response = await request(ApiEnum.GET_CAMPAIGNS, {
+      const response = await request(ApiEnum.CAMPAIGN_SCSTAFF, {
         Page: effectivePage,
         Size: effectiveSize,
       });
@@ -218,7 +218,7 @@ export const EVMStaffCampaignContainer = () => {
 
       console.log(" Sending payload:", payload);
 
-      const res = await request(ApiEnum.CREATE_CAMPAIGN, payload);
+      const res = await request(ApiEnum.CREATE_COMPAIGN, payload);
       console.log("API Response:", res);
 
       await fetchCampaign(
@@ -264,7 +264,7 @@ export const EVMStaffCampaignContainer = () => {
 
   // ===== RENDER =====
   return (
-    <div>
+    <div style={{ marginTop: 40 }}>
       <Campaign
         data={filtersActive ? filteredCampaigns : campaigns}
         loading={loading}

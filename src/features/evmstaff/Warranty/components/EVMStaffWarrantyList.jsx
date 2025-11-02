@@ -35,7 +35,6 @@ export const EVMStaffWarrantyList = ({
       render: (val) =>
         val && val.length > 80 ? `${val.slice(0, 80)}...` : val || "-",
     },
-    { key: "status", label: "Status" },
     {
       key: "actions",
       label: "Actions",
@@ -43,14 +42,18 @@ export const EVMStaffWarrantyList = ({
       render: (_, row) => (
         <div style={{ display: "flex", gap: 8 }}>
           <Button
-            variant="primary"
+            variant="light"
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
               onView?.(row.raw);
             }}
           >
-            View
+            <img
+              src="../../../../../public/eye.png"
+              className="eye-svg"
+              style={{ width: "22px" }}
+            />
           </Button>
         </div>
       ),
@@ -76,7 +79,7 @@ export const EVMStaffWarrantyList = ({
 
   return (
     <div style={{ padding: 8 }}>
-      <h2 style={{ marginBottom: 12 }}>Sent To Manufacturer Claims</h2>
+      <h1 style={{ marginBottom: 30, marginTop: 30 }}>Sent To Manufacturer Claims</h1>
 
       <div style={{ position: "relative" }}>
         {loading && (

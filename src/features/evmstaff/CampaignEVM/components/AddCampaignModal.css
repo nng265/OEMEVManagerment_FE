@@ -27,6 +27,34 @@
     gap: 12px;
 }
 
+/* Make sure columns align items to the top and inputs/selects share the same sizing */
+.add-campaign-form .form-row {
+    align-items: flex-start;
+}
+
+/* The Input atom wraps inputs in .input-wrapper which adds bottom margin globally; override here so columns match */
+.add-campaign-form .input-wrapper {
+    margin-bottom: 0;
+}
+
+.add-campaign-form .input-container {
+    width: 100%;
+}
+
+/* Force consistent sizing between Input (form-input) and native selects used here */
+.add-campaign-form .form-select,
+.add-campaign-form .form-input,
+.add-campaign-form input[type="text"],
+.add-campaign-form input[type="date"],
+.add-campaign-form textarea {
+    padding: 0.65rem 0.75rem;
+    /* match atom input defaults */
+    font-size: 14px;
+    min-height: 40px;
+    /* ensure similar visual height */
+    box-sizing: border-box;
+}
+
 .add-campaign-form .form-group.half.stacked {
     display: flex;
     flex-direction: column;

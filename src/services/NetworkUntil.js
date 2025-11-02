@@ -93,11 +93,22 @@ export const ApiEnum = {
     method: "PUT",
   },
 
-  CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET"},
-  CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET"},
-  CAMPAIGNVEHICLE_STAFF_REPAIRED: { path: "/CampaignVehicle/:id/repaired", method: "PUT"},
-  CAMPAIGNVEHICLE_STAFF_DONE: { path: "/CampaignVehicle/:id/done", method: "PUT"},
-  CAMPAIGNVEHICLE_STAFF_TECH: { path: "/CampaignVehicle/:id/assign-techs", method: "POST"}
+  CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
+  CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
+  CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
+  CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET" },
+  CAMPAIGNVEHICLE_STAFF_REPAIRED: {
+    path: "/CampaignVehicle/:id/repaired",
+    method: "PUT",
+  },
+  CAMPAIGNVEHICLE_STAFF_DONE: {
+    path: "/CampaignVehicle/:id/done",
+    method: "PUT",
+  },
+  CAMPAIGNVEHICLE_STAFF_TECH: {
+    path: "/CampaignVehicle/:id/assign-techs",
+    method: "POST",
+  },
 };
 
 /**

@@ -1,35 +1,32 @@
-.campaign-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    padding: 24px;
+.campaign-table {
+  height: 100;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 0;
+  margin-left: 10px;
 }
 
 .campaign-table__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.campaign-table__title {
-    font-size: 30px;
-    font-weight: 500;
-    color: #333;
+  display: flex;
+  align-items: start;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 12px;
 }
 
 .campaign-add-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
 }
 
 .campaign-add-btn:hover {
-    background: #005fcc;
+  background: #005fcc;
 }

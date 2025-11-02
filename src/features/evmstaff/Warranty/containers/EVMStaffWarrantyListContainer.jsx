@@ -4,6 +4,7 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
 import { EVMStaffWarrantyList } from "../components/EVMStaffWarrantyList";
 import { EVMStaffConfirmationModal } from "../components/EVMStaffConfirmationModal";
+import { toast } from "react-toastify";
 
 export const EVMStaffWarrantyListContainer = () => {
   // === STATE cho Warranty Claims ===
@@ -90,8 +91,10 @@ export const EVMStaffWarrantyListContainer = () => {
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
       fetchClaims(pageNumber, pageSize);
+      toast.success("Claim approved successfully!");
     } catch (err) {
-      alert(`Error: ${err.responseData?.message || "Failed to approve"}`);
+      const errorMsg = err.responseData?.message || "Failed to approve";
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setIsActionLoading(false);
     }
@@ -104,8 +107,10 @@ export const EVMStaffWarrantyListContainer = () => {
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
       fetchClaims(pageNumber, pageSize);
+      toast.success("Claim denied successfully!");
     } catch (err) {
-      alert(`Error: ${err.responseData?.message || "Failed to deny"}`);
+      const errorMsg = err.responseData?.message || "Failed to deny";
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setIsActionLoading(false);
     }
@@ -119,8 +124,10 @@ export const EVMStaffWarrantyListContainer = () => {
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
       fetchClaims(pageNumber, pageSize);
+      toast.success("Reason submitted. Request sent back for more info.");
     } catch (err) {
-      alert(`Error: ${err.responseData?.message || "Failed to send back"}`);
+      const errorMsg = err.responseData?.message || "Failed to send back";
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setIsActionLoading(false);
     }

@@ -53,6 +53,9 @@ const CampaignListContainer = () => {
         description: item.description ?? "",
         startDate: item.startDate,
         endDate: item.endDate,
+        completedVehicles: item.completedVehicles ?? "",
+        inProgressVehicles: item.inProgressVehicles ?? "",
+        pendingVehicles: item.pendingVehicles ?? "",
         period:
           item.startDate && item.endDate
             ? `${item.startDate} to ${item.endDate}`
@@ -146,7 +149,10 @@ const CampaignListContainer = () => {
 
       // Create a CampaignVehicle (assign vehicle to campaign)
       const payload = {
-        campaignId: newCampaign.campaignId || (rawCampaign?.campaignId ?? rawCampaign?.id) || "",
+        campaignId:
+          newCampaign.campaignId ||
+          (rawCampaign?.campaignId ?? rawCampaign?.id) ||
+          "",
         vin: newCampaign.vin || "",
         assignedTo: Array.isArray(newCampaign.technicians)
           ? newCampaign.technicians

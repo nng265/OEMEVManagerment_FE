@@ -134,7 +134,7 @@ export const PartsRequestContainer = () => {
     }
     if (
       requestData.partDelivery &&
-      (currentStatus === "delivered" || currentStatus === "deliverd")
+      (currentStatus === "deliverd" || currentStatus === "deliverd")
     ) {
       timelineEvents.push({
         status: "Parts Delivered",
@@ -218,23 +218,24 @@ export const PartsRequestContainer = () => {
             : "-",
       },
       {
-        key: "status",
-        label: "Status",
-        sortable: true,
-        render: (value) => {
-          const normalizedStatus = (value || "unknown").trim().toLowerCase();
-          let displayText = value;
-          if (normalizedStatus === "deliverd") {
-            displayText = "Delivered";
-          }
-          const statusClass = normalizedStatus.replace(/_/g, "-");
-          return (
-            <span className={`status-badge status-${statusClass}`}>
-              {displayText}
-            </span>
-          );
-        },
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => {
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
+        return (
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
+        );
       },
+    },
       {
         key: "actions",
         label: "Actions",

@@ -1,41 +1,65 @@
-  import React, { useState } from "react";
-  import "./PartsListEVM.css";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import "./PartsListEVM.css";
 
-  export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
-    const [requestedDate, setRequestedDate] = useState(request.requestedDate || "");
+export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
+  const [requestedDate, setRequestedDate] = useState(
+    request.requestedDate || ""
+  );
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-    const handleSetDateClick = () => {
-      if (!requestedDate) {
-        alert("Please select a date first.");
-        return;
-      }
-      onSetDate(request.orderId, requestedDate); // cập nhật Requested Date
-    };
+  const handleSetDateClick = () => {
+    if (!requestedDate) {
+      toast.warning("Please select a date first.");
+      return;
+    }
+    onSetDate(request.orderId, requestedDate); // cập nhật Requested Date
+  };
 
-    const handleConfirmClick = () => {
-      if (window.confirm("Confirm & mark this request as ready for delivery?")) {
-        onConfirm(request.orderId);
-      }
-    };
+  const handleConfirmClick = () => {
+    setIsConfirmOpen(true);
+  };
 
-    const handleClose = () => {
-      setRequestedDate("");
-      onClose();
-    };
+  const handleConfirmDialog = () => {
+    setIsConfirmOpen(false);
+    onConfirm(request.orderId);
+  };
 
-    return (
-      <div className="popup-overlay">
+  const handleCancelDialog = () => {
+    setIsConfirmOpen(false);
+  };
+
+  const handleClose = () => {
+    setRequestedDate("");
+    setIsConfirmOpen(false);
+    onClose();
+  };
+
+  return (
+    <div className="popup-overlay">
       <div className="popup-card">
         <div className="popup-header">
           <h3>Parts Request Details</h3>
-          <button className="close-btn" onClick={handleClose}>×</button>
+          <button className="close-btn" onClick={handleClose}>
+            ×
+          </button>
         </div>
 
         <div className="popup-body">
-          <div className="info-row"><strong>Status:</strong> {request.status}</div>
-          <div className="info-row"><strong>Service Center:</strong> {request.serviceCenter}</div>
-          <div className="info-row"><strong>Requested Date:</strong> {request.requestedDate}</div>
-          <div className="info-row"><strong>Expected Delivery:</strong> {request.expectedDate || "Not set"}</div>
+          <div className="info-row">
+            <strong>Status:</strong> {request.status}
+          </div>
+          <div className="info-row">
+            <strong>Service Center:</strong> {request.serviceCenter}
+          </div>
+          <div className="info-row">
+            <strong>Requested Date:</strong> {request.requestedDate}
+          </div>
+          <div className="info-row">
+            <strong>Expected Delivery:</strong>{" "}
+            {request.expectedDate || "Not set"}
+          </div>
 
           <h4>Parts List</h4>
           <table className="parts-detail">
@@ -69,20 +93,42 @@
           </div>
 
           <div className="popup-actions">
-            <button className="btn-secondary" onClick={handleClose} disabled={isLoading}>
+            <button
+              className="btn-secondary"
+              onClick={handleClose}
+              disabled={isLoading}
+            >
               Cancel
             </button>
-            <button className="btn-secondary" onClick={handleSetDateClick} disabled={isLoading}>
+            <button
+              className="btn-secondary"
+              onClick={handleSetDateClick}
+              disabled={isLoading}
+            >
               {isLoading ? "Saving..." : "Set to Waiting"}
             </button>
-            <button className="btn-confirm" onClick={handleConfirmClick} disabled={isLoading}>
+            <button
+              className="btn-confirm"
+              onClick={handleConfirmClick}
+              disabled={isLoading}
+            >
               {isLoading ? "Processing..." : "Confirm & Prepare"}
             </button>
           </div>
         </div>
       </div>
-      </div>
-    );
-  }
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Confirm Request"
+        message="Confirm & mark this request as ready for delivery?"
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={handleConfirmDialog}
+        onCancel={handleCancelDialog}
+        isLoading={isLoading}
+      />
+    </div>
+  );
+}
 
-  export default Waiting;
+export default Waiting;

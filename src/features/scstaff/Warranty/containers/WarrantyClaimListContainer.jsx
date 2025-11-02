@@ -4,6 +4,7 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { WarrantyClaimListView } from "../components/WarrantyClaimListView";
 import { normalizePagedResult } from "../../../../services/helpers";
+import "../components/WarrantyClaimListView.css";
 
 export const WarrantyClaimListContainer = () => {
   const [warrantyClaims, setWarrantyClaims] = useState([]);
@@ -69,14 +70,21 @@ export const WarrantyClaimListContainer = () => {
       label: "Status",
       sortable: true,
       render: (value) => {
-        const statusClass = (value || "unknown")
-          .toLowerCase()
-          .replace(/_/g, "-");
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
         return (
-          <span className={`status-badge status-${statusClass}`}>{value}</span>
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
         );
       },
     },
+    
     {
       key: "actions",
       label: "Actions",

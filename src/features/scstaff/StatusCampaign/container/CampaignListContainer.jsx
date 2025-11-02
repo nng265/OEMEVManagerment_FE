@@ -44,6 +44,7 @@ const CampaignListContainer = () => {
           customer: it.customer?.name ?? "—",
           type: it.vehicle?.model ?? "—",
           status: it.status ?? "—",
+          replacements: it.replacements ?? "_",
           raw: it,
         }));
 

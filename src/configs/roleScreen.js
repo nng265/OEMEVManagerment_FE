@@ -12,7 +12,7 @@ export const roleScreens = {
     { id: "staff_parts_request", label: "Parts Request", component: "PartsRequest" },
     { id: "service_center_inventory", label: "Inventory", component: "ServiceCenterInventory" },
     { id: "staff_campaign", label: "Campain", component: "Campaign"},
-    { id: "status_campaign", label: "StatusCampaign", component: "StatusCampaign"}
+    { id: "status_campaign", label: "CampaignVehicle", component: "StatusCampaign"}
   ],
   SC_TECH: [
     { id: "technician_vehicle_status", label: "Task", component: "TechnicianVehicleStatus" },

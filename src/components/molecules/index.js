@@ -4,3 +4,4 @@ export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 export { DetailSection } from './DetailSection/DetailSection';
 export { DetailModalActions } from './DetailModalActions/DetailModalActions';
 export { WarrantyRecordsSection } from './WarrantyRecordsSection/WarrantyRecordsSection';
+export { ConfirmDialog } from './ConfirmDialog/ConfirmDialog';

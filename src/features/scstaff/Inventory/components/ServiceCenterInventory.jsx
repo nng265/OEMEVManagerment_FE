@@ -48,7 +48,26 @@ export const ServiceCenterInventory = ({
     { key: "model", label: "Model" },
     { key: "category", label: "Category" },
     { key: "stockQuantity", label: "Quantity", sortType: "number" },
-    { key: "status", label: "Status" },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => {
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
+        return (
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
+        );
+      },
+    },
+
     {
       key: "action",
       label: "Action",

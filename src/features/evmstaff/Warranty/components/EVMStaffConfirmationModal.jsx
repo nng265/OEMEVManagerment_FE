@@ -5,7 +5,7 @@ import { Button } from "../../../../components/atoms/Button/Button";
 import { DetailModalActions } from "../../../../components/molecules/DetailModalActions/DetailModalActions";
 import { BaseWarrantyDetailSection } from "../../../scstaff/Warranty/components/BaseWarrantyDetailSection"; // Sử dụng lại base
 import { Input } from "../../../../components/atoms/Input/Input";
-
+import { toast } from "react-toastify";
 export const EVMStaffConfirmationModal = ({
   isOpen,
   onClose,
@@ -39,7 +39,7 @@ export const EVMStaffConfirmationModal = ({
     if (vehicleWarrantyId) {
       onApprove(warrantyData.claimId, vehicleWarrantyId);
     } else {
-      alert("Please select a warranty policy to approve.");
+      toast.warning("Please select a warranty policy to approve.");
     }
   };
 
@@ -60,7 +60,7 @@ export const EVMStaffConfirmationModal = ({
     if (reason) {
       onNeedMoreInfo(warrantyData.claimId, reason);
     } else {
-      alert("Please provide a reason.");
+      toast.warning("Please provide a reason.");
     }
   };
 
@@ -167,5 +167,3 @@ EVMStaffConfirmationModal.propTypes = {
   onNeedMoreInfo: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
 };
-
-export default EVMStaffConfirmationModal;

@@ -80,7 +80,8 @@ export const CampaignCreateModal = ({
         <div className="form-group">
           <label>Campaign</label>
           {initialCampaign ? (
-            <div style={{ padding: 8 }}>
+            /* ===== THAY ĐỔI 1 ===== */
+            <div className="form-display-value">
               {initialCampaign.title ?? initialCampaign.name ?? "—"}
             </div>
           ) : (
@@ -105,7 +106,10 @@ export const CampaignCreateModal = ({
         <div className="form-group">
           <label>Campaign Type</label>
           {initialCampaign ? (
-            <div style={{ padding: 8 }}>{initialCampaign.type ?? "—"}</div>
+            /* ===== THAY ĐỔI 2 ===== */
+            <div className="form-display-value">
+              {initialCampaign.type ?? "—"}
+            </div>
           ) : (
             <select
               name="type"
@@ -135,19 +139,12 @@ export const CampaignCreateModal = ({
         <div className="form-group">
           <label>Select Technician *</label>
           {selectedTechs.map((tech, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-                marginBottom: 8,
-              }}
-            >
+            /* ===== THAY ĐỔI 3 (div bên ngoài) ===== */
+            <div key={index} className="tech-select-row">
               <select
                 value={tech}
                 onChange={(e) => handleChangeTech(index, e.target.value)}
-                style={{ flex: 1, padding: 8 }}
+                /* ===== THAY ĐỔI 3 (đã xóa style khỏi select) ===== */
                 required
               >
                 <option value="">Select technician...</option>

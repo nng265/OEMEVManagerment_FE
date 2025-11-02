@@ -9,6 +9,7 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
 import ServiceCenterInventory from "../components/ServiceCenterInventory";
 import { CreatePartsRequestModal } from "../components/CreatePartsRequestModal";
+import "../components/ServiceCenterInventory.css"
 
 export const ServiceCenterInventoryContainer = () => {
   // ===== STATE: INVENTORY =====

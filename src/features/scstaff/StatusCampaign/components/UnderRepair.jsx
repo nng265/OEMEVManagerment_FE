@@ -1,88 +1,110 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
-import "./UI.css";
+import "../components/UI.css";
 
 const UnderRepair = ({ open, onClose, data }) => {
-  if (!open) return null;
+  // === Dùng các hàm helper giống CampaignViewModal ===
+  const displayValue = (value) => {
+    if (value === 0 || value === null || value === undefined || value === "") {
+      return "—";
+    }
+    return value;
+  };
+  // ===================================================
+
   const campaign = data?.raw ?? {};
-  const customer = campaign.customer ?? {};
   const vehicle = campaign.vehicle ?? {};
+  const customer = campaign.customer ?? {};
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.3)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999,
-      }}
+    <Modal
+      isOpen={open}
+      onClose={onClose}
+      title="Vehicle Under Repair"
+      size="xl"
+      showFooter={false}
     >
-      <div style={{
-        background: "#fff",
-        borderRadius: 8,
-        width: 520,
-        padding: 20,
-        boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
-        position: "relative"
-      }}>
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 12,
-            border: "none",
-            background: "transparent",
-            fontSize: 20,
-            cursor: "pointer",
-          }}
-        >
-          ×
-        </button>
-
-        <h2>Campaign</h2>
-        <div style={{ color: "#666" }}>{campaign.status ?? "UNDER_REPAIR"}</div>
-
-        <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
-          <div style={{ flex: 1 }}>
-            <h4>👤 Customer Information</h4>
-            <div>{customer.name ?? "—"}</div>
-            <div>{customer.phone ?? ""}</div>
+      <div className="campaign-modal">
+        {/* === Section 1: Thông tin Khách hàng & Xe === */}
+        <h3 className="campaign-section-title">
+          Customer & Vehicle Information
+        </h3>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block">
+            <span className="info-block-label">Customer Name</span>
+            <span className="info-block-value">
+              {displayValue(customer.name)}
+            </span>
           </div>
-
-          <div style={{ flex: 1 }}>
-            <h4>🚗 Vehicle Information</h4>
-            <div>Model: {vehicle.model ?? "—"}</div>
-            <div>VIN: {vehicle.vin ?? "—"}</div>
-            <div>Year: {vehicle.year ?? "—"}</div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Phone</span>
+            <span className="info-block-value">
+              {displayValue(customer.phone)}
+            </span>
           </div>
         </div>
-
-        <hr style={{ margin: "12px 0" }} />
-
-        <div>
-          
-          <div>Title: {campaign.title ?? "—"}</div>
-          <div>Description: {campaign.description ?? "—"}</div>
-          <div>Type: {campaign.type ?? "—"}</div>
-          <div>period: {(campaign.startDate && campaign.endDate) ?? "—"}</div>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block">
+            <span className="info-block-label">Vehicle Model</span>
+            <span className="info-block-value">
+              {displayValue(vehicle.model)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">VIN</span>
+            <span className="info-block-value">
+              {displayValue(vehicle.vin)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Year</span>
+            <span className="info-block-value">
+              {displayValue(vehicle.year)}
+            </span>
+          </div>
         </div>
 
-        <hr style={{ margin: "12px 0" }} />
-        <div>
-          <h4>Parts to Replace/Repair</h4>
-          <div>{campaign.partReplace ?? "—"}</div>
+        {/* === Section 2: Thông tin Chiến dịch === */}
+        <h3 className="campaign-section-title">Campaign Details</h3>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block full-width">
+            <span className="info-block-label">Title</span>
+            <span className="info-block-value">
+              {displayValue(campaign.title)}
+            </span>
+          </div>
+        </div>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block">
+            <span className="info-block-label">Status</span>
+            <span className="info-block-value">
+              {displayValue(campaign.status)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Campaign Type</span>
+            <span className="info-block-value">
+              {displayValue(campaign.type)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Description</span>
+            <span className="info-block-value">
+              {displayValue(campaign.description)}
+            </span>
+          </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-          <Button variant="secondary" onClick={onClose}>Back</Button>
+        {/* === Footer === */}
+        <div className="campaign-footer">
+          <Button variant="secondary" onClick={onClose}>
+            Back
+          </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
