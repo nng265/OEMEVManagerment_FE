@@ -1,9 +1,8 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
+const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-const API_BASE_URL =
-  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+// const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -93,6 +92,23 @@ export const ApiEnum = {
     method: "PUT",
   },
 
+  CREATE_CAMPAIGN: { path: "/Campaign", method: "POST" },
+  CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
+  CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
+  CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
+  CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET" },
+  CAMPAIGNVEHICLE_STAFF_REPAIRED: {
+    path: "/CampaignVehicle/:id/repaired",
+    method: "PUT",
+  },
+  CAMPAIGNVEHICLE_STAFF_DONE: {
+    path: "/CampaignVehicle/:id/done",
+    method: "PUT",
+  },
+  CAMPAIGNVEHICLE_STAFF_TECH: {
+    path: "/CampaignVehicle/:id/assign-techs",
+    method: "POST",
+  },
   CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
   CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
   CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
@@ -110,7 +126,6 @@ export const ApiEnum = {
     method: "POST",
   },
 };
-
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)
  * @param {Object} [data] - Payload (query hoặc body)

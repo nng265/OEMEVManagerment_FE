@@ -90,6 +90,41 @@ const IconDefault = () => (
   </svg>
 );
 
+const IconCampaign = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M3 11l18-5v12l-18-5v8" />
+    <circle cx="12" cy="12" r="1" />
+  </svg>
+);
+
+const IconCampaignVehicle = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="3" y="11" width="18" height="5" rx="2" ry="2" />
+    <circle cx="7.5" cy="16.5" r="1.5" />
+    <circle cx="16.5" cy="16.5" r="1.5" />
+    <path d="M6 11V7h12v4" />
+    <path d="M18 7l3-3" />
+  </svg>
+);
+
 export const Sidebar = ({
   role,
   selectedScreen,
@@ -125,6 +160,16 @@ export const Sidebar = ({
       case "manage_vehicles":
         // Add specific icons or use default
         return <IconDefault />;
+      case "staff_campaign":
+      case "evm_campaigns":
+      case "campaign":
+        return <IconCampaign />;
+
+      case "staff_campaign_vehicle":
+      case "status_campaign":
+      case "campaignvehicle":
+        return <IconCampaignVehicle />;
+
       default:
         return <IconDefault />; // Fallback icon
     }
