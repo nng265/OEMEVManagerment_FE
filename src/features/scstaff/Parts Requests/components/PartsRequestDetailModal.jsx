@@ -129,7 +129,7 @@ export const PartsRequestDetailModal = ({
             onClick={() => onConfirmDelivered(requestID)} // Sử dụng đúng tên prop
             isLoading={isConfirming}
           >
-            confirm Delivered
+            Confirm Delivered
           </Button>
         )}
       </DetailModalActions>

@@ -70,8 +70,8 @@ export const WarrantyClaimListView = ({
     <ErrorBoundary>
       <div className="warranty-claim-list-view">
         <h1 className="size-h1">Warranty Claims List</h1>
-        <div className="warranty-claim-header">
-          {/* <div className="warranty-filter-container">
+        {/*<div className="warranty-claim-header">
+           <div className="warranty-filter-container">
             <label htmlFor="status-filter">Filter by Status:</label>
             <select
               id="status-filter"
@@ -85,8 +85,8 @@ export const WarrantyClaimListView = ({
                 </option>
               ))}
             </select>
-          </div> */}
-        </div>
+          </div>
+        </div> */}
 
         {/* Handle Loading / Error / Empty / Data */}
         {loading ? (

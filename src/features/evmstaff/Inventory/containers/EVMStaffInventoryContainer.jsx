@@ -1,4 +1,6 @@
+// export default EVMStaffInventoryContainer;
 
+// src/features/evm/containers/EVMStaffInventoryContainer.jsx
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
@@ -28,98 +30,93 @@ export const EVMStaffInventoryContainer = () => {
   // =====================
   // FETCH INVENTORY
   // =====================
-  const fetchInventory = useCallback(
-    async (pageNumber = 0, size) => {
-      const effectiveSize =
-        typeof size === "number" && size > 0
-          ? size
-          : paginationRef.current.pageSize;
-      const effectivePage =
-        typeof pageNumber === "number" && pageNumber >= 0
-          ? pageNumber
-          : paginationRef.current.pageNumber;
+  const fetchInventory = useCallback(async (pageNumber = 0, size) => {
+    const effectiveSize =
+      typeof size === "number" && size > 0
+        ? size
+        : paginationRef.current.pageSize;
+    const effectivePage =
+      typeof pageNumber === "number" && pageNumber >= 0
+        ? pageNumber
+        : paginationRef.current.pageNumber;
 
-      const requestId = latestRequestRef.current + 1;
-      latestRequestRef.current = requestId;
+    const requestId = latestRequestRef.current + 1;
+    latestRequestRef.current = requestId;
 
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
 
-      try {
-        const response = await request(ApiEnum.GET_PART, {
-          Page: effectivePage,
-          Size: effectiveSize,
-        });
+    try {
+      const response = await request(ApiEnum.GET_PART, {
+        Page: effectivePage,
+        Size: effectiveSize,
+      });
 
-        const {
-          success,
-          items: rawItems,
-          totalRecords,
-          page,
-          size: pageSize,
-          message,
-        } = normalizePagedResult(response, []);
+      const {
+        success,
+        items: rawItems,
+        totalRecords,
+        page,
+        size: pageSize,
+        message,
+      } = normalizePagedResult(response, []);
 
-        if (requestId !== latestRequestRef.current) {
-          return;
-        }
-
-        if (success) {
-          const normalized = rawItems.map((it, index) => ({
-            id: it.id ?? it.partId ?? `${it.model ?? "part"}-${index}`,
-            model: it.model ?? it.name ?? "-",
-            category: it.category ?? it.categoryName ?? "-",
-            stockQuantity: it.stockQuantity ?? it.stockQty ?? 0,
-            status: it.status ?? it.inventoryStatus ?? "-",
-          }));
-
-          setItems(normalized);
-          setPagination({
-            pageNumber:
-              typeof page === "number" && page >= 0 ? page : effectivePage,
-            pageSize:
-              typeof pageSize === "number" && pageSize > 0
-                ? pageSize
-                : effectiveSize,
-            totalRecords:
-              typeof totalRecords === "number"
-                ? totalRecords
-                : normalized.length,
-          });
-        } else {
-          setItems([]);
-          setPagination((prev) => ({
-            ...prev,
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: 0,
-          }));
-          setError(message || "Unable to load inventory.");
-        }
-      } catch (err) {
-        console.error("❌ Lỗi khi load inventory:", err);
-        if (requestId === latestRequestRef.current) {
-          const message =
-            err?.responseData?.message ||
-            err?.message ||
-            "Unable to load inventory.";
-          setItems([]);
-          setPagination((prev) => ({
-            ...prev,
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: 0,
-          }));
-          setError(message);
-        }
-      } finally {
-        if (requestId === latestRequestRef.current) {
-          setLoading(false);
-        }
+      if (requestId !== latestRequestRef.current) {
+        return;
       }
-    },
-    []
-  );
+
+      if (success) {
+        const normalized = rawItems.map((it, index) => ({
+          id: it.id ?? it.partId ?? `${it.model ?? "part"}-${index}`,
+          model: it.model ?? it.name ?? "-",
+          category: it.category ?? it.categoryName ?? "-",
+          stockQuantity: it.stockQuantity ?? it.stockQty ?? 0,
+          status: it.status ?? it.inventoryStatus ?? "-",
+        }));
+
+        setItems(normalized);
+        setPagination({
+          pageNumber:
+            typeof page === "number" && page >= 0 ? page : effectivePage,
+          pageSize:
+            typeof pageSize === "number" && pageSize > 0
+              ? pageSize
+              : effectiveSize,
+          totalRecords:
+            typeof totalRecords === "number" ? totalRecords : normalized.length,
+        });
+      } else {
+        setItems([]);
+        setPagination((prev) => ({
+          ...prev,
+          pageNumber: effectivePage,
+          pageSize: effectiveSize,
+          totalRecords: 0,
+        }));
+        setError(message || "Unable to load inventory.");
+      }
+    } catch (err) {
+      console.error("❌ Lỗi khi load inventory:", err);
+      if (requestId === latestRequestRef.current) {
+        const message =
+          err?.responseData?.message ||
+          err?.message ||
+          "Unable to load inventory.";
+        setItems([]);
+        setPagination((prev) => ({
+          ...prev,
+          pageNumber: effectivePage,
+          pageSize: effectiveSize,
+          totalRecords: 0,
+        }));
+        setError(message);
+      }
+    } finally {
+      if (requestId === latestRequestRef.current) {
+        setLoading(false);
+      }
+    }
+  }, []);
 
   // Lần đầu load
   useEffect(() => {
@@ -154,7 +151,7 @@ export const EVMStaffInventoryContainer = () => {
   // RENDER
   // =====================
   return (
-    <div>
+    <div style={{ marginTop: 40 }}>
       <ManufacturerInventory
         data={items}
         loading={loading}

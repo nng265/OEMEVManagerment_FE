@@ -21,8 +21,26 @@ export const ManufacturerInventory = ({
   const columns = [
     { key: "model", label: "Model" },
     { key: "category", label: "Category" },
-  { key: "stockQuantity", label: "Quantity", sortType: "number" },
-    { key: "status", label: "Status" },
+    { key: "stockQuantity", label: "Quantity", sortType: "number" },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => {
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
+        return (
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
+        );
+      },
+    },
   ];
 
   // Chuẩn hóa dữ liệu cho DataTable
@@ -42,11 +60,11 @@ export const ManufacturerInventory = ({
   };
 
   return (
-    <div style={{ padding: 8 }}>
-      <h2 style={{ marginBottom: 4 }}>Manufacturer Inventory</h2>
-      <p style={{ marginBottom: 12, color: "#555" }}>
+    <div style={{ height: 100, marginLeft: 10 }}>
+      <h1 style={{ marginBottom: 30, marginTop: 30 }}>Manufacturer Inventory</h1>
+      {/* <p style={{ marginBottom: 12, color: "#555" }}>
         View parts available at the Manufacturer's inventory.
-      </p>
+      </p> */}
 
       <div style={{ position: "relative" }}>
         {loading && (

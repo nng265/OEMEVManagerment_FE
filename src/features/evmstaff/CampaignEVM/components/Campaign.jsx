@@ -43,16 +43,38 @@ export const Campaign = ({
 
   const columns = [
     { key: "title", label: "Campaign" },
-    {key: "target", label: "Target"},
+    { key: "target", label: "Target" },
     { key: "type", label: "Type" },
     { key: "period", label: "Period" },
-    { key: "status", label: "Status" },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => {
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
+        return (
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
+        );
+      },
+    },
     {
       key: "action",
       label: "Actions",
       render: (_v, row) => (
-        <Button size="small" variant="primary" onClick={() => onView?.(row)}>
-          View
+        <Button size="small" variant="light" onClick={() => onView?.(row)}>
+          <img
+            src="../../../../../public/eye.png"
+            className="eye-svg"
+            style={{ width: "22px" }}
+          />
         </Button>
       ),
     },
@@ -70,15 +92,15 @@ export const Campaign = ({
 
   return (
     <div className="campaign-table">
+      <h1>Campaign Management</h1>
       <div className="campaign-table__header">
-        <h2 className="campaign-table__title">Campaign Management</h2>
         <Button variant="success" onClick={onAdd}>
           + Add Campaign
         </Button>
       </div>
 
       {/* Filters (search + type + status) */}
-      <div
+      {/* <div
         className="campaign-filters"
         style={{ display: "flex", gap: 8, marginBottom: 12 }}
       >
@@ -122,7 +144,7 @@ export const Campaign = ({
         >
           Clear
         </Button>
-      </div>
+      </div> */}
 
       <div className="campaign-table__content">
         <DataTable

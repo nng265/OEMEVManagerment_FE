@@ -30,29 +30,6 @@ export default function PartsListEVM({
           : val || 0,
     },
     {
-      key: "status",
-      label: "Status",
-      render: (val) => (
-        <span
-          style={{
-            padding: "4px 8px",
-            borderRadius: "6px",
-            fontWeight: 500,
-            backgroundColor:
-              val === "Pending"
-                ? "#ffeeba"
-                : val === "Waiting"
-                ? "#b8daff"
-                : val === "Delivered"
-                ? "#c3e6cb"
-                : "#f5f5f5",
-          }}
-        >
-          {val || "-"}
-        </span>
-      ),
-    },
-    {
       key: "requestDate",
       label: "Requested Date",
       render: (val) =>
@@ -77,16 +54,39 @@ export default function PartsListEVM({
           : "-",
     },
     {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => {
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
+        return (
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
+        );
+      },
+    },
+    {
       key: "actions",
       label: "Actions",
       sortable: false,
       render: (_, row) => (
         <Button
-          variant="primary"
+          variant="light"
           size="sm"
           onClick={() => onView && onView(row.raw)}
         >
-          View
+          <img
+              src="../../../../../public/eye.png"
+              className="eye-svg"
+              style={{ width: "22px" }}
+            />
         </Button>
       ),
     },
@@ -121,7 +121,7 @@ export default function PartsListEVM({
 
   return (
     <div style={{ padding: 8 }}>
-      <h2 style={{ marginBottom: 12 }}>Parts Requests from Service Centers</h2>
+      <h1 style={{ marginBottom: 30, marginTop: 30 }}>Parts Requests from Service Centers</h1>
       <div style={{ position: "relative" }}>
         {loading && (
           <div className="data-table-loading">

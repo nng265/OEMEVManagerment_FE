@@ -13,46 +13,46 @@ const CampaignList = ({
   onView,
   onAdd,
   onPageChange,
-  onSearch,
-  onFilterType,
-  onFilterStatus,
 }) => {
-  const [query, setQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-
-  useEffect(() => {
-    onSearch?.(query);
-  }, [query]);
-
-  useEffect(() => {
-    onFilterType?.(typeFilter);
-  }, [typeFilter]);
-
-  useEffect(() => {
-    onFilterStatus?.(statusFilter);
-  }, [statusFilter]);
-
-  const typeOptions = Array.from(new Set(data.map((c) => c.type).filter(Boolean)));
-  const statusOptions = Array.from(new Set(data.map((c) => c.status).filter(Boolean)));
-
   const columns = [
     { key: "title", label: "Campaign" },
     { key: "type", label: "Type" },
     { key: "description", label: "Target" },
     { key: "period", label: "Period" },
-    { key: "status", label: "Status" },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => {
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
+        return (
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
+        );
+      },
+    },
     {
       key: "action",
       label: "Actions",
       render: (_v, row) => (
         <div style={{ display: "flex", gap: "8px" }}>
-          <Button size="small" variant="primary" onClick={() => onView?.(row)}>
-            View
+          <Button size="small" variant="light" onClick={() => onView?.(row)}>
+            <img
+              src="../../../../../public/eye.png"
+              className="eye-svg"
+              style={{ width: "22px" }}
+            />
           </Button>
           {(row.status === "ACTIVE" || row.status === "Active") && (
-            <Button size="small" variant="success" onClick={() => onAdd?.(row)}>
-              + Add Campaign
+            <Button size="small" variant="primary" onClick={() => onAdd?.(row)}>
+              Add
             </Button>
           )}
         </div>
@@ -67,42 +67,14 @@ const CampaignList = ({
     description: c.description || "_",
     period: c.period ?? `${c.startDate ?? ""} to ${c.endDate ?? ""}`,
     status: c.status || "—",
+    completedVehicles: c.completedVehicles || "_",
+    inProgressVehicles: c.inProgressVehicles || "_",
+    pendingVehicles: c.pendingVehicles || "_",
   }));
 
   return (
     <div className="campaign-table">
-      <div className="campaign-table__header">
-        <h2>Campaign Management</h2>
-        {/* Nút Add Campaign đã bị loại bỏ khỏi header */}
-      </div>
-
-      <div className="campaign-filters">
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-          <option value="">All Types</option>
-          {typeOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-          <option value="">All Statuses</option>
-          {statusOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setQuery("");
-            setTypeFilter("");
-            setStatusFilter("");
-          }}
-          disabled={!query && !typeFilter && !statusFilter}
-        >
-          Clear
-        </Button>
-      </div>
+      <h2 className="size-h1">Campaign Management</h2>
 
       <DataTable
         data={rows}

@@ -4,6 +4,9 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { WarrantyClaimListView } from "../components/WarrantyClaimListView";
 import { normalizePagedResult } from "../../../../services/helpers";
+import "../components/WarrantyClaimListView.css";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 
 export const WarrantyClaimListContainer = () => {
   const [warrantyClaims, setWarrantyClaims] = useState([]);
@@ -43,6 +46,13 @@ export const WarrantyClaimListContainer = () => {
   });
   const paginationRef = useRef(pagination);
 
+  // === Confirm dialog state ===
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const pendingActionRef = useRef(null); // { type: 'claim' | 'assign', action?, payload?, assignmentData? }
+
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
@@ -69,14 +79,21 @@ export const WarrantyClaimListContainer = () => {
       label: "Status",
       sortable: true,
       render: (value) => {
-        const statusClass = (value || "unknown")
-          .toLowerCase()
-          .replace(/_/g, "-");
+        const normalizedStatus = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalizedStatus.replace(/\s+/g, "-");
+        const displayText =
+          value && value.length > 0
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : "Unknown";
+
         return (
-          <span className={`status-badge status-${statusClass}`}>{value}</span>
+          <span className={`status-badge status-${statusClass}`}>
+            {displayText}
+          </span>
         );
       },
     },
+
     {
       key: "actions",
       label: "Actions",
@@ -296,109 +313,181 @@ export const WarrantyClaimListContainer = () => {
   const handleCloseDoneWarranty = () => setShowDoneWarrantyModal(false);
 
   // ========================== ASSIGN TECH ==========================
-  const handleAssignSubmit = async (assignmentData) => {
+  const handleAssignSubmit = (assignmentData) => {
     if (!selectedWarrantyClaim) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const payload = {
-        params: {
-          targetId: selectedWarrantyClaim.claimId,
-        },
-        target: "Warranty",
-        assignedTo: assignmentData.technicians,
-      };
-
-      const response = await request(ApiEnum.ASSIGN_TECHNICIAN, payload);
-      if (response.success) {
-        handleCloseAssign();
-        const { pageNumber, pageSize } = paginationRef.current;
-        fetchWarrantyClaims(pageNumber, pageSize);
-      } else {
-        setError(response.message || "Assignment failed");
-      }
-    } catch (error) {
-      console.error("Error assigning technician:", error);
-      setError("An error occurred while assigning technician");
-    } finally {
-      setIsLoading(false);
-    }
+    // Open confirm first
+    pendingActionRef.current = { type: "assign", assignmentData };
+    setConfirmTitle("Confirm Assignment");
+    const count = assignmentData?.technicians?.length || 0;
+    setConfirmMessage(
+      `Assign ${count} technician${count === 1 ? "" : "s"} to claim #${
+        selectedWarrantyClaim.claimId
+      }?`
+    );
+    setIsConfirmOpen(true);
   };
 
   // ========================== CLAIM ACTIONS (MAIN) ==========================
-  const handleClaimAction = async (action, payload) => {
+  const handleClaimAction = (action, payload) => {
     if (!selectedWarrantyClaim || !selectedWarrantyClaim.claimId) {
       setError("Missing warranty claim information.");
       return;
     }
 
-    const claimId = selectedWarrantyClaim.claimId;
-    let apiEndpoint = null;
-    let requestData = {};
+    pendingActionRef.current = { type: "claim", action, payload };
 
-    switch (action) {
-      case "sendToManufacturer":
-        apiEndpoint = ApiEnum.SEND_CLAIM_TO_MANUFACTURER;
-        requestData = { params: { claimId } };
-        break;
+    const labelMap = {
+      sendToManufacturer: {
+        title: "Confirm Send",
+        message: `Send claim #${selectedWarrantyClaim.claimId} to manufacturer?`,
+        success: "Sent to manufacturer successfully!",
+      },
+      reject: {
+        title: "Confirm Reject",
+        message: `Reject claim #${selectedWarrantyClaim.claimId}?`,
+        success: "Claim rejected successfully!",
+      },
+      needMoreInfo: {
+        title: "Confirm Send Back",
+        message: `Send claim #${selectedWarrantyClaim.claimId} back for more info?`,
+        success: "Requested more information successfully!",
+      },
+      doneWarranty: {
+        title: "Confirm Complete",
+        message: `Mark claim #${selectedWarrantyClaim.claimId} as completed?`,
+        success: "Marked as completed successfully!",
+      },
+      carBackHome: {
+        title: "Confirm Return",
+        message: `Mark vehicle returned to customer for claim #${selectedWarrantyClaim.claimId}?`,
+        success: "Marked vehicle returned to customer!",
+      },
+      carBackCenter: {
+        title: "Confirm Return",
+        message: `Mark vehicle returned to center for claim #${selectedWarrantyClaim.claimId}?`,
+        success: "Marked vehicle returned to center!",
+      },
+    };
 
-      case "reject":
-        apiEndpoint = ApiEnum.DENY_WARRANTY_CLAIM;
-        requestData = { params: { claimId } };
-        break;
+    const cfg = labelMap[action] || {
+      title: "Confirm",
+      message: `Proceed with action for claim #${selectedWarrantyClaim.claimId}?`,
+      success: "Action completed successfully!",
+    };
 
-      case "needMoreInfo":
-        apiEndpoint = ApiEnum.BACK_WARRANTY_CLAIM;
-        requestData = {
-          params: { claimId },
-          description: payload.description,
-          assignsTo: payload.assignsTo,
-        };
-        break;
+    setConfirmTitle(cfg.title);
+    setConfirmMessage(cfg.message);
+    setIsConfirmOpen(true);
+  };
 
-      case "doneWarranty":
-        apiEndpoint = ApiEnum.DONE_WARRANTY;
-        requestData = { params: { claimId } };
-        break;
-
-      case "carBackHome":
-        apiEndpoint = ApiEnum.CAR_BACK_HOME;
-        requestData = { params: { claimId } };
-        break;
-
-      case "carBackCenter":
-        apiEndpoint = ApiEnum.CAR_BACK_CENTER;
-        requestData = { params: { claimId } };
-        break;
-
-      default:
-        console.warn("Unknown claim action:", action);
-        return;
-    }
-
-    setIsLoading(true);
+  const performPendingAction = async () => {
+    const pending = pendingActionRef.current;
+    if (!pending) return;
+    setIsActionLoading(true);
     setError(null);
 
     try {
-      const response = await request(apiEndpoint, requestData);
+      if (pending.type === "assign") {
+        // Perform assignment
+        const payload = {
+          params: { targetId: selectedWarrantyClaim.claimId },
+          target: "Warranty",
+          assignedTo: pending.assignmentData.technicians,
+        };
+        const res = await request(ApiEnum.ASSIGN_TECHNICIAN, payload);
+        if (res.success) {
+          toast.success("Technicians assigned successfully!");
+          handleCloseAssign();
+          const { pageNumber, pageSize } = paginationRef.current;
+          fetchWarrantyClaims(pageNumber, pageSize);
+        } else {
+          const msg = res.message || "Assignment failed";
+          setError(msg);
+          toast.error(msg);
+        }
+      } else if (pending.type === "claim") {
+        // Perform claim action
+        const claimId = selectedWarrantyClaim?.claimId;
+        if (!claimId) {
+          setError("Missing warranty claim information.");
+          return;
+        }
 
-      if (response.success) {
-        // Đóng tất cả modal
-        handleClosePendingConfirmation();
-        handleCloseApproved();
-        handleCloseDeniedOrRepaired();
-        handleCloseCarBackHome();
-        handleCloseSentToManufacturer();
-        const { pageNumber, pageSize } = paginationRef.current;
-        fetchWarrantyClaims(pageNumber, pageSize);
-      } else {
-        setError(response.message || "Operation failed. Please try again.");
+        let apiEndpoint = null;
+        let requestData = {};
+        switch (pending.action) {
+          case "sendToManufacturer":
+            apiEndpoint = ApiEnum.SEND_CLAIM_TO_MANUFACTURER;
+            requestData = { params: { claimId } };
+            break;
+          case "reject":
+            apiEndpoint = ApiEnum.DENY_WARRANTY_CLAIM;
+            requestData = { params: { claimId } };
+            break;
+          case "needMoreInfo":
+            apiEndpoint = ApiEnum.BACK_WARRANTY_CLAIM;
+            requestData = {
+              params: { claimId },
+              description: pending.payload?.description,
+              assignsTo: pending.payload?.assignsTo,
+            };
+            break;
+          case "doneWarranty":
+            apiEndpoint = ApiEnum.DONE_WARRANTY;
+            requestData = { params: { claimId } };
+            break;
+          case "carBackHome":
+            apiEndpoint = ApiEnum.CAR_BACK_HOME;
+            requestData = { params: { claimId } };
+            break;
+          case "carBackCenter":
+            apiEndpoint = ApiEnum.CAR_BACK_CENTER;
+            requestData = { params: { claimId } };
+            break;
+          default:
+            console.warn("Unknown claim action:", pending.action);
+            return;
+        }
+
+        const response = await request(apiEndpoint, requestData);
+        if (response.success) {
+          // Close relevant modals and refresh
+          handleClosePendingConfirmation();
+          handleCloseApproved();
+          handleCloseDeniedOrRepaired();
+          handleCloseCarBackHome();
+          handleCloseSentToManufacturer();
+          const { pageNumber, pageSize } = paginationRef.current;
+          fetchWarrantyClaims(pageNumber, pageSize);
+
+          // Success toast based on action
+          const successMap = {
+            sendToManufacturer: "Sent to manufacturer successfully!",
+            reject: "Claim rejected successfully!",
+            needMoreInfo: "Requested more information successfully!",
+            doneWarranty: "Marked as completed!",
+            carBackHome: "Marked vehicle returned to customer!",
+            carBackCenter: "Marked vehicle returned to center!",
+          };
+          toast.success(successMap[pending.action] || "Operation successful!");
+        } else {
+          const msg = response.message || "Operation failed. Please try again.";
+          setError(msg);
+          toast.error(msg);
+        }
       }
     } catch (err) {
-      console.error(`Error performing '${action}' request:`, err);
-      setError("A system or network error occurred.");
+      console.error("Error performing action:", err);
+      const msg =
+        err?.responseData?.message ||
+        err?.message ||
+        "A system or network error occurred.";
+      setError(msg);
+      toast.error(msg);
     } finally {
-      setIsLoading(false);
+      setIsActionLoading(false);
+      setIsConfirmOpen(false);
+      pendingActionRef.current = null;
     }
   };
 
@@ -411,51 +500,64 @@ export const WarrantyClaimListContainer = () => {
 
   // ========================== RENDER ==========================
   return (
-    <WarrantyClaimListView
-      data={warrantyClaims}
-      columns={columns}
-      loading={isLoading}
-      error={error}
-      statusFilter={statusFilter}
-      onStatusFilterChange={setStatusFilter}
-      statusOptions={statusOptions}
-      pagination={pagination}
-      onPageChange={handlePageChange}
-      selectedClaim={selectedWarrantyClaim}
-      // Default detail modal
-      showDetailModal={showDetailModal}
-      onCloseDetailModal={handleCloseDetail}
-      // Assign modal
-      showAssignModal={showAssignModal}
-      onCloseAssignModal={handleCloseAssign}
-      onAssignSubmit={handleAssignSubmit}
-      // Status-specific modals
-      showPendingConfirmationModal={showPendingConfirmationModal}
-      onClosePendingConfirmationModal={handleClosePendingConfirmation}
-      showApprovedModal={showApprovedModal}
-      onCloseApprovedModal={handleCloseApproved}
-      showDeniedOrRepairedModal={showDeniedOrRepairedModal}
-      onCloseDeniedOrRepairedModal={handleCloseDeniedOrRepaired}
-      showCarBackHomeModal={showCarBackHomeModal}
-      onCloseCarBackHomeModal={handleCloseCarBackHome}
-      showSentToManufacturerModal={showSentToManufacturerModal}
-      onCloseSentToManufacturerModal={handleCloseSentToManufacturer}
-      showUnderInspectionModal={showUnderInspectionModal}
-      onCloseUnderInspectionModal={handleCloseUnderInspection}
-      showUnderRepairModal={showUnderRepairModal}
-      onCloseUnderRepairModal={handleCloseUnderRepair}
-      showDoneWarrantyModal={showDoneWarrantyModal}
-      onCloseDoneWarrantyModal={handleCloseDoneWarranty}
-      // Actions
-      onAction={handleClaimAction}
-      // Technicians
-      technicians={technicians}
-      onFetchTechnicians={fetchTechnicians}
-      loadingTechnicians={loadingTechnicians}
-      // Assigned Technicians (for under inspection/repair)
-      assignedTechnicians={assignedTechnicians}
-      loadingAssignedTechs={loadingAssignedTechs}
-    />
+    <>
+      <WarrantyClaimListView
+        data={warrantyClaims}
+        columns={columns}
+        loading={isLoading}
+        error={error}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        statusOptions={statusOptions}
+        pagination={pagination}
+        onPageChange={handlePageChange}
+        selectedClaim={selectedWarrantyClaim}
+        // Default detail modal
+        showDetailModal={showDetailModal}
+        onCloseDetailModal={handleCloseDetail}
+        // Assign modal
+        showAssignModal={showAssignModal}
+        onCloseAssignModal={handleCloseAssign}
+        onAssignSubmit={handleAssignSubmit}
+        // Status-specific modals
+        showPendingConfirmationModal={showPendingConfirmationModal}
+        onClosePendingConfirmationModal={handleClosePendingConfirmation}
+        showApprovedModal={showApprovedModal}
+        onCloseApprovedModal={handleCloseApproved}
+        showDeniedOrRepairedModal={showDeniedOrRepairedModal}
+        onCloseDeniedOrRepairedModal={handleCloseDeniedOrRepaired}
+        showCarBackHomeModal={showCarBackHomeModal}
+        onCloseCarBackHomeModal={handleCloseCarBackHome}
+        showSentToManufacturerModal={showSentToManufacturerModal}
+        onCloseSentToManufacturerModal={handleCloseSentToManufacturer}
+        showUnderInspectionModal={showUnderInspectionModal}
+        onCloseUnderInspectionModal={handleCloseUnderInspection}
+        showUnderRepairModal={showUnderRepairModal}
+        onCloseUnderRepairModal={handleCloseUnderRepair}
+        showDoneWarrantyModal={showDoneWarrantyModal}
+        onCloseDoneWarrantyModal={handleCloseDoneWarranty}
+        // Actions
+        onAction={handleClaimAction}
+        // Technicians
+        technicians={technicians}
+        onFetchTechnicians={fetchTechnicians}
+        loadingTechnicians={loadingTechnicians}
+        // Assigned Technicians (for under inspection/repair)
+        assignedTechnicians={assignedTechnicians}
+        loadingAssignedTechs={loadingAssignedTechs}
+      />
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={performPendingAction}
+        onCancel={() => setIsConfirmOpen(false)}
+        isLoading={isActionLoading}
+      />
+    </>
   );
 };
 

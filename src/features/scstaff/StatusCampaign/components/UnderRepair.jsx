@@ -65,7 +65,7 @@ const UnderRepair = ({ open, onClose, data }) => {
         <hr style={{ margin: "12px 0" }} />
 
         <div>
-          
+          <h4>🛠 Campaign Information</h4>
           <div>Title: {campaign.title ?? "—"}</div>
           <div>Description: {campaign.description ?? "—"}</div>
           <div>Type: {campaign.type ?? "—"}</div>
@@ -73,10 +73,10 @@ const UnderRepair = ({ open, onClose, data }) => {
         </div>
 
         <hr style={{ margin: "12px 0" }} />
-        <div>
+        {/* <div>
           <h4>Parts to Replace/Repair</h4>
           <div>{campaign.partReplace ?? "—"}</div>
-        </div>
+        </div> */}
 
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
           <Button variant="secondary" onClick={onClose}>Back</Button>

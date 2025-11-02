@@ -9,6 +9,9 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
 import ServiceCenterInventory from "../components/ServiceCenterInventory";
 import { CreatePartsRequestModal } from "../components/CreatePartsRequestModal";
+import "../components/ServiceCenterInventory.css";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 
 export const ServiceCenterInventoryContainer = () => {
   // ===== STATE: INVENTORY =====
@@ -45,6 +48,10 @@ export const ServiceCenterInventoryContainer = () => {
   const [loadingModels, setLoadingModels] = useState(false);
   const [isSubmittingCreate, setIsSubmittingCreate] = useState(false);
   const [selectedPart, setSelectedPart] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const pendingAddedPartsRef = useRef(null);
 
   // ========== 0️⃣ FETCH CATEGORIES (once on mount) ==========
   const fetchCategories = useCallback(async () => {
@@ -74,102 +81,97 @@ export const ServiceCenterInventoryContainer = () => {
   }, [fetchCategories]);
 
   // ========== 1️⃣ LOAD INVENTORY ==========
-  const fetchInventory = useCallback(
-    async (pageNumber = 0, size) => {
-      const effectiveSize =
-        typeof size === "number" && size > 0
-          ? size
-          : paginationRef.current.pageSize;
-      const effectivePage =
-        typeof pageNumber === "number" && pageNumber >= 0
-          ? pageNumber
-          : paginationRef.current.pageNumber;
+  const fetchInventory = useCallback(async (pageNumber = 0, size) => {
+    const effectiveSize =
+      typeof size === "number" && size > 0
+        ? size
+        : paginationRef.current.pageSize;
+    const effectivePage =
+      typeof pageNumber === "number" && pageNumber >= 0
+        ? pageNumber
+        : paginationRef.current.pageNumber;
 
-      const requestId = latestRequestRef.current + 1;
-      latestRequestRef.current = requestId;
+    const requestId = latestRequestRef.current + 1;
+    latestRequestRef.current = requestId;
 
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
 
-      try {
-        const response = await request(ApiEnum.GET_PART, {
-          Page: effectivePage,
-          Size: effectiveSize,
-        });
+    try {
+      const response = await request(ApiEnum.GET_PART, {
+        Page: effectivePage,
+        Size: effectiveSize,
+      });
 
-        const {
-          success,
-          items: rawItems,
-          totalRecords,
-          page,
-          size: pageSize,
-          message,
-        } = normalizePagedResult(response, []);
+      const {
+        success,
+        items: rawItems,
+        totalRecords,
+        page,
+        size: pageSize,
+        message,
+      } = normalizePagedResult(response, []);
 
-        if (requestId !== latestRequestRef.current) {
-          return;
-        }
-
-        if (success) {
-          const normalized = rawItems.map((p, index) => ({
-            id: p.id ?? p.partId ?? `${p.model ?? "part"}-${index}`,
-            model: p.model ?? p.name ?? "",
-            category: p.category ?? p.categoryName ?? "",
-            status: p.status ?? p.inventoryStatus ?? "",
-            stockQuantity: p.stockQuantity ?? p.stockQty ?? 0,
-            _raw: p,
-          }));
-
-          setItems(normalized);
-          setFilteredItems(normalized);
-          setPagination({
-            pageNumber:
-              typeof page === "number" && page >= 0 ? page : effectivePage,
-            pageSize:
-              typeof pageSize === "number" && pageSize > 0
-                ? pageSize
-                : effectiveSize,
-            totalRecords:
-              typeof totalRecords === "number"
-                ? totalRecords
-                : normalized.length,
-          });
-        } else {
-          setItems([]);
-          setFilteredItems([]);
-          setPagination((prev) => ({
-            ...prev,
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: 0,
-          }));
-          setError(message || "Unable to load inventory.");
-        }
-      } catch (err) {
-        console.error("Lỗi khi tải inventory:", err);
-        if (requestId === latestRequestRef.current) {
-          const message =
-            err?.responseData?.message ||
-            err?.message ||
-            "Unable to load inventory.";
-          setItems([]);
-          setFilteredItems([]);
-          setPagination((prev) => ({
-            ...prev,
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: 0,
-          }));
-          setError(message);
-        }
-      } finally {
-        if (requestId === latestRequestRef.current) {
-          setLoading(false);
-        }
+      if (requestId !== latestRequestRef.current) {
+        return;
       }
-    },
-    []
-  );
+
+      if (success) {
+        const normalized = rawItems.map((p, index) => ({
+          id: p.id ?? p.partId ?? `${p.model ?? "part"}-${index}`,
+          model: p.model ?? p.name ?? "",
+          category: p.category ?? p.categoryName ?? "",
+          status: p.status ?? p.inventoryStatus ?? "",
+          stockQuantity: p.stockQuantity ?? p.stockQty ?? 0,
+          _raw: p,
+        }));
+
+        setItems(normalized);
+        setFilteredItems(normalized);
+        setPagination({
+          pageNumber:
+            typeof page === "number" && page >= 0 ? page : effectivePage,
+          pageSize:
+            typeof pageSize === "number" && pageSize > 0
+              ? pageSize
+              : effectiveSize,
+          totalRecords:
+            typeof totalRecords === "number" ? totalRecords : normalized.length,
+        });
+      } else {
+        setItems([]);
+        setFilteredItems([]);
+        setPagination((prev) => ({
+          ...prev,
+          pageNumber: effectivePage,
+          pageSize: effectiveSize,
+          totalRecords: 0,
+        }));
+        setError(message || "Unable to load inventory.");
+      }
+    } catch (err) {
+      console.error("Lỗi khi tải inventory:", err);
+      if (requestId === latestRequestRef.current) {
+        const message =
+          err?.responseData?.message ||
+          err?.message ||
+          "Unable to load inventory.";
+        setItems([]);
+        setFilteredItems([]);
+        setPagination((prev) => ({
+          ...prev,
+          pageNumber: effectivePage,
+          pageSize: effectiveSize,
+          totalRecords: 0,
+        }));
+        setError(message);
+      }
+    } finally {
+      if (requestId === latestRequestRef.current) {
+        setLoading(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     fetchInventory(
@@ -290,33 +292,44 @@ export const ServiceCenterInventoryContainer = () => {
     }
   }, []);
 
-  const handleCreateRequestSubmit = async (addedParts) => {
+  const handleCreateRequestSubmit = (addedParts) => {
+    // Open confirm first
+    pendingAddedPartsRef.current = addedParts;
+    const count = Array.isArray(addedParts) ? addedParts.length : 0;
+    setConfirmTitle("Confirm Parts Request");
+    setConfirmMessage(`Submit ${count} part${count === 1 ? "" : "s"} request?`);
+    setIsConfirmOpen(true);
+  };
+
+  const performCreateRequest = async () => {
+    const addedParts = pendingAddedPartsRef.current || [];
     setIsSubmittingCreate(true);
     try {
-      // ✅ Nếu chỉ gửi từng part riêng (theo API mô tả)
       for (const p of addedParts) {
         const payload = {
           model: p.model,
-          orderId: null, // hoặc truyền orderId thật nếu bạn có
+          orderId: null,
           quantity: p.quantity,
-          remarks: "", // hoặc ghi chú nếu muốn
+          remarks: "",
         };
-
-        console.log("Submitting PartOrderItem:", payload);
         const response = await request(ApiEnum.SUBMIT_PART_REQUEST, payload);
-
         if (!response?.success) {
           throw new Error(response?.message || "Failed to create part request");
         }
       }
-
-      alert("✅ Parts request created successfully!");
+      toast.success("Parts request created successfully!");
       setShowCreateModal(false);
     } catch (err) {
       console.error("❌ Error creating parts request:", err);
-      alert("An error occurred while creating the request.");
+      const msg =
+        err?.responseData?.message ||
+        err?.message ||
+        "An error occurred while creating the request.";
+      toast.error(msg);
     } finally {
       setIsSubmittingCreate(false);
+      setIsConfirmOpen(false);
+      pendingAddedPartsRef.current = null;
     }
   };
   const handleRequestPart = (part) => {
@@ -414,6 +427,17 @@ export const ServiceCenterInventoryContainer = () => {
         isSubmitting={isSubmittingCreate}
         preselectedCategory={selectedPart?.category || ""}
         preselectedModel={selectedPart?.model || ""}
+      />
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel="Submit"
+        cancelLabel="Cancel"
+        onConfirm={performCreateRequest}
+        onCancel={() => setIsConfirmOpen(false)}
+        isLoading={isSubmittingCreate}
       />
     </div>
   );

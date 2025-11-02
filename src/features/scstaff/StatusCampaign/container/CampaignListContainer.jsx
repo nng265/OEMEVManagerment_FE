@@ -44,6 +44,7 @@ const CampaignListContainer = () => {
           customer: it.customer?.name ?? "—",
           type: it.vehicle?.model ?? "—",
           status: it.status ?? "—",
+          replacements: it.replacements ?? "_",
           raw: it,
         }));
 
@@ -79,7 +80,12 @@ const CampaignListContainer = () => {
   const handlePageChange = (newPage, newSize) => {
     setPageNumber(newPage);
     setPageSize(newSize ?? pageSize);
-    fetchCampaignVehicles(newPage, newSize ?? pageSize, filterVin, filterStatus);
+    fetchCampaignVehicles(
+      newPage,
+      newSize ?? pageSize,
+      filterVin,
+      filterStatus
+    );
   };
 
   return (
@@ -91,7 +97,9 @@ const CampaignListContainer = () => {
       onPageChange={handlePageChange}
       onSearchVin={setFilterVin}
       onFilterStatus={setFilterStatus}
-      onRefresh={() => fetchCampaignVehicles(pageNumber, pageSize, filterVin, filterStatus)}
+      onRefresh={() =>
+        fetchCampaignVehicles(pageNumber, pageSize, filterVin, filterStatus)
+      }
     />
   );
 };

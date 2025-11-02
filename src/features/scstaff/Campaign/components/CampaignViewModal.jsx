@@ -7,12 +7,12 @@ import "./CampaignViewModal.css";
 export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
   if (!campaign) return null;
 
-  const stats = {
-    scheduled: campaign._raw?.pendingVehicles ?? 0,
-    inProgress: campaign._raw?.inProgressVehicles ?? 0,
-    completed: campaign._raw?.completedVehicles ?? 0,
-    affected: campaign._raw?.totalAffectedVehicles ?? 0,
-  };
+  // const stats = {
+  //   scheduled: campaign._raw?.pendingVehicles ?? 0,
+  //   inProgress: campaign._raw?.inProgressVehicles ?? 0,
+  //   completed: campaign._raw?.completedVehicles ?? 0,
+  //   affected: campaign._raw?.totalAffectedVehicles ?? 0,
+  // };
 
   return (
     <Modal
@@ -48,16 +48,16 @@ export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
         {/* Stats */}
         <div className="campaign-summary-grid">
           <div className="campaign-summary-card">
-            <p className="label">Scheduled</p>
-            <p className="value">{stats.scheduled}</p>
+            <span className="label">Scheduled</span>
+            <span className="value">{campaign.pendingVehicles}</span>
           </div>
           <div className="campaign-summary-card">
-            <p className="label">In Progress</p>
-            <p className="value">{stats.inProgress}</p>
+            <span className="label">In Progress</span>
+            <span className="value">{campaign.inProgressVehicles}</span>
           </div>
           <div className="campaign-summary-card">
-            <p className="label">Completed</p>
-            <p className="value">{stats.completed}</p>
+            <span className="label">Completed</span>
+            <span className="value">{campaign.completedVehicles}</span>
           </div>
         </div>
 

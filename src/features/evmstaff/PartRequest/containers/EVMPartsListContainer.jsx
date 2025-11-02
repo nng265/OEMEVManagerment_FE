@@ -4,9 +4,9 @@ import { normalizePagedResult } from "../../../../services/helpers";
 import PartsListEVM from "../components/PartsListEVM";
 import Pending from "../components/Pending";
 import Waiting from "../components/Waiting";
-import Confirmed from "../components/Confirmed";
+import Confirmed, { Comfirm } from "../components/Confirmed";
 import Delivered from "../components/Delivered";
-import { toast } from "react-toastify"; // Import toast
+import { toast } from "react-toastify";
 
 export const EVMPartsListContainer = () => {
   const [partsRequests, setPartsRequests] = useState([]);
@@ -79,14 +79,12 @@ export const EVMPartsListContainer = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // Removed paginationRef.current.pageSize from dependencies
+  }, []);
 
   useEffect(() => {
-    // Reset page number to 0 when component mounts or fetch function changes
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
     fetchPartsRequests(0, paginationRef.current.pageSize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchPartsRequests]); // Only refetch when fetchPartsRequests changes (usually once)
+  }, [fetchPartsRequests]);
 
   // === Handlers gọi API ===
   const handleSetRequestedDate = async (orderId, requestedDate) => {
@@ -97,13 +95,13 @@ export const EVMPartsListContainer = () => {
         expectedDate: requestedDate,
       });
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize); // Refetch current page
+      fetchPartsRequests(pageNumber, pageSize);
       setSelectedRequest(null);
-      toast.success("Expected date updated successfully!"); // Use toast for success
+      toast.success("Expected date updated successfully!");
     } catch (err) {
       const errorMsg =
         err.responseData?.message || "Failed to set requested date";
-      toast.error(`Error: ${errorMsg}`); // Use toast for error
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setIsActionLoading(false);
     }
@@ -116,12 +114,12 @@ export const EVMPartsListContainer = () => {
         params: { orderId },
       });
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize); // Refetch current page
+      fetchPartsRequests(pageNumber, pageSize);
       setSelectedRequest(null);
-      toast.success("Request confirmed and moved to preparation!"); // Use toast for success
+      toast.success("Request confirmed and moved to preparation!");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to confirm";
-      toast.error(`Error: ${errorMsg}`); // Use toast for error
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setIsActionLoading(false);
     }
@@ -134,29 +132,22 @@ export const EVMPartsListContainer = () => {
         params: { orderId },
       });
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize); // Refetch current page
+      fetchPartsRequests(pageNumber, pageSize);
       setSelectedRequest(null);
-      toast.success("Request marked as delivered!"); // Use toast for success
+      toast.success("Request marked as delivered!");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to mark delivered";
-      toast.error(`Error: ${errorMsg}`); // Use toast for error
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setIsActionLoading(false);
     }
   };
 
-  // Callback for DataTable's onPageChange
   const handlePageChange = useCallback(
     (page, size) => {
-      // Check if page or size actually changed before fetching
-      if (
-        page !== paginationRef.current.pageNumber ||
-        size !== paginationRef.current.pageSize
-      ) {
-        fetchPartsRequests(page, size);
-      }
+      fetchPartsRequests(page, size);
     },
-    [fetchPartsRequests] // Dependency on fetchPartsRequests
+    [fetchPartsRequests]
   );
 
   // === UI render ===
@@ -166,18 +157,17 @@ export const EVMPartsListContainer = () => {
         data={partsRequests}
         loading={loading}
         error={error}
-        onView={(req) => setSelectedRequest(req)} // Pass request data to handler
+        onView={(req) => setSelectedRequest(req)}
         pagination={pagination}
-        onPageChange={handlePageChange} // Pass handler to DataTable
+        onPageChange={handlePageChange}
       />
 
-      {/* Render modals based on selectedRequest status */}
-      {/* Ensure these custom modals are potentially refactored to use the standard Modal component */}
+      {/* === Pending Popup === */}
       {selectedRequest?.status === "Pending" && (
         <Pending
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onSetDate={handleSetRequestedDate}
+          onSetDate={handleSetRequestedDate} // ✅ lưu ngày Pending
           onConfirm={handleConfirmAndPrepare}
           isLoading={isActionLoading}
         />
@@ -187,17 +177,17 @@ export const EVMPartsListContainer = () => {
         <Waiting
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onSetDate={handleSetRequestedDate}
-          onConfirm={handleConfirmAndPrepare} // Assuming same confirmation action
+          onSetDate={handleSetRequestedDate} // ✅ cập nhật ngày Waiting
+          onConfirm={handleConfirmAndPrepare}
           isLoading={isActionLoading}
         />
       )}
 
       {selectedRequest?.status === "Confirmed" && (
-        <Confirmed // Assuming 'Confirmed' is the correct component name
+        <Confirmed
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onDelivered={handleDelivered} // Pass delivery handler
+          onDelivered={handleDelivered}
           isLoading={isActionLoading}
         />
       )}
@@ -206,8 +196,8 @@ export const EVMPartsListContainer = () => {
         <Delivered
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          // onDelivered={handleDelivered} // Might not need action here, depends on workflow
-          isLoading={isActionLoading} // Pass loading state if there are actions
+          onDelivered={handleDelivered}
+          isLoading={isActionLoading}
         />
       )}
     </>

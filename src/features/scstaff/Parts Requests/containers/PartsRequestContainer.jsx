@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { PartsRequestList } from "../components/PartsRequestList";
 import { PartsRequestDetailModal } from "../components/PartsRequestDetailModal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { formatDate } from "../../../../services/helpers";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 
 export const PartsRequestContainer = () => {
   const [requests, setRequests] = useState([]);
@@ -13,6 +21,10 @@ export const PartsRequestContainer = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const pendingRequestIdRef = useRef(null);
 
   const [pagination, setPagination] = useState({
     pageNumber: 0,
@@ -23,7 +35,8 @@ export const PartsRequestContainer = () => {
 
   const fetchPartsRequests = useCallback(
     async (pageNumber, size) => {
-      const effectivePage = typeof pageNumber === "number" && pageNumber >= 0 ? pageNumber : 0;
+      const effectivePage =
+        typeof pageNumber === "number" && pageNumber >= 0 ? pageNumber : 0;
       const effectiveSize =
         typeof size === "number" && size > 0 ? size : pagination.pageSize;
 
@@ -94,7 +107,9 @@ export const PartsRequestContainer = () => {
 
   const handlePageChange = (pageIndex, newSize) => {
     const nextSize =
-      typeof newSize === "number" && newSize > 0 ? newSize : pagination.pageSize;
+      typeof newSize === "number" && newSize > 0
+        ? newSize
+        : pagination.pageSize;
     const nextPage = Math.max(0, typeof pageIndex === "number" ? pageIndex : 0);
 
     if (
@@ -134,7 +149,7 @@ export const PartsRequestContainer = () => {
     }
     if (
       requestData.partDelivery &&
-      (currentStatus === "delivered" || currentStatus === "deliverd")
+      (currentStatus === "deliverd" || currentStatus === "deliverd")
     ) {
       timelineEvents.push({
         status: "Parts Delivered",
@@ -157,29 +172,42 @@ export const PartsRequestContainer = () => {
     setIsModalOpen(false);
     setSelectedRequest(null);
   };
-  const handleConfirmDelivered = async (requestId) => {
+  const handleConfirmDelivered = (requestId) => {
+    // Open confirmation dialog first
+    pendingRequestIdRef.current = requestId;
+    setConfirmTitle("Confirm Delivery");
+    setConfirmMessage(`Mark parts request #${requestId} as delivered?`);
+    setIsConfirmOpen(true);
+  };
+
+  const performConfirmDelivered = async () => {
+    const requestId = pendingRequestIdRef.current;
+    if (!requestId) {
+      setIsConfirmOpen(false);
+      return;
+    }
     setIsActionLoading(true);
     try {
       const response = await request(ApiEnum.CONFIRM_PART_ORDER_DELIVERED, {
         params: { orderId: requestId },
       });
       if (response.success) {
-        alert("Confirmation Successful!");
+        toast.success("Confirmation successful!");
         handleCloseModal();
         fetchPartsRequests(pagination.pageNumber, pagination.pageSize);
       } else {
-        alert(
-          "Confirmation Failed: " + (response.message || "Please try again.")
-        );
+        const msg =
+          response.message || "Confirmation failed. Please try again.";
+        toast.error(msg);
       }
     } catch (err) {
       console.error("Error confirming receipt:", err);
-      alert(
-        "An error occurred: " +
-          (err.responseData?.message || err.message || "Unknown error")
-      );
+      const msg = err.responseData?.message || err.message || "Unknown error";
+      toast.error(`An error occurred: ${msg}`);
     } finally {
       setIsActionLoading(false);
+      setIsConfirmOpen(false);
+      pendingRequestIdRef.current = null;
     }
   };
 
@@ -223,11 +251,12 @@ export const PartsRequestContainer = () => {
         sortable: true,
         render: (value) => {
           const normalizedStatus = (value || "unknown").trim().toLowerCase();
-          let displayText = value;
-          if (normalizedStatus === "deliverd") {
-            displayText = "Delivered";
-          }
-          const statusClass = normalizedStatus.replace(/_/g, "-");
+          const statusClass = normalizedStatus.replace(/\s+/g, "-");
+          const displayText =
+            value && value.length > 0
+              ? value.charAt(0).toUpperCase() + value.slice(1)
+              : "Unknown";
+
           return (
             <span className={`status-badge status-${statusClass}`}>
               {displayText}
@@ -238,7 +267,7 @@ export const PartsRequestContainer = () => {
       {
         key: "actions",
         label: "Actions",
-          sortable: false,
+        sortable: false,
         render: (_, row) => (
           <Button
             variant="light"
@@ -280,6 +309,17 @@ export const PartsRequestContainer = () => {
           isConfirming={isActionLoading}
         />
       )}
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel="Delivered"
+        cancelLabel="Cancel"
+        onConfirm={performConfirmDelivered}
+        onCancel={() => setIsConfirmOpen(false)}
+        isLoading={isActionLoading}
+      />
     </>
   );
 };

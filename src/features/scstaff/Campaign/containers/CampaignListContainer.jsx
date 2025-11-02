@@ -3,6 +3,8 @@ import CampaignList from "../components/CampaignList";
 import ViewCampaignModal from "../components/CampaignViewModal";
 import AddCampaignModal from "../components/CampaignCreateModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 
 const CampaignListContainer = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -27,6 +29,11 @@ const CampaignListContainer = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [technicianOptions, setTechnicianOptions] = useState([]);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const pendingAddRef = useRef(null);
 
   // removed unused paginationRef
   const latestRequestRef = useRef(0);
@@ -53,6 +60,9 @@ const CampaignListContainer = () => {
         description: item.description ?? "",
         startDate: item.startDate,
         endDate: item.endDate,
+        completedVehicles: item.completedVehicles ?? "",
+        inProgressVehicles: item.inProgressVehicles ?? "",
+        pendingVehicles: item.pendingVehicles ?? "",
         period:
           item.startDate && item.endDate
             ? `${item.startDate} to ${item.endDate}`
@@ -136,17 +146,36 @@ const CampaignListContainer = () => {
     setShowAddModal(true);
   };
 
-  const handleAddSubmit = async (newCampaign) => {
-    // newCampaign contains { campaignId, type, vin, technicians }
+  const handleAddSubmit = (newCampaign) => {
+    // Open confirmation first
+    pendingAddRef.current = newCampaign;
+    const vin = newCampaign?.vin || "";
+    setConfirmTitle("Confirm Add Vehicle to Campaign");
+    setConfirmMessage(
+      vin
+        ? `Assign VIN ${vin} to this campaign?`
+        : "Assign this vehicle to the campaign?"
+    );
+    setIsConfirmOpen(true);
+  };
+
+  const performAddSubmit = async () => {
+    const newCampaign = pendingAddRef.current;
+    if (!newCampaign) {
+      setIsConfirmOpen(false);
+      return;
+    }
+    setIsActionLoading(true);
     try {
-      // find the original campaign object from loaded campaigns if available
       const rawCampaign = campaigns.find(
         (c) => (c._raw?.campaignId ?? c.id) === newCampaign.campaignId
       )?._raw;
 
-      // Create a CampaignVehicle (assign vehicle to campaign)
       const payload = {
-        campaignId: newCampaign.campaignId || (rawCampaign?.campaignId ?? rawCampaign?.id) || "",
+        campaignId:
+          newCampaign.campaignId ||
+          (rawCampaign?.campaignId ?? rawCampaign?.id) ||
+          "",
         vin: newCampaign.vin || "",
         assignedTo: Array.isArray(newCampaign.technicians)
           ? newCampaign.technicians
@@ -154,12 +183,27 @@ const CampaignListContainer = () => {
       };
 
       const res = await request(ApiEnum.CREATE_COMPAIGN_VEHICLE, payload);
-      if (res?.message) alert(res.message);
+      if (res?.success) {
+        toast.success(
+          res?.message || "Added vehicle to campaign successfully!"
+        );
+      } else {
+        const msg = res?.message || "Failed to add vehicle to campaign.";
+        toast.error(msg);
+      }
       setShowAddModal(false);
       await fetchCampaigns(pagination.pageNumber, pagination.pageSize);
     } catch (err) {
       console.error("Failed to create campaign:", err);
-      alert("Failed to create campaign. Please try again.");
+      const msg =
+        err?.responseData?.message ||
+        err?.message ||
+        "Failed to create campaign. Please try again.";
+      toast.error(msg);
+    } finally {
+      setIsActionLoading(false);
+      setIsConfirmOpen(false);
+      pendingAddRef.current = null;
     }
   };
 
@@ -203,6 +247,17 @@ const CampaignListContainer = () => {
         initialCampaignId={
           selectedCampaign?._raw?.campaignId ?? selectedCampaign?.id ?? ""
         }
+      />
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={performAddSubmit}
+        onCancel={() => setIsConfirmOpen(false)}
+        isLoading={isActionLoading}
       />
     </>
   );

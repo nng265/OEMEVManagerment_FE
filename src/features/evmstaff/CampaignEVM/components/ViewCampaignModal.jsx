@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
+import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
 import { Button } from "../../../../components/atoms/Button/Button";
 import "./ViewCampaignModal.css";
 

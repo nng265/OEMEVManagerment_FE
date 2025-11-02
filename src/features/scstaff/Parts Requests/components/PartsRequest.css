@@ -1,39 +1,200 @@
+/* ========== GENERAL MODAL STYLING ========== */
 .modal-status-badge-wrapper {
   margin-bottom: 16px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .size-h1 {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  font-size: 1.8rem;
+  color: #1e293b;
+  font-weight: 700;
 }
 
+/* ========== STATUS BADGE BASE ========== */
 .status-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-transform: capitalize;
-  background-color: #f1f3f5;
-  color: #495057;
+  transition: all 0.25s ease-in-out;
+  letter-spacing: 0.3px;
+  min-width: 130px;
+  text-align: center;
+  border: 1px solid transparent;
 }
 
+/* === STATUS COLORS === */
+
+/* 🕐 Pending */
 .status-badge.status-pending {
-  background-color: #fff3cd;
-  color: #856404;
-}
-.status-badge.status-waiting {
-  background-color: #cce5ff;
-  color: #004085;
-}
-.status-badge.status-delivered {
-  background-color: #d4edda;
-  color: #155724;
+  background: #fff7e6;
+  color: #b45309;
+  border-color: #fcd34d;
+  box-shadow: 0 1px 4px rgba(180, 83, 9, 0.15);
 }
 
+/* ⏳ Waiting */
+.status-badge.status-waiting {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #7dd3fc;
+  box-shadow: 0 1px 4px rgba(3, 105, 161, 0.15);
+}
+
+/* ✅ Confirmed */
+.status-badge.status-confirmed {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #6ee7b7;
+  box-shadow: 0 1px 4px rgba(4, 120, 87, 0.15);
+}
+
+/* 🚚 Delivered */
+.status-badge.status-delivered,
+.status-badge.status-deliverd {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #86efac;
+  box-shadow: 0 1px 4px rgba(22, 163, 74, 0.15);
+}
+
+/* ❌ Cancelled / Error */
+.status-badge.status-cancelled,
+.status-badge.status-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+  box-shadow: 0 1px 4px rgba(185, 28, 28, 0.15);
+}
+
+/* 💤 Default / Unknown */
+.status-badge.status-unknown {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #e4e4e7;
+}
+
+/* === Hover effect === */
+.status-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ========== TABLE STYLING ========== */
 .parts-request-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 16px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.parts-request-table thead {
+  background-color: #f8fafc;
+}
+
+.parts-request-table th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+}
+
+.parts-request-table td {
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #ffffff;
+}
+
+.parts-request-table tr:hover td {
+  background-color: #f8fafc;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* ========== TIMELINE ========== */
+.timeline-container {
+  position: relative;
+  margin-top: 20px;
+  padding-left: 24px;
+  border-left: 2px solid #e5e7eb;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -7px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: #2563eb;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #dbeafe;
+}
+
+.timeline-content {
+  margin-left: 16px;
+  background: #f9fafb;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.timeline-content:hover {
+  transform: translateX(3px);
+}
+
+.timeline-title {
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 4px;
+}
+
+.timeline-date {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.timeline-notes {
+  font-size: 0.85rem;
+  color: #475569;
+  margin: 0;
+}
+
+.timeline-empty {
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ========== BUTTON ENHANCEMENT ========== */
+.detail-modal-actions .btn-success {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.detail-modal-actions .btn-success:hover {
+  background-color: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(21, 128, 61, 0.25);
 }

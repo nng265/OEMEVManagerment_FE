@@ -5,6 +5,8 @@ import { Button } from "../../../components/atoms/Button/Button";
 import { Modal } from "../../../components/molecules/Modal/Modal";
 import { formatDate } from "../../../services/helpers";
 import { request, ApiEnum } from "../../../services/NetworkUntil";
+import { ConfirmDialog } from "../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 import "./WorkOrderDetailModal.css";
 
 export const WorkOrderDetailModal = ({
@@ -47,6 +49,10 @@ export const WorkOrderDetailModal = ({
   // State cho preview ảnh (khi click ảnh sẽ hiển thị overlay)
   const [previewImage, setPreviewImage] = React.useState(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false); // ✅ loading state
+  const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
+  const [confirmTitle, setConfirmTitle] = React.useState("");
+  const [confirmMessage, setConfirmMessage] = React.useState("");
+  const pendingActionRef = React.useRef(null); // { type: 'inspection' | 'repair' }
 
   const fileInputRef = React.useRef(null);
 
@@ -84,11 +90,11 @@ export const WorkOrderDetailModal = ({
     if (apiParts.length > 0) return apiParts;
     if (initiallyShowOnePart)
       return [
-        { 
-          action: "", 
-          category: "", 
-          model: "", 
-          serial: "", 
+        {
+          action: "",
+          category: "",
+          model: "",
+          serial: "",
           newSerial: "",
           availableModels: [],
           availableSerials: [],
@@ -107,11 +113,11 @@ export const WorkOrderDetailModal = ({
   const addPartRow = () => {
     setParts((prev) => [
       ...prev,
-      { 
-        action: "", 
-        category: "", 
-        model: "", 
-        serial: "", 
+      {
+        action: "",
+        category: "",
+        model: "",
+        serial: "",
         newSerial: "",
         availableModels: [],
         availableSerials: [],
@@ -143,7 +149,9 @@ export const WorkOrderDetailModal = ({
       parts.length === 0 ||
       parts.some((p) => !p.action || !p.model || !p.serial)
     ) {
-      alert("Vui lòng nhập mô tả kiểm tra và gửi ít nhất một hình ảnh!");
+      toast.warning(
+        "Vui lòng nhập mô tả kiểm tra và gửi ít nhất một hình ảnh!"
+      );
       return;
     }
 
@@ -178,14 +186,18 @@ export const WorkOrderDetailModal = ({
       if (typeof submitInspection === "function") {
         const res = await submitInspection(warrantyInfo?.claimId, payload);
         console.log("✅ Inspection submitted:", res);
-        alert("Đã lưu kết quả kiểm tra thành công!");
+        toast.success("Successfully saved inspection results!");
       } else {
-        console.warn("⚠️ submitInspection chưa được truyền từ container");
+        console.warn("⚠️ SubmitInspection not provided from container");
       }
       onClose();
     } catch (err) {
-      console.error("❌ Lỗi khi submit inspection:", err);
-      alert("Gửi kết quả kiểm tra thất bại!");
+      console.error("❌ Failed to submit inspection:", err);
+      const msg =
+        err?.responseData?.message ||
+        err?.message ||
+        "Failed to submit inspection!";
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -196,7 +208,7 @@ export const WorkOrderDetailModal = ({
     try {
       const invalid = parts.some((p) => !p.claimPartId || !p.newSerial);
       if (invalid) {
-        alert("Vui lòng nhập đầy đủ thông tin cho tất cả các linh kiện!");
+        toast.warning("Please fill in all required fields for each part!");
         return;
       }
 
@@ -214,18 +226,65 @@ export const WorkOrderDetailModal = ({
       if (typeof submitRepair === "function") {
         const res = await submitRepair(warrantyInfo?.claimId, payload);
         console.log("Repair submitted:", res);
-        alert("Đã lưu thông tin sửa chữa thành công!");
+        toast.success("Successfully saved repair information!");
       } else {
-        console.warn("submitRepair chưa được truyền từ container");
+        console.warn("⚠️ SubmitRepair not provided from container");
       }
 
       onClose();
     } catch (err) {
-      console.error("Lỗi khi submit repair:", err);
-      alert("Gửi thông tin sửa chữa thất bại!");
+      console.error("❌ Failed to submit repair:", err);
+      const msg =
+        err?.responseData?.message ||
+        err?.message ||
+        "Failed to submit repair!";
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // ===== Confirm Flow =====
+  const openConfirmInspection = () => {
+    if (
+      !inspectionDesc.trim() ||
+      attachments.length === 0 ||
+      parts.length === 0 ||
+      parts.some((p) => !p.action || !p.model || !p.serial)
+    ) {
+      toast.warning(
+        "Please enter a description for the inspection and upload at least one image!"
+      );
+      return;
+    }
+    pendingActionRef.current = { type: "inspection" };
+    setConfirmTitle("Confirm Save");
+    setConfirmMessage("Save inspection results for this vehicle?");
+    setIsConfirmOpen(true);
+  };
+
+  const openConfirmRepair = () => {
+    const invalid = parts.some((p) => !p.newSerial);
+    if (invalid) {
+      toast.warning("Please fill in all required fields for each part!");
+      return;
+    }
+    pendingActionRef.current = { type: "repair" };
+    setConfirmTitle("Confirm Save");
+    setConfirmMessage("Save repair information for this vehicle?");
+    setIsConfirmOpen(true);
+  };
+
+  const performPendingAction = async () => {
+    const pending = pendingActionRef.current;
+    if (!pending) return;
+    if (pending.type === "inspection") {
+      await handleSubmitInspection();
+    } else if (pending.type === "repair") {
+      await handleSubmitRepair();
+    }
+    setIsConfirmOpen(false);
+    pendingActionRef.current = null;
   };
 
   return (
@@ -507,17 +566,19 @@ export const WorkOrderDetailModal = ({
                           updatePart(idx, "category", newCategory);
                           updatePart(idx, "model", "");
                           updatePart(idx, "serial", "");
-                          
+
                           // Fetch models riêng cho part này
                           if (typeof fetchModels === "function") {
                             try {
-                              const fetchedModels = await fetchModels(newCategory);
+                              const fetchedModels = await fetchModels(
+                                newCategory
+                              );
                               // Cập nhật availableModels cho part này
                               setParts((prev) => {
                                 const copy = [...prev];
-                                copy[idx] = { 
-                                  ...copy[idx], 
-                                  availableModels: fetchedModels || [] 
+                                copy[idx] = {
+                                  ...copy[idx],
+                                  availableModels: fetchedModels || [],
                                 };
                                 return copy;
                               });
@@ -549,17 +610,20 @@ export const WorkOrderDetailModal = ({
                             warrantyInfo?.vin ||
                             workOrderData?.warrantyClaim?.vin ||
                             "";
-                          
+
                           // Fetch serials riêng cho part này
                           if (typeof fetchSerial === "function") {
                             try {
-                              const fetchedSerials = await fetchSerial(vin, newModel);
+                              const fetchedSerials = await fetchSerial(
+                                vin,
+                                newModel
+                              );
                               // Cập nhật availableSerials cho part này
                               setParts((prev) => {
                                 const copy = [...prev];
-                                copy[idx] = { 
-                                  ...copy[idx], 
-                                  availableSerials: fetchedSerials || [] 
+                                copy[idx] = {
+                                  ...copy[idx],
+                                  availableSerials: fetchedSerials || [],
                                 };
                                 return copy;
                               });
@@ -668,7 +732,7 @@ export const WorkOrderDetailModal = ({
           {isInspection && (
             <Button
               variant="primary"
-              onClick={handleSubmitInspection}
+              onClick={openConfirmInspection}
               disabled={!inspectionDesc.trim() && attachments.length === 0}
             >
               Lưu kết quả kiểm tra
@@ -678,24 +742,7 @@ export const WorkOrderDetailModal = ({
           {isRepair && (
             <Button
               variant="primary"
-              onClick={() => {
-                // Kiểm tra xem có phần tử nào thiếu newSerial không
-                const invalid = parts.some((p) => !p.newSerial);
-                console.log("Checking parts for newSerial:", parts, {
-                  invalid,
-                });
-
-                if (invalid) {
-                  console.log("Found invalid parts, alerting user.");
-                  alert(
-                    "Vui lòng nhập đầy đủ thông tin cho tất cả các linh kiện!"
-                  );
-                  return;
-                }
-
-                // Nếu tất cả hợp lệ thì gọi hàm xử lý
-                handleSubmitRepair();
-              }}
+              onClick={openConfirmRepair}
               disabled={parts.length === 0}
             >
               Lưu thông tin sửa chữa
@@ -707,6 +754,16 @@ export const WorkOrderDetailModal = ({
           </Button>
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel="Xác nhận"
+        cancelLabel="Hủy"
+        onConfirm={performPendingAction}
+        onCancel={() => setIsConfirmOpen(false)}
+        isLoading={isSubmitting}
+      />
     </Modal>
   );
 };

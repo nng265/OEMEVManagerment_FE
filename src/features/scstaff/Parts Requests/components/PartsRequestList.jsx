@@ -5,7 +5,6 @@ import { DataTable } from "../../../../components/organisms/DataTable/DataTable"
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { ErrorBoundary } from "../../../../components/molecules/ErrorBoundary/ErrorBoundary";
 
-
 export const PartsRequestList = ({
   data = [],
   columns = [],

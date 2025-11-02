@@ -1,27 +1,38 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import "./PartsListEVM.css";
 
 export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
   const [requestedDate, setRequestedDate] = useState(
     request.requestedDate || ""
   );
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleSetDateClick = () => {
     if (!requestedDate) {
-      alert("Please select a date first.");
+      toast.warning("Please select a date first.");
       return;
     }
     onSetDate(request.orderId, requestedDate); // cập nhật Requested Date
   };
 
   const handleConfirmClick = () => {
-    if (window.confirm("Confirm & prepare this request?")) {
-      onConfirm(request.orderId);
-    }
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDialog = () => {
+    setIsConfirmOpen(false);
+    onConfirm(request.orderId);
+  };
+
+  const handleCancelDialog = () => {
+    setIsConfirmOpen(false);
   };
 
   const handleClose = () => {
     setRequestedDate("");
+    setIsConfirmOpen(false);
     onClose();
   };
 
@@ -105,6 +116,17 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Confirm Request"
+        message="Confirm & prepare this request?"
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={handleConfirmDialog}
+        onCancel={handleCancelDialog}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
