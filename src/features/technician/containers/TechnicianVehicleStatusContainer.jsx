@@ -33,7 +33,7 @@ export const TechnicianVehicleStatusContainer = () => {
       label: "VIN", // Changed label
       sortable: true,
       // Render function to access nested data
-      render: (_, row) => row.warrantyClaim?.vin || "-", // Access warrantyClaim.vin
+      render: (_, row) => row.vin || "-", // Access warrantyClaim.vin
     },
     {
       key: "failureDesc", // Key for sorting (using nested value)
@@ -97,7 +97,7 @@ export const TechnicianVehicleStatusContainer = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await request(ApiEnum.GET_PART_CATEGORY);
+      const response = await request(ApiEnum.GET_PART_CATEGORIES);
       console.log("Category response:", response);
       // normalize possible shapes
       const cats = Array.isArray(response)
@@ -206,7 +206,7 @@ export const TechnicianVehicleStatusContainer = () => {
         setModels([]);
         return [];
       }
-      const response = await request(ApiEnum.GET_PART_MODEL, {
+      const response = await request(ApiEnum.GET_PART_MODELS, {
         category: categoryName,
       });
       console.log("Model response:", response);

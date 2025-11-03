@@ -1,31 +1,35 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
+// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-// const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
-  GET_FUNCTIONS: { path: "/functions", method: "GET" },
+
+  // GET_FUNCTIONS: { path: "/functions", method: "GET" },
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },
-  GET_WARRANTY_CLAIM_DETAIL: { path: "/WarrantyClaim/detail", method: "GET" },
+  // GET_WARRANTY_CLAIM_DETAIL: { path: "/WarrantyClaim/detail", method: "GET" },
   GET_VEHICLES: { path: "/vehicle", method: "GET" },
   CREATE_WARRANTY_CLAIM: { path: "/WarrantyClaim", method: "POST" },
+  ASSIGN_TECHNICIAN: { path: "/WarrantyClaim/:targetId/assign-techs", method: "POST" },
+
   GET_TECHNICIANS: { path: "/Employee", method: "GET" },
-  GET_WORK_ORDERS_BY_TECH: { path: "/workOrder/by-tech/detail", method: "GET" },
+
+  GET_WORK_ORDERS_BY_TECH: { path: "/workOrder", method: "GET" },
   GET_INSPECTION_ORDERS: {
     path: "/WorkOrder/by-tech/inspection",
     method: "GET",
   },
-  GET_WARRANTY_CLAIMS_BY_STATUS: {
-    path: "/WarrantyClaim/filter/:status",
-    method: "GET",
-  },
+  // GET_WARRANTY_CLAIMS_BY_STATUS: {
+  //   path: "/WarrantyClaim/filter/:status",
+  //   method: "GET",
+  // },
   GET_WARRANTY_STATUSES: { path: "/WarrantyClaim/status", method: "GET" },
   GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
-  UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
-  GET_PART_CATEGORY: { path: "/Part/category", method: "GET" },
-  GET_PART_MODEL: { path: "/Part/model", method: "GET" },
+  // UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
+  GET_PART_CATEGORIES: { path: "/Part/categories", method: "GET" },
+  GET_PART_MODELS: { path: "/Part/models", method: "GET" },
   GET_PART_CATEGORY_BY_MODEL: {
     path: "/Part/category-by-model",
     method: "GET",
@@ -57,13 +61,13 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/car-back-center",
     method: "PUT",
   },
-  ASSIGN_TECHNICIAN: { path: "/workOrder/:targetId", method: "POST" },
+  // ASSIGN_TECHNICIAN: { path: "/workOrder/:targetId", method: "POST" },
   GET_ASSIGNED_TECHNICIANS: {
-    path: "/workOrder/assigned-techs/:claimId",
+    path: "/workOrder/assigned-techs",
     method: "GET",
   },
   DELETE_IMAGE: { path: "/Image/:imageId", method: "DELETE" },
-  NEED_CONFIRM: { path: "/WarrantyClaim/need-confirm", method: "GET" },
+  // NEED_CONFIRM: { path: "/WarrantyClaim/need-confirm", method: "GET" },
   GET_VEHICLE_POLICIES: {
     path: "/warrantyClaim/vehicle-policies/:vin",
     method: "GET",
@@ -78,8 +82,9 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/inspection",
     method: "PUT",
   },
-  SHOW_REQUEST_PARTS_EVMSTAFF: { path: "/PartOrder/evmstaff", method: "GET" },
-  SHOW_REQUEST_PARTS_SCSTAFF: { path: "/PartOrder/scstaff", method: "GET" },
+  // SHOW_REQUEST_PARTS_EVMSTAFF: { path: "/PartOrder/evmstaff", method: "GET" },
+  // SHOW_REQUEST_PARTS_SCSTAFF: { path: "/PartOrder/scstaff", method: "GET" },
+  GET_REQUEST_PARTS: { path: "/PartOrder", method: "GET" },
   CONFIRM_PREPARE: { path: "/PartOrder/:orderId/confirm", method: "PUT" },
   DELIVERED_CLICK: { path: "/PartOrder/:orderId/delivery", method: "PUT" },
   UPDATE_REQUESTED_DATE: {

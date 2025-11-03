@@ -35,7 +35,7 @@ export const EVMPartsListContainer = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await request(ApiEnum.SHOW_REQUEST_PARTS_EVMSTAFF, {
+      const res = await request(ApiEnum.GET_REQUEST_PARTS, {
         Page: pageNumber,
         Size: effectivePageSize,
       });

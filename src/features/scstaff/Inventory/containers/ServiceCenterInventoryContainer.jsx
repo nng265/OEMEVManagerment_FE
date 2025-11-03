@@ -57,7 +57,7 @@ export const ServiceCenterInventoryContainer = () => {
   const fetchCategories = useCallback(async () => {
     setLoadingCategories(true);
     try {
-      const res = await request(ApiEnum.GET_PART_CATEGORY);
+      const res = await request(ApiEnum.GET_PART_CATEGORIES);
       console.log("Categories Response:", res);
 
       const cats = Array.isArray(res)
@@ -263,8 +263,8 @@ export const ServiceCenterInventoryContainer = () => {
 
     setLoadingModels(true);
     try {
-      // Use GET_PART_MODEL endpoint with category query param
-      const res = await request(ApiEnum.GET_PART_MODEL, {
+      // Use GET_PART_MODELS endpoint with category query param
+      const res = await request(ApiEnum.GET_PART_MODELS, {
         category: category,
       });
       console.log("Models by category response:", res);

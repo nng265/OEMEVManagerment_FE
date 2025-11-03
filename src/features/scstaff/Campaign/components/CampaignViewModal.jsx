@@ -7,13 +7,7 @@ import "./CampaignViewModal.css";
 export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
   if (!campaign) return null;
 
-  // Helper function để hiển thị '—' nếu giá trị là 0, rỗng, null
-  const displayValue = (value) => {
-    if (value === 0 || value === null || value === undefined || value === "") {
-      return "—";
-    }
-    return value;
-  };
+  console.log("Campaign data in Modal:", campaign);
 
   // Helper function để định dạng ngày tháng cho đẹp
   const formatDate = (dateString) => {
@@ -55,7 +49,7 @@ export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
           <div className="campaign-info-block full-width">
             <span className="info-block-label">Description</span>
             <span className="info-block-value">
-              {displayValue(campaign.description)}
+              {campaign.description}
             </span>
           </div>
         </div>
@@ -67,14 +61,14 @@ export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
           <div className="campaign-info-block">
             <span className="info-block-label">Campaign Type</span>
             <span className="info-block-value">
-              {displayValue(campaign.type)}
+              {campaign.type}
             </span>
           </div>
           {/* Thẻ Target Part (nửa chiều rộng) */}
           <div className="campaign-info-block">
             <span className="info-block-label">Target Part</span>
             <span className="info-block-value">
-              {displayValue(campaign.target)}
+              {campaign.partModel}
             </span>
           </div>
         </div>
@@ -102,21 +96,21 @@ export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
           <div className="campaign-info-block stat-block">
             <span className="info-block-label">Scheduled</span>
             <span className="info-block-value large-stat">
-              {displayValue(campaign.pendingVehicles)}
+              {campaign.pendingVehicles}
             </span>
           </div>
           {/* Thẻ In Progress (1/3 chiều rộng) */}
           <div className="campaign-info-block stat-block">
             <span className="info-block-label">In Progress</span>
             <span className="info-block-value large-stat">
-              {displayValue(campaign.inProgressVehicles)}
+              {campaign.inProgressVehicles}
             </span>
           </div>
           {/* Thẻ Completed (1/3 chiều rộng) */}
           <div className="campaign-info-block stat-block">
             <span className="info-block-label">Completed</span>
             <span className="info-block-value large-stat">
-              {displayValue(campaign.completedVehicles)}
+              {campaign.completedVehicles}
             </span>
           </div>
         </div>

@@ -57,7 +57,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     const fetchCategories = async () => {
       setLoadingCats(true);
       try {
-        const res = await request(ApiEnum.GET_PART_CATEGORY);
+        const res = await request(ApiEnum.GET_PART_CATEGORIES);
         const cats = Array.isArray(res)
           ? res
           : res?.success && Array.isArray(res.data)
@@ -86,7 +86,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     }
     setLoadingModels(true);
     try {
-      const res = await request(ApiEnum.GET_PART_MODEL, { category });
+      const res = await request(ApiEnum.GET_PART_MODELS, { category });
       const list = Array.isArray(res)
         ? res
         : res?.success && Array.isArray(res.data)

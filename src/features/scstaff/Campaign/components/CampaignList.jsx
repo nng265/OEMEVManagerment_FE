@@ -61,15 +61,19 @@ const CampaignList = ({
   ];
 
   const rows = data.map((c, i) => ({
-    id: c.id ?? i,
-    title: c.title || "—",
-    type: c.type || "—",
-    description: c.description || "_",
-    period: c.period ?? `${c.startDate ?? ""} to ${c.endDate ?? ""}`,
-    status: c.status || "—",
-    completedVehicles: c.completedVehicles || "_",
-    inProgressVehicles: c.inProgressVehicles || "_",
-    pendingVehicles: c.pendingVehicles || "_",
+    id: c.campaignId,
+    title: c.title,
+    type: c.type,
+    description: c.description,
+    period: `${c.startDate ?? ""} to ${c.endDate ?? ""}`,
+    status: c.status,
+    startDate: c.startDate,
+    endDate: c.endDate,
+    partModel: c.partModel,
+    replacementPartModel: c.replacementPartModel,
+    completedVehicles: c.completedVehicles,
+    inProgressVehicles: c.inProgressVehicles,
+    pendingVehicles: c.pendingVehicles,
   }));
 
   return (

@@ -194,11 +194,12 @@
 
 // export default WaitingForRepair;
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import { toast } from "react-toastify";
 import "../components/UI.css";
 
 const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
@@ -258,8 +259,14 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
     }
   }, [open]);
 
+  useEffect(() => {
+    if (!open) {
+      setSelectedTechs([""]);
+    }
+  }, [open]);
+
   const handleAddTech = () => {
-    setSelectedTechs([...selectedTechs, ""]);
+    setSelectedTechs((prev) => [...prev, ""]);
   };
 
   const handleChangeTech = (index, value) => {
@@ -288,11 +295,11 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
     setAssigning(true);
     try {
       const res = await request(ApiEnum.CAMPAIGNVEHICLE_STAFF_TECH, {
-        params: { id: pending.id },
-        technicianIds: pending.techs,
+        params: { id },
+        assignedTo: validTechs,
       });
 
-      if (res.success) {
+      if (res?.success !== false) {
         toast.success("Technician(s) assigned successfully!");
         onSuccess?.();
         onClose();
@@ -308,8 +315,6 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
       toast.error(msg);
     } finally {
       setAssigning(false);
-      setIsConfirmOpen(false);
-      pendingActionRef.current = null;
     }
   };
 
@@ -364,20 +369,21 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
         <hr />
 
         <div>
-          <h4>Parts to Replace/Repair</h4>
-          <div>Title: {campaign.title ?? "—"}</div>
-          <div>Description: {campaign.description ?? "—"}</div>
-          <div>Type: {campaign.type ?? "—"}</div>
-          <div>Period: {(campaign.startDate && campaign.endDate) ?? "—"}</div>
+          <h4>Campaign Information</h4>
+          <div>Title: {displayValue(campaign.title)}</div>
+          <div>Description: {displayValue(campaign.description)}</div>
+          <div>Type: {displayValue(campaign.type)}</div>
+          <div>
+            Period:
+            {campaign.startDate && campaign.endDate
+              ? ` ${formatDate(campaign.startDate)} – ${formatDate(
+                  campaign.endDate
+                )}`
+              : " —"}
+          </div>
+          <div>Parts: {displayValue(campaign.partReplace)}</div>
         </div>
 
-        <hr />
-
-        <hr style={{ margin: "12px 0" }} />
-        <div>
-          <h4>Parts to Replace/Repair</h4>
-          <div>{campaign.partReplace ?? "—"}</div>
-        </div>
         <hr />
 
         {/* === Section 3: Chỉ định Kỹ thuật viên === */}

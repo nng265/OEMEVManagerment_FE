@@ -46,7 +46,7 @@ export const PartsRequestContainer = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await request(ApiEnum.SHOW_REQUEST_PARTS_SCSTAFF, {
+        const response = await request(ApiEnum.GET_REQUEST_PARTS, {
           Page: effectivePage,
           Size: effectiveSize,
         });

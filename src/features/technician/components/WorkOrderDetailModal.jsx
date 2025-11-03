@@ -362,15 +362,15 @@ export const WorkOrderDetailModal = ({
           <div className="info-container">
             <div className="info-row">
               <div className="label">VIN</div>
-              <div className="content">{warrantyInfo?.vin ?? "N/A"}</div>
+              <div className="content">{workOrderData.vin ?? "N/A"}</div>
             </div>
             <div className="info-row">
               <div className="label">Model</div>
-              <div className="content">{warrantyInfo?.model ?? "N/A"}</div>
+              <div className="content">{workOrderData.model ?? "N/A"}</div>
             </div>
             <div className="info-row">
               <div className="label">Year</div>
-              <div className="content">{warrantyInfo?.year ?? "N/A"}</div>
+              <div className="content">{workOrderData.year ?? "N/A"}</div>
             </div>
           </div>
 
@@ -606,10 +606,7 @@ export const WorkOrderDetailModal = ({
                           const newModel = e.target.value;
                           updatePart(idx, "model", newModel);
                           updatePart(idx, "serial", "");
-                          const vin =
-                            warrantyInfo?.vin ||
-                            workOrderData?.warrantyClaim?.vin ||
-                            "";
+                          const vin = workOrderData.vin;
 
                           // Fetch serials riêng cho part này
                           if (typeof fetchSerial === "function") {

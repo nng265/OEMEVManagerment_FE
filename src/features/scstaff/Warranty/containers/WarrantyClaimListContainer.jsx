@@ -232,7 +232,8 @@ export const WarrantyClaimListContainer = () => {
     setLoadingAssignedTechs(true);
     try {
       const response = await request(ApiEnum.GET_ASSIGNED_TECHNICIANS, {
-        params: { claimId },
+        target: "Warranty",
+        targetId: claimId ,
       });
 
       if (response.success && Array.isArray(response.data)) {
