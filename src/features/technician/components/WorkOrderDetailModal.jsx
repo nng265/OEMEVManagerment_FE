@@ -40,6 +40,7 @@ export const WorkOrderDetailModal = ({
   // warrantyInfo có thể là undefined nếu backend chưa trả về warrantyClaim
   const warrantyInfo = workOrderData.warrantyClaim;
   const campaignInfo = workOrderData.campaign;
+  const campaignReplacementModel = campaignInfo?.replacementPartModel || "";
   const targetType = (workOrderData.target || "").toLowerCase();
   const isWarrantyTarget = targetType === "warranty";
   const isCampaignTarget = targetType === "campaign";
@@ -87,7 +88,8 @@ export const WorkOrderDetailModal = ({
     category: "",
     model: "",
     serial: "",
-    newSerial: "",
+  newSerial: "",
+  newModel: "",
     availableModels: [],
     availableSerials: [],
     ...overrides,
@@ -136,6 +138,7 @@ export const WorkOrderDetailModal = ({
             part?.oldSerial ||
             "",
           newSerial: part?.serialNumberNew || part?.newSerial || "",
+          newModel: part?.replacementPartModel || campaignReplacementModel || "",
         })
       )
     : [];
@@ -149,6 +152,7 @@ export const WorkOrderDetailModal = ({
             action: "Replace",
             model: campaignModelName,
             serial,
+            newModel: campaignReplacementModel,
           })
         );
       }
@@ -157,6 +161,7 @@ export const WorkOrderDetailModal = ({
           makeEmptyPart({
             action: "Replace",
             model: campaignModelName,
+            newModel: campaignReplacementModel,
           }),
         ];
       }
@@ -172,6 +177,7 @@ export const WorkOrderDetailModal = ({
         model: p.model || "",
         serial: p.serialNumberOld || p.serial || "",
         newSerial: p.serialNumberNew || p.newSerial || "",
+        newModel: p.newModel || "",
       })
     );
 
@@ -347,6 +353,7 @@ export const WorkOrderDetailModal = ({
   const isRepair = (workOrderData.type || "").toLowerCase() === "repair";
   const showInspectionEditor = isWarrantyTarget && isInspection;
   const showNewSerialColumn = isRepair || isCampaignTarget;
+  const showNewModelColumn = isCampaignTarget;
 
   // ========== Parts Table Handlers ==========
   // Thêm 1 hàng linh kiện rỗng
@@ -796,11 +803,18 @@ export const WorkOrderDetailModal = ({
           <h4>Parts to Replace / Repair</h4>
 
           <div className="parts-table">
-            <div className="parts-row parts-row-header">
+            <div
+              className={`parts-row parts-row-header ${
+                showNewModelColumn ? "with-new-model" : ""
+              }`}
+            >
               <div className="col action">Action</div>
               <div className="col category">Category</div>
               <div className="col model">Model</div>
               <div className="col serial">Serial</div>
+              {showNewModelColumn && (
+                <div className="col new-model">New Model</div>
+              )}
               {showNewSerialColumn && (
                 <div className="col new-serial">New Serial</div>
               )}
@@ -808,7 +822,10 @@ export const WorkOrderDetailModal = ({
             </div>
 
             {parts.map((p, idx) => (
-              <div key={idx} className="parts-row">
+              <div
+                key={idx}
+                className={`parts-row ${showNewModelColumn ? "with-new-model" : ""}`}
+              >
                 {/* Campaign work orders: preset replace rows with new serial input */}
                 {isCampaignTarget ? (
                   <>
@@ -816,6 +833,11 @@ export const WorkOrderDetailModal = ({
                     <div className="col category">{p.category || "-"}</div>
                     <div className="col model">{p.model || "-"}</div>
                     <div className="col serial">{p.serial || "-"}</div>
+                    {showNewModelColumn && (
+                      <div className="col new-model">
+                        {p.newModel || campaignReplacementModel || "-"}
+                      </div>
+                    )}
                     {showNewSerialColumn && (
                       <div className="col new-serial">
                         <input
@@ -944,6 +966,12 @@ export const WorkOrderDetailModal = ({
                       </select>
                     </div>
 
+                    {showNewModelColumn && (
+                      <div className="col new-model">
+                        {p.newModel || campaignReplacementModel || "-"}
+                      </div>
+                    )}
+
                     {showNewSerialColumn && (
                       <div className="col new-serial">
                         {p.action === "Replace" ? (
@@ -978,6 +1006,12 @@ export const WorkOrderDetailModal = ({
                     <div className="col category">{p.category || "-"}</div>
                     <div className="col model">{p.model || "-"}</div>
                     <div className="col serial">{p.serial || "-"}</div>
+
+                    {showNewModelColumn && (
+                      <div className="col new-model">
+                        {p.newModel || campaignReplacementModel || "-"}
+                      </div>
+                    )}
 
                     {showNewSerialColumn && (
                       <div className="col new-serial">
@@ -1135,6 +1169,7 @@ WorkOrderDetailModal.propTypes = {
       serials: PropTypes.arrayOf(PropTypes.string),
       serialNumbers: PropTypes.arrayOf(PropTypes.string),
       oldSerialNumbers: PropTypes.arrayOf(PropTypes.string),
+      replacementPartModel: PropTypes.string,
       parts: PropTypes.arrayOf(
         PropTypes.shape({
           campaignPartId: PropTypes.string,
@@ -1143,6 +1178,7 @@ WorkOrderDetailModal.propTypes = {
           model: PropTypes.string,
           serialNumberOld: PropTypes.string,
           serialNumberNew: PropTypes.string,
+          replacementPartModel: PropTypes.string,
         })
       ),
     }),
