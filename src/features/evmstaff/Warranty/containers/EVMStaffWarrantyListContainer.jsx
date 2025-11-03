@@ -32,7 +32,7 @@ export const EVMStaffWarrantyListContainer = () => {
     setError(null);
 
     try {
-      const res = await request(ApiEnum.NEED_CONFIRM, {
+      const res = await request(ApiEnum.GET_WARRANTY_CLAIMS, {
         Page: pageNumber,
         Size: effectivePageSize,
       });

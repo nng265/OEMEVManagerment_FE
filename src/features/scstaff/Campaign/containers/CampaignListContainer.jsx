@@ -52,31 +52,31 @@ const CampaignListContainer = () => {
       if (requestId !== latestRequestRef.current) return;
 
       const items = Array.isArray(res.data?.items) ? res.data.items : [];
-      const normalized = items.map((item, index) => ({
-        id: item.campaignId ?? index,
-        title: item.title ?? "",
-        type: item.type ?? "",
-        partModel: item.partModel ?? "",
-        description: item.description ?? "",
-        startDate: item.startDate,
-        endDate: item.endDate,
-        completedVehicles: item.completedVehicles ?? "",
-        inProgressVehicles: item.inProgressVehicles ?? "",
-        pendingVehicles: item.pendingVehicles ?? "",
-        period:
-          item.startDate && item.endDate
-            ? `${item.startDate} to ${item.endDate}`
-            : "",
-        status: item.status ?? "",
-        _raw: item,
-      }));
+      // const normalized = items.map((item, index) => ({
+      //   id: item.campaignId ?? index,
+      //   title: item.title ?? "",
+      //   type: item.type ?? "",
+      //   partModel: item.partModel ?? "",
+      //   description: item.description ?? "",
+      //   startDate: item.startDate,
+      //   endDate: item.endDate,
+      //   completedVehicles: item.completedVehicles ?? "",
+      //   inProgressVehicles: item.inProgressVehicles ?? "",
+      //   pendingVehicles: item.pendingVehicles ?? "",
+      //   period:
+      //     item.startDate && item.endDate
+      //       ? `${item.startDate} to ${item.endDate}`
+      //       : "",
+      //   status: item.status ?? "",
+      //   _raw: item,
+      // }));
 
-      setCampaigns(normalized);
-      setFilteredCampaigns(normalized);
+      setCampaigns(items);
+      setFilteredCampaigns(items);
       setPagination({
-        pageNumber: res.data.pageNumber ?? pageNumber,
-        pageSize: res.data.pageSize ?? size,
-        totalRecords: res.data.totalRecords ?? normalized.length,
+        pageNumber: res.data.pageNumber,
+        pageSize: res.data.pageSize,
+        totalRecords: res.data.totalRecords,
       });
     } catch (err) {
       console.error("Error loading campaigns:", err);

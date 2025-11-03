@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import { Button } from "../../../components/atoms/Button/Button";
 import { Modal } from "../../../components/molecules/Modal/Modal";
 import { formatDate } from "../../../services/helpers";
-import { request, ApiEnum } from "../../../services/NetworkUntil";
+import "./WorkOrderDetailModal.css";
+
 import { ConfirmDialog } from "../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { toast } from "react-toastify";
-import "./WorkOrderDetailModal.css";
 
 export const WorkOrderDetailModal = ({
   // Props điều khiển modal
@@ -27,6 +27,7 @@ export const WorkOrderDetailModal = ({
   fetchCategories,
   fetchModels,
   fetchSerial,
+  fetchCategoryByModel,
 
   // 🆕 Các hàm API thực tế được truyền từ Container
   uploadImages,
@@ -41,6 +42,22 @@ export const WorkOrderDetailModal = ({
 
   // warrantyInfo có thể là undefined nếu backend chưa trả về warrantyClaim
   const warrantyInfo = workOrderData.warrantyClaim;
+  const campaignInfo = workOrderData.campaign;
+  const targetType = (workOrderData.target || "").toLowerCase();
+  const isWarrantyTarget = targetType === "warranty";
+  const isCampaignTarget = targetType === "campaign";
+
+  const vehicleVin = workOrderData.vin || warrantyInfo?.vin || "N/A";
+  const vehicleModel = workOrderData.model || warrantyInfo?.model || "N/A";
+  const vehicleYear =
+    workOrderData.year !== undefined && workOrderData.year !== null
+      ? workOrderData.year
+      : warrantyInfo?.year ?? "N/A";
+
+  const submissionTargetId =
+    isWarrantyTarget && warrantyInfo?.claimId
+      ? warrantyInfo.claimId
+      : workOrderData.targetId;
 
   // State cho phần inspection
   const [inspectionDesc, setInspectionDesc] = React.useState("");
@@ -49,12 +66,14 @@ export const WorkOrderDetailModal = ({
   // State cho preview ảnh (khi click ảnh sẽ hiển thị overlay)
   const [previewImage, setPreviewImage] = React.useState(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false); // ✅ loading state
-  const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
-  const [confirmTitle, setConfirmTitle] = React.useState("");
-  const [confirmMessage, setConfirmMessage] = React.useState("");
-  const pendingActionRef = React.useRef(null); // { type: 'inspection' | 'repair' }
 
   const fileInputRef = React.useRef(null);
+  const [confirmDialog, setConfirmDialog] = React.useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
 
   // ========== File Handlers ==========
 
@@ -70,63 +89,168 @@ export const WorkOrderDetailModal = ({
   };
 
   // State chứa các hàng linh kiện (parts)
+  const makeEmptyPart = (overrides = {}) => ({
+    claimPartId: null,
+    campaignPartId: null,
+    action: isCampaignTarget ? "Replace" : "",
+    category: "",
+    model: "",
+    serial: "",
+    newSerial: "",
+    availableModels: [],
+    availableSerials: [],
+    ...overrides,
+  });
+
+  const normalizedCampaignSerials = (() => {
+    if (!campaignInfo) return [];
+
+    const directSerials = [
+      campaignInfo.serials,
+      campaignInfo.serialNumbers,
+      campaignInfo.oldSerialNumbers,
+      campaignInfo.serialNumberOlds,
+    ].find((candidate) => Array.isArray(candidate));
+
+    if (Array.isArray(directSerials)) return directSerials.filter(Boolean);
+
+    if (Array.isArray(campaignInfo.parts)) {
+      return campaignInfo.parts
+        .map(
+          (part) =>
+            part?.serialNumberOld ||
+            part?.serial ||
+            part?.serialNumber ||
+            part?.oldSerial
+        )
+        .filter(Boolean);
+    }
+
+    return [];
+  })();
+
+  const campaignModelName =
+    campaignInfo?.partModel ||
+    campaignInfo?.model ||
+    campaignInfo?.part?.model ||
+    "";
+
+  const campaignPartsFromApi = Array.isArray(campaignInfo?.parts)
+    ? campaignInfo.parts.map((part) =>
+        makeEmptyPart({
+          campaignPartId: part?.campaignPartId || part?.id || null,
+          action: part?.action || "Replace",
+          category: part?.category || part?.partCategory || "",
+          model:
+            part?.model ||
+            part?.partModel ||
+            part?.part?.model ||
+            campaignModelName,
+          serial:
+            part?.serialNumberOld ||
+            part?.serial ||
+            part?.serialNumber ||
+            part?.oldSerial ||
+            "",
+          newSerial: part?.serialNumberNew || part?.newSerial || "",
+        })
+      )
+    : [];
+
   const [parts, setParts] = React.useState(() => {
-    // Biến chứa parts trả từ API (nếu có)
-    const apiParts = (workOrderData.warrantyClaim?.claimParts || []).map(
-      (p) => ({
+    if (isCampaignTarget) {
+      if (campaignPartsFromApi.length > 0) return campaignPartsFromApi;
+      if (normalizedCampaignSerials.length > 0) {
+        return normalizedCampaignSerials.map((serial) =>
+          makeEmptyPart({
+            action: "Replace",
+            model: campaignModelName,
+            serial,
+          })
+        );
+      }
+      if (initiallyShowOnePart) {
+        return [
+          makeEmptyPart({
+            action: "Replace",
+            model: campaignModelName,
+          }),
+        ];
+      }
+      return [];
+    }
+
+    // Biến chứa parts trả từ API (nếu có) cho warranty
+    const apiParts = (workOrderData.warrantyClaim?.claimParts || []).map((p) =>
+      makeEmptyPart({
         claimPartId: p.claimPartId,
         action: p.action || "",
         category: p.category || "",
         model: p.model || "",
         serial: p.serialNumberOld || p.serial || "",
         newSerial: p.serialNumberNew || p.newSerial || "",
-        // Thêm models và serials riêng cho từng part
-        availableModels: [],
-        availableSerials: [],
       })
     );
 
-    // Nếu backend trả parts, dùng luôn. Nếu không và prop `initiallyShowOnePart` true => tạo 1 hàng rỗng
     if (apiParts.length > 0) return apiParts;
-    if (initiallyShowOnePart)
-      return [
-        {
-          action: "",
-          category: "",
-          model: "",
-          serial: "",
-          newSerial: "",
-          availableModels: [],
-          availableSerials: [],
-        },
-      ];
+    if (initiallyShowOnePart) return [makeEmptyPart()];
     return [];
   });
+
+  React.useEffect(() => {
+    if (!isCampaignTarget || typeof fetchCategoryByModel !== "function") return;
+    const modelForCategory = campaignModelName || (parts[0]?.model ?? "");
+    if (!modelForCategory) return;
+
+    let isCancelled = false;
+
+    const assignCategory = async () => {
+      const categoryData = await fetchCategoryByModel(modelForCategory);
+      if (isCancelled) return;
+
+      const resolvedCategory = Array.isArray(categoryData)
+        ? categoryData.find(Boolean)
+        : typeof categoryData === "string"
+        ? categoryData
+        : categoryData?.name ||
+          categoryData?.categoryName ||
+          categoryData?.category;
+
+      if (!resolvedCategory) return;
+
+      setParts((prev) =>
+        prev.map((part) =>
+          part.model === modelForCategory && !part.category
+            ? { ...part, category: resolvedCategory }
+            : part
+        )
+      );
+    };
+
+    assignCategory();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isCampaignTarget, campaignModelName, fetchCategoryByModel]);
 
   // Kiểm tra loại công việc (inspection/repair)
   const isInspection =
     (workOrderData.type || "").toLowerCase() === "inspection";
   const isRepair = (workOrderData.type || "").toLowerCase() === "repair";
+  const showInspectionEditor = isWarrantyTarget && isInspection;
+  const showNewSerialColumn = isRepair || isCampaignTarget;
 
   // ========== Parts Table Handlers ==========
   // Thêm 1 hàng linh kiện rỗng
   const addPartRow = () => {
-    setParts((prev) => [
-      ...prev,
-      {
-        action: "",
-        category: "",
-        model: "",
-        serial: "",
-        newSerial: "",
-        availableModels: [],
-        availableSerials: [],
-      },
-    ]);
+    if (isCampaignTarget || !showInspectionEditor) return;
+    setParts((prev) => [...prev, makeEmptyPart()]);
   };
 
   // Xóa hàng linh kiện theo index
   const removePartRow = (index) => {
+    if (isCampaignTarget) return;
     setParts((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -149,142 +273,103 @@ export const WorkOrderDetailModal = ({
       parts.length === 0 ||
       parts.some((p) => !p.action || !p.model || !p.serial)
     ) {
-      toast.warning(
-        "Vui lòng nhập mô tả kiểm tra và gửi ít nhất một hình ảnh!"
-      );
+      toast.warn("⚠️ Please fill all required fields before submitting");
       return;
     }
 
-    try {
-      setIsSubmitting(true);
+    // Hiển thị ConfirmDialog xác nhận
+    setConfirmDialog({
+      isOpen: true,
+      title: "Confirm Submit",
+      message: "Are you sure you want to submit this inspection result?",
+      onConfirm: async () => {
+        try {
+          setIsSubmitting(true);
+          let uploadedImages = [];
 
-      // 1. Upload hình ảnh (nếu có)
-      let uploadedImages = [];
-      if (attachments.length > 0 && typeof uploadImages === "function") {
-        uploadedImages = await uploadImages(warrantyInfo?.claimId, attachments);
-      }
+          if (attachments.length > 0 && typeof uploadImages === "function") {
+            uploadedImages = await uploadImages(
+              submissionTargetId,
+              attachments
+            );
+          }
 
-      // 2. Chuẩn bị danh sách parts đã chọn
-      // Chỉ gửi parts có đủ thông tin (action, model, serial)
-      const selectedParts = parts
-        .filter((p) => p.action && p.model && p.serial)
-        .map((p) => ({
-          action: p.action,
-          model: p.model,
-          serialNumber: p.serial, // Backend yêu cầu field là serialNumber
-        }));
+          const selectedParts = parts
+            .filter((p) => p.action && p.model && p.serial)
+            .map((p) => ({
+              action: p.action,
+              model: p.model,
+              serialNumber: p.serial,
+            }));
 
-      // 3. Tạo payload gửi lên API
-      const payload = {
-        description: inspectionDesc,
-        parts: selectedParts, // Array chứa action, model, serialNumber
-      };
+          const payload = {
+            description: inspectionDesc,
+            parts: selectedParts,
+          };
 
-      console.log("📤 Sending inspection payload:", payload);
-
-      // 4. Gửi inspection request
-      if (typeof submitInspection === "function") {
-        const res = await submitInspection(warrantyInfo?.claimId, payload);
-        console.log("✅ Inspection submitted:", res);
-        toast.success("Successfully saved inspection results!");
-      } else {
-        console.warn("⚠️ SubmitInspection not provided from container");
-      }
-      onClose();
-    } catch (err) {
-      console.error("❌ Failed to submit inspection:", err);
-      const msg =
-        err?.responseData?.message ||
-        err?.message ||
-        "Failed to submit inspection!";
-      toast.error(msg);
-    } finally {
-      setIsSubmitting(false);
-    }
+          const res = await submitInspection(submissionTargetId, payload);
+          console.log("Inspection submitted:", res);
+          toast.success("Inspection submitted successfully!");
+          onClose();
+        } catch (err) {
+          console.error("Error submitting inspection:", err);
+          toast.error("Failed to submit inspection!");
+        } finally {
+          setIsSubmitting(false);
+        }
+      },
+    });
   };
 
   // Xử lý submit cho repair
   const handleSubmitRepair = async () => {
-    try {
-      const invalid = parts.some((p) => !p.claimPartId || !p.newSerial);
-      if (invalid) {
-        toast.warning("Please fill in all required fields for each part!");
-        return;
-      }
-
-      setIsSubmitting(true);
-
-      const payload = {
-        parts: parts.map((p) => ({
-          claimPartId: p.claimPartId,
-          serialNumber: p.newSerial,
-        })),
-      };
-
-      console.log("Payload gửi lên API:", payload);
-
-      if (typeof submitRepair === "function") {
-        const res = await submitRepair(warrantyInfo?.claimId, payload);
-        console.log("Repair submitted:", res);
-        toast.success("Successfully saved repair information!");
-      } else {
-        console.warn("⚠️ SubmitRepair not provided from container");
-      }
-
-      onClose();
-    } catch (err) {
-      console.error("❌ Failed to submit repair:", err);
-      const msg =
-        err?.responseData?.message ||
-        err?.message ||
-        "Failed to submit repair!";
-      toast.error(msg);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // ===== Confirm Flow =====
-  const openConfirmInspection = () => {
-    if (
-      !inspectionDesc.trim() ||
-      attachments.length === 0 ||
-      parts.length === 0 ||
-      parts.some((p) => !p.action || !p.model || !p.serial)
-    ) {
-      toast.warning(
-        "Please enter a description for the inspection and upload at least one image!"
-      );
-      return;
-    }
-    pendingActionRef.current = { type: "inspection" };
-    setConfirmTitle("Confirm Save");
-    setConfirmMessage("Save inspection results for this vehicle?");
-    setIsConfirmOpen(true);
-  };
-
-  const openConfirmRepair = () => {
-    const invalid = parts.some((p) => !p.newSerial);
+    const invalid = parts.some((p) =>
+      isCampaignTarget
+        ? !p.serial || !p.newSerial
+        : !p.claimPartId || !p.newSerial
+    );
     if (invalid) {
-      toast.warning("Please fill in all required fields for each part!");
+      toast.warn(" Please complete all part information!");
       return;
     }
-    pendingActionRef.current = { type: "repair" };
-    setConfirmTitle("Confirm Save");
-    setConfirmMessage("Save repair information for this vehicle?");
-    setIsConfirmOpen(true);
-  };
 
-  const performPendingAction = async () => {
-    const pending = pendingActionRef.current;
-    if (!pending) return;
-    if (pending.type === "inspection") {
-      await handleSubmitInspection();
-    } else if (pending.type === "repair") {
-      await handleSubmitRepair();
-    }
-    setIsConfirmOpen(false);
-    pendingActionRef.current = null;
+    setConfirmDialog({
+      isOpen: true,
+      title: "Confirm Save",
+      message: "Are you sure you want to save this repair information?",
+      onConfirm: async () => {
+        try {
+          setIsSubmitting(true);
+          const payload = isCampaignTarget
+            ? {
+                parts: parts.map((p) => ({
+                  campaignPartId: p.campaignPartId,
+                  action: p.action || "Replace",
+                  category: p.category,
+                  model: p.model,
+                  serialNumberOld: p.serial,
+                  serialNumberNew: p.newSerial,
+                })),
+              }
+            : {
+                parts: parts.map((p) => ({
+                  claimPartId: p.claimPartId,
+                  serialNumber: p.newSerial,
+                })),
+              };
+
+          const res = await submitRepair(submissionTargetId, payload);
+          console.log("Repair submitted:", res);
+          toast.success("Repair information saved successfully!");
+          onClose();
+        } catch (err) {
+          console.error("Error submitting repair:", err);
+          toast.error(" Failed to save repair information!");
+        } finally {
+          setIsSubmitting(false);
+        }
+      },
+    });
   };
 
   return (
@@ -362,33 +447,78 @@ export const WorkOrderDetailModal = ({
           <div className="info-container">
             <div className="info-row">
               <div className="label">VIN</div>
-              <div className="content">{warrantyInfo?.vin ?? "N/A"}</div>
+              <div className="content">{vehicleVin}</div>
             </div>
             <div className="info-row">
               <div className="label">Model</div>
-              <div className="content">{warrantyInfo?.model ?? "N/A"}</div>
+              <div className="content">{vehicleModel}</div>
             </div>
             <div className="info-row">
               <div className="label">Year</div>
-              <div className="content">{warrantyInfo?.year ?? "N/A"}</div>
+              <div className="content">{vehicleYear}</div>
             </div>
           </div>
 
           {/* Issue Description */}
-          <div className="description-block">
-            <h4>Issue Description</h4>
-            <div className="text-block">
-              <div className="content">
-                {warrantyInfo?.failureDesc ? warrantyInfo.failureDesc : "N/A"}
+          {isWarrantyTarget && (
+            <div className="description-block">
+              <h4>Issue Description</h4>
+              <div className="text-block">
+                <div className="content">
+                  {warrantyInfo?.failureDesc ? warrantyInfo.failureDesc : "N/A"}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {isCampaignTarget && campaignInfo && (
+          <div className="detail-block">
+            <h4>Campaign Details</h4>
+            <div className="info-container">
+              <div className="info-row">
+                <div className="label">Title</div>
+                <div className="content">{campaignInfo.title || "N/A"}</div>
+              </div>
+              {campaignModelName && (
+                <div className="info-row">
+                  <div className="label">Part Model</div>
+                  <div className="content">{campaignModelName}</div>
+                </div>
+              )}
+              {campaignInfo.description && (
+                <div className="info-row">
+                  <div className="label">Description</div>
+                  <div className="content">{campaignInfo.description}</div>
+                </div>
+              )}
+              <div className="info-row">
+                <div className="label">Created At</div>
+                <div className="content">
+                  {campaignInfo.createdAt
+                    ? formatDate(campaignInfo.createdAt)
+                    : "N/A"}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Detail for Technician (staff note for tech) */}
-        {workOrderData?.notes && (
+        {isWarrantyTarget && (warrantyInfo?.notes || workOrderData?.notes) && (
           <div className="detail-block">
             <h4>Detail for Technician</h4>
+            <div className="text-block">
+              <div className="content">
+                {warrantyInfo?.notes || workOrderData.notes}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isWarrantyTarget && workOrderData?.notes && (
+          <div className="detail-block">
+            <h4>Work Order Notes</h4>
             <div className="text-block">
               <div className="content">{workOrderData.notes}</div>
             </div>
@@ -396,109 +526,110 @@ export const WorkOrderDetailModal = ({
         )}
 
         {/* Inspection details (only shown for Inspection work orders) */}
-        {(workOrderData.type === "Inspection" ||
-          workOrderData.type === "Repair") && (
-          <div className="detail-block">
-            <h4>Inspection Details</h4>
+        {isWarrantyTarget &&
+          (workOrderData.type === "Inspection" ||
+            workOrderData.type === "Repair") && (
+            <div className="detail-block">
+              <h4>Inspection Details</h4>
 
-            {/* Existing Images: render only when attachments exist */}
-            {warrantyInfo?.attachments &&
-              warrantyInfo.attachments.length > 0 && (
-                <div className="attachment-section">
-                  <h5>Existing Images</h5>
-                  <div className="attachments-grid">
-                    {warrantyInfo.attachments.map((file, index) => (
-                      <div key={index} className="attachment-item">
-                        <img
-                          src={file.url}
-                          alt={`Attachment ${index + 1}`}
-                          onClick={() => setPreviewImage(file.url)}
-                          style={{ cursor: "zoom-in" }}
-                        />
-                        <a
-                          href={file.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Button size="small" variant="secondary">
-                            View
-                          </Button>
-                        </a>
-                      </div>
-                    ))}
+              {/* Existing Images: render only when attachments exist */}
+              {warrantyInfo?.attachments &&
+                warrantyInfo.attachments.length > 0 && (
+                  <div className="attachment-section">
+                    <h5>Existing Images</h5>
+                    <div className="attachments-grid">
+                      {warrantyInfo.attachments.map((file, index) => (
+                        <div key={index} className="attachment-item">
+                          <img
+                            src={file.url}
+                            alt={`Attachment ${index + 1}`}
+                            onClick={() => setPreviewImage(file.url)}
+                            style={{ cursor: "zoom-in" }}
+                          />
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button size="small" variant="secondary">
+                              View
+                            </Button>
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              {/* Hiển thị mô tả kiểm tra trước đó nếu có */}
+              {workOrderData.warrantyClaim?.notes && (
+                <div className="description-block">
+                  <h5>Technician's Inspection Notes</h5>
+                  <div className="text-block">
+                    <div className="content">
+                      {workOrderData.warrantyClaim.notes}
+                    </div>
                   </div>
                 </div>
               )}
-            {/* Hiển thị mô tả kiểm tra trước đó nếu có */}
-            {workOrderData.warrantyClaim?.notes && (
-              <div className="description-block">
-                <h5>Technician's Inspection Notes</h5>
-                <div className="text-block">
-                  <div className="content">
-                    {workOrderData.warrantyClaim.notes}
-                  </div>
-                </div>
-              </div>
-            )}
 
-            {/* Form nhập inspection mới chỉ xuất hiện nếu là task Inspection và status=in progress */}
-            {workOrderData.type === "Inspection" &&
-              workOrderData.status === "in progress" && (
-                <div className="inspection-form">
-                  <h5>Add Inspection Results</h5>
-                  <div className="form-group">
-                    <label>Detailed Description:</label>
-                    <textarea
-                      value={inspectionDesc}
-                      onChange={(e) => setInspectionDesc(e.target.value)}
-                      placeholder="Enter detailed inspection results..."
-                      rows={4}
-                      className="inspection-textarea"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Attached Images:</label>
-                    <div className="upload-section">
-                      <Button
-                        variant="secondary"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        Choose File
-                      </Button>
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileUpload}
-                        multiple
-                        accept="image/*"
-                        style={{ display: "none" }}
+              {/* Form nhập inspection mới chỉ xuất hiện nếu là task Inspection và status=in progress */}
+              {workOrderData.type === "Inspection" &&
+                workOrderData.status === "in progress" && (
+                  <div className="inspection-form">
+                    <h5>Add Inspection Results</h5>
+                    <div className="form-group">
+                      <label>Detailed Description:</label>
+                      <textarea
+                        value={inspectionDesc}
+                        onChange={(e) => setInspectionDesc(e.target.value)}
+                        placeholder="Enter detailed inspection results..."
+                        rows={4}
+                        className="inspection-textarea"
                       />
                     </div>
-                    {attachments.length > 0 && (
-                      <div className="attachments-preview">
-                        {attachments.map((file, index) => (
-                          <div key={index} className="preview-item">
-                            <img
-                              src={URL.createObjectURL(file)}
-                              alt={`Preview ${index + 1}`}
-                            />
-                            <Button
-                              size="small"
-                              variant="danger"
-                              onClick={() => handleRemoveFile(index)}
-                            >
-                              X
-                            </Button>
-                          </div>
-                        ))}
+
+                    <div className="form-group">
+                      <label>Attached Images:</label>
+                      <div className="upload-section">
+                        <Button
+                          variant="secondary"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          Choose File
+                        </Button>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileUpload}
+                          multiple
+                          accept="image/*"
+                          style={{ display: "none" }}
+                        />
                       </div>
-                    )}
+                      {attachments.length > 0 && (
+                        <div className="attachments-preview">
+                          {attachments.map((file, index) => (
+                            <div key={index} className="preview-item">
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt={`Preview ${index + 1}`}
+                              />
+                              <Button
+                                size="small"
+                                variant="danger"
+                                onClick={() => handleRemoveFile(index)}
+                              >
+                                X
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-          </div>
-        )}
+                )}
+            </div>
+          )}
 
         {/* Image preview overlay: khi có previewImage thì hiển thị overlay */}
         {previewImage && (
@@ -536,14 +667,36 @@ export const WorkOrderDetailModal = ({
               <div className="col category">Category</div>
               <div className="col model">Model</div>
               <div className="col serial">Serial</div>
-              {isRepair && <div className="col new-serial">New Serial </div>}
+              {showNewSerialColumn && (
+                <div className="col new-serial">New Serial</div>
+              )}
               <div className="col actions-col"></div>
             </div>
 
             {parts.map((p, idx) => (
               <div key={idx} className="parts-row">
-                {/* Nếu là Inspection: cho phép chọn và thêm hàng */}
-                {isInspection ? (
+                {/* Campaign work orders: preset replace rows with new serial input */}
+                {isCampaignTarget ? (
+                  <>
+                    <div className="col action">{p.action || "Replace"}</div>
+                    <div className="col category">{p.category || "-"}</div>
+                    <div className="col model">{p.model || "-"}</div>
+                    <div className="col serial">{p.serial || "-"}</div>
+                    {showNewSerialColumn && (
+                      <div className="col new-serial">
+                        <input
+                          type="text"
+                          placeholder="Enter new serial"
+                          value={p.newSerial || ""}
+                          onChange={(e) =>
+                            updatePart(idx, "newSerial", e.target.value)
+                          }
+                        />
+                      </div>
+                    )}
+                    <div className="col actions-col"></div>
+                  </>
+                ) : showInspectionEditor ? (
                   <>
                     <div className="col action">
                       <select
@@ -666,7 +819,7 @@ export const WorkOrderDetailModal = ({
                         variant="danger"
                         onClick={() => removePartRow(idx)}
                       >
-                        Xóa
+                        Delete
                       </Button>
                     </div>
                   </>
@@ -695,15 +848,17 @@ export const WorkOrderDetailModal = ({
               </div>
             ))}
 
-            {parts.length === 0 ? (
+            {parts.length === 0 && (
               <div className="parts-empty-note">
-                Không có linh kiện nào. Bấm "＋ Thêm hàng" để bắt đầu thêm.
+                {showInspectionEditor
+                  ? 'No parts here. Click "＋ Add row" to start adding.'
+                  : "No parts here."}
               </div>
-            ) : null}
-            {isInspection && (
+            )}
+            {showInspectionEditor && (
               <div className="parts-actions">
                 <Button variant="secondary" onClick={addPartRow}>
-                  ＋ Thêm hàng
+                  ＋ Add row
                 </Button>
               </div>
             )}
@@ -729,40 +884,54 @@ export const WorkOrderDetailModal = ({
 
         {/* Footer actions */}
         <div className="modal-footer">
-          {isInspection && (
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+          {showInspectionEditor && (
             <Button
               variant="primary"
-              onClick={openConfirmInspection}
+              onClick={handleSubmitInspection}
               disabled={!inspectionDesc.trim() && attachments.length === 0}
             >
-              Lưu kết quả kiểm tra
+              Save Inspection
             </Button>
           )}
 
           {isRepair && (
             <Button
               variant="primary"
-              onClick={openConfirmRepair}
+              onClick={() => {
+                // Kiểm tra xem có phần tử nào thiếu newSerial không
+                const invalid = parts.some((p) => !p.newSerial);
+                console.log("Checking parts for newSerial:", parts, {
+                  invalid,
+                });
+
+                if (invalid) {
+                  console.log("Found invalid parts, alerting user.");
+                  toast.warn("Please complete all part information!");
+                  return;
+                }
+
+                // Nếu tất cả hợp lệ thì gọi hàm xử lý
+                handleSubmitRepair();
+              }}
               disabled={parts.length === 0}
             >
-              Lưu thông tin sửa chữa
+              Save Repair
             </Button>
           )}
-
-          <Button variant="secondary" onClick={onClose}>
-            Close
-          </Button>
         </div>
       </div>
       <ConfirmDialog
-        isOpen={isConfirmOpen}
-        title={confirmTitle}
-        message={confirmMessage}
-        confirmLabel="Xác nhận"
-        cancelLabel="Hủy"
-        onConfirm={performPendingAction}
-        onCancel={() => setIsConfirmOpen(false)}
-        isLoading={isSubmitting}
+        isOpen={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        onConfirm={() => {
+          confirmDialog.onConfirm?.();
+          setConfirmDialog({ ...confirmDialog, isOpen: false });
+        }}
+        onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
       />
     </Modal>
   );
@@ -782,6 +951,9 @@ WorkOrderDetailModal.propTypes = {
     endDate: PropTypes.string,
     description: PropTypes.string,
     notes: PropTypes.string,
+    vin: PropTypes.string,
+    model: PropTypes.string,
+    year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     parts: PropTypes.arrayOf(
       PropTypes.shape({
         action: PropTypes.string,
@@ -803,6 +975,29 @@ WorkOrderDetailModal.propTypes = {
       models: PropTypes.array,
       serials: PropTypes.array,
     }),
+    campaign: PropTypes.shape({
+      campaignVehicleId: PropTypes.string,
+      campaignId: PropTypes.string,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      status: PropTypes.string,
+      createdAt: PropTypes.string,
+      partModel: PropTypes.string,
+      model: PropTypes.string,
+      serials: PropTypes.arrayOf(PropTypes.string),
+      serialNumbers: PropTypes.arrayOf(PropTypes.string),
+      oldSerialNumbers: PropTypes.arrayOf(PropTypes.string),
+      parts: PropTypes.arrayOf(
+        PropTypes.shape({
+          campaignPartId: PropTypes.string,
+          action: PropTypes.string,
+          category: PropTypes.string,
+          model: PropTypes.string,
+          serialNumberOld: PropTypes.string,
+          serialNumberNew: PropTypes.string,
+        })
+      ),
+    }),
   }),
   categories: PropTypes.array,
   models: PropTypes.array,
@@ -810,6 +1005,7 @@ WorkOrderDetailModal.propTypes = {
   fetchCategories: PropTypes.func,
   fetchModels: PropTypes.func,
   fetchSerial: PropTypes.func,
+  fetchCategoryByModel: PropTypes.func,
 };
 
 WorkOrderDetailModal.defaultProps = {
@@ -820,4 +1016,5 @@ WorkOrderDetailModal.defaultProps = {
   fetchCategories: null,
   fetchModels: null,
   fetchSerial: null,
+  fetchCategoryByModel: null,
 };

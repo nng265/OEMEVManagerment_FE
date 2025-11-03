@@ -160,6 +160,11 @@
   background-color: #2b6cb0;
 }
 
+/* Push the Cancel button to the left */
+.btn-cancel {
+  margin-right: auto;
+}
+
 /* === Animation === */
 @keyframes fadeIn {
   from {

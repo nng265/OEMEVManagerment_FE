@@ -35,7 +35,7 @@ export const EVMPartsListContainer = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await request(ApiEnum.SHOW_REQUEST_PARTS_EVMSTAFF, {
+      const res = await request(ApiEnum.GET_REQUEST_PARTS, {
         Page: pageNumber,
         Size: effectivePageSize,
       });
@@ -99,9 +99,10 @@ export const EVMPartsListContainer = () => {
       setSelectedRequest(null);
       toast.success("Expected date updated successfully!");
     } catch (err) {
-      const errorMsg =
-        err.responseData?.message || "Failed to set requested date";
-      toast.error(`Error: ${errorMsg}`);
+      // const errorMsg =
+      //   err.responseData?.message || "Failed to set requested date";
+      // toast.error(`Error: ${errorMsg}`);
+      toast.warning(`Error: Please select a valid date`);
     } finally {
       setIsActionLoading(false);
     }
@@ -118,8 +119,9 @@ export const EVMPartsListContainer = () => {
       setSelectedRequest(null);
       toast.success("Request confirmed and moved to preparation!");
     } catch (err) {
-      const errorMsg = err.responseData?.message || "Failed to confirm";
-      toast.error(`Error: ${errorMsg}`);
+      // const errorMsg = err.responseData?.message || "Failed to confirm";
+      // toast.error(`Error: ${errorMsg}`);
+      toast.error(`Error: Unable to confirm request`);
     } finally {
       setIsActionLoading(false);
     }
@@ -136,8 +138,9 @@ export const EVMPartsListContainer = () => {
       setSelectedRequest(null);
       toast.success("Request marked as delivered!");
     } catch (err) {
-      const errorMsg = err.responseData?.message || "Failed to mark delivered";
-      toast.error(`Error: ${errorMsg}`);
+      // const errorMsg = err.responseData?.message || "Failed to mark delivered";
+      // toast.error(`Error: ${errorMsg}`);
+      toast.error(`Error: Unable to mark request as delivered`);
     } finally {
       setIsActionLoading(false);
     }

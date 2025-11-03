@@ -10,8 +10,8 @@ import { ViewCampaignModal } from "../components/ViewCampaignModal";
 import { AddCampaignModal } from "../components/AddCampaignModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
+import { toast } from "react-toastify";
 
-// ================== CONTAINER ==================
 export const EVMStaffCampaignContainer = () => {
   // --- STATE ---
   const [campaigns, setCampaigns] = useState([]);
@@ -82,7 +82,7 @@ export const EVMStaffCampaignContainer = () => {
 
       if (success) {
         const normalized = rawItems.map((it, index) => ({
-          // id: it.id ?? index,
+          id: it.id || it._id,
           description: it.description || "",
           title: it.title ?? it.titleId ?? "",
           type: it.type ?? "",
@@ -122,7 +122,7 @@ export const EVMStaffCampaignContainer = () => {
         setError(message || "Unable to load campaign.");
       }
     } catch (err) {
-      console.error("❌ Lỗi khi load campaigns:", err);
+      console.error("Lỗi khi load campaigns:", err);
       if (requestId === latestRequestRef.current) {
         const message =
           err?.responseData?.message ||
@@ -156,18 +156,15 @@ export const EVMStaffCampaignContainer = () => {
   useEffect(() => {
     let result = [...campaigns];
 
-    // search
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       result = result.filter((c) => c.title.toLowerCase().includes(q));
     }
 
-    // filter by type
     if (selectedType) {
       result = result.filter((c) => c.type === selectedType);
     }
 
-    // filter by status
     if (selectedStatus) {
       result = result.filter((c) => c.status === selectedStatus);
     }
@@ -203,11 +200,11 @@ export const EVMStaffCampaignContainer = () => {
   const handleAddSubmit = async (newCampaign) => {
     try {
       const payload = {
-        type: newCampaign.type || "",
-        title: newCampaign.title || "",
-        // description: newCampaign.description || "",
-        partModel: newCampaign.target || "",
-
+        type: newCampaign.type,
+        title: newCampaign.title,
+        description: newCampaign.description,
+        partModel: newCampaign.partModel,
+        replacementPartModel: newCampaign.replacementPartModel,
         startDate: newCampaign.startDate
           ? new Date(newCampaign.startDate).toISOString()
           : "",
@@ -216,17 +213,22 @@ export const EVMStaffCampaignContainer = () => {
           : "",
       };
 
-      console.log(" Sending payload:", payload);
-
+      console.log("Sending payload:", payload);
       const res = await request(ApiEnum.CREATE_CAMPAIGN, payload);
-      console.log("API Response:", res);
+      console.log(" API Response:", res);
+
+      toast.success("Campaign created successfully!");
 
       await fetchCampaign(
         paginationRef.current.pageNumber,
         paginationRef.current.pageSize
       );
     } catch (e) {
-      console.error("❌ Lỗi khi tạo campaign:", e);
+      console.error("Lỗi khi tạo campaign:", e);
+      toast.error(
+        e?.responseData?.message ||
+          "Failed to create campaign. Please try again."
+      );
     } finally {
       setShowAddModal(false);
     }
@@ -262,6 +264,30 @@ export const EVMStaffCampaignContainer = () => {
     [filtersActive, fetchCampaign]
   );
 
+  // ===== CLOSE CAMPAIGN =====
+  const fetchCloseCampaign = useCallback(
+    async (campaignId) => {
+      if (!campaignId) return;
+
+      try {
+        const response = await request(ApiEnum.CLOSE_CAMPAIGN, {
+          params: { id: campaignId },
+        });
+        toast.success("Campaign closed successfully!");
+
+        // Reload lại danh sách
+        await fetchCampaign(
+          paginationRef.current.pageNumber,
+          paginationRef.current.pageSize
+        );
+      } catch (err) {
+        console.error("Failed to close campaign:", err);
+        toast.error("Failed to close campaign. Please try again.");
+      }
+    },
+    [fetchCampaign]
+  );
+
   // ===== RENDER =====
   return (
     <div style={{ marginTop: 40 }}>
@@ -283,6 +309,7 @@ export const EVMStaffCampaignContainer = () => {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         campaign={selectedCampaign}
+        onCloseCampaign={fetchCloseCampaign}
       />
 
       <AddCampaignModal

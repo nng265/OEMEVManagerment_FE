@@ -70,7 +70,7 @@ export function Comfirm({ request, onClose, onDelivered, isLoading }) {
 
           <div className="popup-actions">
             <button
-              className="btn-secondary"
+              className="btn-secondary btn-cancel"
               onClick={handleClose}
               disabled={isLoading}
             >

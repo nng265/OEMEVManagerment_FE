@@ -29,31 +29,40 @@ export const TechnicianVehicleStatusContainer = () => {
   // --- UPDATED COLUMNS DEFINITION ---
   const columns = [
     {
-      key: "vin", // Key for sorting (using nested value)
-      label: "VIN", // Changed label
+      key: "vin",
+      label: "VIN",
       sortable: true,
-      // Render function to access nested data
-      render: (_, row) => row.warrantyClaim?.vin || "-", // Access warrantyClaim.vin
+      render: (_, row) => row.vin || "-",
     },
     {
-      key: "failureDesc", // Key for sorting (using nested value)
-      label: "Issue", // Changed label to match image
+      key: "target",
+      label: "Type",
       sortable: true,
-      // Render function to access nested data
-      render: (_, row) => row.warrantyClaim?.failureDesc || "-", // Access warrantyClaim.failureDesc
+      render: (_, row) => {
+        if (row.target === "Warranty") {
+          const desc =
+            row.warrantyClaim?.failureDesc ||
+            row.warrantyClaim?.description ||
+            "";
+          return `Warranty${desc ? ": " + desc : ""}`;
+        }
+        if (row.target === "Campaign") {
+          const title = row.campaign?.title || "";
+          return `Campaign${title ? ": " + title : ""}`;
+        }
+        return row.target || "-";
+      },
     },
     {
-      key: "type", // Correct top-level key for 'Task'
-      label: "Task", // Changed label to match image
+      key: "type",
+      label: "Task",
       sortable: true,
     },
     {
-      key: "status", // Correct top-level key for work order status
-      label: "Status", // Changed label to match image
+      key: "status",
+      label: "Status",
       sortable: true,
       render: (value) => {
-        // Keep status badge rendering
-        // Adjust class generation if needed based on actual status values
         const statusClass = (value || "unknown")
           .toLowerCase()
           .replace(/ /g, "-")
@@ -64,10 +73,9 @@ export const TechnicianVehicleStatusContainer = () => {
       },
     },
     {
-      key: "startDate", // Correct top-level key for date
-      label: "Date", // Changed label to match image
+      key: "startDate",
+      label: "Date",
       sortable: true,
-      // Format date only (no time)
       render: (value) =>
         formatDate(value, "vi-VN", {
           year: "numeric",
@@ -76,17 +84,16 @@ export const TechnicianVehicleStatusContainer = () => {
         }),
     },
     {
-      // Actions column
       key: "actions",
-      label: "Actions", // Changed label to match image
+      label: "Actions",
       sortable: false,
       render: (_, row) => (
         <Button
-          variant="primary" // Match 'View Details' button style
+          variant="primary"
           size="small"
           onClick={(e) => {
             e.stopPropagation();
-            handleViewWorkOrderDetail(row); // Function to handle viewing details
+            handleViewWorkOrderDetail(row);
           }}
         >
           View
@@ -97,7 +104,7 @@ export const TechnicianVehicleStatusContainer = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await request(ApiEnum.GET_PART_CATEGORY);
+      const response = await request(ApiEnum.GET_PART_CATEGORIES);
       console.log("Category response:", response);
       // normalize possible shapes
       const cats = Array.isArray(response)
@@ -113,55 +120,31 @@ export const TechnicianVehicleStatusContainer = () => {
     }
   }, []);
 
-  const fetchWorkOrders = useCallback(
-    async (pageNumber = 0, pageSize) => {
-      const effectivePageSize =
-        typeof pageSize === "number"
-          ? pageSize
-          : paginationRef.current.pageSize;
-      setIsLoading(true);
-      setError(null);
+  const fetchWorkOrders = useCallback(async (pageNumber = 0, pageSize) => {
+    const effectivePageSize =
+      typeof pageSize === "number" ? pageSize : paginationRef.current.pageSize;
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, {
-          Page: pageNumber,
-          Size: effectivePageSize,
+    try {
+      const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, {
+        Page: pageNumber,
+        Size: effectivePageSize,
+      });
+
+      const { success, items, totalRecords, page, size, message } =
+        normalizePagedResult(response, []);
+
+      if (success) {
+        setWorkOrders(items);
+        setPagination({
+          pageNumber: typeof page === "number" ? page : pageNumber,
+          pageSize:
+            typeof size === "number" && size > 0 ? size : effectivePageSize,
+          totalRecords:
+            typeof totalRecords === "number" ? totalRecords : items.length,
         });
-
-        const {
-          success,
-          items,
-          totalRecords,
-          page,
-          size,
-          message,
-        } = normalizePagedResult(response, []);
-
-        if (success) {
-          setWorkOrders(items);
-          setPagination({
-            pageNumber: typeof page === "number" ? page : pageNumber,
-            pageSize:
-              typeof size === "number" && size > 0 ? size : effectivePageSize,
-            totalRecords:
-              typeof totalRecords === "number" ? totalRecords : items.length,
-          });
-        } else {
-          setWorkOrders([]);
-          setPagination((prev) => ({
-            ...prev,
-            pageNumber,
-            pageSize: effectivePageSize,
-            totalRecords: 0,
-          }));
-          setError(message || "Unable to load work order list.");
-        }
-      } catch (err) {
-        console.error("Error fetching work orders:", err);
-        const message =
-          err?.responseData?.message ||
-          err?.message ||
-          "An error occurred while loading work order list.";
+      } else {
         setWorkOrders([]);
         setPagination((prev) => ({
           ...prev,
@@ -169,13 +152,26 @@ export const TechnicianVehicleStatusContainer = () => {
           pageSize: effectivePageSize,
           totalRecords: 0,
         }));
-        setError(message);
-      } finally {
-        setIsLoading(false);
+        setError(message || "Unable to load work order list.");
       }
-    },
-    []
-  );
+    } catch (err) {
+      console.error("Error fetching work orders:", err);
+      const message =
+        err?.responseData?.message ||
+        err?.message ||
+        "An error occurred while loading work order list.";
+      setWorkOrders([]);
+      setPagination((prev) => ({
+        ...prev,
+        pageNumber,
+        pageSize: effectivePageSize,
+        totalRecords: 0,
+      }));
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
@@ -206,7 +202,7 @@ export const TechnicianVehicleStatusContainer = () => {
         setModels([]);
         return [];
       }
-      const response = await request(ApiEnum.GET_PART_MODEL, {
+      const response = await request(ApiEnum.GET_PART_MODELS, {
         category: categoryName,
       });
       console.log("Model response:", response);
@@ -274,13 +270,10 @@ export const TechnicianVehicleStatusContainer = () => {
       }
 
       // Gửi request lên API /images/multi/:claimId
-      const res = await uploadFiles(
-        ApiEnum.UPLOAD_IMAGE,
-        {
-          params: { claimId }, // claimId sẽ thay thế :claimId trong path
-          files: files, // uploadFiles sẽ tự động xử lý files array
-        }
-      );
+      const res = await uploadFiles(ApiEnum.UPLOAD_IMAGE, {
+        params: { claimId }, // claimId sẽ thay thế :claimId trong path
+        files: files, // uploadFiles sẽ tự động xử lý files array
+      });
 
       // Chuẩn hóa dữ liệu trả về
       const uploaded = Array.isArray(res)
