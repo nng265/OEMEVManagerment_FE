@@ -29,6 +29,7 @@ export const TechnicianVehicleStatusView = ({
   fetchCategories,
   fetchModels,
   fetchSerial,
+  fetchCategoryByModel,
 
   uploadImages,
   submitInspection,
@@ -89,6 +90,7 @@ export const TechnicianVehicleStatusView = ({
             fetchCategories={fetchCategories}
             fetchModels={fetchModels}
             fetchSerial={fetchSerial}
+            fetchCategoryByModel={fetchCategoryByModel}
             // truyền handlers xuống modal (container giữ network logic)
             uploadImages={uploadImages}
             submitInspection={submitInspection}
@@ -122,6 +124,7 @@ TechnicianVehicleStatusView.propTypes = {
   fetchCategories: PropTypes.func,
   fetchModels: PropTypes.func,
   fetchSerial: PropTypes.func,
+  fetchCategoryByModel: PropTypes.func,
   uploadImages: PropTypes.func,
   submitInspection: PropTypes.func,
   submitRepair: PropTypes.func,

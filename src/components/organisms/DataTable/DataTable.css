@@ -101,7 +101,6 @@
   cursor: pointer;
   user-select: none;
   position: relative;
-  padding-right: 2rem; /* Space for sort icon */
 }
 
 .table th.sortable:hover {
