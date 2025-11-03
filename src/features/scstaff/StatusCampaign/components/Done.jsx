@@ -1,10 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
-import "./UI.css";
+import "../components/UI.css"; // THAY ĐỔI: Import CSS mới
 
 const Done = ({ open, onClose, data }) => {
-  if (!open) return null;
+  // === Dùng các hàm helper giống CampaignViewModal ===
+  const displayValue = (value) => {
+    if (value === 0 || value === null || value === undefined || value === "") {
+      return "—";
+    }
+    return value;
+  };
+  // ===================================================
 
   const campaign = data?.raw ?? {};
   const customer = campaign.customer ?? {};
@@ -12,102 +20,117 @@ const Done = ({ open, onClose, data }) => {
   const replacements = campaign.replacements ?? [];
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-card">
-        {/* Close button */}
-        <button className="modal-close" onClick={onClose}>
-          ×
-        </button>
-
-        {/* Header */}
-        <h2>Campaign Details</h2>
-        <div className="status-badge status-done">
-          {campaign.status ?? "DONE"}
-        </div>
-
-        {/* Customer & Vehicle Info */}
-        <div style={{ display: "flex", gap: 20, marginTop: 16 }}>
-          <div style={{ flex: 1 }}>
-            <h4>👤 Customer Information</h4>
-            <div>{customer.name ?? "—"}</div>
-            <div>{customer.phone ?? ""}</div>
-            <div>{customer.email ?? ""}</div>
+    <Modal
+      isOpen={open}
+      onClose={onClose}
+      title="Campaign Done"
+      size="xl"
+      showFooter={false}
+    >
+      <div className="campaign-modal">
+        {/* === Section 1: Thông tin Khách hàng & Xe === */}
+        <h3 className="campaign-section-title">
+          Customer & Vehicle Information
+        </h3>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block">
+            <span className="info-block-label">Customer Name</span>
+            <span className="info-block-value">
+              {displayValue(customer.name)}
+            </span>
           </div>
-
-          <div style={{ flex: 1 }}>
-            <h4>🚗 Vehicle Information</h4>
-            <div>Model: {vehicle.model ?? "—"}</div>
-            <div>VIN: {vehicle.vin ?? "—"}</div>
-            <div>Year: {vehicle.year ?? "—"}</div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Phone</span>
+            <span className="info-block-value">
+              {displayValue(customer.phone)}
+            </span>
           </div>
         </div>
-
-        <hr />
-
-        {/* Campaign Info */}
-        <div>
-          <h4>🛠 Campaign Information</h4>
-          <div><strong>Title:</strong> {campaign.title ?? "—"}</div>
-          <div><strong>Description:</strong> {campaign.description ?? "—"}</div>
-          <div><strong>Type:</strong> {campaign.type ?? "—"}</div>
-          <div>
-            <strong>Period:</strong>{" "}
-            {campaign.startDate && campaign.endDate
-              ? `${new Date(campaign.startDate).toLocaleDateString()} → ${new Date(campaign.endDate).toLocaleDateString()}`
-              : "—"}
+        <div className="campaign-info-row">
+          <div className="campaign-info-block">
+            <span className="info-block-label">Vehicle Model</span>
+            <span className="info-block-value">
+              {displayValue(vehicle.model)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">VIN</span>
+            <span className="info-block-value">
+              {displayValue(vehicle.vin)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Year</span>
+            <span className="info-block-value">
+              {displayValue(vehicle.year)}
+            </span>
           </div>
         </div>
 
-        <hr />
+        {/* === Section 2: Thông tin Chiến dịch === */}
+        <h3 className="campaign-section-title">Campaign Details</h3>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block full-width">
+            <span className="info-block-label">Title</span>
+            <span className="info-block-value">
+              {displayValue(campaign.title)}
+            </span>
+          </div>
+        </div>
+        <div className="campaign-info-row">
+          <div className="campaign-info-block">
+            <span className="info-block-label">Status</span>
+            <span className="info-block-value">
+              {displayValue(campaign.status)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Campaign Type</span>
+            <span className="info-block-value">
+              {displayValue(campaign.type)}
+            </span>
+          </div>
+          <div className="campaign-info-block">
+            <span className="info-block-label">Description</span>
+            <span className="info-block-value">
+              {displayValue(campaign.description)}
+            </span>
+          </div>
+        </div>
 
-        {/* Replacements Section */}
-        <div>
-          <h4>🔧 Parts to Replace/Repair</h4>
+        {/* === Section 3: Linh kiện thay thế === */}
+        <h3 className="campaign-section-title">Parts Replacement</h3>
+        <div className="campaign-info-block full-width">
           {replacements.length > 0 ? (
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                marginTop: 6,
-                fontSize: "0.92rem",
-              }}
-            >
+            <table className="replacement-table">
               <thead>
-                <tr style={{ background: "#f8f9fa" }}>
-                  <th style={{ textAlign: "left", padding: "8px 10px", borderBottom: "1px solid #ddd" }}>
-                    Old Serial
-                  </th>
-                  <th style={{ textAlign: "left", padding: "8px 10px", borderBottom: "1px solid #ddd" }}>
-                    New Serial
-                  </th>
+                <tr>
+                  <th>Old Serial</th>
+                  <th>New Serial</th>
                 </tr>
               </thead>
               <tbody>
                 {replacements.map((rep, idx) => (
                   <tr key={idx}>
-                    <td style={{ padding: "8px 10px", borderBottom: "1px solid #eee" }}>
-                      {rep.oldSerial}
-                    </td>
-                    <td style={{ padding: "8px 10px", borderBottom: "1px solid #eee" }}>
-                      {rep.newSerial}
-                    </td>
+                    <td>{displayValue(rep.oldSerial)}</td>
+                    <td>{displayValue(rep.newSerial)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <div>— No replacement data —</div>
+            <span className="info-block-value">— No replacement data —</span>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="modal-footer">
+        {/* === Footer === */}
+        <div className="campaign-footer">
           <Button variant="secondary" onClick={onClose}>
             Back
           </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

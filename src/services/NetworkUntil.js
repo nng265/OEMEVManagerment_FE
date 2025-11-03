@@ -2,8 +2,7 @@
 // const API_URL = "http://localhost:3001";
 // const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-const API_BASE_URL =
-  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -13,10 +12,7 @@ export const ApiEnum = {
   // GET_WARRANTY_CLAIM_DETAIL: { path: "/WarrantyClaim/detail", method: "GET" },
   GET_VEHICLES: { path: "/vehicle", method: "GET" },
   CREATE_WARRANTY_CLAIM: { path: "/WarrantyClaim", method: "POST" },
-  ASSIGN_TECHNICIAN: {
-    path: "/WarrantyClaim/:targetId/assign-techs",
-    method: "POST",
-  },
+  ASSIGN_TECHNICIAN: { path: "/WarrantyClaim/:targetId/assign-techs", method: "POST" },
 
   GET_TECHNICIANS: { path: "/Employee", method: "GET" },
 

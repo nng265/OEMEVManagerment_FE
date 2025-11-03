@@ -14,11 +14,12 @@
 
 .navbar.sidebar-open {
   left: var(--sidebar-open-width);
+  width: calc(100% - var(--sidebar-open-width));
 }
 .navbar.sidebar-collapsed {
   left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
 }
-
 .navbar-container {
   display: flex;
   align-items: center;
@@ -53,10 +54,6 @@
   margin-left: auto; /* đẩy sang phải */
   flex-shrink: 0;
 }
-
-
-
-
 
 .navbar-toggle-btn {
   background: none;

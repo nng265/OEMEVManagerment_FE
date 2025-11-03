@@ -263,7 +263,11 @@ export const ServiceCenterInventoryContainer = () => {
 
     setLoadingModels(true);
     try {
+<<<<<<< HEAD
       // Use GET_PART_MODEL endpoint with category query param
+=======
+      // Use GET_PART_MODELS endpoint with category query param
+>>>>>>> origin/popupAddCampaign
       const res = await request(ApiEnum.GET_PART_MODELS, {
         category: category,
       });

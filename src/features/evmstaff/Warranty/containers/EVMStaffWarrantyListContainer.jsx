@@ -35,6 +35,7 @@ export const EVMStaffWarrantyListContainer = () => {
       const res = await request(ApiEnum.GET_WARRANTY_CLAIMS, {
         Page: pageNumber,
         Size: effectivePageSize,
+        Status: "sent to manufacturer",
       });
 
       const { success, items, totalRecords, page, size, message } =

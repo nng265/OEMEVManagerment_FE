@@ -1,9 +1,13 @@
 /* ===========================
    OVERLAY + POPUP WRAPPER
    =========================== */
+/* ===========================
+   OVERLAY + POPUP WRAPPER
+   =========================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
+  background: rgba(0, 0, 0, 0.45);
   background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
@@ -11,12 +15,23 @@
   z-index: 9999;
   backdrop-filter: blur(3px);
   animation: fadeIn 0.25s ease-in-out;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.25s ease-in-out;
 }
 
 /* ===========================
    POPUP CARD CONTAINER
    =========================== */
+/* ===========================
+   POPUP CARD CONTAINER
+   =========================== */
 .modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 600px;
+  max-width: 95vw;
+  padding: 28px 32px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
   background: #ffffff;
   border-radius: 16px;
   width: 600px;
@@ -28,8 +43,15 @@
   max-height: 90vh;
   animation: slideUp 0.3s ease-out;
   font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  overflow-y: auto;
+  max-height: 90vh;
+  animation: slideUp 0.3s ease-out;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
 }
 
+/* ===========================
+   HEADER
+   =========================== */
 /* ===========================
    HEADER
    =========================== */
@@ -48,11 +70,42 @@
 /* ===========================
    SECTION TITLES
    =========================== */
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f1f1f;
+  margin-bottom: 6px;
+}
+
+.modal-card > div:first-of-type {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* ===========================
+   SECTION TITLES
+   =========================== */
 .modal-card h4 {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-card h4::before {
+  content: "•";
+  color: #0d6efd;
+  font-weight: bold;
+}
+
+/* ===========================
+   CONTENT TEXT
+   =========================== */
   display: flex;
   align-items: center;
   gap: 6px;
@@ -72,8 +125,14 @@
   font-size: 0.92rem;
   color: #444;
   line-height: 1.5;
+  font-size: 0.92rem;
+  color: #444;
+  line-height: 1.5;
 }
 
+/* ===========================
+   SEPARATOR
+   =========================== */
 /* ===========================
    SEPARATOR
    =========================== */
@@ -81,8 +140,13 @@
   border: none;
   border-top: 1px solid #e9ecef;
   margin: 18px 0;
+  border-top: 1px solid #e9ecef;
+  margin: 18px 0;
 }
 
+/* ===========================
+   CLOSE BUTTON
+   =========================== */
 /* ===========================
    CLOSE BUTTON
    =========================== */
@@ -90,8 +154,11 @@
   position: absolute;
   top: 12px;
   right: 16px;
+  top: 12px;
+  right: 16px;
   border: none;
   background: transparent;
+  font-size: 22px;
   font-size: 22px;
   cursor: pointer;
   color: #888;
@@ -101,8 +168,18 @@
 .modal-close:hover {
   color: #000;
   transform: rotate(90deg);
+  color: #888;
+  transition: all 0.2s ease;
 }
 
+.modal-close:hover {
+  color: #000;
+  transform: rotate(90deg);
+}
+
+/* ===========================
+   FOOTER
+   =========================== */
 /* ===========================
    FOOTER
    =========================== */
@@ -174,8 +251,77 @@ button {
 
 button:hover {
   transform: translateY(-1px);
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
 }
 
+/* ===========================
+   SELECT DROPDOWN (Technician)
+   =========================== */
+.modal-card select {
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.modal-card select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+/* ===========================
+   STATUS TEXT
+   =========================== */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  font-size: 0.9rem;
+}
+
+.status-badge.status-waiting {
+  background: #e7f1ff;
+  color: #0b61d9;
+}
+
+.status-badge.status-under-repair {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.status-repaired {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.status-done {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+/* ===========================
+   BUTTON ALIGNMENT + INTERACTIONS
+   =========================== */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
 /* ===========================
    ANIMATIONS
    =========================== */
@@ -185,6 +331,15 @@ button:hover {
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(12px);
+    opacity: 0.95;
+  }
+  to {
   }
 }
 
@@ -215,4 +370,154 @@ button:hover {
   .modal-card h4 {
     font-size: 0.95rem;
   }
+}
+
+/* ===========================
+   THÊM CSS CHO FORM (để chọn tech)
+   =========================== */
+.form-group {
+  margin-bottom: 18px;
+  background: #fff; /* Thêm nền trắng cho khu vực form */
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+
+.tech-select-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tech-select-row select {
+  flex: 1;
+}
+
+/* ===========================
+   THÊM CSS CHO BẢNG (linh kiện)
+   =========================== */
+.replacement-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.92rem;
+}
+
+.replacement-table th,
+.replacement-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.replacement-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.replacement-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+@media (max-width: 768px) {
+  .modal-card {
+    width: 90vw;
+    padding: 20px;
+  }
+
+  .modal-card h2 {
+    font-size: 1.3rem;
+  }
+
+  .modal-card h4 {
+    font-size: 0.95rem;
+  }
+}
+
+/* ===========================
+   THÊM CSS CHO FORM (để chọn tech)
+   =========================== */
+.form-group {
+  margin-bottom: 18px;
+  background: #fff; /* Thêm nền trắng cho khu vực form */
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+
+.tech-select-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.tech-select-row select {
+  flex: 1;
+}
+
+/* ===========================
+   THÊM CSS CHO BẢNG (linh kiện)
+   =========================== */
+.replacement-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.92rem;
+}
+
+.replacement-table th,
+.replacement-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.replacement-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.replacement-table tr:last-child td {
+  border-bottom: none;
 }
