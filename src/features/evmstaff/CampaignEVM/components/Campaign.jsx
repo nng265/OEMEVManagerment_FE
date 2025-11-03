@@ -16,6 +16,8 @@ export const Campaign = ({
   onSearch,
   onFilterType,
   onFilterStatus,
+  onRefresh,
+  refreshing = false,
 }) => {
   // Local filter states mimic ServiceCenterInventory behavior
   const [query, setQuery] = useState("");
@@ -159,6 +161,8 @@ export const Campaign = ({
           pageSize={pagination.pageSize ?? 10}
           onPageChange={onPageChange}
           noDataMessage={error ? String(error) : "No campaigns found"}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
         />
       </div>
     </div>
@@ -180,6 +184,8 @@ Campaign.propTypes = {
   onSearch: PropTypes.func,
   onFilterType: PropTypes.func,
   onFilterStatus: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default Campaign;

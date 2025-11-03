@@ -12,6 +12,8 @@ export const PartsRequestList = ({
   error,
   pagination,
   onPageChange,
+  onRefresh,
+  refreshing = false,
 }) => {
   const totalRecords = pagination?.totalRecords ?? data.length;
   const currentPage = pagination?.pageNumber ?? 0;
@@ -49,6 +51,8 @@ export const PartsRequestList = ({
             sortable={true}
             hoverable={true}
             striped={true}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
           />
         )}
       </div>
@@ -67,6 +71,8 @@ PartsRequestList.propTypes = {
     totalRecords: PropTypes.number,
   }),
   onPageChange: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default PartsRequestList;

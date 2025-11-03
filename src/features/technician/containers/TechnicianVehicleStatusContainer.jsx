@@ -97,18 +97,26 @@ export const TechnicianVehicleStatusContainer = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await request(ApiEnum.GET_PART_CATEGORY);
+      const response = await request(ApiEnum.GET_PART_CATEGORIES);
       console.log("Category response:", response);
       // normalize possible shapes
-      const cats = Array.isArray(response)
+      const raw = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
         ? response.data
         : Array.isArray(response?.data)
         ? response.data
         : [];
-      setCategories(cats);
-      return cats;
+      // map to plain string names to match <option value>
+      const catNames = raw
+        .map((item) =>
+          typeof item === "string"
+            ? item
+            : item?.name || item?.categoryName || item?.category
+        )
+        .filter(Boolean);
+      setCategories(catNames);
+      return catNames;
     } catch (error) {
       console.error("Error fetching categories:", error);
       return [];
@@ -208,7 +216,7 @@ export const TechnicianVehicleStatusContainer = () => {
         setModels([]);
         return [];
       }
-      const response = await request(ApiEnum.GET_PART_MODEL, {
+      const response = await request(ApiEnum.GET_PART_MODELS, {
         category: categoryName,
       });
       console.log("Model response:", response);
@@ -266,16 +274,18 @@ export const TechnicianVehicleStatusContainer = () => {
         model: modelName,
       });
       console.log("Category-by-model response:", response);
-      const cats = Array.isArray(response)
-        ? response
-        : response?.success && Array.isArray(response.data)
-        ? response.data
-        : Array.isArray(response?.data)
-        ? response.data
-        : response
-        ? [response]
-        : [];
-      return cats
+
+      const resolveList = (value) => {
+        if (!value && value !== "") return [];
+        if (typeof value === "string") return [value];
+        if (Array.isArray(value)) return value;
+        if (typeof value === "object") return [value];
+        return [];
+      };
+
+      const raw = resolveList(response?.data ?? response);
+
+      return raw
         .map((item) =>
           typeof item === "string"
             ? item
@@ -287,6 +297,7 @@ export const TechnicianVehicleStatusContainer = () => {
       return [];
     }
   }, []);
+
 
   //  Hàm upload hình ảnh kèm mô tả tiếng Việt từng bước
   const uploadImages = async (claimId, files = []) => {
@@ -343,12 +354,20 @@ export const TechnicianVehicleStatusContainer = () => {
   };
 
   // Submit repair info
-  const submitRepair = async (claimId, payload = {}) => {
-    if (!claimId) throw new Error("Missing claimId");
-    const res = await request(ApiEnum.WARRANTY_REPAIR, {
-      params: { claimId },
+  const submitRepair = async (targetId, payload = {}, options = {}) => {
+    if (!targetId) throw new Error("Missing targetId");
+
+    const { isCampaign = false } = options || {};
+    const endpoint = isCampaign
+      ? ApiEnum.REPAIRED_CAMPAIGN_VEHICLE
+      : ApiEnum.WARRANTY_REPAIR;
+
+    const data = {
+      params: isCampaign ? { id: targetId } : { claimId: targetId },
       ...payload,
-    });
+    };
+
+    const res = await request(endpoint, data);
     const { pageNumber, pageSize } = paginationRef.current;
     await fetchWorkOrders(pageNumber, pageSize);
     return res;
@@ -373,6 +392,13 @@ export const TechnicianVehicleStatusContainer = () => {
     [fetchWorkOrders]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchWorkOrders(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchWorkOrders]);
+
   return (
     <TechnicianVehicleStatusView
       data={workOrders}
@@ -381,6 +407,8 @@ export const TechnicianVehicleStatusContainer = () => {
       error={error}
       pagination={pagination}
       onPageChange={handlePageChange}
+      onRefresh={handleRefresh}
+      refreshing={isLoading}
       selectedWorkOrder={selectedWorkOrder}
       showDetailModal={showDetailModal}
       onCloseDetailModal={handleCloseDetailModal}
@@ -391,7 +419,7 @@ export const TechnicianVehicleStatusContainer = () => {
       fetchCategories={fetchCategories} // Gọi API, lấy dữ liệu và cập nhật vào state
       fetchModels={fetchModels}
       fetchSerial={fetchSerial}
-  fetchCategoryByModel={fetchCategoryByModel}
+      fetchCategoryByModel={fetchCategoryByModel}
       // API helpers passed to modal so network calls live in container
       uploadImages={uploadImages}
       submitInspection={submitInspection}

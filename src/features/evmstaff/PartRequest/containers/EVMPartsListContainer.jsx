@@ -150,6 +150,13 @@ export const EVMPartsListContainer = () => {
     [fetchPartsRequests]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchPartsRequests(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchPartsRequests]);
+
   // === UI render ===
   return (
     <>
@@ -160,6 +167,8 @@ export const EVMPartsListContainer = () => {
         onView={(req) => setSelectedRequest(req)}
         pagination={pagination}
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       {/* === Pending Popup === */}

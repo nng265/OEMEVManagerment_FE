@@ -203,17 +203,13 @@ export const EVMStaffCampaignContainer = () => {
   const handleAddSubmit = async (newCampaign) => {
     try {
       const payload = {
-        type: newCampaign.type || "",
-        title: newCampaign.title || "",
-        // description: newCampaign.description || "",
-        partModel: newCampaign.target || "",
-
-        startDate: newCampaign.startDate
-          ? new Date(newCampaign.startDate).toISOString()
-          : "",
-        endDate: newCampaign.endDate
-          ? new Date(newCampaign.endDate).toISOString()
-          : "",
+        type: newCampaign?.type ?? "",
+        title: newCampaign?.title ?? "",
+        description: newCampaign?.description ?? "",
+        partModel: newCampaign?.partModel ?? null,
+        replacementPartModel: newCampaign?.replacementPartModel ?? null,
+        startDate: newCampaign?.startDate ?? "",
+        endDate: newCampaign?.endDate ?? "",
       };
 
       console.log(" Sending payload:", payload);
@@ -262,6 +258,13 @@ export const EVMStaffCampaignContainer = () => {
     [filtersActive, fetchCampaign]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchCampaign(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchCampaign]);
+
   // ===== RENDER =====
   return (
     <div style={{ marginTop: 40 }}>
@@ -277,6 +280,8 @@ export const EVMStaffCampaignContainer = () => {
         onSearch={handleSearch}
         onFilterType={handleTypeFilter}
         onFilterStatus={handleStatusFilter}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       <ViewCampaignModal

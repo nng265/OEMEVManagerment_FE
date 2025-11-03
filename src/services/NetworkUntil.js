@@ -1,8 +1,8 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
+const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+// const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -113,6 +113,10 @@ export const ApiEnum = {
   CAMPAIGNVEHICLE_STAFF_TECH: {
     path: "/CampaignVehicle/:id/assign-techs",
     method: "POST",
+  },
+  REPAIRED_CAMPAIGN_VEHICLE: {
+    path: "/CampaignVehicle/:id/repaired",
+    method: "PUT",
   },
   CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
   CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },

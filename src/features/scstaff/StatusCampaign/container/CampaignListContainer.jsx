@@ -100,6 +100,7 @@ const CampaignListContainer = () => {
       onRefresh={() =>
         fetchCampaignVehicles(pageNumber, pageSize, filterVin, filterStatus)
       }
+      refreshing={loading}
     />
   );
 };

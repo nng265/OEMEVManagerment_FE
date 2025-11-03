@@ -20,6 +20,8 @@ export const CarListView = ({
   onCloseWarrantyModal,
   pagination,
   onPageChange,
+  onRefresh,
+  refreshing = false,
 }) => {
   return (
     <div className="car-list-view">
@@ -54,6 +56,8 @@ export const CarListView = ({
             responsive
             hoverable
             striped
+            onRefresh={onRefresh}
+            refreshing={refreshing}
           />
         </ErrorBoundary>
       )}
@@ -97,4 +101,6 @@ CarListView.propTypes = {
     totalRecords: PropTypes.number,
   }),
   onPageChange: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };

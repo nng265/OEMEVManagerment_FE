@@ -99,6 +99,7 @@ export const WorkOrderDetailModal = ({
     const directSerials = [
       campaignInfo.serials,
       campaignInfo.serialNumbers,
+      campaignInfo.oldSerials,
       campaignInfo.oldSerialNumbers,
       campaignInfo.serialNumberOlds,
     ].find((candidate) => Array.isArray(candidate));
@@ -179,6 +180,132 @@ export const WorkOrderDetailModal = ({
     return [];
   });
 
+  // Prefill model/serial lists for WARRANTY claim parts returned by API (no extra API calls)
+  const warrantyPrefillRef = React.useRef(false);
+  const warrantyCategoryCacheRef = React.useRef({});
+
+  React.useEffect(() => {
+    if (!isWarrantyTarget) return;
+    if (warrantyPrefillRef.current) return; // run once
+
+    // Only run when we have API-returned parts that may need simple filling
+    const needsPrefill = parts.some(
+      (p) =>
+        p.claimPartId &&
+        ( !(Array.isArray(p.availableModels) && p.availableModels.length)
+          || !(Array.isArray(p.availableSerials) && p.availableSerials.length) )
+    );
+    if (!needsPrefill) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const updated = await Promise.all(
+          parts.map(async (p) => {
+            if (!p.claimPartId) return p; // only prefill for API-returned claim parts
+
+            let newP = { ...p };
+
+            // Simple local fill only: include current model/serial as available options
+            if (!Array.isArray(newP.availableModels) || newP.availableModels.length === 0) {
+              newP.availableModels = newP.model ? [newP.model] : [];
+            }
+            if (!Array.isArray(newP.availableSerials) || newP.availableSerials.length === 0) {
+              newP.availableSerials = newP.serial ? [newP.serial] : [];
+            }
+
+            return newP;
+          })
+        );
+
+        if (!cancelled) {
+          warrantyPrefillRef.current = true;
+          setParts(updated);
+        }
+      } catch (e) {
+        console.warn("Warranty prefill failed", e);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWarrantyTarget, parts.length]);
+
+  React.useEffect(() => {
+    if (!isWarrantyTarget) return;
+    if (typeof fetchCategoryByModel !== "function") return;
+
+    const missingCategoryParts = parts.filter(
+      (part) => part.claimPartId && part.model && !part.category
+    );
+
+    if (missingCategoryParts.length === 0) return;
+
+    let isCancelled = false;
+
+    const modelsToFetch = [
+      ...new Set(
+        missingCategoryParts
+          .map((part) => part.model)
+          .filter(
+            (model) =>
+              model &&
+              !Object.prototype.hasOwnProperty.call(
+                warrantyCategoryCacheRef.current,
+                model
+              )
+          )
+      ),
+    ];
+
+    const resolveCategoryValue = (categoryData) =>
+      Array.isArray(categoryData)
+        ? categoryData.find(Boolean)
+        : typeof categoryData === "string"
+        ? categoryData
+        : categoryData?.name || categoryData?.categoryName || categoryData?.category;
+
+    const assignCategories = async () => {
+      if (modelsToFetch.length > 0) {
+        await Promise.all(
+          modelsToFetch.map(async (model) => {
+            try {
+              const fetched = await fetchCategoryByModel(model);
+              warrantyCategoryCacheRef.current[model] =
+                resolveCategoryValue(fetched) || "";
+            } catch (err) {
+              console.error("Error fetching category for model:", model, err);
+              warrantyCategoryCacheRef.current[model] = "";
+            }
+          })
+        );
+      }
+
+      if (isCancelled) return;
+
+      setParts((prev) => {
+        let mutated = false;
+        const next = prev.map((part) => {
+          if (!part.claimPartId || part.category || !part.model) return part;
+          const cachedCategory = warrantyCategoryCacheRef.current[part.model];
+          if (!cachedCategory) return part;
+          mutated = true;
+          return { ...part, category: cachedCategory };
+        });
+        return mutated ? next : prev;
+      });
+    };
+
+    assignCategories();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [parts, fetchCategoryByModel, isWarrantyTarget]);
+
   React.useEffect(() => {
     if (!isCampaignTarget || typeof fetchCategoryByModel !== "function") return;
     const modelForCategory = campaignModelName || (parts[0]?.model ?? "");
@@ -247,13 +374,26 @@ export const WorkOrderDetailModal = ({
 
   // Xử lý submit kết quả kiểm tra (inspection)
   const handleSubmitInspection = async () => {
+    const hasExistingAttachments =
+      Array.isArray(warrantyInfo?.attachments) &&
+      warrantyInfo.attachments.length > 0;
+    const hasNewAttachments = attachments.length > 0;
+
+    if (!inspectionDesc.trim()) {
+      alert("Vui lòng nhập mô tả kiểm tra!");
+      return;
+    }
+
+    if (!hasExistingAttachments && !hasNewAttachments) {
+      alert("Vui lòng gửi ít nhất một hình ảnh!");
+      return;
+    }
+
     if (
-      !inspectionDesc.trim() ||
-      attachments.length === 0 ||
       parts.length === 0 ||
       parts.some((p) => !p.action || !p.model || !p.serial)
     ) {
-      alert("Vui lòng nhập mô tả kiểm tra và gửi ít nhất một hình ảnh!");
+      alert("Vui lòng chọn ít nhất một linh kiện hợp lệ!");
       return;
     }
 
@@ -304,13 +444,28 @@ export const WorkOrderDetailModal = ({
   // Xử lý submit cho repair
   const handleSubmitRepair = async () => {
     try {
-      const invalid = parts.some((p) =>
-        isCampaignTarget
-          ? !p.serial || !p.newSerial
-          : !p.claimPartId || !p.newSerial
-      );
-      if (invalid) {
-        alert("Vui lòng nhập đầy đủ thông tin cho tất cả các linh kiện!");
+      const replaceParts = parts.filter((part) => {
+        const action = (part.action || (isCampaignTarget ? "Replace" : ""))
+          .toLowerCase()
+          .trim();
+        return action === "replace";
+      });
+
+      if (replaceParts.length === 0) {
+        alert("Không có linh kiện Replace để lưu.");
+        return;
+      }
+
+      const missingRequired = replaceParts.some((part) => {
+        if (!part.newSerial) return true;
+        if (isCampaignTarget) {
+          return !part.serial;
+        }
+        return !part.claimPartId;
+      });
+
+      if (missingRequired) {
+        alert("Vui lòng nhập đầy đủ thông tin cho các linh kiện Replace.");
         return;
       }
 
@@ -318,17 +473,13 @@ export const WorkOrderDetailModal = ({
 
       const payload = isCampaignTarget
         ? {
-            parts: parts.map((p) => ({
-              campaignPartId: p.campaignPartId,
-              action: p.action || "Replace",
-              category: p.category,
-              model: p.model,
-              serialNumberOld: p.serial,
-              serialNumberNew: p.newSerial,
+            replacements: replaceParts.map((p) => ({
+              oldSerial: p.serial,
+              newSerial: p.newSerial,
             })),
           }
         : {
-            parts: parts.map((p) => ({
+            parts: replaceParts.map((p) => ({
               claimPartId: p.claimPartId,
               serialNumber: p.newSerial,
             })),
@@ -337,7 +488,9 @@ export const WorkOrderDetailModal = ({
       console.log("Payload gửi lên API:", payload);
 
       if (typeof submitRepair === "function") {
-        const res = await submitRepair(submissionTargetId, payload);
+        const res = await submitRepair(submissionTargetId, payload, {
+          isCampaign: isCampaignTarget,
+        });
         console.log("Repair submitted:", res);
         alert("Đã lưu thông tin sửa chữa thành công!");
       } else {
@@ -645,8 +798,9 @@ export const WorkOrderDetailModal = ({
           <div className="parts-table">
             <div className="parts-row parts-row-header">
               <div className="col action">Action</div>
-              <div className="col model">OldModel</div>
-              <div className="col serial">NewModel</div>
+              <div className="col category">Category</div>
+              <div className="col model">Model</div>
+              <div className="col serial">Serial</div>
               {showNewSerialColumn && (
                 <div className="col new-serial">New Serial</div>
               )}
@@ -659,8 +813,9 @@ export const WorkOrderDetailModal = ({
                 {isCampaignTarget ? (
                   <>
                     <div className="col action">{p.action || "Replace"}</div>
-                    <div className="col model">{p.oldSerial || "-"}</div>
-                    <div className="col serial">{p.model || "-"}</div>
+                    <div className="col category">{p.category || "-"}</div>
+                    <div className="col model">{p.model || "-"}</div>
+                    <div className="col serial">{p.serial || "-"}</div>
                     {showNewSerialColumn && (
                       <div className="col new-serial">
                         <input
@@ -736,7 +891,9 @@ export const WorkOrderDetailModal = ({
                           const newModel = e.target.value;
                           updatePart(idx, "model", newModel);
                           updatePart(idx, "serial", "");
+                          // Prefer top-level VIN; fallback to warranty claim VIN
                           const vin =
+                            workOrderData?.vin ||
                             warrantyInfo?.vin ||
                             workOrderData?.warrantyClaim?.vin ||
                             "";
@@ -759,7 +916,7 @@ export const WorkOrderDetailModal = ({
                             }
                           }
                         }}
-                        disabled={!p.category}
+                        disabled={false}
                       >
                         {!p.model && <option value="">Select Model</option>}
                         {(p.availableModels || []).map((m, i) => (
@@ -787,6 +944,23 @@ export const WorkOrderDetailModal = ({
                       </select>
                     </div>
 
+                    {showNewSerialColumn && (
+                      <div className="col new-serial">
+                        {p.action === "Replace" ? (
+                          <input
+                            type="text"
+                            placeholder="Enter new serial"
+                            value={p.newSerial || ""}
+                            onChange={(e) =>
+                              updatePart(idx, "newSerial", e.target.value)
+                            }
+                          />
+                        ) : (
+                          <div className="empty-new-serial">-</div>
+                        )}
+                      </div>
+                    )}
+
                     <div className="col actions-col">
                       <Button
                         size="small"
@@ -805,16 +979,22 @@ export const WorkOrderDetailModal = ({
                     <div className="col model">{p.model || "-"}</div>
                     <div className="col serial">{p.serial || "-"}</div>
 
-                    <div className="col new-serial">
-                      <input
-                        type="text"
-                        placeholder="Enter new serial"
-                        value={p.newSerial || ""}
-                        onChange={(e) =>
-                          updatePart(idx, "newSerial", e.target.value)
-                        }
-                      />
-                    </div>
+                    {showNewSerialColumn && (
+                      <div className="col new-serial">
+                        {p.action === "Replace" ? (
+                          <input
+                            type="text"
+                            placeholder="Enter new serial"
+                            value={p.newSerial || ""}
+                            onChange={(e) =>
+                              updatePart(idx, "newSerial", e.target.value)
+                            }
+                          />
+                        ) : (
+                          <div className="empty-new-serial">-</div>
+                        )}
+                      </div>
+                    )}
 
                     <div className="col actions-col"></div>
                   </>
@@ -873,18 +1053,19 @@ export const WorkOrderDetailModal = ({
               variant="primary"
               onClick={() => {
                 // Kiểm tra xem có phần tử nào thiếu newSerial không
-                const invalid = parts.some((p) => !p.newSerial);
-                console.log("Checking parts for newSerial:", parts, {
-                  invalid,
-                });
 
-                if (invalid) {
-                  console.log("Found invalid parts, alerting user.");
-                  alert(
-                    "Vui lòng nhập đầy đủ thông tin cho tất cả các linh kiện!"
-                  );
-                  return;
-                }
+                // const invalid = parts.some((p) => !p.newSerial);
+                // console.log("Checking parts for newSerial:", parts, {
+                //   invalid,
+                // });
+
+                // if (invalid) {
+                //   console.log("Found invalid parts, alerting user.");
+                //   alert(
+                //     "Vui lòng nhập đầy đủ thông tin cho tất cả các linh kiện!"
+                //   );
+                //   return;
+                // }
 
                 // Nếu tất cả hợp lệ thì gọi hàm xử lý
                 handleSubmitRepair();

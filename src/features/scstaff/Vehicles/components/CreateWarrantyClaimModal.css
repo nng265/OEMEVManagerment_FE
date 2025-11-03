@@ -66,10 +66,13 @@
   font-size: 1.1rem;
 }
 
+/* Technician row layout */
 .technician-row {
   display: flex;
+  align-items: center; /* 👈 căn giữa dropdown và nút Remove */
+  justify-content: space-between;
   gap: 16px;
-  align-items: center;
+  flex-wrap: nowrap; /* Giữ select và nút Remove trên cùng một hàng */
   margin-bottom: 16px;
   padding: 12px;
   background-color: white;
@@ -77,15 +80,22 @@
   border: 1px solid #edf2f7;
 }
 
+/* Technician select dropdown */
 .tech-select,
 .form-select {
   flex: 1;
   padding: 8px 12px;
+  height: 44px; /* 👈 cố định chiều cao để align với nút */
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   font-size: 1rem;
-  transition: border-color 0.2s ease;
   background-color: white;
+  box-sizing: border-box; /* đảm bảo tổng chiều cao = 44px kể cả border/padding */
+  line-height: 1.2; /* tránh text bị lệch theo hệ số line-height của browser */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; /* đồng nhất hiển thị giữa các trình duyệt */
+  transition: border-color 0.2s ease;
 }
 
 .tech-select:focus,
@@ -95,6 +105,20 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
+/* Remove button */
+.technician-row .btn {
+  height: 44px; /* 👈 cùng chiều cao với select */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  font-size: 1rem;
+  min-width: 100px;
+  box-sizing: border-box; /* đồng nhất tính toán kích thước */
+  line-height: 1; /* reset line-height mặc định của framework (vd: Bootstrap) */
+}
+
+/* Loading & error states */
 .select-loading,
 .select-error {
   flex: 1;
@@ -112,6 +136,7 @@
   font-weight: 500;
 }
 
+/* Utility spacing */
 .mt-2 {
   margin-top: 0.5rem;
 }

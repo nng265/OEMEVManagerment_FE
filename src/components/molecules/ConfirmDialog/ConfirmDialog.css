@@ -47,7 +47,7 @@
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .confirm-dialog-btn:disabled {
@@ -61,7 +61,6 @@
 }
 
 .confirm-dialog-btn-primary:not(:disabled):hover {
-  transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
 }
 
@@ -71,7 +70,6 @@
 }
 
 .confirm-dialog-btn-secondary:not(:disabled):hover {
-  transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(107, 114, 128, 0.2);
 }
 

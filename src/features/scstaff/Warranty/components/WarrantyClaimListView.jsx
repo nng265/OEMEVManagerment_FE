@@ -65,6 +65,8 @@ export const WarrantyClaimListView = ({
   // Assigned technicians (for under inspection/repair)
   assignedTechnicians,
   loadingAssignedTechs,
+  onRefresh,
+  refreshing = false,
 }) => {
   return (
     <ErrorBoundary>
@@ -130,6 +132,8 @@ export const WarrantyClaimListView = ({
             sortable={true}
             hoverable={true}
             striped={true}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
           />
         )}
 
@@ -276,6 +280,8 @@ WarrantyClaimListView.propTypes = {
   loadingTechnicians: PropTypes.bool,
   assignedTechnicians: PropTypes.array,
   loadingAssignedTechs: PropTypes.bool,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default WarrantyClaimListView;
