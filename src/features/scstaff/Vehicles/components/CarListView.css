@@ -105,3 +105,10 @@
     text-align: center;
     white-space: nowrap;
 }
+
+.table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    text-align: center;
+}

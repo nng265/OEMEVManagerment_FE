@@ -14,9 +14,11 @@
 
 .navbar.sidebar-open {
   left: var(--sidebar-open-width);
+  width: calc(100% - var(--sidebar-open-width));
 }
 .navbar.sidebar-collapsed {
   left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
 }
 
 .navbar-container {

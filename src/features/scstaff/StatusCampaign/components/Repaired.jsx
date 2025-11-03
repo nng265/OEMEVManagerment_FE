@@ -7,7 +7,7 @@ import "../components/UI.css";
 
 const Repaired = ({ open, onClose, data, onSuccess }) => {
   const [loading, setLoading] = useState(false);
-
+  const pendingActionRef = useRef(null);
   // === Dùng các hàm helper giống CampaignViewModal ===
   const displayValue = (value) => {
     if (value === 0 || value === null || value === undefined || value === "") {

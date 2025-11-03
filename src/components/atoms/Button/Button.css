@@ -5,23 +5,24 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem; /* Tăng padding 1 chút */
-  font-size: 0.95rem; /* Giảm font 1 chút */
-  font-weight: 600; /* Tăng font-weight */
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   line-height: 1.5;
   text-decoration: none;
   vertical-align: middle;
   cursor: pointer;
   user-select: none;
   border: 1px solid transparent;
-  border-radius: var(--border-radius-sm); /* Dùng biến */
-  transition: all 0.2s ease-out; /* Dùng all 0.2s */
+  border-radius: var(--border-radius-sm);
+  box-sizing: border-box;
+  transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
+
 
 .btn-full-width {
   width: 100%;

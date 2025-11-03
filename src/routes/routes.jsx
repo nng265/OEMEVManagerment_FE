@@ -14,7 +14,7 @@ import  Statuscampaign  from "../features/scstaff/StatusCampaign/container/Campa
 
 
 
-import { TechnicianVehicleStatusContainer } from "../features/technician/containers";
+import { TechnicianVehicleStatusContainer } from "../features/technician/containers/TechnicianVehicleStatusContainer.jsx";
 
 import { PrivateRoute } from "./PrivateRoutes";
 import { EVMStaffWarrantyListContainer } from "../features/evmstaff/Warranty/containers/EVMStaffWarrantyListContainer.jsx";

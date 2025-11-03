@@ -36,11 +36,11 @@ export const TechnicianVehicleStatusContainer = () => {
       render: (_, row) => row.vin || "-", // Access warrantyClaim.vin
     },
     {
-      key: "failureDesc", // Key for sorting (using nested value)
-      label: "Issue", // Changed label to match image
+      key: "target", // Key for sorting (using nested value)
+      label: "Target", // Changed label to match image
       sortable: true,
       // Render function to access nested data
-      render: (_, row) => row.warrantyClaim?.failureDesc || "-", // Access warrantyClaim.failureDesc
+      render: (_, row) => row.target || "-", // Access warrantyClaim.failureDesc
     },
     {
       key: "type", // Correct top-level key for 'Task'
@@ -97,7 +97,7 @@ export const TechnicianVehicleStatusContainer = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await request(ApiEnum.GET_PART_CATEGORIES);
+      const response = await request(ApiEnum.GET_PART_CATEGORY);
       console.log("Category response:", response);
       // normalize possible shapes
       const cats = Array.isArray(response)
@@ -108,8 +108,10 @@ export const TechnicianVehicleStatusContainer = () => {
         ? response.data
         : [];
       setCategories(cats);
+      return cats;
     } catch (error) {
       console.error("Error fetching categories:", error);
+      return [];
     }
   }, []);
 
@@ -206,7 +208,7 @@ export const TechnicianVehicleStatusContainer = () => {
         setModels([]);
         return [];
       }
-      const response = await request(ApiEnum.GET_PART_MODELS, {
+      const response = await request(ApiEnum.GET_PART_MODEL, {
         category: categoryName,
       });
       console.log("Model response:", response);
@@ -256,6 +258,35 @@ export const TechnicianVehicleStatusContainer = () => {
       return [];
     }
   };
+
+  const fetchCategoryByModel = useCallback(async (modelName) => {
+    try {
+      if (!modelName) return [];
+      const response = await request(ApiEnum.GET_PART_CATEGORY_BY_MODEL, {
+        model: modelName,
+      });
+      console.log("Category-by-model response:", response);
+      const cats = Array.isArray(response)
+        ? response
+        : response?.success && Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response?.data)
+        ? response.data
+        : response
+        ? [response]
+        : [];
+      return cats
+        .map((item) =>
+          typeof item === "string"
+            ? item
+            : item?.name || item?.categoryName || item?.category
+        )
+        .filter(Boolean);
+    } catch (error) {
+      console.error("Error fetching category by model:", error);
+      return [];
+    }
+  }, []);
 
   //  Hàm upload hình ảnh kèm mô tả tiếng Việt từng bước
   const uploadImages = async (claimId, files = []) => {
@@ -360,6 +391,7 @@ export const TechnicianVehicleStatusContainer = () => {
       fetchCategories={fetchCategories} // Gọi API, lấy dữ liệu và cập nhật vào state
       fetchModels={fetchModels}
       fetchSerial={fetchSerial}
+  fetchCategoryByModel={fetchCategoryByModel}
       // API helpers passed to modal so network calls live in container
       uploadImages={uploadImages}
       submitInspection={submitInspection}
