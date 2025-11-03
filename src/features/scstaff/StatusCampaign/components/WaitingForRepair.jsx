@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // import React, { useEffect, useState } from "react";
 // import PropTypes from "prop-types";
 // import { Button } from "../../../../components/atoms/Button/Button";
@@ -196,7 +194,6 @@
 
 // export default WaitingForRepair;
 
->>>>>>> origin/popupAddCampaign
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";

@@ -233,11 +233,7 @@ export const WarrantyClaimListContainer = () => {
     try {
       const response = await request(ApiEnum.GET_ASSIGNED_TECHNICIANS, {
         target: "Warranty",
-<<<<<<< HEAD
-        targetId: claimId,
-=======
         targetId: claimId ,
->>>>>>> origin/popupAddCampaign
       });
 
       if (response.success && Array.isArray(response.data)) {

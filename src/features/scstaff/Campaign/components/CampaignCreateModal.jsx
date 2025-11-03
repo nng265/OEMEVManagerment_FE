@@ -192,7 +192,7 @@ export const CampaignCreateModal = ({
           <div className="campaign-info-block">
             <span className="info-block-label">Target Part</span>
             <span className="info-block-value">
-              {initialCampaign.partModel}
+              {initialCampaign?.partModel}
             </span>
           </div>
         </div>
@@ -201,14 +201,14 @@ export const CampaignCreateModal = ({
           <div className="campaign-info-block">
             <span className="info-block-label">Start Date</span>
             <span className="info-block-value">
-              {formatDate(initialCampaign.startDate)}
+              {formatDate(initialCampaign?.startDate)}
             </span>
           </div>
           {/* Thẻ Ngày kết thúc (nửa chiều rộng) */}
           <div className="campaign-info-block">
             <span className="info-block-label">End Date</span>
             <span className="info-block-value">
-              {formatDate(initialCampaign.endDate)}
+              {formatDate(initialCampaign?.endDate)}
             </span>
           </div>
         </div>
