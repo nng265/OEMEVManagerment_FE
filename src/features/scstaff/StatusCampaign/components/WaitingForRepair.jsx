@@ -207,9 +207,9 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
             </span>
           </div>
           <div className="campaign-info-block">
-            <span className="info-block-label">Parts</span>
+            <span className="info-block-label">Part</span>
             <span className="info-block-value">
-              {displayValue(campaign.partReplace)}
+              {displayValue(campaign.partModel)}
             </span>
           </div>
         </div>

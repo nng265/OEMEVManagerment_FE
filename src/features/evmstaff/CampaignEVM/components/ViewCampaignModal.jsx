@@ -14,13 +14,6 @@ export const ViewCampaignModal = ({
   const [showConfirm, setShowConfirm] = useState(false);
   if (!campaign) return null;
 
-  const stats = campaign._raw?.stats || {
-    affected: 0,
-    scheduled: 0,
-    inProgress: 0,
-    completed: 0,
-  };
-
   const campaignId =
     campaign._raw?.campaignId ||
     campaign._raw?.id ||
@@ -104,25 +97,25 @@ export const ViewCampaignModal = ({
             <div className="campaign-info-block stat-block">
               <span className="info-block-label">Affected</span>
               <span className="info-block-value large-stat">
-                {stats.affected}
+                {campaign.totalAffectedVehicles || 0}
               </span>
             </div>
             <div className="campaign-info-block stat-block">
               <span className="info-block-label">Scheduled</span>
               <span className="info-block-value large-stat">
-                {stats.scheduled}
+                {campaign.pendingVehicles || 0}
               </span>
             </div>
             <div className="campaign-info-block stat-block">
               <span className="info-block-label">In Progress</span>
               <span className="info-block-value large-stat">
-                {stats.inProgress}
+                {campaign.inProgressVehicles || 0}
               </span>
             </div>
             <div className="campaign-info-block stat-block">
               <span className="info-block-label">Completed</span>
               <span className="info-block-value large-stat">
-                {stats.completed}
+                {campaign.completedVehicles || 0}
               </span>
             </div>
           </div>

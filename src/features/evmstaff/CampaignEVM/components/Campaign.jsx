@@ -96,6 +96,11 @@ export const Campaign = ({
     endDate: c.endDate,
     period: c.period ?? `${c.startDate ?? ""} to ${c.endDate ?? ""}`,
     status: c.status || "—",
+
+    totalAffectedVehicles: c.totalAffectedVehicles || 0,
+    pendingVehicles: c.pendingVehicles || 0,
+    inProgressVehicles: c.inProgressVehicles || 0,
+    completedVehicles: c.completedVehicles || 0,
   }));
 
   return (

@@ -41,7 +41,7 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
     }
     setLoading(true);
     try {
-      await request(ApiEnum.CAMPAIGNVEHICLE_STAFF_REPAIRED, { params: { id } });
+      await request(ApiEnum.CAMPAIGNVEHICLE_STAFF_DONE, { params: { id } });
       onSuccess?.();
       onClose();
     } catch (err) {

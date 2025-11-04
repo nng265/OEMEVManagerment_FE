@@ -96,6 +96,10 @@ export const EVMStaffCampaignContainer = () => {
               : undefined),
           status: it.status ?? "",
           _raw: it,
+          totalAffectedVehicles: it.totalAffectedVehicles || 0,
+          pendingVehicles: it.pendingVehicles || 0,
+          inProgressVehicles: it.inProgressVehicles || 0,
+          completedVehicles: it.completedVehicles || 0,
         }));
 
         setCampaigns(normalized);
@@ -194,6 +198,7 @@ export const EVMStaffCampaignContainer = () => {
 
   // ===== ADD + VIEW =====
   const handleViewCampaign = (campaign) => {
+    console.log(" Viewing campaign:", campaign);
     setSelectedCampaign(campaign);
     setShowModal(true);
   };
