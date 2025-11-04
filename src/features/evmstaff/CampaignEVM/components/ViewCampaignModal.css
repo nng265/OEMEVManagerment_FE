@@ -1,114 +1,76 @@
 .campaign-modal {
-    font-family: sans-serif;
-    padding: 10px 5px;
+    padding: 24px 30px;
+    background-color: #f7f8fa;
 }
 
-.campaign-header {
+.campaign-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+    margin-top: 24px;
     margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.campaign-header .label {
-    font-weight: 700;
-    color: #1f2937;
-
+.campaign-section-title:first-of-type {
+    margin-top: 0;
 }
 
-.campaign-header .value {
-    font-weight: 700;
-    color: #1f2937;
-}
-
-.campaign-info {
-    /* Hiển thị 3 cột đều nhau, có responsive bên dưới */
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-    font-size: 14px;
-}
-
-.campaign-info-item {
-    /* Label trên, value dưới, căn giữa */
+.campaign-info-row {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px 8px;
-    background: #f9fafb;
-    /* gray-50 */
-    border: 1px solid #e5e7eb;
-    /* gray-300 */
-    border-radius: 8px;
-    min-height: 72px;
-}
-
-.campaign-info-item .label {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: #1f2937;
-}
-
-.campaign-info-item .value {
-    display: block;
-    color: #1f2937;
-}
-
-/* Responsive: xuống 2 cột rồi 1 cột khi màn nhỏ */
-@media (max-width: 768px) {
-    .campaign-info {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .campaign-info {
-        grid-template-columns: 1fr;
-    }
-}
-
-.campaign-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    /* 2 mục trên, 2 mục dưới, đều nhau */
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
-.campaign-summary-card {
-    border: 1px solid #e5e7eb;
+.campaign-info-block {
+    flex: 1;
+    min-width: 200px;
+    background: #ffffff;
     border-radius: 8px;
-    padding: 14px 12px;
+    padding: 16px 20px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.campaign-info-block.full-width {
+    flex-basis: 100%;
+}
+
+.info-block-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.info-block-value {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: #222;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.campaign-info-block.stat-block {
     text-align: center;
-    background: #f9fafb;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 110px;
 }
 
-.campaign-summary-card .label {
+.info-block-value.large-stat {
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 6px;
-    color: #1f2937;
+    color: #1565c0;
+    margin-top: 8px;
 }
 
-.campaign-summary-card .value {
-    margin-bottom: 6px;
-    color: #1f2937;
-}
-
-/* --- Footer --- */
-.footer {
+.campaign-footer {
     display: flex;
     justify-content: space-between;
-    /* cancel trái - close phải */
-    align-items: center;
-    margin-top: 20px;
-}
-
-.footer-left button,
-.footer-right button {
-    min-width: 130px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e0e0e0;
 }

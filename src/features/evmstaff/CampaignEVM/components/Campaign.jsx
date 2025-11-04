@@ -84,12 +84,7 @@ export const Campaign = ({
 
   const rows = data.map((c, i) => ({
     // Preserve identifiers to support actions that need IDs
-    id:
-      c?._raw?.campaignId ||
-      c?._raw?.id ||
-      c?.campaignId ||
-      c?.id ||
-      i,
+    id: c?._raw?.campaignId || c?._raw?.id || c?.campaignId || c?.id || i,
     _raw: c?._raw || c,
 
     // Display fields
@@ -97,14 +92,16 @@ export const Campaign = ({
     target: c.target || "—",
     title: c.title || "—",
     type: c.type || "—",
+    startDate: c.startDate,
+    endDate: c.endDate,
     period: c.period ?? `${c.startDate ?? ""} to ${c.endDate ?? ""}`,
     status: c.status || "—",
   }));
 
   return (
-    <div className="campaign-table">
-      <h1>Campaign Management</h1>
-      <div className="campaign-table__header">
+    <div className="campaign-container">
+      <div className="campaign-header">
+        <h1>Campaign Management</h1>
         <Button variant="success" onClick={onAdd}>
           + Add Campaign
         </Button>

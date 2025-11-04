@@ -62,8 +62,8 @@ export const ManufacturerInventory = ({
   };
 
   return (
-    <div style={{ height: 100, marginLeft: 10 }}>
-      <h1 style={{ marginBottom: 30, marginTop: 30 }}>Manufacturer Inventory</h1>
+    <div style={{ padding: 10 }}>
+      <h1 style={{ marginBottom: 16 }}>Manufacturer Inventory</h1>
       {/* <p style={{ marginBottom: 12, color: "#555" }}>
         View parts available at the Manufacturer's inventory.
       </p> */}

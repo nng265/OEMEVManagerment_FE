@@ -44,7 +44,14 @@ const CampaignList = ({
       key: "action",
       label: "Actions",
       render: (_v, row) => (
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            justifyContent: "center", // Căn giữa ngang
+            alignItems: "center", // Căn giữa dọc
+          }}
+        >
           <Button size="small" variant="light" onClick={() => onView?.(row)}>
             <img
               src="../../../../../public/eye.png"

@@ -25,11 +25,11 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
   const [loadingCats, setLoadingCats] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
 
-  // ✅ Thêm state cho ConfirmDialog
+  // Thêm state cho ConfirmDialog
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingPayload, setPendingPayload] = useState(null);
 
-  // 🔄 Reset form mỗi khi mở lại modal
+  //  Reset form mỗi khi mở lại modal
   useEffect(() => {
     if (isOpen) {
       setFormData({
@@ -45,7 +45,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     }
   }, [isOpen]);
 
-  // 🧭 Fetch categories
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       setLoadingCats(true);
@@ -68,7 +68,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     if (isOpen) fetchCategories();
   }, [isOpen]);
 
-  // 🧭 Fetch models theo category
+  // Fetch models theo category
   const fetchModelsByCategory = async (category) => {
     if (!category) {
       setModels([]);
@@ -151,7 +151,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       !formData.title ||
       !formData.type ||
       !formData.targetCategory ||
-      !formData.oldTarget || // 👈 thêm dòng này
+      !formData.oldTarget || //  thêm dòng này
       !formData.target ||
       !formData.startDate ||
       !formData.endDate ||
@@ -181,7 +181,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     setShowConfirm(true);
   };
 
-  // ✅ Xử lý ConfirmDialog
+  //  Xử lý ConfirmDialog
   const handleConfirm = () => {
     if (pendingPayload) {
       onSubmit(pendingPayload); // để container xử lý toast

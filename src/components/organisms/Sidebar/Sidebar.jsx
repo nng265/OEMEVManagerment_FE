@@ -125,6 +125,25 @@ const IconCampaignVehicle = () => (
   </svg>
 );
 
+const IconTechTask = () => (
+  <svg
+    width="26"
+    height="26"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* Wrench body */}
+    <path d="M14.7 6.3a4 4 0 0 0-5.6 5.6l-4.6 4.6a1.5 1.5 0 0 0 2.1 2.1l4.6-4.6a4 4 0 0 0 5.6-5.6l-1.4 1.4a2 2 0 0 1-2.8 0l-.7-.7a2 2 0 0 1 0-2.8l1.4-1.4z" />
+    {/* Gear/task indicator */}
+    <circle cx="19" cy="19" r="1.8" />
+    <path d="M19 15.8v1.5M19 21.5V23M15.8 19H14.3M23 19h-1.5" />
+  </svg>
+);
+
 export const Sidebar = ({
   role,
   selectedScreen,
@@ -153,7 +172,7 @@ export const Sidebar = ({
         return <IconInventory />;
       case "technician_vehicle_status": // Technician Task View
         // You might want a specific icon for tasks, using default for now
-        return <IconDefault />; // Or create an IconTask
+        return <IconTechTask />;
       // Add cases for ADMIN roles if defined
       case "staff_approval":
       case "technician_vehicle_status_admin": // Example admin view

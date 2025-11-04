@@ -21,10 +21,22 @@ export const roleScreens = {
   SC_STAFF: [
     { id: "staff_vehicle", label: "Vehicle", component: "CarList" },
     { id: "staff_warranty", label: "Warranty", component: "WarrantyList" },
-    { id: "staff_parts_request", label: "Parts Request", component: "PartsRequest" },
-    { id: "service_center_inventory", label: "Inventory", component: "ServiceCenterInventory" },
-    { id: "staff_campaign", label: "Campain", component: "Campaign"},
-    { id: "status_campaign", label: "CampaignVehicle", component: "StatusCampaign"}
+    {
+      id: "staff_parts_request",
+      label: "Parts Request",
+      component: "PartsRequest",
+    },
+    {
+      id: "service_center_inventory",
+      label: "Inventory",
+      component: "ServiceCenterInventory",
+    },
+    { id: "staff_campaign", label: "Campaign", component: "Campaign" },
+    {
+      id: "status_campaign",
+      label: "CampaignVehicle",
+      component: "StatusCampaign",
+    },
   ],
   SC_TECH: [
     {

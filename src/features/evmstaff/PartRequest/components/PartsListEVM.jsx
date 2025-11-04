@@ -85,10 +85,10 @@ export default function PartsListEVM({
           onClick={() => onView && onView(row.raw)}
         >
           <img
-              src="../../../../../public/eye.png"
-              className="eye-svg"
-              style={{ width: "22px" }}
-            />
+            src="../../../../../public/eye.png"
+            className="eye-svg"
+            style={{ width: "22px" }}
+          />
         </Button>
       ),
     },
@@ -123,7 +123,9 @@ export default function PartsListEVM({
 
   return (
     <div style={{ padding: 8 }}>
-      <h1 style={{ marginBottom: 30, marginTop: 30 }}>Parts Requests from Service Centers</h1>
+      <h1 style={{ marginBottom: 30, marginTop: 30 }}>
+        Parts Requests from Service Centers
+      </h1>
       <div style={{ position: "relative" }}>
         {loading && (
           <div className="data-table-loading">

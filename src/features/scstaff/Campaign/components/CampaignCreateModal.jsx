@@ -300,10 +300,14 @@ export const CampaignCreateModal = ({
         )}
 
         <div className="form-actions">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button type="submit">Create Campaign</Button>
+          <div className="left-actions">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+          </div>
+          <div className="right-actions">
+            <Button type="submit">Create Campaign</Button>
+          </div>
         </div>
       </form>
     </Modal>

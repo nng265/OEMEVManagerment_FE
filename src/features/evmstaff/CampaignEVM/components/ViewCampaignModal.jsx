@@ -29,12 +29,27 @@ export const ViewCampaignModal = ({
 
   const handleCloseCampaign = () => {
     if (!campaignId) {
-      console.warn(" Missing campaign id", campaign);
+      console.warn("Missing campaign id", campaign);
       return;
     }
     onCloseCampaign?.(campaignId);
     setShowConfirm(false);
     onClose();
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "—";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (error) {
+      console.error("Error formatting date:", dateString, error);
+      return dateString.substring(0, 10);
+    }
   };
 
   return (
@@ -43,62 +58,84 @@ export const ViewCampaignModal = ({
         isOpen={isOpen}
         onClose={onClose}
         title={campaign.title || "Campaign Detail"}
-        size="lg"
+        size="xl"
         showFooter={false}
       >
         <div className="campaign-modal">
-          {/* Header */}
-          <div className="campaign-header">
-            <span className="label">Description: </span>
-            <span className="value">{campaign.description}</span>
-          </div>
-
-          {/* Info */}
-          <div className="campaign-info">
-            <div className="campaign-info-item">
-              <span className="label">Campaign Type </span>
-              <span className="value">{campaign.type}</span>
-            </div>
-            <div className="campaign-info-item">
-              <span className="label">Target </span>
-              <span className="value">{campaign.target}</span>
-            </div>
-            <div className="campaign-info-item">
-              <span className="label">Campaign Period </span>
-              <span className="value">{campaign.period}</span>
+          {/* === Section 1: Campaign Info === */}
+          <h3 className="campaign-section-title">Campaign Information</h3>
+          <div className="campaign-info-row">
+            <div className="campaign-info-block full-width">
+              <span className="info-block-label">Description</span>
+              <span className="info-block-value">{campaign.description}</span>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="campaign-summary-grid">
-            {["affected", "scheduled", "inProgress", "completed"].map((key) => (
-              <div key={key} className="campaign-summary-card">
-                <p className="label">
-                  {key === "inProgress"
-                    ? "In Progress"
-                    : key === "affected"
-                    ? "Affected Customers"
-                    : key.charAt(0).toUpperCase() + key.slice(1)}
-                </p>
-                <p className="value">{stats[key]}</p>
-              </div>
-            ))}
+          {/* === Section 2: Details === */}
+          <h3 className="campaign-section-title">Campaign Details</h3>
+          <div className="campaign-info-row">
+            <div className="campaign-info-block">
+              <span className="info-block-label">Campaign Type</span>
+              <span className="info-block-value">{campaign.type}</span>
+            </div>
+            <div className="campaign-info-block">
+              <span className="info-block-label">Target Part</span>
+              <span className="info-block-value">{campaign.target}</span>
+            </div>
+          </div>
+          <div className="campaign-info-row">
+            <div className="campaign-info-block">
+              <span className="info-block-label">Period</span>
+              <span className="info-block-value">
+                {formatDate(campaign.startDate)}
+              </span>
+            </div>
+            <div className="campaign-info-block">
+              <span className="info-block-label">End Date</span>
+              <span className="info-block-value">
+                {formatDate(campaign.endDate)}
+              </span>
+            </div>
           </div>
 
-          {/* Footer */}
-          <div className="footer">
-            <div className="footer-left">
-              <Button variant="secondary" onClick={onClose}>
-                Back
-              </Button>
+          {/* === Section 3: Statistics === */}
+          <h3 className="campaign-section-title">Campaign Statistics</h3>
+          <div className="campaign-info-row">
+            <div className="campaign-info-block stat-block">
+              <span className="info-block-label">Affected</span>
+              <span className="info-block-value large-stat">
+                {stats.affected}
+              </span>
             </div>
+            <div className="campaign-info-block stat-block">
+              <span className="info-block-label">Scheduled</span>
+              <span className="info-block-value large-stat">
+                {stats.scheduled}
+              </span>
+            </div>
+            <div className="campaign-info-block stat-block">
+              <span className="info-block-label">In Progress</span>
+              <span className="info-block-value large-stat">
+                {stats.inProgress}
+              </span>
+            </div>
+            <div className="campaign-info-block stat-block">
+              <span className="info-block-label">Completed</span>
+              <span className="info-block-value large-stat">
+                {stats.completed}
+              </span>
+            </div>
+          </div>
 
+          {/* === Footer === */}
+          <div className="campaign-footer">
+            <Button variant="secondary" onClick={onClose}>
+              Back
+            </Button>
             {campaign.status?.toLowerCase() !== "closed" && (
-              <div className="footer-right">
-                <Button variant="danger" onClick={() => setShowConfirm(true)}>
-                  Close Campaign
-                </Button>
-              </div>
+              <Button variant="danger" onClick={() => setShowConfirm(true)}>
+                Close Campaign
+              </Button>
             )}
           </div>
         </div>

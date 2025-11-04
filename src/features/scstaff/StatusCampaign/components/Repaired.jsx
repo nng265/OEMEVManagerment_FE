@@ -163,7 +163,10 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
         </div>
 
         {/* === Footer === */}
-        <div className="campaign-footer">
+        <div
+          className="campaign-footer"
+          style={{ justifyContent: "space-between" }}
+        >
           <Button variant="secondary" onClick={onClose}>
             Back
           </Button>
