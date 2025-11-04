@@ -207,6 +207,10 @@ const CampaignListContainer = () => {
     }
   };
 
+  const handleRefresh = useCallback(() => {
+    fetchCampaigns(pagination.pageNumber, pagination.pageSize);
+  }, [fetchCampaigns, pagination.pageNumber, pagination.pageSize]);
+
   return (
     <>
       <CampaignList
@@ -229,6 +233,8 @@ const CampaignListContainer = () => {
         onSearch={setSearchQuery}
         onFilterType={setSelectedType}
         onFilterStatus={setSelectedStatus}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       <ViewCampaignModal

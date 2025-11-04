@@ -70,11 +70,11 @@
 /* ===========================
    SECTION TITLES
    =========================== */
-  font-size: 1.5rem;
+  /* font-size: 1.5rem;
   font-weight: 700;
   color: #1f1f1f;
   margin-bottom: 6px;
-}
+} */
 
 .modal-card > div:first-of-type {
   color: #6c757d;
@@ -106,10 +106,10 @@
 /* ===========================
    CONTENT TEXT
    =========================== */
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 6px;
-}
+} */
 
 .modal-card h4::before {
   content: "•";
@@ -250,11 +250,7 @@ button {
 }
 
 button:hover {
-  transform: translateY(-1px);
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 20px;
-  gap: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* ===========================
@@ -313,10 +309,6 @@ button:hover {
    =========================== */
 button {
   transition: all 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
 }
 
 /* ===========================

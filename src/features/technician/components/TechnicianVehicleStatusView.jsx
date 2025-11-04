@@ -151,6 +151,8 @@ export const TechnicianVehicleStatusView = ({
   error,
   pagination,
   onPageChange,
+  onRefresh,
+  refreshing = false,
 
   // 2. NHẬN CÁC PROPS TỪ CONTAINER
   selectedWorkOrder,
@@ -208,6 +210,8 @@ export const TechnicianVehicleStatusView = ({
             hoverable
             striped
             loadingMessage="Loading work orders..."
+            onRefresh={onRefresh}
+            refreshing={refreshing}
           />
         )}
 
@@ -248,6 +252,8 @@ TechnicianVehicleStatusView.propTypes = {
     totalRecords: PropTypes.number,
   }),
   onPageChange: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
   // Thêm prop types cho modal
   selectedWorkOrder: PropTypes.object,
   showDetailModal: PropTypes.bool,

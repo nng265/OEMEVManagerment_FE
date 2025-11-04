@@ -13,6 +13,8 @@ export default function PartsListEVM({
   onView,
   pagination,
   onPageChange,
+  onRefresh,
+  refreshing = false,
 }) {
   const items = Array.isArray(data)
     ? data
@@ -144,6 +146,8 @@ export default function PartsListEVM({
           exportable={false}
           noDataMessage={error || "No parts requests found"}
           selectable={false}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
         />
       </div>
     </div>
@@ -161,4 +165,6 @@ PartsListEVM.propTypes = {
     totalRecords: PropTypes.number,
   }),
   onPageChange: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };

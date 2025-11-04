@@ -303,6 +303,8 @@ export const EVMStaffCampaignContainer = () => {
         onSearch={handleSearch}
         onFilterType={handleTypeFilter}
         onFilterStatus={handleStatusFilter}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       <ViewCampaignModal

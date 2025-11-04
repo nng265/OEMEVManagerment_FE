@@ -389,6 +389,13 @@ export const ServiceCenterInventoryContainer = () => {
     [fetchInventory, filtersActive, clientPagination.pageSize]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchInventory(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchInventory]);
+
   // ========== 5️⃣ RENDER ==========
   return (
     <div>
@@ -413,6 +420,8 @@ export const ServiceCenterInventoryContainer = () => {
         serverSide={!filtersActive}
         pagination={derivedPagination}
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       {/* Modal tạo request */}

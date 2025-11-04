@@ -147,6 +147,13 @@ export const EVMStaffInventoryContainer = () => {
     [fetchInventory]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchInventory(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchInventory]);
+
   // =====================
   // RENDER
   // =====================
@@ -158,6 +165,8 @@ export const EVMStaffInventoryContainer = () => {
         error={error}
         pagination={pagination}
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
     </div>
   );

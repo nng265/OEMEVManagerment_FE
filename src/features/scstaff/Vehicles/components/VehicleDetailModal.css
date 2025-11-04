@@ -32,11 +32,10 @@
   background-color: #f8fafc;
   padding: 16px;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .detail-item:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -61,12 +60,12 @@
   border-radius: 12px;
   margin-bottom: 16px;
   border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .policy-item:hover {
   border-color: #3b82f6;
-  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15);
 }
 
 .policy-item h5 {

@@ -213,6 +213,7 @@ const CampaignList = ({
   pagination = {},
   onPageChange,
   onRefresh,
+  refreshing = false,
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -313,6 +314,8 @@ const CampaignList = ({
         pageSize={pageSize}
         onPageChange={onPageChange}
         noDataMessage="No records found"
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
 
       {/* Dynamic modal */}
@@ -378,6 +381,7 @@ CampaignList.propTypes = {
   pagination: PropTypes.object,
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default CampaignList;

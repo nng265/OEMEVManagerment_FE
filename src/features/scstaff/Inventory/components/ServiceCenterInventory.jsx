@@ -26,6 +26,8 @@ export const ServiceCenterInventory = ({
   pagination,
   onPageChange,
   serverSide = true,
+  onRefresh,
+  refreshing = false,
 }) => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -154,6 +156,8 @@ export const ServiceCenterInventory = ({
             onPageChange={handlePageChange}
             exportable={false}
             noDataMessage={error || "No items found"}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
           />
         </div>
       </div>
@@ -176,6 +180,8 @@ ServiceCenterInventory.propTypes = {
   }),
   onPageChange: PropTypes.func,
   serverSide: PropTypes.bool,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default ServiceCenterInventory;

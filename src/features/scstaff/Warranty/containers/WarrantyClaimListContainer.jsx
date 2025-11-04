@@ -73,7 +73,15 @@ export const WarrantyClaimListContainer = () => {
         }
       },
     },
-    { key: "description", label: "Description", sortable: false },
+    // { key: "description", label: "Description", sortable: false },
+        // Show failureDesc instead of description
+    // Show failureDesc instead of description (with graceful fallback)
+    {
+      key: "failureDesc",
+      label: "Customer Description",
+      sortable: false,
+      render: (_, row) => row?.failureDesc,
+    },
     {
       key: "status",
       label: "Status",
@@ -220,6 +228,13 @@ export const WarrantyClaimListContainer = () => {
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
     fetchWarrantyClaims(0, paginationRef.current.pageSize);
+  }, [fetchWarrantyClaims]);
+
+  const handleRefresh = useCallback(() => {
+    fetchWarrantyClaims(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
   }, [fetchWarrantyClaims]);
 
   // Fetch assigned technicians for a specific claim
@@ -512,6 +527,8 @@ export const WarrantyClaimListContainer = () => {
         statusOptions={statusOptions}
         pagination={pagination}
         onPageChange={handlePageChange}
+  onRefresh={handleRefresh}
+  refreshing={isLoading}
         selectedClaim={selectedWarrantyClaim}
         // Default detail modal
         showDetailModal={showDetailModal}

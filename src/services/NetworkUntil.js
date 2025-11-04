@@ -114,6 +114,10 @@ export const ApiEnum = {
     path: "/CampaignVehicle/:id/assign-techs",
     method: "POST",
   },
+  REPAIRED_CAMPAIGN_VEHICLE: {
+    path: "/CampaignVehicle/:id/repaired",
+    method: "PUT",
+  },
   CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
   CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
   CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },

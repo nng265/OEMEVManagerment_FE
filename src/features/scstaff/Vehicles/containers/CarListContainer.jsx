@@ -161,6 +161,13 @@ export const CarListContainer = () => {
     setIsConfirmOpen(false);
   };
 
+  const handleRefresh = useCallback(() => {
+    fetchVehicles(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchVehicles]);
+
   // --- Cấu hình DataTable ---
   const columns = [
     { key: "vin", label: "VIN" },
@@ -223,6 +230,8 @@ export const CarListContainer = () => {
         pagination={pagination}
         // ✅ Gọi lại API khi đổi trang hoặc page size
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       <ConfirmDialog

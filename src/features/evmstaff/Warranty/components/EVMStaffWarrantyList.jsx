@@ -12,6 +12,8 @@ export const EVMStaffWarrantyList = ({
   onView,
   pagination,
   onPageChange,
+  onRefresh,
+  refreshing = false,
 }) => {
   // ✅ Cấu hình cột hiển thị trong bảng
   const columns = [
@@ -103,6 +105,8 @@ export const EVMStaffWarrantyList = ({
           onPageChange={onPageChange}
           exportable={false}
           noDataMessage={error || "No claims found"}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
         />
       </div>
     </div>
@@ -120,6 +124,8 @@ EVMStaffWarrantyList.propTypes = {
     totalRecords: PropTypes.number,
   }),
   onPageChange: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default EVMStaffWarrantyList;

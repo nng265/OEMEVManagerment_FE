@@ -13,6 +13,8 @@ export const ManufacturerInventory = ({
   error = null,
   pagination,
   onPageChange, // callback từ container để gọi lại API
+  onRefresh,
+  refreshing = false,
 }) => {
   const totalRecords = pagination?.totalRecords ?? data.length;
   const currentPage = pagination?.pageNumber ?? 0;
@@ -88,6 +90,8 @@ export const ManufacturerInventory = ({
           exportable={false}
           noDataMessage={error || "No records found"}
           selectable={false}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
         />
       </div>
     </div>
@@ -104,6 +108,8 @@ ManufacturerInventory.propTypes = {
     totalRecords: PropTypes.number,
   }),
   onPageChange: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default ManufacturerInventory;
