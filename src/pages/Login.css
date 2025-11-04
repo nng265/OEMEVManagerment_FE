@@ -83,11 +83,10 @@
   border-radius: 12px; /* Softer radius */
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Softer shadow */
   width: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
 }
 
 .login-box:hover {
-  transform: translateY(-4px);
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
 }
 
@@ -140,18 +139,16 @@
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .login-button:hover {
   background-color: var(--primary-darker);
-  transform: translateY(-2px);
 }
 
 .login-button:disabled {
   background-color: #a0aec0; /* Muted color when disabled */
   cursor: not-allowed;
-  transform: none;
 }
 
 .login-error {

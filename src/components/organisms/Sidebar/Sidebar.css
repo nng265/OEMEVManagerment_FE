@@ -64,7 +64,7 @@
 /* Center logo when collapsed */
 .sidebar.collapsed .brand {
   justify-content: center;
-  margin-bottom: 0; /* Remove margin when collapsed */
+  /* margin-bottom: 0; Remove margin when collapsed */
 }
 .sidebar.collapsed .brand-logo {
   margin-left: -5px; /* Fine-tune logo position */

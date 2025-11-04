@@ -32,6 +32,11 @@ export const PartsRequestContainer = () => {
     totalRecords: 0,
   });
   const latestRequestRef = useRef(0);
+  const paginationRef = useRef(pagination);
+
+  useEffect(() => {
+    paginationRef.current = pagination;
+  }, [pagination]);
 
   const fetchPartsRequests = useCallback(
     async (pageNumber, size) => {
@@ -125,6 +130,13 @@ export const PartsRequestContainer = () => {
       pageSize: nextSize,
     }));
   };
+
+  const handleRefresh = useCallback(() => {
+    fetchPartsRequests(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchPartsRequests]);
 
   const handleViewDetail = (requestData) => {
     const timelineEvents = [];
@@ -298,6 +310,8 @@ export const PartsRequestContainer = () => {
         error={error}
         pagination={pagination}
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       {isModalOpen && selectedRequest && (

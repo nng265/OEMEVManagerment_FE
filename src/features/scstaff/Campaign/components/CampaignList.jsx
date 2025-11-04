@@ -13,6 +13,8 @@ const CampaignList = ({
   onView,
   onAdd,
   onPageChange,
+  onRefresh,
+  refreshing = false,
 }) => {
   const columns = [
     { key: "title", label: "Campaign" },
@@ -92,6 +94,8 @@ const CampaignList = ({
         pageSize={pagination.pageSize ?? 10}
         onPageChange={onPageChange}
         noDataMessage={error ? String(error) : "No campaigns found"}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
       />
     </div>
   );
@@ -112,6 +116,8 @@ CampaignList.propTypes = {
   onSearch: PropTypes.func,
   onFilterType: PropTypes.func,
   onFilterStatus: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default CampaignList;

@@ -263,7 +263,8 @@ export const ServiceCenterInventoryContainer = () => {
 
     setLoadingModels(true);
     try {
-      // Use GET_PART_MODELS endpoint with category query param
+      // Use GET_PART_MODEL endpoint with category query param
+
       const res = await request(ApiEnum.GET_PART_MODELS, {
         category: category,
       });
@@ -388,6 +389,13 @@ export const ServiceCenterInventoryContainer = () => {
     [fetchInventory, filtersActive, clientPagination.pageSize]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchInventory(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchInventory]);
+
   // ========== 5️⃣ RENDER ==========
   return (
     <div>
@@ -412,6 +420,8 @@ export const ServiceCenterInventoryContainer = () => {
         serverSide={!filtersActive}
         pagination={derivedPagination}
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       {/* Modal tạo request */}

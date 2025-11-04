@@ -16,6 +16,8 @@ export const Campaign = ({
   onSearch,
   onFilterType,
   onFilterStatus,
+  onRefresh,
+  refreshing = false,
 }) => {
   // Local filter states mimic ServiceCenterInventory behavior
   const [query, setQuery] = useState("");
@@ -81,7 +83,16 @@ export const Campaign = ({
   ];
 
   const rows = data.map((c, i) => ({
-    // id: c.id ?? i,
+    // Preserve identifiers to support actions that need IDs
+    id:
+      c?._raw?.campaignId ||
+      c?._raw?.id ||
+      c?.campaignId ||
+      c?.id ||
+      i,
+    _raw: c?._raw || c,
+
+    // Display fields
     description: c.description || "",
     target: c.target || "—",
     title: c.title || "—",
@@ -159,6 +170,8 @@ export const Campaign = ({
           pageSize={pagination.pageSize ?? 10}
           onPageChange={onPageChange}
           noDataMessage={error ? String(error) : "No campaigns found"}
+          onRefresh={onRefresh}
+          refreshing={refreshing}
         />
       </div>
     </div>
@@ -180,6 +193,8 @@ Campaign.propTypes = {
   onSearch: PropTypes.func,
   onFilterType: PropTypes.func,
   onFilterStatus: PropTypes.func,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
 };
 
 export default Campaign;

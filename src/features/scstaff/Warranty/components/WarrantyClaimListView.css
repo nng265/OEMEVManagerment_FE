@@ -20,7 +20,7 @@
 }
 
 .form-select {
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 
 /* Class thông báo lỗi */
@@ -161,6 +161,5 @@
 
 /* Hover effect */
 .status-badge:hover {
-  transform: scale(1.05);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }

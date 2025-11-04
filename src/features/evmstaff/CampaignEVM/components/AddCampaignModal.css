@@ -99,6 +99,11 @@
     margin-top: 8px;
 }
 
+/* Push Cancel to the left within the actions row */
+.add-campaign-form .form-actions .btn-cancel {
+    margin-right: auto;
+}
+
 /* Empty left column to keep alignment when Target Part Model goes under Target Category */
 .add-campaign-form .form-group.spacer {
     visibility: hidden;

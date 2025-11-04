@@ -80,3 +80,47 @@
   padding-top: 20px;
   border-top: 1px solid #eee; /* Thêm đường kẻ phân cách */
 }
+
+/* ===== THAY ĐỔI 7: CSS MỚI CHO CHECKBOX VÀ KHỐI TECHNICIAN ===== */
+
+.form-group-checkbox {
+  margin-bottom: 18px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 1rem; /* 16px */
+  color: #2d3748; /* Màu chữ đậm hơn một chút */
+  font-weight: 500;
+}
+
+/* Ghi đè lại style label của .form-group */
+.checkbox-label {
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px; /* Không chiếm 100% */
+  height: 16px;
+  cursor: pointer;
+  margin: 0;
+}
+
+/* Style cho cái hộp "Assigned Technicians List" (giống ảnh mẫu) */
+.technician-assignment-box {
+  background-color: #f8fafc; /* Màu nền xám nhạt */
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0; /* Viền xám nhạt */
+  margin-top: 10px;
+}
+
+.technician-assignment-box > label {
+  font-size: 1rem; /* 16px */
+  font-weight: 600;
+  margin-bottom: 12px; /* Khoảng cách với dropdown đầu tiên */
+}

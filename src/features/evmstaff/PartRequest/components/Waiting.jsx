@@ -94,7 +94,7 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
 
           <div className="popup-actions">
             <button
-              className="btn-secondary"
+              className="btn-secondary btn-cancel"
               onClick={handleClose}
               disabled={isLoading}
             >

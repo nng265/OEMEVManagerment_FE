@@ -99,15 +99,16 @@
     color: #1f2937;
 }
 
-
-.campaign-footer {
+/* --- Footer --- */
+.footer {
     display: flex;
     justify-content: space-between;
+    /* cancel trái - close phải */
     align-items: center;
+    margin-top: 20px;
 }
 
-/* Căn nút bên phải cho khu vực footer custom */
-.right {
-    display: flex;
-    justify-content: flex-end;
+.footer-left button,
+.footer-right button {
+    min-width: 130px;
 }

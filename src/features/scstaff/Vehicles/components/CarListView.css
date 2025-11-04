@@ -64,10 +64,9 @@
 /* Action Buttons */
 .action-buttons {
   display: flex;
-  justify-content: center ;
+  justify-content: center;
   gap: 30px;
   align-items: center;
-  
 }
 
 /* Loading State */
@@ -98,10 +97,18 @@
   font-size: 1rem;
 }
 
-.table th, .table td {
-    padding: 0.75rem 1rem;
-    vertical-align: middle;
-    border-bottom: 1px solid var(--border-color);
+.table th,
+.table td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
     text-align: center;
-    white-space: nowrap;
 }

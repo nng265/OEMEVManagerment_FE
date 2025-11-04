@@ -141,6 +141,13 @@ export const EVMStaffWarrantyListContainer = () => {
     [fetchClaims]
   );
 
+  const handleRefresh = useCallback(() => {
+    fetchClaims(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize
+    );
+  }, [fetchClaims]);
+
   // === UI render ===
   return (
     <>
@@ -151,6 +158,8 @@ export const EVMStaffWarrantyListContainer = () => {
         onView={(claim) => setSelectedClaim(claim)}
         pagination={pagination}
         onPageChange={handlePageChange}
+        onRefresh={handleRefresh}
+        refreshing={loading}
       />
 
       <EVMStaffConfirmationModal
