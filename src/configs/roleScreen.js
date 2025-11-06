@@ -44,6 +44,11 @@ export const roleScreens = {
       label: "Task",
       component: "TechnicianVehicleStatus",
     },
+    {
+      id: "overview",
+      label: "Overview",
+      component: "Overview",
+    },
   ],
   EVM_STAFF: [
     {
