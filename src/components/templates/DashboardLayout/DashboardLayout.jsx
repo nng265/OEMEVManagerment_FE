@@ -20,6 +20,8 @@ export const DashboardLayout = ({ children }) => {
     switch (screenId) {
       case "dashboard":
         return "/dashboard";
+      case "dashboard_evmstaff":
+        return "/dashboardevmstaff";
       case "staff_vehicle":
         return "/vehicles"; // Path đã định nghĩa trong routes.jsx
       case "staff_warranty":
