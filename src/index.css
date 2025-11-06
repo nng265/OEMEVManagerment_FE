@@ -85,8 +85,10 @@ body {
   background: #a1a1a1;
 }
 
-/* Ensure smooth transitions globally */
-* {
+/* === BẮT ĐẦU SỬA LỖI === */
+
+/* Xóa bỏ bộ chọn * (dấu sao) */
+/* * {
   transition: background-color var(--transition-speed) var(--transition-ease),
     color var(--transition-speed) var(--transition-ease),
     border-color var(--transition-speed) var(--transition-ease),
@@ -94,11 +96,31 @@ body {
     transform var(--transition-speed) var(--transition-ease),
     width var(--transition-speed) var(--transition-ease),
     left var(--transition-speed) var(--transition-ease);
+} 
+*/
+
+/* Thay thế bằng các bộ chọn cụ thể, an toàn hơn */
+button,
+a,
+input,
+select,
+textarea,
+.btn,
+.MuiPaper-root, /* Áp dụng cho thẻ Paper (StatCard) của MUI */
+.MuiButtonBase-root /* Áp dụng cho các nút của MUI */ {
+  transition: background-color var(--transition-speed) var(--transition-ease),
+    color var(--transition-speed) var(--transition-ease),
+    border-color var(--transition-speed) var(--transition-ease),
+    box-shadow var(--transition-speed) var(--transition-ease),
+    transform var(--transition-speed) var(--transition-ease);
 }
+
+/* === KẾT THÚC SỬA LỖI === */
 
 /* Main content area padding */
 .main-content {
   padding: calc(var(--navbar-height) -50px) 24px 24px;
+  /* Chỉ áp dụng transition cho margin-left, KHÔNG áp dụng cho transform */
   transition: margin-left var(--transition-speed) var(--transition-ease);
 }
 

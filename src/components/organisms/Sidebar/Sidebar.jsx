@@ -4,6 +4,24 @@ import "./Sidebar.css";
 import { roleScreens } from "../../../configs/roleScreen";
 
 // --- Icon Components ---
+
+const IconDashboard = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="3" y="3" width="7" height="7"></rect>
+    <rect x="14" y="3" width="7" height="7"></rect>
+    <rect x="14" y="14" width="7" height="7"></rect>
+    <rect x="3" y="14" width="7" height="7"></rect>
+  </svg>
+);
 const IconVehicle = () => (
   <svg
     width="20"
@@ -159,6 +177,8 @@ export const Sidebar = ({
     switch (
       screenId?.toLowerCase() // Use lower case for robust matching
     ) {
+      case "dashboard":
+        return <IconDashboard />;
       case "staff_vehicle":
         return <IconVehicle />;
       case "staff_warranty":
