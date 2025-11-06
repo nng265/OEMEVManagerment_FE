@@ -1,6 +1,7 @@
 // src/configs/roleScreen.js
 export const roleScreens = {
   ADMIN: [
+    { id: "dashboard", label: "Dashboard" },
     {
       id: "staff_approval",
       label: "Approve Requests",
@@ -19,14 +20,28 @@ export const roleScreens = {
     { id: "manage_vehicles", label: "Manage Vehicles", component: "Vehicles" },
   ],
   SC_STAFF: [
+    { id: "dashboard", label: "Dashboard" },
     { id: "staff_vehicle", label: "Vehicle", component: "CarList" },
     { id: "staff_warranty", label: "Warranty", component: "WarrantyList" },
-    { id: "staff_parts_request", label: "Parts Request", component: "PartsRequest" },
-    { id: "service_center_inventory", label: "Inventory", component: "ServiceCenterInventory" },
-    { id: "staff_campaign", label: "Campain", component: "Campaign"},
-    { id: "status_campaign", label: "CampaignVehicle", component: "StatusCampaign"}
+    {
+      id: "staff_parts_request",
+      label: "Parts Request",
+      component: "PartsRequest",
+    },
+    {
+      id: "service_center_inventory",
+      label: "Inventory",
+      component: "ServiceCenterInventory",
+    },
+    { id: "staff_campaign", label: "Campain", component: "Campaign" },
+    {
+      id: "status_campaign",
+      label: "CampaignVehicle",
+      component: "StatusCampaign",
+    },
   ],
   SC_TECH: [
+    { id: "dashboard", label: "Dashboard" },
     {
       id: "technician_vehicle_status",
       label: "Task",
@@ -34,6 +49,7 @@ export const roleScreens = {
     },
   ],
   EVM_STAFF: [
+    { id: "dashboard", label: "Dashboard" },
     {
       id: "evm_warranty_claims",
       label: "Warranty",
