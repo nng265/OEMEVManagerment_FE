@@ -196,14 +196,14 @@ export const CarListContainer = () => {
             />
           </Button>
           <Button
-            variant="primary"
+            className="variant-primary"
             size="small"
             onClick={(e) => {
               e.stopPropagation();
               handleCreateWarrantyClaim(row);
             }}
           >
-            Create Warranty Claim
+            🛠️ Create Warranty
           </Button>
         </div>
       ),

@@ -251,7 +251,7 @@ export const DataTable = ({
             <div className="data-table-toolbar-actions">
               {showRefreshButton && (
                 <Button
-                  variant="secondary"
+                  className="color"
                   size="sm"
                   onClick={handleRefreshClick}
                   disabled={refreshing}

@@ -20,6 +20,8 @@ export const DashboardLayout = ({ children }) => {
     switch (screenId) {
       case "dashboard":
         return "/dashboard";
+      case "dashboard_evmstaff":
+        return "/dashboardevmstaff";
       case "staff_vehicle":
         return "/vehicles"; // Path đã định nghĩa trong routes.jsx
       case "staff_warranty":
@@ -35,13 +37,13 @@ export const DashboardLayout = ({ children }) => {
       case "evm_parts_list":
         return "/evmpartslist"; // Sửa lại path này cho khớp routes.jsx
       case "evm_campaigns":
-        return"/evmstaff_campaign";
+        return "/evmstaff_campaign";
       case "manufacturer_inventory":
         return "/evmstaff_inventory"; // Sửa lại path này cho khớp routes.jsx
       case "staff_campaign":
         return "/campaign";
       case "status_campaign":
-        return "/Statuscampaign"
+        return "/Statuscampaign";
       // !!! QUAN TRỌNG: Kiểm tra và bổ sung/sửa tất cả các case khác cho khớp routes.jsx !!!
       default:
         console.warn(

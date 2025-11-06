@@ -1,0 +1,227 @@
+===== FONT & RESET =====
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f9fafb;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1e293b;
+}
+
+/* ===== DASHBOARD CONTAINER ===== */
+.main-content {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  min-height: 100vh;
+  padding: 40px 30px;
+}
+
+.dashboard-wrapper {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* ===== HEADER ===== */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  background: linear-gradient(to right, #4f46e5, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+/* Decorative underline */
+.dashboard-header::after {
+  content: "";
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+  display: block;
+  margin: 16px auto 0;
+  border-radius: 4px;
+}
+
+/* ===== CARDS ===== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 50px;
+}
+
+.card {
+  background: white;
+  padding: 28px 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 22px rgba(79, 70, 229, 0.2);
+}
+
+.card h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4338ca;
+  margin: 0;
+}
+
+/* Highlight card */
+.highlight-card {
+  background: linear-gradient(135deg, #4f46e5, #8b5cf6);
+  color: white;
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
+  border: none;
+}
+
+.highlight-card h4 {
+  color: #e0e7ff;
+}
+
+.highlight-card p {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+}
+
+/* ===== CHART GRID ===== */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+  gap: 28px;
+}
+
+/* ===== CHART BOX ===== */
+.chart-box {
+  background: white;
+  padding: 26px 24px;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  transition: all 0.3s ease;
+}
+
+.chart-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.12);
+}
+
+.chart-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #312e81;
+  margin-bottom: 18px;
+  border-left: 5px solid #4f46e5;
+  padding-left: 10px;
+}
+
+/* ===== DATA TABLE ===== */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table th {
+  background: #f3f4f6;
+  color: #475569;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.data-table tr:hover td {
+  background: #f9fafb;
+}
+
+/* ===== CAMPAIGN BOX ===== */
+.campaign-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 32px 28px;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+}
+
+.campaign-chart {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 20px;
+}
+
+.campaign-info {
+  text-align: center;
+}
+
+.campaign-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 12px;
+}
+
+.campaign-info p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.campaign-info strong {
+  color: #4f46e5;
+}
+
+/* ===== TRANSITIONS ===== */
+.chart-box,
+.card,
+.campaign-box {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 20px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-box {
+    padding: 18px;
+  }
+}

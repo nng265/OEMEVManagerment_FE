@@ -37,6 +37,34 @@
   background-color: #f8f9fa; /* Light background for toolbar */
 }
 
+.data-table-toolbar .color {
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Gradient xanh biển */
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.data-table-toolbar .color:hover {
+  background: linear-gradient(135deg, #009ee3, #005ecb);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.data-table-toolbar .color:disabled {
+  background: #cce6ff;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+
 .data-table-search {
   min-width: 250px;
 }
