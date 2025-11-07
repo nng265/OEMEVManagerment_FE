@@ -178,6 +178,8 @@ export const Sidebar = ({
       screenId?.toLowerCase() // Use lower case for robust matching
     ) {
       case "dashboard":
+      case "overview":
+      case "dashboardevmstaff":
         return <IconDashboard />;
       case "staff_vehicle":
         return <IconVehicle />;

@@ -385,15 +385,14 @@ const Dashboard = () => {
               </Box>
             ) : (
               <BarChart
-                layout="horizontal"
-                yAxis={[
+                xAxis={[
                   { scaleType: "band", data: campaignProgressData.labels },
                 ]}
                 series={campaignProgressData.series}
                 stackingStrategy="normal"
                 height={300}
-                margin={{ left: 150, right: 20, top: 50, bottom: 30 }}
-                grid={{ horizontal: true }}
+                margin={{ left: 50, right: 20, top: 50, bottom: 50 }}
+                grid={{ vertical: true }}
                 legend={{
                   hidden: false,
                   direction: "row",

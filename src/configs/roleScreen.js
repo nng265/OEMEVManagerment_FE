@@ -41,17 +41,17 @@ export const roleScreens = {
     },
   ],
   SC_TECH: [
-    { id: "dashboard", label: "Dashboard" },
-    {
-      id: "technician_vehicle_status",
-      label: "Task",
-      component: "TechnicianVehicleStatus",
-    },
     {
       id: "overview",
       label: "Overview",
       component: "Overview",
     },
+    {
+      id: "technician_vehicle_status",
+      label: "Task",
+      component: "TechnicianVehicleStatus",
+    },
+
   ],
   EVM_STAFF: [
     { id: "dashboard_evmstaff", label: "Dashboard", component: "DashboardEVMSTAFF" },

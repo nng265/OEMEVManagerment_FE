@@ -55,6 +55,10 @@ export const privateRoutes = [
         element: <DashboardEVMSTAFF />,
       },
       {
+        path: "overview",
+        element: <OverViewContainer />,
+      },
+      {
         path: "vehicles",
         element: <CarListContainer />,
       },
@@ -105,10 +109,6 @@ export const privateRoutes = [
       {
         path: "evmstaff_campaign",
         element: <EVMStaffCampaignContainer />,
-      },
-      {
-        path: "overview",
-        element: <OverViewContainer />,
       },
     ],
   },

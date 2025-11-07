@@ -42,6 +42,8 @@ const Login = () => {
         // Redirect based on role
         if (userData && userData.role === "EVM_STAFF") {
           navigate("/dashboardevmstaff");
+        } else if (userData && userData.role === "SC_TECH") {
+          navigate("/overview");
         } else {
           navigate("/dashboard"); // SC_STAFF or other roles
         }

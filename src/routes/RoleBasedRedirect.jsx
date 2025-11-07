@@ -16,5 +16,9 @@ export const RoleBasedRedirect = () => {
   if (user.role === "SC_STAFF") {
     return <Navigate to="/dashboard" replace />;
   }
+
+  if(user.role === "SC_TECH") {
+    return <Navigate to="/overview" replace/>
+  }
 //   return <Navigate to="/dashboard" replace />;
 };
