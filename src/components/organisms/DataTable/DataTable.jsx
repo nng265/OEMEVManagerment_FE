@@ -28,6 +28,9 @@ export const DataTable = ({
   searchPlaceholder = 'Search...',
   onSearchChange,
   toolbarActions,
+  onRefresh,
+  refreshing = false,
+  refreshLabel = 'Refresh',
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -212,9 +215,19 @@ export const DataTable = ({
     .filter(Boolean)
     .join(' ');
 
+  const showRefreshButton = typeof onRefresh === 'function';
+
+  const handleRefreshClick = () => {
+    if (!showRefreshButton || refreshing) {
+      return;
+    }
+    onRefresh();
+  };
+
   const shouldShowSearch =
     searchable && (!serverSide || typeof onSearchChange === 'function');
-  const shouldShowToolbar = shouldShowSearch || exportable || toolbarActions;
+  const shouldShowToolbar =
+    shouldShowSearch || exportable || toolbarActions || showRefreshButton;
 
   return (
     <div className="data-table-container">
@@ -234,8 +247,18 @@ export const DataTable = ({
             </div>
           )}
 
-          {(toolbarActions || exportable) && (
+          {(toolbarActions || exportable || showRefreshButton) && (
             <div className="data-table-toolbar-actions">
+              {showRefreshButton && (
+                <Button
+                  className="color"
+                  size="sm"
+                  onClick={handleRefreshClick}
+                  disabled={refreshing}
+                >
+                  {refreshing ? 'Refreshing...' : refreshLabel}
+                </Button>
+              )}
               {toolbarActions}
               {exportable && (
                 <Button variant="secondary" size="sm" onClick={handleExport}>
@@ -400,4 +423,7 @@ DataTable.propTypes = {
   searchPlaceholder: PropTypes.string,
   onSearchChange: PropTypes.func,
   toolbarActions: PropTypes.node,
+  onRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
+  refreshLabel: PropTypes.string,
 };

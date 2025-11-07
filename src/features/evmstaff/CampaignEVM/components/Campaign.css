@@ -1,0 +1,37 @@
+.campaign-container {
+  padding: 10px;
+}
+
+/* Header ở ngoài khung trắng */
+.campaign-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* Giữ khung trắng cho bảng */
+.campaign-table {
+  background: #fff;
+  border-radius: 16px;
+  padding: 0;
+  margin-left: 10px;
+}
+
+/* Nút Add */
+.campaign-header .btn-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.campaign-header .btn-success:hover {
+  background: #005fcc;
+}

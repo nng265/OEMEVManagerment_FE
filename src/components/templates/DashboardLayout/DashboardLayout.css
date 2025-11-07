@@ -10,6 +10,11 @@
   transition: margin-left 0.3s ease;
 }
 
+.main-content{
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
 .dashboard-content.content-expanded {
   margin-left: 64px;
 }

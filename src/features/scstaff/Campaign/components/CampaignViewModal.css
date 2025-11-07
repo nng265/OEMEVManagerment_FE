@@ -1,0 +1,101 @@
+/* Thiết lập nền chung cho nội dung modal */
+.campaign-modal {
+  padding: 24px 30px;
+  background-color: #f7f8fa;
+  /* Màu nền xám rất nhạt */
+}
+
+/* Tiêu đề của các mục (ví dụ: "Campaign Information") */
+.campaign-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
+  margin-top: 24px;
+  /* Khoảng cách phía trên */
+  margin-bottom: 16px;
+  /* Khoảng cách phía dưới */
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  /* Đường kẻ chân giống ảnh mẫu */
+}
+
+/* Mục đầu tiên không cần khoảng cách trên */
+.campaign-section-title:first-of-type {
+  margin-top: 0;
+}
+
+/* Hàng chứa các thẻ thông tin */
+.campaign-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  /* Cho phép xuống dòng nếu không đủ chỗ */
+  gap: 20px;
+  /* Khoảng cách giữa các thẻ */
+  margin-bottom: 20px;
+  /* Khoảng cách giữa các hàng */
+}
+
+/* Thẻ thông tin cá nhân (các hộp màu trắng) */
+.campaign-info-block {
+  flex: 1;
+  /* Tự động chia đều không gian */
+  min-width: 200px;
+  /* Chiều rộng tối thiểu trước khi xuống dòng */
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Thẻ chiếm toàn bộ chiều rộng (dùng cho Description) */
+.campaign-info-block.full-width {
+  flex-basis: 100%;
+}
+
+/* Nhãn (ví dụ: "CAMPAIGN TYPE") */
+.info-block-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  /* Màu xám */
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  /* VIẾT HOA */
+}
+
+/* Giá trị (ví dụ: "Service") */
+.info-block-value {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: #222;
+  line-height: 1.5;
+  word-wrap: break-word;
+  /* Tự động xuống dòng nếu quá dài */
+}
+
+/* Tùy chỉnh cho các thẻ thống kê */
+.campaign-info-block.stat-block {
+  text-align: center;
+  /* Căn giữa nội dung */
+}
+
+/* Tùy chỉnh cho các con số thống kê (to, màu xanh) */
+.info-block-value.large-stat {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1565c0;
+  /* Màu xanh dương */
+  margin-top: 8px;
+}
+
+/* Nút đóng ở cuối */
+.campaign-footer {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+}

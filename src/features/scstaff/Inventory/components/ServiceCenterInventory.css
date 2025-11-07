@@ -1,0 +1,107 @@
+/* Ép container sát lên top */
+.sc-container {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.size-h1 {
+  margin-bottom: 30px;
+}
+
+/* Giống style Vehicles */
+.sc-inventory {
+  margin-top: 30px 20px 30px 30px !important;
+  padding: 30px !important;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.008);
+}
+
+/* Tiêu đề */
+.sc-inventory__title {
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Mô tả phụ */
+.sc-inventory__subtitle {
+  margin: 0 0 16px 0;
+  color: #4b5563;
+}
+
+/* Thanh lọc */
+.sc-inventory__filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.sc-inventory__search,
+.sc-inventory__select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.sc-inventory__table-wrapper {
+  margin-top: 8px;
+}
+
+/* ===================== STATUS BADGE STYLE ===================== */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* Default */
+.status-badge.status-unknown {
+  background-color: #f4f4f4;
+  color: #555;
+  border-color: #ddd;
+}
+
+/* Custom statuses (ông có thể đổi màu nếu muốn) */
+.status-badge.status-in-stock {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+
+.status-badge.status-low-stock {
+  background-color: #fff8e1;
+  color: #b8860b;
+  border-color: #ffe58f;
+}
+
+.status-badge.status-out-of-stock {
+  background-color: #fdecec;
+  color: #b71c1c;
+  border-color: #f5b7b1;
+}
+
+.status-badge.status-damaged {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border-color: #90caf9;
+}
+
+/* Hover effect */
+.status-badge:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}

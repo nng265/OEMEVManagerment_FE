@@ -196,3 +196,61 @@
 .btn-close:hover {
   opacity: 0.75;
 }
+
+/* Image preview modal (no white frame, full-bleed image) */
+.modal.modal-image .modal-content {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.modal.modal-image .modal-dialog {
+  max-width: 100%;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.modal.modal-image .modal-body {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.modal-no-header {
+  display: none !important;
+}
+
+.modal.modal-image .btn-close {
+  display: none;
+}
+
+/* Close button overlay for image preview */
+.modal.modal-image .image-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2000;
+}
+
+.modal.modal-image .image-close-btn:hover {
+  background: rgba(0,0,0,0.65);
+}

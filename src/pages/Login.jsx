@@ -1,41 +1,64 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Button from '../components/atoms/Button/Button';
-import Input from '../components/atoms/Input/Input';
-import './Login.css';
+// src/pages/Login.jsx
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+// Assuming Button and Input are correctly exported from their paths
+import { Button } from "../components/atoms/Button/Button";
+import { Input } from "../components/atoms/Input/Input";
+import "./Login.css"; // Make sure the path is correct
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
+    setError(""); // Clear error on change
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
+    setIsLoading(true); // Start loading
 
     try {
-      const success = await login(formData.username, formData.password);
-      if (success) {
-        navigate('/');
+      // Use the login function from context
+      const loginResult = await login(formData.username, formData.password);
+
+      if (loginResult && loginResult.success) {
+        // Get user data from localStorage to check role
+        const userData = JSON.parse(localStorage.getItem("user"));
+        
+        // Redirect based on role
+        if (userData && userData.role === "EVM_STAFF") {
+          navigate("/dashboardevmstaff");
+        } else if (userData && userData.role === "SC_TECH") {
+          navigate("/overview");
+        } else {
+          navigate("/dashboard"); // SC_STAFF or other roles
+        }
       } else {
-        setError('Invalid username or password');
+        // Use message from loginResult or a default one
+        setError(loginResult?.message || "Invalid username or password.");
       }
     } catch (err) {
-      setError('An error occurred during login');
+      console.error("Login page error:", err);
+      // Use error message or a generic one
+      setError(
+        err?.message || "An error occurred during login. Please try again."
+      );
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -43,62 +66,86 @@ const Login = () => {
     <div className="login-container">
       <div className="login-content">
         <div className="login-header">
-          <img src="/logo.png" alt="Logo" className="login-logo" />
+          {/* Consider using an SVG or local image */}
+          {/* <img src="/logo.png" alt="Logo" className="login-logo" /> */}
+          <svg
+            className="login-logo"
+            viewBox="0 0 100 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M50 0L93.3 25V75L50 100L6.7 75V25L50 0Z" fill="#FFF" />
+            <path
+              d="M50 15L79.3 30V70L50 85L20.7 70V30L50 15Z"
+              fill="#00509D"
+            />
+          </svg>
           <h1>OEM EV Management</h1>
-          <p className="login-subtitle">Internal electric vehicle warranty system</p>
+          <p className="login-subtitle">
+            Internal electric vehicle warranty system
+          </p>
         </div>
-        
+
         <div className="login-box">
           <h2>Login</h2>
           {error && (
             <div className="login-error">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z" fill="currentColor"/>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                  fill="currentColor"
+                />
               </svg>
               {error}
             </div>
           )}
-          
+
           <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group">
-              <Input
-                type="text"
-                name="username"
-                label="Username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="login-input"
-              />
-            </div>
-            
-            <div className="form-group">
-              <Input
-                type="password"
-                name="password"
-                label="Password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                fullWidth
-                className="login-input"
-              />
-            </div>
-            
-            <Button 
-              type="submit" 
-              fullWidth 
+            {/* Using the reusable Input component */}
+            <Input
+              type="text"
+              name="username"
+              label="Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              fullWidth
+              // className="login-input" /* Input component handles its own base styling */
+            />
+
+            <Input
+              type="password"
+              name="password"
+              label="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              fullWidth
+              // className="login-input"
+            />
+
+            {/* Using the reusable Button component */}
+            <Button
+              type="submit"
+              variant="primary" // Use primary variant
+              fullWidth
               className="login-button"
+              isLoading={isLoading} // Pass loading state
               disabled={isLoading}
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </div>
-        
+
         <div className="login-footer">
-          © 2025 OEM EV • For internal staff only
+          © {new Date().getFullYear()} OEM EV • For internal staff only
         </div>
       </div>
     </div>
