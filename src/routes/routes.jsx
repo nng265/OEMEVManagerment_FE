@@ -5,6 +5,7 @@ import { DashboardLayout } from "../components/templates";
 import Login from "../pages/Login.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import DashboardEVMSTAFF from "../pages/DashboardEVMSTAFF.jsx";
+import { RoleBasedRedirect } from "./RoleBasedRedirect.jsx";
 
 import { CarListContainer } from "../features/scstaff/Vehicles/containers/CarListContainer.jsx";
 import { WarrantyClaimListContainer } from "../features/scstaff/Warranty/containers/WarrantyClaimListContainer.jsx";
@@ -43,7 +44,7 @@ export const privateRoutes = [
     children: [
       {
         path: "",
-        element: <Navigate to="/dashboard" replace />,
+        element: <RoleBasedRedirect />,
       },
       {
         path: "dashboard",
@@ -51,10 +52,6 @@ export const privateRoutes = [
       },
       {
         path: "dashboardevmstaff",
-        element: <DashboardEVMSTAFF />,
-      },
-      {
-        path: "evm-staff/dashboard",
         element: <DashboardEVMSTAFF />,
       },
       {

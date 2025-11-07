@@ -54,7 +54,7 @@ export const roleScreens = {
     },
   ],
   EVM_STAFF: [
-    { id: "dashboard", label: "Dashboard" },
+    { id: "dashboard_evmstaff", label: "Dashboard", component: "DashboardEVMSTAFF" },
     {
       id: "evm_warranty_claims",
       label: "Warranty",

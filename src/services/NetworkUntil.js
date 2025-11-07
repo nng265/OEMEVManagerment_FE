@@ -1,11 +1,15 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
+const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+// const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
+
+  // Dashboard
+  GET_DASHBOARD_SC_SUMMARY: { path: "/Dashboard/sc/summary", method: "GET" },
+  GET_DASHBOARD_EVM_SUMMARY: { path: "/Dashboard/evm/summary", method: "GET" },
 
   // GET_FUNCTIONS: { path: "/functions", method: "GET" },
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },

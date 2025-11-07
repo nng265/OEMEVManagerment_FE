@@ -78,68 +78,141 @@ const Dashboard = () => {
   const { user } = useAuth();
   const theme = useTheme();
 
-  // ⚠️ DÙNG SỐ LIỆU GIẢ LẬP VÌ CHƯA CÓ API
+  // State cho dữ liệu từ API
   const [stats, setStats] = useState({
-    vehiclesInService: 5, // 5 xe đang sửa
-    scheduledAppointments: 8, // 8 lịch hẹn
-    readyForPickup: 2, // 2 xe sẵn sàng giao
-    activeCampaigns: 4, // 4 chiến dịch đang chạy
+    vehiclesInService: 0,
+    scheduledAppointments: 0,
+    readyForPickup: 0,
+    activeCampaigns: 0,
   });
-  const [loadingStats, setLoadingStats] = useState(false);
-  const [loadingCharts, setLoadingCharts] = useState(false);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingCharts, setLoadingCharts] = useState(true);
 
-  // --- ⚠️ DỮ LIỆU GIẢ LẬP (MOCK DATA) CHO BIỂU ĐỒ ---
-  const lineChartData = {
-    labels: ["T5", "T6", "T7", "T8", "T9", "T10", "T11"],
+  // Dữ liệu cho biểu đồ
+  const [lineChartData, setLineChartData] = useState({
+    labels: [],
     series: [
       {
-        data: [12, 19, 15, 25, 22, 30, 28],
+        data: [],
         label: "Claims",
         color: "var(--primary-color, #00509d)",
         area: true,
         showMark: false,
       },
     ],
-  };
+  });
 
-  const pieData = [
-    { id: 0, value: 5, label: "Tech. Anh", color: "#00509D" },
-    { id: 1, value: 3, label: "Tech. Bình", color: "#0079B8" },
-    { id: 2, value: 4, label: "Tech. Cường", color: "#00A3D2" },
-  ];
-  const totalPieValue = pieData.reduce((acc, item) => acc + item.value, 0);
+  const [pieData, setPieData] = useState([]);
 
-  const campaignProgressData = {
-    labels: [
-      "Campaign 'Recall Pin'",
-      "Campaign 'Update ECM'",
-      "Campaign 'Check Battery'",
-    ],
+  const [campaignProgressData, setCampaignProgressData] = useState({
+    labels: ["Active Campaigns"],
     series: [
       {
         label: "Completed",
-        data: [20, 10, 5],
-        color: "#2e7d32", // Xanh lá
+        data: [0],
+        color: "#2e7d32",
       },
       {
         label: "In Progress",
-        data: [5, 15, 2],
-        color: "#ed6c02", // Cam
+        data: [0],
+        color: "#ed6c02",
       },
       {
         label: "Pending",
-        data: [10, 5, 1],
-        color: "#d32f2f", // Đỏ
+        data: [0],
+        color: "#d32f2f",
       },
     ],
-  };
-  // --- Hết Dữ liệu giả lập ---
+  });
 
-  /*
+  // Fetch dữ liệu từ API
   useEffect(() => {
-    // ... 
-  }, []);
-  */
+    const fetchDashboardData = async () => {
+      try {
+        setLoadingStats(true);
+        setLoadingCharts(true);
+
+        const response = await request(ApiEnum.GET_DASHBOARD_SC_SUMMARY);
+
+        if (response.success && response.data) {
+          const data = response.data;
+
+          // Cập nhật stats
+          setStats({
+            vehiclesInService: data.vehicleInServiceCount || 0,
+            scheduledAppointments: data.scheduledAppointmentCount || 0,
+            readyForPickup: data.repairedWarrantyClaimCount || 0,
+            activeCampaigns: data.activeCampaignCount || 0,
+          });
+
+          // Cập nhật line chart (Warranty Claims Last 6 Months)
+          if (data.warrantyClaimLastSixMonths) {
+            const labels = data.warrantyClaimLastSixMonths.map(
+              (item) => item.monthName
+            );
+            const chartData = data.warrantyClaimLastSixMonths.map(
+              (item) => item.count
+            );
+            setLineChartData({
+              labels: labels,
+              series: [
+                {
+                  data: chartData,
+                  label: "Claims",
+                  color: "var(--primary-color, #00509d)",
+                  area: true,
+                  showMark: false,
+                },
+              ],
+            });
+          }
+
+          // Cập nhật pie chart (Technician Workload)
+          if (data.techWorkOrderCounts) {
+            const colors = ["#00509D", "#0079B8", "#00A3D2", "#00CCEB", "#5CE1E6"];
+            const pieChartData = data.techWorkOrderCounts.map((tech, index) => ({
+              id: index,
+              value: tech.workOrderCount,
+              label: tech.techName,
+              color: colors[index % colors.length],
+            }));
+            setPieData(pieChartData);
+          }
+
+          // Cập nhật bar chart (Campaign Progress)
+          if (data.activeCampaignProgress) {
+            setCampaignProgressData({
+              labels: ["Active Campaigns"],
+              series: [
+                {
+                  label: "Completed",
+                  data: [data.activeCampaignProgress.completed || 0],
+                  color: "#2e7d32",
+                },
+                {
+                  label: "In Progress",
+                  data: [data.activeCampaignProgress.inProgress || 0],
+                  color: "#ed6c02",
+                },
+                {
+                  label: "Pending",
+                  data: [data.activeCampaignProgress.pending || 0],
+                  color: "#d32f2f",
+                },
+              ],
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoadingStats(false);
+        setLoadingCharts(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [])
 
   return (
     <Box sx={{ p: 3, backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
@@ -233,51 +306,70 @@ const Dashboard = () => {
         <Grid item xs={12} md={4}>
           <Paper
             elevation={3}
-            sx={{ p: 3, borderRadius: "12px", height: "400px" }}
+            sx={{
+              p: 3,
+              borderRadius: "12px",
+              height: "400px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
           >
             <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
               Technician Workload
             </Typography>
+
             {loadingCharts ? (
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: 300,
+                  flexGrow: 1,
                 }}
               >
                 <CircularProgress />
               </Box>
             ) : (
-              <PieChart
-                series={[
-                  {
-                    data: pieData,
-                    arcLabel: (item) => `${item.value}`,
-                    innerRadius: 40,
-                    outerRadius: 100,
-                    paddingAngle: 3,
-                    cornerRadius: 5,
-                  },
-                ]}
+              <Box
                 sx={{
-                  [`& .${pieArcLabelClasses.root}`]: {
-                    fill: "white",
-                    fontWeight: "bold",
-                    fontSize: 14,
-                  },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexGrow: 1,
                 }}
-                height={300}
-                legend={{
-                  hidden: false,
-                  direction: "row",
-                  position: { vertical: "bottom", horizontal: "middle" },
-                  itemMarkWidth: 10,
-                  itemMarkHeight: 10,
-                  padding: 10,
-                }}
-              />
+              >
+                <PieChart
+                  width={300} // 👈 cố định kích thước để không co lại
+                  height={300}
+                  series={[
+                    {
+                      data: pieData,
+                      arcLabel: (item) => `${item.value}`,
+                      innerRadius: 60,
+                      outerRadius: 100,
+                      paddingAngle: 3,
+                      cornerRadius: 5,
+                      animation: false, // 👈 tắt animation tự động co lại
+                    },
+                  ]}
+                  sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                      fill: "white",
+                      fontWeight: "bold",
+                      fontSize: 14,
+                    },
+                  }}
+                  legend={{
+                    hidden: false,
+                    direction: "row",
+                    position: { vertical: "bottom", horizontal: "middle" },
+                    itemMarkWidth: 10,
+                    itemMarkHeight: 10,
+                    padding: 10,
+                  }}
+                />
+              </Box>
             )}
           </Paper>
         </Grid>

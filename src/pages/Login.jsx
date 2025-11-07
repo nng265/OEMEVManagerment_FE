@@ -36,7 +36,15 @@ const Login = () => {
       const loginResult = await login(formData.username, formData.password);
 
       if (loginResult && loginResult.success) {
-        navigate("/"); // Redirect to dashboard on success
+        // Get user data from localStorage to check role
+        const userData = JSON.parse(localStorage.getItem("user"));
+        
+        // Redirect based on role
+        if (userData && userData.role === "EVM_STAFF") {
+          navigate("/dashboardevmstaff");
+        } else {
+          navigate("/dashboard"); // SC_STAFF or other roles
+        }
       } else {
         // Use message from loginResult or a default one
         setError(loginResult?.message || "Invalid username or password.");
