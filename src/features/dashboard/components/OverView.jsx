@@ -4,8 +4,8 @@ import { BarChart, Bar, Tooltip, Legend, XAxis, YAxis } from "recharts";
 export default function OverView({
   stats,
   loading,
-  selectedYear,
-  onYearChange,
+  selectedUnit,
+  onUnitChange,
 }) {
   if (loading) return <p>Loading dashboard...</p>;
 
@@ -82,21 +82,18 @@ export default function OverView({
         ))}
       </div>
 
-      {/* ✅ Filter Year */}
+      {/* ✅ Filter Unit */}
       <Typography variant="body1" sx={{ mb: 1 }}>
-        Filter theo năm
+        Filter by Period
       </Typography>
       <Select
         size="small"
         sx={{ mb: 3, width: 160, background: "#fff" }}
-        value={selectedYear}
-        onChange={(e) => onYearChange(Number(e.target.value))}
+        value={selectedUnit}
+        onChange={(e) => onUnitChange(e.target.value)}
       >
-        {[2024, 2025, 2026].map((y) => (
-          <MenuItem key={y} value={y}>
-            {y}
-          </MenuItem>
-        ))}
+        <MenuItem value="m">Current Month</MenuItem>
+        <MenuItem value="y">Current Year</MenuItem>
       </Select>
 
       {/* ✅ Chart Card */}

@@ -1,7 +1,6 @@
 // src/pages/Dashboard/Dashboard.jsx (hoặc đường dẫn của bạn)
 
 import React, { useState, useEffect } from "react";
-// ⚠️ HÃY CHẮC CHẮN ĐƯỜNG DẪN NÀY ĐÚNG
 import { useAuth } from "../context/AuthContext";
 import {
   Box,
@@ -17,7 +16,7 @@ import {
   PieChart,
   pieArcLabelClasses,
 } from "@mui/x-charts";
-// ⚠️ HÃY CHẮC CHẮN ĐƯỜNG DẪN NÀY ĐÚNG
+
 import { request, ApiEnum } from "../services/NetworkUntil";
 
 // --- Biểu tượng (Icon) ---
@@ -220,11 +219,6 @@ const Dashboard = () => {
         Service Center Dashboard
       </Typography>
 
-      {/* =================================================================
-        ⬇️ SỬA LỖI NẰM Ở ĐÂY ⬇️
-        Thêm: sx={{ flexDirection: 'row' }}
-        =================================================================
-      */}
       <Grid container spacing={3} sx={{ mb: 3, flexDirection: "row" }}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
@@ -264,11 +258,6 @@ const Dashboard = () => {
         </Grid>
       </Grid>
 
-      {/* =================================================================
-        ⬇️ SỬA LỖI NẰM Ở ĐÂY ⬇️
-        Thêm: sx={{ flexDirection: 'row' }}
-        =================================================================
-      */}
       <Grid container spacing={3} sx={{ flexDirection: "row" }}>
         {/* Biểu đồ đường (Line Chart) */}
         <Grid item xs={12} md={8}>

@@ -11,6 +11,16 @@ export const ApiEnum = {
   GET_DASHBOARD_SC_SUMMARY: { path: "/Dashboard/sc/summary", method: "GET" },
   GET_DASHBOARD_EVM_SUMMARY: { path: "/Dashboard/evm/summary", method: "GET" },
 
+  // Dashboard EVM Staff - Individual APIs
+  API_GET_TOTAL_WARRANTY_CLAIMS: { path: "/WarrantyClaim/count/sent-to-manufacturer", method: "GET" },
+  API_GET_TOTAL_PARTS_REQUESTS: { path: "/PartOrder/count", method: "GET" },
+  API_GET_ACTIVE_CAMPAIGNS_COUNT: { path: "/Campaign/count", method: "GET" },
+  API_GET_CAMPAIGN_PARTICIPATION: { path: "/Campaign/participation-aggregate", method: "GET" },
+  API_GET_WARRANTY_CLAIMS_TREND: { path: "/WarrantyClaim/counts", method: "GET" },
+  API_GET_TOP_WARRANTY_POLICIES: { path: "/WarrantyClaim/top-policies", method: "GET" },
+  API_GET_PARTS_REQUEST_RANKING: { path: "/PartOrder/top-requested-parts", method: "GET" },
+  API_GET_WARRANTY_BY_SERVICE_CENTER: { path: "/WarrantyClaim/top-service-centers", method: "GET" },
+
   // GET_FUNCTIONS: { path: "/functions", method: "GET" },
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },
   // GET_WARRANTY_CLAIM_DETAIL: { path: "/WarrantyClaim/detail", method: "GET" },
@@ -24,6 +34,8 @@ export const ApiEnum = {
   GET_TECHNICIANS: { path: "/Employee", method: "GET" },
 
   GET_WORK_ORDERS_BY_TECH: { path: "/workOrder", method: "GET" },
+  GET_WORK_ORDER_TASK_COUNTS: { path: "/WorkOrder/task-counts", method: "GET" },
+  GET_WORK_ORDER_TASK_GROUP_COUNTS: { path: "/WorkOrder/task-group-counts", method: "GET" },
   GET_INSPECTION_ORDERS: {
     path: "/WorkOrder/by-tech/inspection",
     method: "GET",
