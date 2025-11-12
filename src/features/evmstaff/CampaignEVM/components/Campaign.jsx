@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./Campaign.css";
 
@@ -13,35 +14,27 @@ export const Campaign = ({
   onView,
   onAdd,
   onPageChange,
-  onSearch,
-  onFilterType,
-  onFilterStatus,
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
+  typeFilter = "",
+  onTypeFilterChange,
+  statusFilter = "",
+  onStatusFilterChange,
 }) => {
-  // Local filter states mimic ServiceCenterInventory behavior
-  const [query, setQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  // Type and Status options
+  const typeOptions = [
+    { value: "", label: "All Types" },
+    { value: "Service", label: "Service" },
+    { value: "Recall", label: "Recall" },
+  ];
 
-  useEffect(() => {
-    if (typeof onSearch === "function") onSearch(query);
-  }, [query, onSearch]);
-
-  useEffect(() => {
-    if (typeof onFilterType === "function") onFilterType(typeFilter);
-  }, [typeFilter, onFilterType]);
-
-  useEffect(() => {
-    if (typeof onFilterStatus === "function") onFilterStatus(statusFilter);
-  }, [statusFilter, onFilterStatus]);
-  // Derive filter options from data to keep it in sync with what's shown
-  const typeOptions = Array.from(
-    new Set((data || []).map((c) => c.type).filter(Boolean))
-  );
-  const statusOptions = Array.from(
-    new Set((data || []).map((c) => c.status).filter(Boolean))
-  );
+  const statusOptions = [
+    { value: "", label: "All Status" },
+    { value: "Active", label: "Active" },
+    { value: "Close", label: "Close" },
+  ];
 
   const columns = [
     { key: "title", label: "Campaign" },
@@ -112,52 +105,39 @@ export const Campaign = ({
         </Button>
       </div>
 
-      {/* Filters (search + type + status) */}
-      {/* <div
-        className="campaign-filters"
-        style={{ display: "flex", gap: 8, marginBottom: 12 }}
-      >
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 1, minWidth: 220 }}
-        />
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-        >
-          <option value="">All Types</option>
-          {typeOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">All Statuses</option>
-          {statusOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setQuery("");
-            setTypeFilter("");
-            setStatusFilter("");
-          }}
-          disabled={!query && !typeFilter && !statusFilter}
-        >
-          Clear
-        </Button>
-      </div> */}
+      {/* Search Bar and Filters */}
+      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by Title..."
+            value={searchQuery}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={typeFilter}
+            onChange={onTypeFilterChange}
+            options={typeOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={statusFilter}
+            onChange={onStatusFilterChange}
+            options={statusOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+      </div>
 
       <div className="campaign-table__content">
         <DataTable
@@ -192,11 +172,14 @@ Campaign.propTypes = {
   onView: PropTypes.func,
   onAdd: PropTypes.func.isRequired,
   onPageChange: PropTypes.func,
-  onSearch: PropTypes.func,
-  onFilterType: PropTypes.func,
-  onFilterStatus: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  typeFilter: PropTypes.string,
+  onTypeFilterChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
 };
 
 export default Campaign;

@@ -102,6 +102,26 @@
   border-color: #117a8b;
 }
 
+.btn-light {
+  color: var(--text-dark, #212529);
+  background-color: var(--light-color, #f8f9fa);
+  border-color: var(--light-color, #f8f9fa);
+}
+.btn-light:hover {
+  background-color: var(--light-darker, #e2e6ea);
+  border-color: var(--light-darker, #e2e6ea);
+}
+
+.btn-dark {
+  color: var(--text-light, #ffffff);
+  background-color: var(--dark-color, #343a40);
+  border-color: var(--dark-color, #343a40);
+}
+.btn-dark:hover {
+  background-color: var(--dark-darker, #23272b);
+  border-color: var(--dark-darker, #23272b);
+}
+
 .btn-link {
   color: var(--color-primary);
   text-decoration: none;

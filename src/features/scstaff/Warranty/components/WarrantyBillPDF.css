@@ -1,0 +1,240 @@
+/* src/features/scstaff/Warranty/components/WarrantyBillPDF.css */
+
+.warranty-bill-pdf {
+  background: white;
+  padding: 40px;
+  font-family: "Arial", sans-serif;
+  color: #333;
+  max-width: 210mm; /* A4 width */
+  margin: 0 auto;
+}
+
+/* Header */
+.bill-header {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #2c3e50;
+  padding-bottom: 20px;
+}
+
+.bill-header h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.bill-info {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.bill-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.status-denied {
+  background-color: #fee;
+  color: #c33;
+}
+
+.status-repaired {
+  background-color: #efe;
+  color: #3c3;
+}
+
+/* Sections */
+.bill-section {
+  margin-bottom: 25px;
+  page-break-inside: avoid;
+}
+
+.bill-section h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+/* Grid Layout */
+.bill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.bill-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bill-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.bill-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bill-value {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+/* Table */
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.bill-table th {
+  background-color: #3498db;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.bill-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: top;
+}
+
+.bill-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.bill-table tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* Images */
+.bill-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.bill-image-container {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.bill-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Signatures */
+.signatures {
+  margin-top: 40px;
+  page-break-inside: avoid;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.signature-box {
+  text-align: center;
+}
+
+.signature-line {
+  border-bottom: 2px solid #333;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+.signature-label {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 5px 0;
+  color: #2c3e50;
+}
+
+.signature-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #2c3e50;
+  margin: 8px 0;
+  text-transform: uppercase;
+}
+
+.signature-date {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Footer */
+.bill-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px solid #ddd;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+}
+
+.bill-footer p {
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+/* Print styles */
+@media print {
+  .warranty-bill-pdf {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .bill-section {
+    page-break-inside: avoid;
+  }
+
+  .bill-header h1 {
+    font-size: 28px;
+  }
+
+  .bill-section h2 {
+    font-size: 16px;
+  }
+}

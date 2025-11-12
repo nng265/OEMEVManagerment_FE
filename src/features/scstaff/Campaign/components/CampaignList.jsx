@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./CampaignList.css";
 
@@ -15,7 +16,26 @@ const CampaignList = ({
   onPageChange,
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
+  typeFilter = "",
+  onTypeFilterChange,
+  statusFilter = "",
+  onStatusFilterChange,
 }) => {
+  // Type options for filter
+  const typeOptions = [
+    { value: "", label: "All Types" },
+    { value: "Service", label: "Service" },
+    { value: "Recall", label: "Recall" },
+  ];
+
+  // Status options for filter
+  const statusOptions = [
+    { value: "", label: "All Status" },
+    { value: "Active", label: "Active" },
+    { value: "Close", label: "Close" },
+  ];
   const columns = [
     { key: "title", label: "Campaign" },
     { key: "type", label: "Type" },
@@ -89,6 +109,40 @@ const CampaignList = ({
     <div className="campaign-table">
       <h2 className="size-h1">Campaign Management</h2>
 
+      {/* Search Bar and Filters */}
+      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by Campaign Title..."
+            value={searchQuery}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={typeFilter}
+            onChange={onTypeFilterChange}
+            options={typeOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={statusFilter}
+            onChange={onStatusFilterChange}
+            options={statusOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+      </div>
+
       <DataTable
         data={rows}
         columns={columns}
@@ -125,6 +179,12 @@ CampaignList.propTypes = {
   onFilterStatus: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  typeFilter: PropTypes.string,
+  onTypeFilterChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
 };
 
 export default CampaignList;

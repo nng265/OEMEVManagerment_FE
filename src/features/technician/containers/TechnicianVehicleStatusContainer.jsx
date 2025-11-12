@@ -19,11 +19,42 @@ export const TechnicianVehicleStatusContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
+
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [targetFilter, setTargetFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+
   const paginationRef = useRef(pagination);
+  const searchRef = useRef("");
+  const targetRef = useRef("");
+  const typeRef = useRef("");
 
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
+
+  useEffect(() => {
+    searchRef.current = debouncedSearchQuery;
+  }, [debouncedSearchQuery]);
+
+  useEffect(() => {
+    targetRef.current = targetFilter;
+  }, [targetFilter]);
+
+  useEffect(() => {
+    typeRef.current = typeFilter;
+  }, [typeFilter]);
+
+  // Debounce search query để tránh request liên tục
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500); // Delay 500ms sau khi user ngừng gõ
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   // --- UPDATED COLUMNS DEFINITION ---
   const columns = [
@@ -122,17 +153,41 @@ export const TechnicianVehicleStatusContainer = () => {
     }
   }, []);
 
-  const fetchWorkOrders = useCallback(async (pageNumber = 0, pageSize) => {
+  const fetchWorkOrders = useCallback(async (pageNumber = 0, pageSize, search, target, type) => {
     const effectivePageSize =
       typeof pageSize === "number" ? pageSize : paginationRef.current.pageSize;
+    const effectiveSearch =
+      typeof search === "string" ? search : searchRef.current;
+    const effectiveTarget =
+      typeof target === "string" ? target : targetRef.current;
+    const effectiveType =
+      typeof type === "string" ? type : typeRef.current;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, {
+      const params = {
         Page: pageNumber,
         Size: effectivePageSize,
-      });
+      };
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      // Thêm target filter nếu có
+      if (effectiveTarget && effectiveTarget.trim()) {
+        params.Target = effectiveTarget.trim();
+      }
+
+      // Thêm type filter nếu có
+      if (effectiveType && effectiveType.trim()) {
+        params.Type = effectiveType.trim();
+      }
+
+      const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, params);
 
       const { success, items, totalRecords, page, size, message } =
         normalizePagedResult(response, []);
@@ -176,10 +231,13 @@ export const TechnicianVehicleStatusContainer = () => {
   }, []);
 
   useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchWorkOrders(0, paginationRef.current.pageSize);
     fetchCategories();
-  }, [fetchWorkOrders, fetchCategories]);
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
+    fetchWorkOrders(0, paginationRef.current.pageSize, debouncedSearchQuery, targetFilter, typeFilter);
+  }, [fetchWorkOrders, debouncedSearchQuery, targetFilter, typeFilter]);
 
   // const fetchWorkOrders = async () => {
   //   setIsLoading(true);
@@ -333,7 +391,7 @@ export const TechnicianVehicleStatusContainer = () => {
       ...payload,
     });
     const { pageNumber, pageSize } = paginationRef.current;
-    await fetchWorkOrders(pageNumber, pageSize);
+    await fetchWorkOrders(pageNumber, pageSize, searchRef.current, targetRef.current, typeRef.current);
     return res;
   };
 
@@ -353,7 +411,7 @@ export const TechnicianVehicleStatusContainer = () => {
 
     const res = await request(endpoint, data);
     const { pageNumber, pageSize } = paginationRef.current;
-    await fetchWorkOrders(pageNumber, pageSize);
+    await fetchWorkOrders(pageNumber, pageSize, searchRef.current, targetRef.current, typeRef.current);
     return res;
   };
 
@@ -371,7 +429,7 @@ export const TechnicianVehicleStatusContainer = () => {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      fetchWorkOrders(page, size);
+      fetchWorkOrders(page, size, searchRef.current, targetRef.current, typeRef.current);
     },
     [fetchWorkOrders]
   );
@@ -379,9 +437,27 @@ export const TechnicianVehicleStatusContainer = () => {
   const handleRefresh = useCallback(() => {
     fetchWorkOrders(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchRef.current,
+      targetRef.current,
+      typeRef.current
     );
   }, [fetchWorkOrders]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+  };
+
+  const handleTargetFilterChange = (e) => {
+    const value = e.target.value || "";
+    setTargetFilter(value);
+  };
+
+  const handleTypeFilterChange = (e) => {
+    const value = e.target.value || "";
+    setTypeFilter(value);
+  };
 
   return (
     <TechnicianVehicleStatusView
@@ -393,6 +469,12 @@ export const TechnicianVehicleStatusContainer = () => {
       onPageChange={handlePageChange}
       onRefresh={handleRefresh}
       refreshing={isLoading}
+      searchQuery={searchQuery}
+      onSearchChange={handleSearchChange}
+      targetFilter={targetFilter}
+      onTargetFilterChange={handleTargetFilterChange}
+      typeFilter={typeFilter}
+      onTypeFilterChange={handleTypeFilterChange}
       selectedWorkOrder={selectedWorkOrder}
       showDetailModal={showDetailModal}
       onCloseDetailModal={handleCloseDetailModal}

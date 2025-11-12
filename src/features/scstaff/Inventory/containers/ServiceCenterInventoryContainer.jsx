@@ -33,6 +33,8 @@ export const ServiceCenterInventoryContainer = () => {
   });
   const latestRequestRef = useRef(0);
   const paginationRef = useRef(pagination);
+  const searchRef = useRef("");
+  const statusFilterRef = useRef("");
 
   useEffect(() => {
     paginationRef.current = pagination;
@@ -41,6 +43,15 @@ export const ServiceCenterInventoryContainer = () => {
   // ===== STATE: SEARCH & FILTER =====
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  useEffect(() => {
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
+
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
 
   // ===== STATE: CREATE REQUEST =====
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -81,7 +92,7 @@ export const ServiceCenterInventoryContainer = () => {
   }, [fetchCategories]);
 
   // ========== 1️⃣ LOAD INVENTORY ==========
-  const fetchInventory = useCallback(async (pageNumber = 0, size) => {
+  const fetchInventory = useCallback(async (pageNumber = 0, size, search, status) => {
     const effectiveSize =
       typeof size === "number" && size > 0
         ? size
@@ -90,6 +101,10 @@ export const ServiceCenterInventoryContainer = () => {
       typeof pageNumber === "number" && pageNumber >= 0
         ? pageNumber
         : paginationRef.current.pageNumber;
+    const effectiveSearch =
+      typeof search === "string" ? search : searchRef.current;
+    const effectiveStatus =
+      typeof status === "string" ? status : statusFilterRef.current;
 
     const requestId = latestRequestRef.current + 1;
     latestRequestRef.current = requestId;
@@ -98,10 +113,22 @@ export const ServiceCenterInventoryContainer = () => {
     setError(null);
 
     try {
-      const response = await request(ApiEnum.GET_PART, {
+      const params = {
         Page: effectivePage,
         Size: effectiveSize,
-      });
+      };
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      // Thêm status filter nếu có
+      if (effectiveStatus && effectiveStatus.trim()) {
+        params.Status = effectiveStatus.trim();
+      }
+
+      const response = await request(ApiEnum.GET_PART, params);
 
       const {
         success,
@@ -176,47 +203,13 @@ export const ServiceCenterInventoryContainer = () => {
   useEffect(() => {
     fetchInventory(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchQuery,
+      statusFilter
     );
   }, [fetchInventory]);
 
   // ========== 2️⃣ SEARCH + FILTER (Combined) ==========
-  // Apply both search and filter together whenever items, query, or category changes
-  useEffect(() => {
-    let result = [...items];
-
-    // Apply search filter
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter((item) => item.model?.toLowerCase().includes(q));
-    }
-
-    // Apply category filter
-    if (selectedCategory) {
-      result = result.filter((item) => item.category === selectedCategory);
-    }
-
-    setFilteredItems(result);
-  }, [items, searchQuery, selectedCategory]);
-
-  useEffect(() => {
-    setClientPagination((prev) => ({
-      ...prev,
-      pageNumber: 0,
-    }));
-  }, [searchQuery, selectedCategory]);
-
-  const filtersActive = Boolean(searchQuery) || Boolean(selectedCategory);
-
-  useEffect(() => {
-    if (!filtersActive) {
-      setClientPagination((prev) => ({
-        ...prev,
-        pageSize: pagination.pageSize,
-      }));
-    }
-  }, [filtersActive, pagination.pageSize]);
-
   const handleSearch = useCallback((query) => {
     setSearchQuery(query || "");
   }, []);
@@ -224,6 +217,20 @@ export const ServiceCenterInventoryContainer = () => {
   const handleFilter = useCallback((category) => {
     setSelectedCategory(category || "");
   }, []);
+
+  const handleSearchChange = useCallback((e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+    // Reset về trang đầu khi search
+    fetchInventory(0, paginationRef.current.pageSize, value, statusFilterRef.current);
+  }, [fetchInventory]);
+
+  const handleStatusFilterChange = useCallback((e) => {
+    const value = e.target.value || "";
+    setStatusFilter(value);
+    // Reset về trang đầu khi đổi status
+    fetchInventory(0, paginationRef.current.pageSize, searchRef.current, value);
+  }, [fetchInventory]);
 
   // ========== 3️⃣ CREATE REQUEST ==========
   // Fetch all part models for dropdown (called initially)
@@ -339,38 +346,12 @@ export const ServiceCenterInventoryContainer = () => {
   };
 
   // Pagination handler
-  const derivedPagination = useMemo(
-    () =>
-      filtersActive
-        ? {
-            pageNumber: clientPagination.pageNumber,
-            pageSize: clientPagination.pageSize,
-            totalRecords: filteredItems.length,
-          }
-        : pagination,
-    [filtersActive, clientPagination, pagination, filteredItems.length]
-  );
-
   const handlePageChange = useCallback(
     (pageIndex, newPageSize) => {
-      const baseSize = filtersActive
-        ? clientPagination.pageSize
-        : paginationRef.current.pageSize;
       const nextSize =
         typeof newPageSize === "number" && newPageSize > 0
           ? newPageSize
-          : baseSize;
-
-      if (filtersActive) {
-        setClientPagination((prev) => ({
-          pageNumber: Math.max(
-            0,
-            typeof pageIndex === "number" ? pageIndex : prev.pageNumber
-          ),
-          pageSize: nextSize,
-        }));
-        return;
-      }
+          : paginationRef.current.pageSize;
 
       const nextPage = Math.max(
         0,
@@ -379,20 +360,17 @@ export const ServiceCenterInventoryContainer = () => {
           : paginationRef.current.pageNumber
       );
 
-      setClientPagination((prev) => ({
-        ...prev,
-        pageSize: nextSize,
-      }));
-
-      fetchInventory(nextPage, nextSize);
+      fetchInventory(nextPage, nextSize, searchRef.current, statusFilterRef.current);
     },
-    [fetchInventory, filtersActive, clientPagination.pageSize]
+    [fetchInventory]
   );
 
   const handleRefresh = useCallback(() => {
     fetchInventory(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchRef.current,
+      statusFilterRef.current
     );
   }, [fetchInventory]);
 
@@ -410,18 +388,22 @@ export const ServiceCenterInventoryContainer = () => {
 
       {/* Bảng Inventory */}
       <ServiceCenterInventory
-        data={filtersActive ? filteredItems : items}
+        data={items}
         categories={categories}
         loading={loading}
         error={error}
         onSearch={handleSearch}
         onFilter={handleFilter}
         onRequest={handleRequestPart}
-        serverSide={!filtersActive}
-        pagination={derivedPagination}
+        serverSide={true}
+        pagination={pagination}
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        statusFilter={statusFilter}
+        onStatusFilterChange={handleStatusFilterChange}
       />
 
       {/* Modal tạo request */}

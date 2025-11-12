@@ -5,6 +5,7 @@ import { Button } from "../../../../components/atoms/Button/Button";
 import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 
 
 export const AssignTechnicianModal = (props) => {
@@ -99,12 +100,14 @@ export const AssignTechnicianModal = (props) => {
   // Assign Technician Section
   const assignTechnicianSection = (
     <DetailSection title="Assign Technician">
-      <div className="technicians-section">
-        {technicians.map((tech) => (
-          <div key={tech.id} className="technician-row">
-            {loading ? (
-              <div className="select-loading">Loading...</div>
-            ) : (
+      {loading ? (
+        <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <div className="technicians-section">
+          {technicians.map((tech) => (
+            <div key={tech.id} className="technician-row">
               <select
                 className="form-select tech-select"
                 value={tech.selectedValue || ""}
@@ -136,37 +139,37 @@ export const AssignTechnicianModal = (props) => {
                   ) : null;
                 })}
               </select>
-            )}
-            {technicians.length > 1 && (
-              <Button
-                type="button"
-                variant="danger"
-                size="small"
-                onClick={() => handleRemoveTechnician(tech.id)}
-              >
-                Remove
-              </Button>
-            )}
-          </div>
-        ))}
-        <Button
-          type="button"
-          variant="secondary"
-          size="small"
-          onClick={handleAddTechnician}
-          className="mt-2"
-        >
-          Add Technician
-        </Button>
-        {error && !loading && (
-          <div
-            className="select-error"
-            style={{ marginTop: "10px", color: "red" }}
+              {technicians.length > 1 && (
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="small"
+                  onClick={() => handleRemoveTechnician(tech.id)}
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="secondary"
+            size="small"
+            onClick={handleAddTechnician}
+            className="mt-2"
           >
-            {error}
-          </div>
-        )}
-      </div>
+            Add Technician
+          </Button>
+          {error && (
+            <div
+              className="select-error"
+              style={{ marginTop: "10px", color: "red" }}
+            >
+              {error}
+            </div>
+          )}
+        </div>
+      )}
     </DetailSection>
   );
 

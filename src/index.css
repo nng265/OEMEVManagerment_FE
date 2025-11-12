@@ -39,10 +39,31 @@
   --bs-dark-darker: var(--dark-darker);
   --bs-primary-rgb: 0, 80, 157; /* RGB for primary color */
 
+  /* Semantic Colors */
+  --color-primary: var(--primary-color);
+  --color-primary-light: rgba(0, 80, 157, 0.1);
+  --color-secondary: var(--secondary-color);
+  --color-secondary-light: #e9ecef;
+  --color-success: var(--success-color);
+  --color-danger: var(--danger-color);
+  --color-danger-light: rgba(220, 53, 69, 0.1);
+  --color-warning: var(--warning-color);
+  --color-info: var(--info-color);
+  --color-surface: #ffffff;
+  --color-text-primary: var(--text-dark);
+  --color-text-secondary: #495057;
+  --color-text-muted: var(--text-muted);
+
   /* Layout */
   --navbar-height: 64px;
   --sidebar-open-width: 260px;
   --sidebar-collapsed-width: 80px;
+
+  /* Border Radius */
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
 
   /* Transitions */
   --transition-speed: 0.3s;

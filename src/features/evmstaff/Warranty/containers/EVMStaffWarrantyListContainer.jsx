@@ -18,25 +18,77 @@ export const EVMStaffWarrantyListContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("sent to manufacturer"); // Mặc định là "sent to manufacturer"
+  const [statusOptions, setStatusOptions] = useState([
+    { value: "", label: "All Statuses" }
+  ]);
+
   const paginationRef = useRef(pagination);
+  const searchRef = useRef("");
+  const statusFilterRef = useRef("");
 
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
 
+  useEffect(() => {
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
+
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
+
+  // === Fetch status options ===
+  useEffect(() => {
+    const fetchStatusOptions = async () => {
+      try {
+        const response = await request(ApiEnum.GET_WARRANTY_STATUSES);
+        if (response.success && Array.isArray(response.data)) {
+          setStatusOptions([
+            { value: "", label: "All Statuses" },
+            ...response.data.map((s) => ({ value: s, label: s })),
+          ]);
+        }
+      } catch (err) {
+        console.error("Error loading status options:", err);
+        setStatusOptions([{ value: "", label: "All Statuses" }]);
+      }
+    };
+    fetchStatusOptions();
+  }, []);
+
   // === Fetch danh sách claim ===
-  const fetchClaims = useCallback(async (pageNumber = 0, pageSize) => {
+  const fetchClaims = useCallback(async (pageNumber = 0, pageSize, search, status) => {
     const effectivePageSize =
       typeof pageSize === "number" ? pageSize : paginationRef.current.pageSize;
+    const effectiveSearch =
+      typeof search === "string" ? search : searchRef.current;
+    const effectiveStatus =
+      typeof status === "string" ? status : statusFilterRef.current;
+
     setLoading(true);
     setError(null);
 
     try {
-      const res = await request(ApiEnum.GET_WARRANTY_CLAIMS, {
+      const params = {
         Page: pageNumber,
         Size: effectivePageSize,
-        Status: "sent to manufacturer",
-      });
+      };
+
+      // Chỉ thêm Status nếu có giá trị (không phải empty string)
+      // Nếu empty string thì không gửi Status param lên API (= All Statuses)
+      if (effectiveStatus && effectiveStatus.trim()) {
+        params.Status = effectiveStatus.trim();
+      }
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      const res = await request(ApiEnum.GET_WARRANTY_CLAIMS, params);
 
       const { success, items, totalRecords, page, size, message } =
         normalizePagedResult(res, []);
@@ -80,8 +132,8 @@ export const EVMStaffWarrantyListContainer = () => {
   // === Load lần đầu ===
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchClaims(0, paginationRef.current.pageSize);
-  }, [fetchClaims]);
+    fetchClaims(0, paginationRef.current.pageSize, searchQuery, statusFilter);
+  }, [fetchClaims, searchQuery, statusFilter]);
 
   // === Các handler API ===
   const handleApprove = async (claimId, vehicleWarrantyId) => {
@@ -91,7 +143,7 @@ export const EVMStaffWarrantyListContainer = () => {
       await request(ApiEnum.APPROVE_WARRANTY_CLAIM, payload);
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchClaims(pageNumber, pageSize);
+      fetchClaims(pageNumber, pageSize, searchRef.current, statusFilterRef.current);
       toast.success("Claim approved successfully!");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to approve";
@@ -107,7 +159,7 @@ export const EVMStaffWarrantyListContainer = () => {
       await request(ApiEnum.DENY_WARRANTY, { params: { claimId } });
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchClaims(pageNumber, pageSize);
+      fetchClaims(pageNumber, pageSize, searchRef.current, statusFilterRef.current);
       toast.success("Claim denied successfully!");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to deny";
@@ -124,7 +176,7 @@ export const EVMStaffWarrantyListContainer = () => {
       await request(ApiEnum.BACK_WARRANTY, payload);
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchClaims(pageNumber, pageSize);
+      fetchClaims(pageNumber, pageSize, searchRef.current, statusFilterRef.current);
       toast.success("Reason submitted. Request sent back for more info.");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to send back";
@@ -136,7 +188,7 @@ export const EVMStaffWarrantyListContainer = () => {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      fetchClaims(page, size);
+      fetchClaims(page, size, searchRef.current, statusFilterRef.current);
     },
     [fetchClaims]
   );
@@ -144,9 +196,21 @@ export const EVMStaffWarrantyListContainer = () => {
   const handleRefresh = useCallback(() => {
     fetchClaims(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchRef.current,
+      statusFilterRef.current
     );
   }, [fetchClaims]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+  };
+
+  const handleStatusFilterChange = (e) => {
+    const value = e.target.value || "";
+    setStatusFilter(value);
+  };
 
   // === UI render ===
   return (
@@ -160,6 +224,11 @@ export const EVMStaffWarrantyListContainer = () => {
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        statusFilter={statusFilter}
+        onStatusFilterChange={handleStatusFilterChange}
+        statusOptions={statusOptions}
       />
 
       <EVMStaffConfirmationModal

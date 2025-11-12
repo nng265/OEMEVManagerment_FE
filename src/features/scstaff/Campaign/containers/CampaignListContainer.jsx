@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 
 const CampaignListContainer = () => {
   const [campaigns, setCampaigns] = useState([]);
-  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
@@ -16,14 +15,11 @@ const CampaignListContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
-  const [clientPagination, setClientPagination] = useState({
-    pageNumber: 0,
-    pageSize: 10,
-  });
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -35,48 +31,78 @@ const CampaignListContainer = () => {
   const [isActionLoading, setIsActionLoading] = useState(false);
   const pendingAddRef = useRef(null);
 
-  // removed unused paginationRef
   const latestRequestRef = useRef(0);
+  const paginationRef = useRef(pagination);
+  const searchRef = useRef("");
+  const typeFilterRef = useRef("");
+  const statusFilterRef = useRef("");
 
-  const fetchCampaigns = useCallback(async (pageNumber = 0, size = 10) => {
+  useEffect(() => {
+    paginationRef.current = pagination;
+  }, [pagination]);
+
+  useEffect(() => {
+    searchRef.current = debouncedSearchQuery;
+  }, [debouncedSearchQuery]);
+
+  // Debounce search query để tránh request liên tục
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500); // Delay 500ms sau khi user ngừng gõ
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    typeFilterRef.current = typeFilter;
+  }, [typeFilter]);
+
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
+
+  const fetchCampaigns = useCallback(async (pageNumber = 0, size = 10, search, type, status) => {
     const requestId = ++latestRequestRef.current;
     setLoading(true);
     setError(null);
 
+    const effectiveSearch = typeof search === "string" ? search : searchRef.current;
+    const effectiveType = typeof type === "string" ? type : typeFilterRef.current;
+    const effectiveStatus = typeof status === "string" ? status : statusFilterRef.current;
+
     try {
-      const res = await request(ApiEnum.CAMPAIGN_SCSTAFF, {
+      const params = {
         Page: pageNumber,
         Size: size,
-      });
+      };
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      // Thêm type filter nếu có
+      if (effectiveType && effectiveType.trim()) {
+        params.Type = effectiveType.trim();
+      }
+
+      // Thêm status filter nếu có
+      if (effectiveStatus && effectiveStatus.trim()) {
+        params.Status = effectiveStatus.trim();
+      }
+
+      const res = await request(ApiEnum.CAMPAIGN_SCSTAFF, params);
 
       if (requestId !== latestRequestRef.current) return;
 
       const items = Array.isArray(res.data?.items) ? res.data.items : [];
-      // const normalized = items.map((item, index) => ({
-      //   id: item.campaignId ?? index,
-      //   title: item.title ?? "",
-      //   type: item.type ?? "",
-      //   partModel: item.partModel ?? "",
-      //   description: item.description ?? "",
-      //   startDate: item.startDate,
-      //   endDate: item.endDate,
-      //   completedVehicles: item.completedVehicles ?? "",
-      //   inProgressVehicles: item.inProgressVehicles ?? "",
-      //   pendingVehicles: item.pendingVehicles ?? "",
-      //   period:
-      //     item.startDate && item.endDate
-      //       ? `${item.startDate} to ${item.endDate}`
-      //       : "",
-      //   status: item.status ?? "",
-      //   _raw: item,
-      // }));
 
       setCampaigns(items);
-      setFilteredCampaigns(items);
       setPagination({
-        pageNumber: res.data.pageNumber,
-        pageSize: res.data.pageSize,
-        totalRecords: res.data.totalRecords,
+        pageNumber: res.data.pageNumber ?? pageNumber,
+        pageSize: res.data.pageSize ?? size,
+        totalRecords: res.data.totalRecords ?? items.length,
       });
     } catch (err) {
       console.error("Error loading campaigns:", err);
@@ -109,30 +135,27 @@ const CampaignListContainer = () => {
   }, []);
 
   useEffect(() => {
-    fetchCampaigns(pagination.pageNumber, pagination.pageSize);
-  }, [fetchCampaigns, pagination.pageNumber, pagination.pageSize]);
-
-  useEffect(() => {
-    let result = [...campaigns];
-    if (searchQuery)
-      result = result.filter((c) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    if (selectedType) result = result.filter((c) => c.type === selectedType);
-    if (selectedStatus)
-      result = result.filter((c) => c.status === selectedStatus);
-    setFilteredCampaigns(result);
-    setClientPagination((prev) => ({ ...prev, pageNumber: 0 }));
-  }, [campaigns, searchQuery, selectedType, selectedStatus]);
-
-  const filtersActive = searchQuery || selectedType || selectedStatus;
+    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
+    fetchCampaigns(0, pagination.pageSize, debouncedSearchQuery, typeFilter, statusFilter);
+  }, [fetchCampaigns, pagination.pageSize, debouncedSearchQuery, typeFilter, statusFilter]);
 
   const handlePageChange = (pageIndex, newPageSize) => {
-    if (filtersActive) {
-      setClientPagination({ pageNumber: pageIndex, pageSize: newPageSize });
-    } else {
-      fetchCampaigns(pageIndex, newPageSize);
-    }
+    fetchCampaigns(pageIndex, newPageSize, searchRef.current, typeFilterRef.current, statusFilterRef.current);
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+  };
+
+  const handleTypeFilterChange = (e) => {
+    const value = e.target.value || "";
+    setTypeFilter(value);
+  };
+
+  const handleStatusFilterChange = (e) => {
+    const value = e.target.value || "";
+    setStatusFilter(value);
   };
 
   const handleView = (campaign) => {
@@ -192,7 +215,13 @@ const CampaignListContainer = () => {
         toast.error(msg);
       }
       setShowAddModal(false);
-      await fetchCampaigns(pagination.pageNumber, pagination.pageSize);
+      await fetchCampaigns(
+        paginationRef.current.pageNumber,
+        paginationRef.current.pageSize,
+        searchRef.current,
+        typeFilterRef.current,
+        statusFilterRef.current
+      );
     } catch (err) {
       console.error("Failed to create campaign:", err);
       const msg =
@@ -208,33 +237,34 @@ const CampaignListContainer = () => {
   };
 
   const handleRefresh = useCallback(() => {
-    fetchCampaigns(pagination.pageNumber, pagination.pageSize);
-  }, [fetchCampaigns, pagination.pageNumber, pagination.pageSize]);
+    fetchCampaigns(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize,
+      searchRef.current,
+      typeFilterRef.current,
+      statusFilterRef.current
+    );
+  }, [fetchCampaigns]);
 
   return (
     <>
       <CampaignList
-        data={filtersActive ? filteredCampaigns : campaigns}
+        data={campaigns}
         loading={loading}
         error={error}
-        pagination={
-          filtersActive
-            ? {
-                pageNumber: clientPagination.pageNumber,
-                pageSize: clientPagination.pageSize,
-                totalRecords: filteredCampaigns.length,
-              }
-            : pagination
-        }
-        serverSide={!filtersActive}
+        pagination={pagination}
+        serverSide={true}
         onView={handleView}
         onAdd={handleAdd}
         onPageChange={handlePageChange}
-        onSearch={setSearchQuery}
-        onFilterType={setSelectedType}
-        onFilterStatus={setSelectedStatus}
         onRefresh={handleRefresh}
         refreshing={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        typeFilter={typeFilter}
+        onTypeFilterChange={handleTypeFilterChange}
+        statusFilter={statusFilter}
+        onStatusFilterChange={handleStatusFilterChange}
       />
 
       <ViewCampaignModal
