@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../components/atoms/Button/Button";
 import { Modal } from "../../../components/molecules/Modal/Modal";
+import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { formatDate } from "../../../services/helpers";
 import "./WorkOrderDetailModal.css";
 
@@ -77,7 +78,7 @@ export const WorkOrderDetailModal = ({
   //     : workOrderData.targetId;
 
   // State cho phần inspection
-  const [inspectionDesc, setInspectionDesc] = React.useState("");
+  const [inspectionDesc, setInspectionDesc] = React.useState(warrantyInfo?.description || "");
   const [attachments, setAttachments] = React.useState([]);
 
   // State cho preview ảnh (khi click ảnh sẽ hiển thị overlay)
@@ -566,6 +567,31 @@ export const WorkOrderDetailModal = ({
       size="lg"
       showFooter={false}
     >
+      {isSubmitting && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            borderRadius: "8px",
+          }}
+        >
+          <LoadingSpinner size="lg" />
+          <p style={{ marginTop: "16px", fontSize: "16px", fontWeight: "500" }}>
+            {attachments.length > 0
+              ? "Uploading images and submitting..."
+              : "Submitting..."}
+          </p>
+        </div>
+      )}
       <div className="work-order-modal">
         {/* Header */}
         <div className="modal-top-row">
@@ -691,25 +717,16 @@ export const WorkOrderDetailModal = ({
         )}
 
         {/* Detail for Technician (staff note for tech) */}
-        {isWarrantyTarget && (warrantyInfo?.notes || workOrderData?.notes) && (
+        {/* {isWarrantyTarget && warrantyInfo.notes&& (
           <div className="detail-block">
             <h4>Detail for Technician</h4>
             <div className="text-block">
               <div className="content">
-                {warrantyInfo?.notes || workOrderData.notes}
+                {warrantyInfo.notes}
               </div>
             </div>
           </div>
-        )}
-
-        {!isWarrantyTarget && workOrderData?.notes && (
-          <div className="detail-block">
-            <h4>Work Order Notes</h4>
-            <div className="text-block">
-              <div className="content">{workOrderData.notes}</div>
-            </div>
-          </div>
-        )}
+        )} */}
 
         {/* Inspection details (only shown for Inspection work orders) */}
         {isWarrantyTarget &&
@@ -1119,16 +1136,16 @@ export const WorkOrderDetailModal = ({
 
         {/* Footer actions */}
         <div className="modal-footer">
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
             Close
           </Button>
           {showInspectionEditor && (
             <Button
               variant="primary"
               onClick={handleSubmitInspection}
-              disabled={!inspectionDesc.trim() && attachments.length === 0}
+              disabled={!inspectionDesc.trim() && attachments.length === 0 || isSubmitting}
             >
-              Save Inspection
+              {isSubmitting ? "Submitting..." : "Save Inspection"}
             </Button>
           )}
 
@@ -1152,9 +1169,9 @@ export const WorkOrderDetailModal = ({
                 // Nếu tất cả hợp lệ thì gọi hàm xử lý
                 handleSubmitRepair();
               }}
-              disabled={parts.length === 0}
+              disabled={parts.length === 0 || isSubmitting}
             >
-              Save Repair
+              {isSubmitting ? "Submitting..." : "Save Repair"}
             </Button>
           )}
         </div>
@@ -1168,6 +1185,7 @@ export const WorkOrderDetailModal = ({
           setConfirmDialog({ ...confirmDialog, isOpen: false });
         }}
         onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+        isLoading={isSubmitting}
       />
     </Modal>
   );

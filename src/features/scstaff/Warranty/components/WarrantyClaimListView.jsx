@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { DataTable } from "../../../../components/organisms";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { ErrorBoundary } from "../../../../components/molecules/ErrorBoundary/ErrorBoundary";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 import { AssignTechnicianModal } from "./AssignTechnicianModal";
 import { PendingConfirmationModal } from "./PendingConfirmationModal";
@@ -27,8 +28,10 @@ export const WarrantyClaimListView = ({
 
   // Filter props
   statusFilter,
-  // onStatusFilterChange,
+  onStatusFilterChange,
   statusOptions,
+  searchQuery,
+  onSearchChange,
 
   // Modal state và handlers
   selectedClaim,
@@ -72,23 +75,30 @@ export const WarrantyClaimListView = ({
     <ErrorBoundary>
       <div className="warranty-claim-list-view">
         <h1 className="size-h1">Warranty Claims List</h1>
-        {/*<div className="warranty-claim-header">
-           <div className="warranty-filter-container">
-            <label htmlFor="status-filter">Filter by Status:</label>
-            <select
-              id="status-filter"
-              className="form-select"
-              value={statusFilter}
-              onChange={(e) => onStatusFilterChange(e.target.value)}
-            >
-              {(statusOptions || []).map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+
+        {/* Search Bar and Status Filter */}
+        <div className="warranty-claim-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+          <div style={{ flex: 2 }}>
+            <Input
+              type="text"
+              placeholder="Search by VIN, Customer Name, or Phone..."
+              value={searchQuery || ""}
+              onChange={onSearchChange}
+              fullWidth
+              size="md"
+            />
           </div>
-        </div> */}
+          <div style={{ flex: 1 }}>
+            <Input
+              type="select"
+              value={statusFilter || ""}
+              onChange={onStatusFilterChange}
+              options={statusOptions || [{ value: "", label: "All Statuses" }]}
+              fullWidth
+              size="md"
+            />
+          </div>
+        </div>
 
         {/* Handle Loading / Error / Empty / Data */}
         {loading ? (
@@ -243,6 +253,8 @@ WarrantyClaimListView.propTypes = {
   statusFilter: PropTypes.string.isRequired,
   onStatusFilterChange: PropTypes.func.isRequired,
   statusOptions: PropTypes.array,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
   pagination: PropTypes.shape({
     pageNumber: PropTypes.number,
     pageSize: PropTypes.number,

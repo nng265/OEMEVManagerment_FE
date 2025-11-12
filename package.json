@@ -19,6 +19,8 @@
     "bootstrap-icons": "^1.13.1",
     "dayjs": "^1.11.19",
     "formik": "^2.4.6",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.3",
     "prop-types": "^15.8.1",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import { toast } from "react-toastify";
 import "../components/UI.css";
 
 const Repaired = ({ open, onClose, data, onSuccess }) => {
@@ -22,19 +23,8 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
   const customer = campaign.customer ?? {};
   const replacements = campaign.replacements ?? [];
 
-  const openConfirmRepaired = () => {
-    const id = campaign.campaignVehicleId ?? campaign.id;
-    if (!id) {
-      toast.warning("Missing id");
-      return;
-    }
-    pendingActionRef.current = { id };
-    setIsConfirmOpen(true);
-  };
-
   const handleCustomerGetCar = async () => {
-    const id =
-      pendingActionRef.current?.id ?? campaign.campaignVehicleId ?? campaign.id;
+    const id = campaign.campaignVehicleId ?? campaign.id;
     if (!id) {
       toast.warning("Missing id");
       return;
@@ -42,6 +32,7 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
     setLoading(true);
     try {
       await request(ApiEnum.CAMPAIGNVEHICLE_STAFF_DONE, { params: { id } });
+      toast.success("Vehicle marked as completed successfully!");
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -53,8 +44,6 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
       toast.error(msg);
     } finally {
       setLoading(false);
-      setIsConfirmOpen(false);
-      pendingActionRef.current = null;
     }
   };
 

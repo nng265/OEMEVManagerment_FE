@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { Input } from "../../../../components/atoms/Input/Input";
+import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import "./AddCampaignModal.css";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { toast } from "react-toastify";
@@ -262,90 +263,107 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
 
           <div className="form-group half">
             <label>Target Category *</label>
-            <select
-              name="targetCategory"
-              value={formData.targetCategory}
-              onChange={async (e) => {
-                const value = e.target.value;
-                setFormData((prev) => ({
-                  ...prev,
-                  targetCategory: value,
-                  target: "",
-                  oldTarget: "",
-                }));
-                await fetchModelsByCategory(value);
-              }}
-              className="form-select"
-              required
-              disabled={loadingCats}
-            >
-              {formData.targetCategory === "" && (
-                <option value="" disabled>
-                  -- Select category --
-                </option>
-              )}
-              {categories.map((c, i) => (
-                <option key={i} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+            {loadingCats ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <select
+                name="targetCategory"
+                value={formData.targetCategory}
+                onChange={async (e) => {
+                  const value = e.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    targetCategory: value,
+                    target: "",
+                    oldTarget: "",
+                  }));
+                  await fetchModelsByCategory(value);
+                }}
+                className="form-select"
+                required
+              >
+                {formData.targetCategory === "" && (
+                  <option value="" disabled>
+                    -- Select category --
+                  </option>
+                )}
+                {categories.map((c, i) => (
+                  <option key={i} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group half">
             <label>Target Part Model (Old) *</label>
-            <select
-              name="oldTarget"
-              value={formData.oldTarget}
-              onChange={handleChange}
-              className="form-select"
-              required
-              disabled={!formData.targetCategory || loadingModels}
-            >
-              {formData.oldTarget === "" && (
-                <option value="" disabled>
-                  {formData.targetCategory
-                    ? "-- Select old part model --"
-                    : "Select category first"}
-                </option>
-              )}
-              {models
-                .filter((m) => m && m !== formData.target) // bỏ trùng với target
-                .map((m, idx) => (
-                  <option key={idx} value={m}>
-                    {m}
+            {loadingModels ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <select
+                name="oldTarget"
+                value={formData.oldTarget}
+                onChange={handleChange}
+                className="form-select"
+                required
+                disabled={!formData.targetCategory}
+              >
+                {formData.oldTarget === "" && (
+                  <option value="" disabled>
+                    {formData.targetCategory
+                      ? "-- Select old part model --"
+                      : "Select category first"}
                   </option>
-                ))}
-            </select>
+                )}
+                {models
+                  .filter((m) => m && m !== formData.target) // bỏ trùng với target
+                  .map((m, idx) => (
+                    <option key={idx} value={m}>
+                      {m}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
 
           <div className="form-group half">
             <label>Target Part Model (New) *</label>
-            <select
-              name="target"
-              value={formData.target}
-              onChange={handleChange}
-              className="form-select"
-              required
-              disabled={!formData.targetCategory || loadingModels}
-            >
-              {formData.target === "" && (
-                <option value="" disabled>
-                  {formData.targetCategory
-                    ? "-- Select part model --"
-                    : "Select category first"}
-                </option>
-              )}
-              {models
-                .filter((m) => m && m !== formData.oldTarget) // bỏ trùng với oldTarget
-                .map((m, idx) => (
-                  <option key={idx} value={m}>
-                    {m}
+            {loadingModels ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <select
+                name="target"
+                value={formData.target}
+                onChange={handleChange}
+                className="form-select"
+                required
+                disabled={!formData.targetCategory}
+              >
+                {formData.target === "" && (
+                  <option value="" disabled>
+                    {formData.targetCategory
+                      ? "-- Select part model --"
+                      : "Select category first"}
                   </option>
-                ))}
-            </select>
+                )}
+                {models
+                  .filter((m) => m && m !== formData.oldTarget) // bỏ trùng với oldTarget
+                  .map((m, idx) => (
+                    <option key={idx} value={m}>
+                      {m}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
         </div>
 

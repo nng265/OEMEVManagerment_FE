@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import CampaignList from "../components/CampaignList";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 
@@ -11,22 +11,79 @@ const CampaignListContainer = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
 
-  const [filterVin, setFilterVin] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [statusOptions, setStatusOptions] = useState([
+    { value: "", label: "All Status" }
+  ]);
+
+  const searchRef = useRef("");
+  const typeFilterRef = useRef("");
+  const statusFilterRef = useRef("");
+
+  useEffect(() => {
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
+
+  useEffect(() => {
+    typeFilterRef.current = typeFilter;
+  }, [typeFilter]);
+
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
+
+  // Fetch status options from API
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const res = await request(ApiEnum.GET_CAMPAIGN_VEHICLE_STATUSES);
+        if (res.success && Array.isArray(res.data)) {
+          const options = [
+            { value: "", label: "All Status" },
+            ...res.data.map((s) => ({
+              value: s.description || s.name || "",
+              label: s.description || s.name || "Unknown",
+            })),
+          ];
+          setStatusOptions(options);
+        }
+      } catch (err) {
+        console.error("Error fetching campaign vehicle statuses:", err);
+        setStatusOptions([{ value: "", label: "All Status" }]);
+      }
+    };
+    fetchStatuses();
+  }, []);
 
   const fetchCampaignVehicles = useCallback(
     async (
       page = 0,
       size = pageSize,
-      vin = filterVin,
-      status = filterStatus
+      search = searchQuery,
+      type = typeFilter,
+      status = statusFilter
     ) => {
       setLoading(true);
       setError(null);
       try {
         const query = { Page: page, Size: size };
-        if (vin) query.Vin = vin;
-        if (status) query.Status = status;
+        
+        // Thêm search query nếu có
+        if (search && search.trim()) {
+          query.Search = search.trim();
+        }
+        
+        // Thêm type filter nếu có
+        if (type && type.trim()) {
+          query.Type = type.trim();
+        }
+        
+        // Thêm status filter nếu có
+        if (status && status.trim()) {
+          query.Status = status.trim();
+        }
 
         const res = await request(ApiEnum.CAMPAIGNVEHICLE_STAFF, query);
         // NetworkUntil returns responseData; adapt to existing shape
@@ -45,6 +102,7 @@ const CampaignListContainer = () => {
           type: it.vehicle?.model ?? "—",
           status: it.status ?? "—",
           replacements: it.replacements ?? "_",
+          title: it.title ?? "—",
           raw: it,
         }));
 
@@ -62,20 +120,13 @@ const CampaignListContainer = () => {
         setLoading(false);
       }
     },
-    [pageSize, filterVin, filterStatus]
+    [pageSize, searchQuery, typeFilter, statusFilter]
   );
 
   useEffect(() => {
-    fetchCampaignVehicles(0, pageSize, filterVin, filterStatus);
+    fetchCampaignVehicles(0, pageSize, searchQuery, typeFilter, statusFilter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchCampaignVehicles(0, pageSize, filterVin, filterStatus);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [filterVin, filterStatus, fetchCampaignVehicles, pageSize]);
+  }, [searchQuery, typeFilter, statusFilter]);
 
   const handlePageChange = (newPage, newSize) => {
     setPageNumber(newPage);
@@ -83,9 +134,25 @@ const CampaignListContainer = () => {
     fetchCampaignVehicles(
       newPage,
       newSize ?? pageSize,
-      filterVin,
-      filterStatus
+      searchRef.current,
+      typeFilterRef.current,
+      statusFilterRef.current
     );
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+  };
+
+  const handleTypeFilterChange = (e) => {
+    const value = e.target.value || "";
+    setTypeFilter(value);
+  };
+
+  const handleStatusFilterChange = (e) => {
+    const value = e.target.value || "";
+    setStatusFilter(value);
   };
 
   return (
@@ -95,12 +162,23 @@ const CampaignListContainer = () => {
       error={error}
       pagination={{ pageNumber, pageSize, totalRecords }}
       onPageChange={handlePageChange}
-      onSearchVin={setFilterVin}
-      onFilterStatus={setFilterStatus}
       onRefresh={() =>
-        fetchCampaignVehicles(pageNumber, pageSize, filterVin, filterStatus)
+        fetchCampaignVehicles(
+          pageNumber,
+          pageSize,
+          searchRef.current,
+          typeFilterRef.current,
+          statusFilterRef.current
+        )
       }
       refreshing={loading}
+      searchQuery={searchQuery}
+      onSearchChange={handleSearchChange}
+      typeFilter={typeFilter}
+      onTypeFilterChange={handleTypeFilterChange}
+      statusFilter={statusFilter}
+      onStatusFilterChange={handleStatusFilterChange}
+      statusOptions={statusOptions}
     />
   );
 };

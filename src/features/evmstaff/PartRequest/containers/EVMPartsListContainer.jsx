@@ -19,26 +19,52 @@ export const EVMPartsListContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
   const paginationRef = useRef(pagination);
+  const searchRef = useRef("");
 
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
 
+  useEffect(() => {
+    searchRef.current = debouncedSearchQuery;
+  }, [debouncedSearchQuery]);
+
+  // Debounce search query để tránh request liên tục
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500); // Delay 500ms sau khi user ngừng gõ
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
   // === Fetch danh sách request ===
-  const fetchPartsRequests = useCallback(async (pageNumber = 0, pageSize) => {
+  const fetchPartsRequests = useCallback(async (pageNumber = 0, pageSize, search) => {
     const effectivePageSize =
       typeof pageSize === "number" && pageSize > 0
         ? pageSize
         : paginationRef.current.pageSize;
+    const effectiveSearch =
+      typeof search === "string" ? search : searchRef.current;
 
     setLoading(true);
     setError(null);
     try {
-      const res = await request(ApiEnum.GET_REQUEST_PARTS, {
+      const params = {
         Page: pageNumber,
         Size: effectivePageSize,
-      });
+      };
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      const res = await request(ApiEnum.GET_REQUEST_PARTS, params);
 
       const { success, items, totalRecords, page, size, message } =
         normalizePagedResult(res, []);
@@ -83,8 +109,8 @@ export const EVMPartsListContainer = () => {
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchPartsRequests(0, paginationRef.current.pageSize);
-  }, [fetchPartsRequests]);
+    fetchPartsRequests(0, paginationRef.current.pageSize, debouncedSearchQuery);
+  }, [fetchPartsRequests, debouncedSearchQuery]);
 
   // === Handlers gọi API ===
   const handleSetRequestedDate = async (orderId, requestedDate) => {
@@ -95,7 +121,7 @@ export const EVMPartsListContainer = () => {
         expectedDate: requestedDate,
       });
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize);
+      fetchPartsRequests(pageNumber, pageSize, searchRef.current);
       setSelectedRequest(null);
       toast.success("Expected date updated successfully!");
     } catch (err) {
@@ -115,7 +141,7 @@ export const EVMPartsListContainer = () => {
         params: { orderId },
       });
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize);
+      fetchPartsRequests(pageNumber, pageSize, searchRef.current);
       setSelectedRequest(null);
       toast.success("Request confirmed and moved to preparation!");
     } catch (err) {
@@ -134,7 +160,7 @@ export const EVMPartsListContainer = () => {
         params: { orderId },
       });
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize);
+      fetchPartsRequests(pageNumber, pageSize, searchRef.current);
       setSelectedRequest(null);
       toast.success("Request marked as delivered!");
     } catch (err) {
@@ -148,7 +174,7 @@ export const EVMPartsListContainer = () => {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      fetchPartsRequests(page, size);
+      fetchPartsRequests(page, size, searchRef.current);
     },
     [fetchPartsRequests]
   );
@@ -156,9 +182,15 @@ export const EVMPartsListContainer = () => {
   const handleRefresh = useCallback(() => {
     fetchPartsRequests(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchRef.current
     );
   }, [fetchPartsRequests]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+  };
 
   // === UI render ===
   return (
@@ -172,6 +204,8 @@ export const EVMPartsListContainer = () => {
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
       />
 
       {/* === Pending Popup === */}

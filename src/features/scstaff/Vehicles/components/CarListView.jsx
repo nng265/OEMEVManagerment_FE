@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { ErrorBoundary } from "../../../../components/molecules/ErrorBoundary/ErrorBoundary";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { VehicleDetailModal } from "./VehicleDetailModal";
 import { CreateWarrantyClaimModal } from "./CreateWarrantyClaimModal";
 import "./CarListView.css";
@@ -22,10 +23,24 @@ export const CarListView = ({
   onPageChange,
   onRefresh,
   refreshing = false,
+  searchQuery,
+  onSearchChange,
 }) => {
   return (
     <div className="car-list-view">
       <h1 className="size-h1">Vehicles</h1>
+
+      {/* --- Search Bar --- */}
+      <div className="search-bar-wrapper" style={{ marginBottom: "20px" }}>
+        <Input
+          type="text"
+          placeholder="Search by VIN, Model, Customer Name, or Phone..."
+          value={searchQuery}
+          onChange={onSearchChange}
+          fullWidth
+          size="md"
+        />
+      </div>
 
       {/* --- Loading --- */}
       {loading && (
@@ -103,4 +118,6 @@ CarListView.propTypes = {
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
 };
