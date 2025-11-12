@@ -2,7 +2,7 @@
 // const API_URL = "http://localhost:3001";
 // const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },

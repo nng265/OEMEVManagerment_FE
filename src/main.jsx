@@ -11,7 +11,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode> // Uncomment if needed, but causes double renders in dev
   <BrowserRouter>
-    <GoogleOAuthProvider clientId="525329839801-4iecu1eqrfi8671t9lf8ah1dema555ds.apps.googleusercontent.com"> {/* TODO: Move to env variable */}
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <App />
     </GoogleOAuthProvider>
   </BrowserRouter>
