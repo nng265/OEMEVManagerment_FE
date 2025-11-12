@@ -6,6 +6,7 @@ const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api"
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
+  LOGIN_GOOGLE: { path: "/auth/google-login", method: "POST" },
 
   // Dashboard
   GET_DASHBOARD_SC_SUMMARY: { path: "/Dashboard/sc/summary", method: "GET" },
