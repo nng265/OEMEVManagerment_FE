@@ -1,8 +1,8 @@
 // src/services/NetworkUntil.js
 // const API_URL = "http://localhost:3001";
-const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
+// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-// const API_BASE_URL ="https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+const API_BASE_URL = "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -12,14 +12,32 @@ export const ApiEnum = {
   GET_DASHBOARD_EVM_SUMMARY: { path: "/Dashboard/evm/summary", method: "GET" },
 
   // Dashboard EVM Staff - Individual APIs
-  API_GET_TOTAL_WARRANTY_CLAIMS: { path: "/WarrantyClaim/count/sent-to-manufacturer", method: "GET" },
+  API_GET_TOTAL_WARRANTY_CLAIMS: {
+    path: "/WarrantyClaim/count/sent-to-manufacturer",
+    method: "GET",
+  },
   API_GET_TOTAL_PARTS_REQUESTS: { path: "/PartOrder/count", method: "GET" },
   API_GET_ACTIVE_CAMPAIGNS_COUNT: { path: "/Campaign/count", method: "GET" },
-  API_GET_CAMPAIGN_PARTICIPATION: { path: "/Campaign/participation-aggregate", method: "GET" },
-  API_GET_WARRANTY_CLAIMS_TREND: { path: "/WarrantyClaim/counts", method: "GET" },
-  API_GET_TOP_WARRANTY_POLICIES: { path: "/WarrantyClaim/top-policies", method: "GET" },
-  API_GET_PARTS_REQUEST_RANKING: { path: "/PartOrder/top-requested-parts", method: "GET" },
-  API_GET_WARRANTY_BY_SERVICE_CENTER: { path: "/WarrantyClaim/top-service-centers", method: "GET" },
+  API_GET_CAMPAIGN_PARTICIPATION: {
+    path: "/Campaign/participation-aggregate",
+    method: "GET",
+  },
+  API_GET_WARRANTY_CLAIMS_TREND: {
+    path: "/WarrantyClaim/counts",
+    method: "GET",
+  },
+  API_GET_TOP_WARRANTY_POLICIES: {
+    path: "/WarrantyClaim/top-policies",
+    method: "GET",
+  },
+  API_GET_PARTS_REQUEST_RANKING: {
+    path: "/PartOrder/top-requested-parts",
+    method: "GET",
+  },
+  API_GET_WARRANTY_BY_SERVICE_CENTER: {
+    path: "/WarrantyClaim/top-service-centers",
+    method: "GET",
+  },
 
   // GET_FUNCTIONS: { path: "/functions", method: "GET" },
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },
@@ -35,7 +53,10 @@ export const ApiEnum = {
 
   GET_WORK_ORDERS_BY_TECH: { path: "/workOrder", method: "GET" },
   GET_WORK_ORDER_TASK_COUNTS: { path: "/WorkOrder/task-counts", method: "GET" },
-  GET_WORK_ORDER_TASK_GROUP_COUNTS: { path: "/WorkOrder/task-group-counts", method: "GET" },
+  GET_WORK_ORDER_TASK_GROUP_COUNTS: {
+    path: "/WorkOrder/task-group-counts",
+    method: "GET",
+  },
   GET_INSPECTION_ORDERS: {
     path: "/WorkOrder/by-tech/inspection",
     method: "GET",
@@ -137,23 +158,17 @@ export const ApiEnum = {
     path: "/CampaignVehicle/:id/repaired",
     method: "PUT",
   },
-  CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
-  CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
-  CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
-  CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET" },
-  CAMPAIGNVEHICLE_STAFF_REPAIRED: {
-    path: "/CampaignVehicle/:id/repaired",
-    method: "PUT",
-  },
-  CAMPAIGNVEHICLE_STAFF_DONE: {
-    path: "/CampaignVehicle/:id/done",
-    method: "PUT",
-  },
-  CAMPAIGNVEHICLE_STAFF_TECH: {
-    path: "/CampaignVehicle/:id/assign-techs",
-    method: "POST",
-  },
+
   CLOSE_CAMPAIGN: { path: "/Campaign/:id/close", method: "PUT" },
+
+  ORGANIZATION: { path: "/Organization", method: "GET" },
+  APPOINTMENT: { path: "/Appointment", method: "GET" },
+  APPOINTMENT_TIMESLOTS: {
+    path: "/Appointment/available-timeslots",
+    method: "GET",
+  },
+  APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
+  APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)

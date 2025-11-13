@@ -46,6 +46,12 @@ export const DashboardLayout = ({ children }) => {
         return "/Statuscampaign";
       case "overview":
         return "/overview";
+
+      // THÊM MỚI: Ánh xạ path cho Appointment
+      case "staff_appointment":
+        return "/appointment"; // Đảm bảo bạn có route "/appointment" trong App.jsx hoặc routes.jsx
+      // KẾT THÚC THÊM MỚI
+
       // !!! QUAN TRỌNG: Kiểm tra và bổ sung/sửa tất cả các case khác cho khớp routes.jsx !!!
       default:
         console.warn(

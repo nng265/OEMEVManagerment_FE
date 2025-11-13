@@ -38,7 +38,7 @@ const Login = () => {
       if (loginResult && loginResult.success) {
         // Get user data from localStorage to check role
         const userData = JSON.parse(localStorage.getItem("user"));
-        
+
         // Redirect based on role
         if (userData && userData.role === "EVM_STAFF") {
           navigate("/dashboardevmstaff");
@@ -64,6 +64,10 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      {/* Nút chuyển sang Home */}
+      <button className="home-button" onClick={() => navigate("/home")}>
+        CustomerAppointment
+      </button>
       <div className="login-content">
         <div className="login-header">
           {/* Consider using an SVG or local image */}
