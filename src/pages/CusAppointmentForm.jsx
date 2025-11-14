@@ -26,6 +26,9 @@ const CusAppointmentForm = () => {
   const [info, setInfo] = useState({ vin: "", model: "", year: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // success popup
+  const [successData, setSuccessData] = useState(null);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
   // ========== DATE RANGE ==========
   const { minDateStr } = useMemo(() => {
@@ -136,8 +139,11 @@ const CusAppointmentForm = () => {
     };
 
     try {
-      setIsLoading(true);
-      await request(ApiEnum.APPOINTMENT_CREATE_CUS, payload);
+      const res = await request(ApiEnum.APPOINTMENT_CREATE_CUS, payload);
+
+      setSuccessData(res.data); // lưu data
+      setIsSuccessOpen(true); // mở popup
+
       toast.success("Appointment booked successfully!");
       setIsDialogOpen(false);
       // Reset form
@@ -384,6 +390,53 @@ const CusAppointmentForm = () => {
         onCancel={() => setIsDialogOpen(false)}
         isLoading={isLoading}
       />
+
+      <SuccessPopup
+        isOpen={isSuccessOpen}
+        data={successData}
+        onClose={() => setIsSuccessOpen(false)}
+      />
+    </div>
+  );
+};
+
+const SuccessPopup = ({ isOpen, data, onClose }) => {
+  if (!isOpen || !data) return null;
+
+  return (
+    <div className="success-popup-overlay">
+      <div className="success-popup">
+        <div className="success-icon">✓</div>
+        <h2>Booking Success!</h2>
+        <div className="success-item">
+          <b>VIN:</b> {data.vin}
+        </div>
+        <div className="success-item">
+          <b>TYPE:</b> {data?.appointmentType || "N/A"}
+        </div>
+        <div className="success-item">
+          <b>Date Create: </b>{" "}
+          {data?.createdAt
+            ? new Date(data.createdAt).toLocaleDateString("en-GB") // dd/mm/yyyy
+            : "N/A"}
+        </div>
+        <div className="success-item">
+          <b>Appointment Date: </b>{" "}
+          {data?.appointmentDate
+            ? new Date(data.appointmentDate).toLocaleDateString("en-GB") // dd/mm/yyyy
+            : "N/A"}
+        </div>
+        <div className="success-item">
+          <b>Slot:</b> {data.slot}
+        </div>
+        <div className="success-item">
+          <b>Email:</b> {data.email}
+        </div>
+
+        <button className="close-btn" onClick={onClose}>
+          Close
+        </button>
+      </div>
     </div>
   );
 };

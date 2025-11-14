@@ -15,6 +15,7 @@ export const AppointmentListContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
+  
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -96,12 +97,13 @@ export const AppointmentListContainer = () => {
       const res = await request(ApiEnum.APPOINTMENT_CREATE, payload);
       // refresh list after successful creation
       await fetchAppointments(pagination.pageNumber, pagination.pageSize);
-      return res;
+      return res.data;
     } catch (err) {
       console.error("Create appointment failed:", err);
       throw err;
     }
   };
+
 
   useEffect(() => {
     fetchAppointments(pagination.pageNumber, pagination.pageSize);
@@ -158,6 +160,7 @@ export const AppointmentListContainer = () => {
         fetchTimeSlots={fetchTimeSlots}
         createAppointment={createAppointment}
       />
+
     </>
   );
 };
