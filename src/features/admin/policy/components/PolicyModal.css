@@ -1,0 +1,120 @@
+.policy-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 4px;
+}
+
+.policy-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2c3e50;
+}
+
+.policy-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.policy-info-block {
+    flex: 1;
+    min-width: 45%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.policy-info-block.full-width {
+    flex: 1 1 100%;
+}
+
+.info-block-label {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.info-block-value {
+    font-size: 1rem;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.policy-conditions {
+    white-space: pre-wrap;
+    background-color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.policy-footer {
+    display: flex;
+    justify-content: start;
+    margin-top: 16px;
+}
+
+/* Form & modal improvements */
+.policy-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.policy-form label {
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.policy-form input,
+.policy-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+
+.policy-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+    /* Layout: first child (Cancel) -> left; other actions -> right */
+    /* Using `margin-right: auto` on the first child pushes the rest to the right */
+}
+
+.modal-footer>*:first-child {
+    margin-right: auto;
+}
+
+/* Button visual tweaks for consistency */
+.modal-footer button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Small responsive helper */
+@media (max-width: 640px) {
+    .policy-info-block {
+        min-width: 100%;
+    }
+
+    .policy-form input,
+    .policy-form textarea {
+        font-size: 0.95rem;
+    }
+}

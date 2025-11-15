@@ -4,7 +4,17 @@ import { Button } from "../../../../components/atoms/Button/Button";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "../../../scstaff/Campaign/components/CampaignList.css";
 
+/*
+
+  Props:
+  - data: mảng object appointment (container nên chuẩn hoá tên trường trước khi truyền vào)
+  - pagination: { pageNumber, pageSize, totalRecords }
+  - onView(row): gọi khi nhấn nút xem chi tiết
+  - onAdd: mở modal tạo appointment
+*/
+
 const renderStatus = (value) => {
+  // Map status value sang class CSS để hiển thị màu/badge
   let statusClass = "status-";
   if (value === "Pending") statusClass += "draft";
   else if (value === "Scheduled") statusClass += "active";
@@ -28,6 +38,7 @@ const AppointmentList = ({
   onRefresh,
   refreshing = false,
 }) => {
+  // Định nghĩa cột hiển thị cho DataTable. Nếu cần thêm cột, chỉnh ở đây.
   const columns = [
     { key: "customerName", label: "Customer name" },
     { key: "vin", label: "Vin" },

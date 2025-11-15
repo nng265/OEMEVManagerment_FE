@@ -16,7 +16,6 @@ import { ServiceCenterInventoryContainer } from "../features/scstaff/Inventory/c
 import { PartsRequestContainer } from "../features/scstaff/Parts Requests/containers/PartsRequestContainer.jsx";
 import CampaignListContainer from "../features/scstaff/Campaign/containers/CampaignListContainer.jsx";
 import Statuscampaign from "../features/scstaff/StatusCampaign/container/CampaignListContainer.jsx";
-
 // THÊM MỚI: Import component AppointmentListContainer
 // (Giả định bạn đặt file theo cấu trúc tôi đã hướng dẫn)
 import { AppointmentListContainer } from "../features/scstaff/Appointment/containers/AppointmentListContainer.jsx";
@@ -30,6 +29,7 @@ import { EVMStaffInventoryContainer } from "../features/evmstaff/Inventory/conta
 import { EVMStaffCampaignContainer } from "../features/evmstaff/CampaignEVM/containers/EVMStaffCampaignContainer.jsx";
 import OverViewContainer from "../features/dashboard/containers/OverViewContainer.jsx";
 import { element } from "prop-types";
+import PolicyContainers from "../features/admin/policy/containers/PolicyContainer.jsx";
 // Public routes that don't require authentication
 export const publicRoutes = [
   {
@@ -132,6 +132,10 @@ export const privateRoutes = [
       {
         path: "evmstaff_campaign",
         element: <EVMStaffCampaignContainer />,
+      },
+      {
+        path: "policy_management",
+        element: <PolicyContainers />,
       },
     ],
   },

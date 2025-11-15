@@ -35,7 +35,13 @@ const CampaignListContainer = () => {
   const [isActionLoading, setIsActionLoading] = useState(false);
   const pendingAddRef = useRef(null);
 
-  // removed unused paginationRef
+  //Mục đích: tránh race condition khi người dùng thay đổi trang/trigger fetch nhanh (gọi fetchCampaigns nhiều lần);
+  // chỉ xử lý response của request mới nhất.
+
+  //Cách hoạt động: mỗi lần gọi fetchCampaigns tăng latestRequestRef.current;
+  // khi response về, chỉ cập nhật state nếu requestId === latestRequestRef.current.
+
+  //Lợi ích: tránh hiển thị dữ liệu cũ khi response chậm về sau response mới hơn.
   const latestRequestRef = useRef(0);
 
   const fetchCampaigns = useCallback(async (pageNumber = 0, size = 10) => {
@@ -52,24 +58,6 @@ const CampaignListContainer = () => {
       if (requestId !== latestRequestRef.current) return;
 
       const items = Array.isArray(res.data?.items) ? res.data.items : [];
-      // const normalized = items.map((item, index) => ({
-      //   id: item.campaignId ?? index,
-      //   title: item.title ?? "",
-      //   type: item.type ?? "",
-      //   partModel: item.partModel ?? "",
-      //   description: item.description ?? "",
-      //   startDate: item.startDate,
-      //   endDate: item.endDate,
-      //   completedVehicles: item.completedVehicles ?? "",
-      //   inProgressVehicles: item.inProgressVehicles ?? "",
-      //   pendingVehicles: item.pendingVehicles ?? "",
-      //   period:
-      //     item.startDate && item.endDate
-      //       ? `${item.startDate} to ${item.endDate}`
-      //       : "",
-      //   status: item.status ?? "",
-      //   _raw: item,
-      // }));
 
       setCampaigns(items);
       setFilteredCampaigns(items);
@@ -148,6 +136,9 @@ const CampaignListContainer = () => {
 
   const handleAddSubmit = (newCampaign) => {
     // Open confirmation first
+    //giữ dữ liệu tạm khi người dùng submit form (trong modal) nhưng cần xác nhận qua ConfirmDialog trước khi call API.
+    //dùng ref thay vì state: ref không gây rerender khi thay đổi, và an toàn khi ta chỉ cần lưu giá trị
+    // giữa các re-render cho action sắp diễn ra. Dùng state sẽ gây rerender không cần thiết.
     pendingAddRef.current = newCampaign;
     const vin = newCampaign?.vin || "";
     setConfirmTitle("Confirm Add Vehicle to Campaign");

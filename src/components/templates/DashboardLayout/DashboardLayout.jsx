@@ -51,7 +51,8 @@ export const DashboardLayout = ({ children }) => {
       case "staff_appointment":
         return "/appointment"; // Đảm bảo bạn có route "/appointment" trong App.jsx hoặc routes.jsx
       // KẾT THÚC THÊM MỚI
-
+      case "policy_management":
+        return "/policy_management"; // Đảm bảo bạn có route "/policy_management" trong routes.jsx
       // !!! QUAN TRỌNG: Kiểm tra và bổ sung/sửa tất cả các case khác cho khớp routes.jsx !!!
       default:
         console.warn(

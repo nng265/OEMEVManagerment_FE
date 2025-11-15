@@ -4,6 +4,23 @@ import { Button } from "../../../../components/atoms/Button/Button";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./Campaign.css";
 
+/*
+  Component: Campaign
+  Mô tả (VN):
+  - Component presentational để hiển thị danh sách campaign dưới dạng bảng.
+  - Nhận `data` (mảng đã được normalize bởi container), `pagination`, và các
+    callback như `onView`, `onAdd`, `onPageChange`, `onSearch`, `onFilterType`,
+    `onFilterStatus`, `onRefresh`.
+
+  Những điểm cần biết khi đọc mã:
+  - `typeOptions` và `statusOptions` được derive từ `data` hiện tại để render
+    dropdown filter (nếu bật UI filter).
+  - `columns` định nghĩa cột cho `DataTable`, trong đó `render` là function cho
+    custom cell rendering (ví dụ: badge cho status, nút action).
+  - `rows` map `data` sang cấu trúc hàng (row) mà `DataTable` mong đợi, kèm `_raw`
+    để giữ payload gốc nếu cần hành động dựa trên ID gốc.
+*/
+
 export const Campaign = ({
   data = [],
   loading = false,
@@ -25,14 +42,18 @@ export const Campaign = ({
   const [statusFilter, setStatusFilter] = useState("");
 
   useEffect(() => {
+    // Nếu parent truyền onSearch (container), gọi nó khi query thay đổi.
+    // Container sẽ thực hiện tìm kiếm (server-side) hoặc cập nhật filter client-side.
     if (typeof onSearch === "function") onSearch(query);
   }, [query, onSearch]);
 
   useEffect(() => {
+    // Gửi callback filter type lên parent
     if (typeof onFilterType === "function") onFilterType(typeFilter);
   }, [typeFilter, onFilterType]);
 
   useEffect(() => {
+    // Gửi callback filter status lên parent
     if (typeof onFilterStatus === "function") onFilterStatus(statusFilter);
   }, [statusFilter, onFilterStatus]);
   // Derive filter options from data to keep it in sync with what's shown
@@ -53,6 +74,7 @@ export const Campaign = ({
       label: "Status",
       sortable: true,
       render: (value) => {
+        // Chuẩn hoá giá trị status để tạo CSS class và hiển thị text đẹp hơn
         const normalizedStatus = (value || "unknown").trim().toLowerCase();
         const statusClass = normalizedStatus.replace(/\s+/g, "-");
         const displayText =
@@ -60,6 +82,7 @@ export const Campaign = ({
             ? value.charAt(0).toUpperCase() + value.slice(1)
             : "Unknown";
 
+        // Trả về badge với class động, ví dụ: status-open, status-closed
         return (
           <span className={`status-badge status-${statusClass}`}>
             {displayText}
@@ -102,6 +125,9 @@ export const Campaign = ({
     inProgressVehicles: c.inProgressVehicles || 0,
     completedVehicles: c.completedVehicles || 0,
   }));
+
+  // Lưu ý: `rows` là dữ liệu cuối cùng truyền vào `DataTable`. Việc giữ `_raw`
+  // giúp dễ lấy ID gốc hoặc gửi payload gốc khi thao tác (ví dụ: xem hoặc edit).
 
   return (
     <div className="campaign-container">
@@ -200,3 +226,11 @@ Campaign.propTypes = {
 };
 
 export default Campaign;
+
+/*
+  Giải thích nhanh về `propTypes` (VN):
+  - `propTypes` dùng để mô tả kiểu dữ liệu props ở runtime (chỉ trong môi trường dev
+    sẽ xuất cảnh báo nếu prop sai kiểu hoặc thiếu prop required).
+  - Ví dụ: `data` là mảng object; `onAdd` bắt buộc phải có vì component cần nút Add.
+  - Không thay thế TypeScript — nhưng giúp catch lỗi sớm khi dùng JS thuần.
+*/
