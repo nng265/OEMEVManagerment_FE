@@ -169,6 +169,9 @@ export const ApiEnum = {
   },
   APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
+
+  APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
+
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)

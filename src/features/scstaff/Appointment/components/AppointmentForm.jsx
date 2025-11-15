@@ -29,9 +29,9 @@ function AppointmentForm({
   const [info, setInfo] = useState({ vin: "", model: "", year: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [successData, setSuccessData] = useState(null);
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [lastResponse, setLastResponse] = useState(null);
+  // const [successData, setSuccessData] = useState(null);
+  // const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  // const [lastResponse, setLastResponse] = useState(null);
 
   const { minDateStr } = useMemo(() => {
     const today = new Date();
@@ -125,14 +125,8 @@ function AppointmentForm({
     try {
       setIsLoading(true);
       const res = await createAppointment(payload);
-      // note: container's createAppointment returns res.data already
-      setSuccessData(res); // lưu data trả về
-      setLastResponse(res);
-      setIsSuccessOpen(true); // mở popup
       setIsDialogOpen(false);
-      // Do NOT call onSuccess here so the parent/modal doesn't close before
-      // the user sees the success popup. We'll call onSuccess when the
-      // user closes the popup below.
+      if (typeof onSuccess === "function") onSuccess(res);
     } catch (err) {
       console.error("Create appointment error:", err);
       const msg =
@@ -369,66 +363,8 @@ function AppointmentForm({
         onCancel={() => setIsDialogOpen(false)}
         isLoading={isLoading}
       />
-
-      <SuccessPopup
-        isOpen={isSuccessOpen}
-        data={successData}
-        onClose={() => {
-          setIsSuccessOpen(false);
-          if (typeof onSuccess === "function")
-            onSuccess(lastResponse || successData);
-        }}
-      />
     </>
   );
 }
-
-const SuccessPopup = ({ isOpen, data, onClose }) => {
-  if (!isOpen || !data) return null;
-
-  return (
-    <div className="success-popup-overlay">
-      <div className="success-popup">
-        <div className="success-icon">✓</div>
-
-        <h2>Appointment Created!</h2>
-
-        <div className="success-item">
-          <b>VIN:</b> {data?.vin || "N/A"}
-        </div>
-        <div className="success-item">
-          <b>TYPE:</b> {data?.appointmentType || "N/A"}
-        </div>
-        <div className="success-item">
-          <b>Date Create: </b>{" "}
-          {data?.createdAt
-            ? new Date(data.createdAt).toLocaleDateString("en-GB") // dd/mm/yyyy
-            : "N/A"}
-        </div>
-        <div className="success-item">
-          <b>Appointment Date: </b> {data?.appointmentDate 
-            ? new Date(data.appointmentDate).toLocaleDateString("en-GB") // dd/mm/yyyy
-            : "N/A"}
-        </div>
-        <div className="success-item">
-          <b>Slot:</b> {data?.slot || "N/A"}
-        </div>
-
-        <button
-          className="view-btn"
-          onClick={() => window.open("https://mail.google.com", "_blank")}
-        >
-          View Email
-        </button>
-
-        <div className="success-actions">
-          <button className="close-btn" onClick={onClose}>
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default AppointmentForm;

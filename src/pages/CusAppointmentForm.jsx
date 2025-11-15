@@ -408,7 +408,7 @@ const SuccessPopup = ({ isOpen, data, onClose }) => {
       <div className="success-popup">
         <div className="success-icon">✓</div>
         <h2>Booking Success!</h2>
-        <div className="success-item">
+        {/* <div className="success-item">
           <b>VIN:</b> {data.vin}
         </div>
         <div className="success-item">
@@ -428,14 +428,22 @@ const SuccessPopup = ({ isOpen, data, onClose }) => {
         </div>
         <div className="success-item">
           <b>Slot:</b> {data.slot}
-        </div>
+        </div> */}
         <div className="success-item">
-          <b>Email:</b> {data.email}
+          <b>Đã đặt lịch thông qua Email:</b> {data.email}
         </div>
+        <div className="popup-btn-group">
+          <button
+            className="view-btn"
+            onClick={() => window.open("https://mail.google.com", "_blank")}
+          >
+            View Email
+          </button>
 
-        <button className="close-btn" onClick={onClose}>
-          Close
-        </button>
+          <button className="close-btn" onClick={onClose}>
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
