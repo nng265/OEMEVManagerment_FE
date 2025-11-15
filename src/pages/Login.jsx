@@ -100,6 +100,10 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      {/* Nút chuyển sang Home */}
+      <button className="home-button" onClick={() => navigate("/home")}>
+        CustomerAppointment
+      </button>
       <div className="login-content">
         <div className="login-header">
           {/* Consider using an SVG or local image */}

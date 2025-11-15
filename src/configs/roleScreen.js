@@ -34,6 +34,13 @@ export const roleScreens = {
       component: "ServiceCenterInventory",
     },
     { id: "staff_campaign", label: "Campaign", component: "Campaign" },
+    // THÊM MỚI
+    {
+      id: "staff_appointment",
+      label: "Appointment",
+      component: "AppointmentListContainer",
+    },
+    // KẾT THÚC THÊM MỚI
     {
       id: "status_campaign",
       label: "CampaignVehicle",
@@ -51,10 +58,13 @@ export const roleScreens = {
       label: "Task",
       component: "TechnicianVehicleStatus",
     },
-
   ],
   EVM_STAFF: [
-    { id: "dashboard_evmstaff", label: "Dashboard", component: "DashboardEVMSTAFF" },
+    {
+      id: "dashboard_evmstaff",
+      label: "Dashboard",
+      component: "DashboardEVMSTAFF",
+    },
     {
       id: "evm_warranty_claims",
       label: "Warranty",

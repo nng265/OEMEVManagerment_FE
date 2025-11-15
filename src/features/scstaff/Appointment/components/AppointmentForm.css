@@ -1,0 +1,365 @@
+/* Màu sắc chủ đạo từ theme Campaign */
+:root {
+  --primary-color: #1565c0;
+  /* Màu xanh dương (giống status 'draft') */
+  --primary-hover: #0a3d91;
+  --secondary-bg: #f8fafc;
+  /* Màu nền xám nhạt */
+  --border-color: #e2e8f0;
+  /* Viền xám nhạt */
+  --text-dark: #0b2a55;
+  --text-light: #4b5563;
+  --error-color: #b71c1c;
+  --error-bg: #fdecec;
+}
+
+/* 1. Body của Modal */
+.appointment-modal-body {
+  padding: 24px 30px;
+  background-color: #f7f8fa;
+  /* Nền xám nhạt giống CampaignViewModal */
+}
+
+/* 2. Tiêu đề chính */
+.appointment-title {
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 1.9rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  font-weight: 600;
+  color: #6b7280;
+  /* <--- THAY THẾ BẰNG DÒNG NÀY (màu xám dễ thấy) */
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.steps span {
+  position: relative;
+  flex: 1;
+  text-align: center;
+  transition: color 0.3s, transform 0.2s;
+  font-size: 0.9rem;
+}
+
+.steps span.active {
+  color: var(--primary-color);
+  font-weight: 700;
+  transform: scale(1.05);
+  border-bottom: 3px solid var(--primary-color);
+  margin-bottom: -3px;
+  /* Nâng lên để đè lên border chung */
+}
+
+/* 4. Hộp chứa nội dung từng bước (Step Box) */
+.step-box {
+  background-color: var(--secondary-bg);
+  /* Nền xám nhạt giống technician-assignment-box */
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-top: 10px;
+}
+
+.step-title {
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* 5. Hộp tóm tắt (Summary Box) */
+.summary-box {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 10px;
+  padding: 16px 20px;
+  color: var(--text-dark);
+  font-size: 0.97rem;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.summary-box p {
+  margin: 4px 0;
+}
+
+/* 6. Thẻ chọn (Center Card) */
+.center-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.center-card {
+  background: #ffffff;
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.center-card:hover {
+  background: #f3f7ff;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 51, 102, 0.1);
+  border-color: var(--primary-color);
+}
+
+.center-card.selected {
+  background: #e3f2fd;
+  /* Giống status-draft */
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 14px rgba(21, 101, 192, 0.2);
+}
+
+/* 7. Nút chọn giờ (Time Slot) */
+.time-slot-btn {
+  background: #ffffff;
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px 18px;
+  min-width: 110px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.time-slot-btn:hover {
+  background: #f3f7ff;
+  border-color: var(--primary-color);
+}
+
+.time-slot-btn.selected {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+
+
+/* 8. Input (giống Campaign form) */
+.info-form {
+  display: grid;
+  gap: 16px;
+}
+
+.info-form label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+/* Kiểu thống nhất cho input */
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+
+.form-input.invalid {
+  border-color: var(--error-color);
+  background: var(--error-bg);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  margin-top: -10px;
+  /* Kéo lên gần input */
+}
+
+/* 9. Khu vực nút (Actions) */
+.actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 24px;
+}
+
+/* 10. Responsive (Giữ nguyên) */
+@media (max-width: 720px) {
+  .appointment-modal-body {
+    padding: 16px;
+  }
+
+  .steps {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .center-list {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+    /* Đảo ngược để nút "Continue" ở dưới */
+  }
+}
+
+/* ================================
+   OVERLAY
+================================ */
+.success-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ================================
+   POPUP (Glassmorphism)
+================================ */
+.success-popup {
+  width: 420px;
+  max-width: 90%;
+  padding: 32px 28px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.22);
+  animation: scaleIn 0.25s ease;
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ================================
+   SUCCESS ICON
+================================ */
+.success-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18px auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #35d07f, #17a05e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 38px;
+  font-weight: bold;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
+}
+
+/* ================================
+   TITLE
+================================ */
+.success-popup h2 {
+  text-align: center;
+  font-size: 23px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+/* ================================
+   INFO ROWS
+================================ */
+.success-item {
+  background: #f6f9ff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e6ecf5;
+  font-size: 15px;
+  color: #333;
+}
+
+.success-item b {
+  color: #111;
+}
+
+/* ================================
+   BUTTON
+================================ */
+.view-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #1a73e8, #4c8ffb);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(26, 115, 232, 0.35);
+}
+
+.view-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(26, 115, 232, 0.5);
+  background: linear-gradient(135deg, #1c6fe0, #3f86f5);
+}
+
+.close-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px 0;
+  background: #e53e3e;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(229, 62, 62, 0.35);
+}
+
+.close-btn:hover {
+  background: #d93434;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(229, 62, 62, 0.5);
+}
