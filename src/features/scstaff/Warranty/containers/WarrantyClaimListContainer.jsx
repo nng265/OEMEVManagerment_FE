@@ -31,7 +31,10 @@ export const WarrantyClaimListContainer = () => {
 
   const [selectedWarrantyClaim, setSelectedWarrantyClaim] = useState(null);
   const [statusFilter, setStatusFilter] = useState("");
-  const [statusOptions, setStatusOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([
+    { value: "", label: "All Statuses" }
+  ]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [loadingTechnicians, setLoadingTechnicians] = useState(false);
   const [technicians, setTechnicians] = useState([]);
@@ -45,6 +48,8 @@ export const WarrantyClaimListContainer = () => {
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);
+  const statusFilterRef = useRef(statusFilter);
+  const searchRef = useRef(searchQuery);
 
   // === Confirm dialog state ===
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -56,6 +61,14 @@ export const WarrantyClaimListContainer = () => {
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
+
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
+
+  useEffect(() => {
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
 
   // ========================== TABLE COLUMNS ==========================
   const columns = [
@@ -162,25 +175,36 @@ export const WarrantyClaimListContainer = () => {
   };
 
   const fetchWarrantyClaims = useCallback(
-    async (pageNumber = 0, pageSize) => {
+    async (pageNumber = 0, pageSize, status, search) => {
       const effectivePageSize =
         typeof pageSize === "number"
           ? pageSize
           : paginationRef.current.pageSize;
+      const effectiveStatus =
+        typeof status === "string" ? status : statusFilterRef.current;
+      const effectiveSearch =
+        typeof search === "string" ? search : searchRef.current;
+
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = statusFilter
-          ? await request(ApiEnum.GET_WARRANTY_CLAIMS_BY_STATUS, {
-              params: { status: statusFilter },
-              Page: pageNumber,
-              Size: effectivePageSize,
-            })
-          : await request(ApiEnum.GET_WARRANTY_CLAIMS, {
-              Page: pageNumber,
-              Size: effectivePageSize,
-            });
+        const params = {
+          Page: pageNumber,
+          Size: effectivePageSize,
+        };
+
+        // Thêm status filter nếu có
+        if (effectiveStatus && effectiveStatus.trim()) {
+          params.Status = effectiveStatus.trim();
+        }
+
+        // Thêm search query nếu có
+        if (effectiveSearch && effectiveSearch.trim()) {
+          params.Search = effectiveSearch.trim();
+        }
+
+        const response = await request(ApiEnum.GET_WARRANTY_CLAIMS, params);
 
         const { success, items, totalRecords, page, size, message } =
           normalizePagedResult(response, []);
@@ -222,20 +246,36 @@ export const WarrantyClaimListContainer = () => {
         setIsLoading(false);
       }
     },
-    [statusFilter]
+    []
   );
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchWarrantyClaims(0, paginationRef.current.pageSize);
-  }, [fetchWarrantyClaims]);
+    fetchWarrantyClaims(0, paginationRef.current.pageSize, statusFilter, searchQuery);
+  }, [fetchWarrantyClaims, statusFilter]);
 
   const handleRefresh = useCallback(() => {
     fetchWarrantyClaims(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      statusFilterRef.current,
+      searchRef.current
     );
   }, [fetchWarrantyClaims]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    // Reset về trang đầu khi search
+    fetchWarrantyClaims(0, paginationRef.current.pageSize, statusFilterRef.current, value);
+  };
+
+  const handleStatusFilterChange = (e) => {
+    const value = e.target.value;
+    setStatusFilter(value);
+    // Effect sẽ tự động trigger fetch khi statusFilter thay đổi
+  };
 
   // Fetch assigned technicians for a specific claim
   const fetchAssignedTechnicians = async (claimId) => {
@@ -415,7 +455,7 @@ export const WarrantyClaimListContainer = () => {
           toast.success("Technicians assigned successfully!");
           handleCloseAssign();
           const { pageNumber, pageSize } = paginationRef.current;
-          fetchWarrantyClaims(pageNumber, pageSize);
+          fetchWarrantyClaims(pageNumber, pageSize, statusFilterRef.current, searchRef.current);
         } else {
           const msg = res.message || "Assignment failed";
           setError(msg);
@@ -474,7 +514,7 @@ export const WarrantyClaimListContainer = () => {
           handleCloseCarBackHome();
           handleCloseSentToManufacturer();
           const { pageNumber, pageSize } = paginationRef.current;
-          fetchWarrantyClaims(pageNumber, pageSize);
+          fetchWarrantyClaims(pageNumber, pageSize, statusFilterRef.current, searchRef.current);
 
           // Success toast based on action
           const successMap = {
@@ -509,7 +549,7 @@ export const WarrantyClaimListContainer = () => {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      fetchWarrantyClaims(page, size);
+      fetchWarrantyClaims(page, size, statusFilterRef.current, searchRef.current);
     },
     [fetchWarrantyClaims]
   );
@@ -523,8 +563,10 @@ export const WarrantyClaimListContainer = () => {
         loading={isLoading}
         error={error}
         statusFilter={statusFilter}
-        onStatusFilterChange={setStatusFilter}
+        onStatusFilterChange={handleStatusFilterChange}
         statusOptions={statusOptions}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
         pagination={pagination}
         onPageChange={handlePageChange}
   onRefresh={handleRefresh}

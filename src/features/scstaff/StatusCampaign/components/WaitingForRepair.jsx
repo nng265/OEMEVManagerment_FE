@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { toast } from "react-toastify";
 import "../components/UI.css";
 
@@ -10,6 +11,7 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
   const [techs, setTechs] = useState([]);
   const [selectedTechs, setSelectedTechs] = useState([""]);
   const [assigning, setAssigning] = useState(false);
+  const [loadingTechs, setLoadingTechs] = useState(false);
 
   // === Dùng các hàm helper giống CampaignViewModal ===
   const displayValue = (value) => {
@@ -44,6 +46,7 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
     if (open) {
       let mounted = true;
       const loadTechs = async () => {
+        setLoadingTechs(true);
         try {
           const res = await request(ApiEnum.GET_TECHNICIANS, {});
           const list = Array.isArray(res?.data)
@@ -54,6 +57,9 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
           if (mounted) setTechs(list);
         } catch (err) {
           console.error("Failed to load technicians", err);
+          if (mounted) toast.error("Failed to load technicians");
+        } finally {
+          if (mounted) setLoadingTechs(false);
         }
       };
       loadTechs();
@@ -219,36 +225,44 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
         {/* === Section 3: Chỉ định Kỹ thuật viên === */}
         <h3 className="campaign-section-title">Assign Technician *</h3>
         <div className="form-group">
-          {selectedTechs.map((tech, index) => (
-            <div key={index} className="tech-select-row">
-              <select
-                value={tech}
-                onChange={(e) => handleChangeTech(index, e.target.value)}
-              >
-                <option value="">Select technician...</option>
-                {techs.map((t) => (
-                  <option
-                    key={t.id ?? t.employeeId ?? t.userId}
-                    value={t.id ?? t.employeeId ?? t.userId}
-                  >
-                    {t.name ?? t.fullName ?? t.username}
-                  </option>
-                ))}
-              </select>
-              {selectedTechs.length > 1 && (
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleRemoveTech(index)}
-                >
-                  ✕
-                </Button>
-              )}
+          {loadingTechs ? (
+            <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+              <LoadingSpinner />
             </div>
-          ))}
-          <Button variant="secondary" size="sm" onClick={handleAddTech}>
-            + Add more technician
-          </Button>
+          ) : (
+            <>
+              {selectedTechs.map((tech, index) => (
+                <div key={index} className="tech-select-row">
+                  <select
+                    value={tech}
+                    onChange={(e) => handleChangeTech(index, e.target.value)}
+                  >
+                    <option value="">Select technician...</option>
+                    {techs.map((t) => (
+                      <option
+                        key={t.id ?? t.employeeId ?? t.userId}
+                        value={t.id ?? t.employeeId ?? t.userId}
+                      >
+                        {t.name ?? t.fullName ?? t.username}
+                      </option>
+                    ))}
+                  </select>
+                  {selectedTechs.length > 1 && (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleRemoveTech(index)}
+                    >
+                      ✕
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button variant="secondary" size="sm" onClick={handleAddTech}>
+                + Add more technician
+              </Button>
+            </>
+          )}
         </div>
 
         {/* === Footer === */}

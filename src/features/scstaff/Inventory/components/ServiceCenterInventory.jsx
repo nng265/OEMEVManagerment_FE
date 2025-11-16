@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./ServiceCenterInventory.css";
 
@@ -28,6 +29,11 @@ export const ServiceCenterInventory = ({
   serverSide = true,
   onRefresh,
   refreshing = false,
+  // New props for search and status filter
+  searchQuery = "",
+  onSearchChange,
+  statusFilter = "",
+  onStatusFilterChange,
 }) => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
@@ -101,46 +107,42 @@ export const ServiceCenterInventory = ({
     }
   };
 
+  // Status options for filter
+  const statusOptions = [
+    { value: "", label: "All Status" },
+    { value: "In Stock", label: "In Stock" },
+    { value: "Low Stock", label: "Low Stock" },
+    { value: "Out of Stock", label: "Out of Stock" },
+  ];
+
   return (
     <div className="sc-container" style={{ marginTop: 0 }}>
       <div className="sc-inventory">
         <h1 className="size-h1">Service Center Inventory</h1>
-        {/* <p className="sc-inventory__subtitle">
-          Manage and request parts from the Service Center inventory.
-        </p>
 
-        <div className="sc-inventory__filters">
-          <input
-            type="text"
-            placeholder="Search by model..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="sc-inventory__search"
-          />
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="sc-inventory__select"
-          >
-            <option value="">All Categories</option>
-            {categories.map((c, i) => (
-              <option key={i} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-          <Button
-            variant="secondary"
-            disabled={!query && !category}
-            onClick={() => {
-              setQuery("");
-              setCategory("");
-            }}
-            className="sc-inventory__clear"
-          >
-            Clear
-          </Button>
-        </div> */}
+        {/* Search Bar and Status Filter */}
+        <div className="inventory-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+          <div style={{ flex: 2 }}>
+            <Input
+              type="text"
+              placeholder="Search by Model or Category..."
+              value={searchQuery}
+              onChange={onSearchChange}
+              fullWidth
+              size="md"
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <Input
+              type="select"
+              value={statusFilter}
+              onChange={onStatusFilterChange}
+              options={statusOptions}
+              fullWidth
+              size="md"
+            />
+          </div>
+        </div>
 
         <div className="sc-inventory__table-wrapper">
           <DataTable
@@ -182,6 +184,10 @@ ServiceCenterInventory.propTypes = {
   serverSide: PropTypes.bool,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
 };
 
 export default ServiceCenterInventory;

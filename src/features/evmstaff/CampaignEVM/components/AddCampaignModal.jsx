@@ -3,10 +3,25 @@ import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { Input } from "../../../../components/atoms/Input/Input";
+import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import "./AddCampaignModal.css";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { toast } from "react-toastify";
 import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+
+/*
+  AddCampaignModal (VN):
+  - Modal chứa form tạo campaign (presentational + nhẹ xử lý form state).
+  - Trách nhiệm:
+    * Quản lý state form local (title, type, category, models, dates, description)
+    * Lấy danh mục part categories và models theo category khi modal mở
+    * Validate form cơ bản, build payload và show ConfirmDialog trước khi gửi
+    * Không gọi API trực tiếp để tạo campaign (container sẽ handle thông qua onSubmit)
+
+  Ghi chú:
+  - `onSubmit` được container truyền vào; modal chỉ build payload và gọi onSubmit
+    khi user confirm.
+*/
 
 export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -20,6 +35,9 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     description: "",
   });
 
+  // formData lưu toàn bộ trạng thái input của form.
+  // Các trường có comment rõ ràng: `oldTarget` là model cũ, `target` là model mới.
+
   const [categories, setCategories] = useState([]);
   const [models, setModels] = useState([]);
   const [loadingCats, setLoadingCats] = useState(false);
@@ -28,6 +46,8 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
   // Thêm state cho ConfirmDialog
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingPayload, setPendingPayload] = useState(null);
+
+  // showConfirm/pendingPayload dùng để tạm giữ payload trước khi user confirm
 
   //  Reset form mỗi khi mở lại modal
   useEffect(() => {
@@ -44,6 +64,8 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       });
     }
   }, [isOpen]);
+
+  // Khi modal mở lại, reset form để tránh giữ dữ liệu cũ
 
   // Fetch categories
   useEffect(() => {
@@ -67,6 +89,9 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     };
     if (isOpen) fetchCategories();
   }, [isOpen]);
+
+  // Lấy danh mục part khi modal mở. Nếu API trả mảng trực tiếp hoặc object { success, data }
+  // đều xử lý được.
 
   // Fetch models theo category
   const fetchModelsByCategory = async (category) => {
@@ -92,11 +117,13 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     }
   };
 
-  // 🖊️ Handle input thay đổi
+  // Khi chọn category, gọi hàm này để lấy danh sách models tương ứng.
+
+  //  Handle input thay đổi
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // 🔹 Nếu chọn Type → reset model
+    //  Nếu chọn Type → reset model
     if (name === "type") {
       setFormData((prev) => ({
         ...prev,
@@ -107,7 +134,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       return;
     }
 
-    // 🔹 Nếu chọn Category → reset models + fetch mới
+    //  Nếu chọn Category → reset models + fetch mới
     if (name === "targetCategory") {
       setFormData((prev) => ({
         ...prev,
@@ -119,7 +146,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       return;
     }
 
-    // 🔹 Nếu chọn oldTarget → reset target nếu bị trùng
+    //  Nếu chọn oldTarget → reset target nếu bị trùng
     if (name === "oldTarget") {
       setFormData((prev) => ({
         ...prev,
@@ -142,6 +169,10 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     //  Trường hợp còn lại
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  // handleChange xử lý nhiều trường đặc biệt:
+  // - Khi thay đổi type/category sẽ reset các trường phụ để tránh dữ liệu mâu thuẫn
+  // - Khi chọn oldTarget/target trùng nhau thì reset field kia để đảm bảo khác nhau
 
   //  Khi nhấn nút "Create" — hiển thị ConfirmDialog
   const handleSubmit = (e) => {
@@ -181,10 +212,15 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     setShowConfirm(true);
   };
 
+  // Validation cơ bản trước khi build payload
+  // Sau khi build payload chúng ta không gọi API trực tiếp ở đây, mà lưu payload
+  // vào pendingPayload và hiện ConfirmDialog để user confirm.
+
   //  Xử lý ConfirmDialog
   const handleConfirm = () => {
     if (pendingPayload) {
-      onSubmit(pendingPayload); // để container xử lý toast
+      // Gọi onSubmit do container truyền vào — container sẽ gọi API và xử lý kết quả
+      onSubmit(pendingPayload);
     }
     setShowConfirm(false);
     setPendingPayload(null);
@@ -262,90 +298,107 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
 
           <div className="form-group half">
             <label>Target Category *</label>
-            <select
-              name="targetCategory"
-              value={formData.targetCategory}
-              onChange={async (e) => {
-                const value = e.target.value;
-                setFormData((prev) => ({
-                  ...prev,
-                  targetCategory: value,
-                  target: "",
-                  oldTarget: "",
-                }));
-                await fetchModelsByCategory(value);
-              }}
-              className="form-select"
-              required
-              disabled={loadingCats}
-            >
-              {formData.targetCategory === "" && (
-                <option value="" disabled>
-                  -- Select category --
-                </option>
-              )}
-              {categories.map((c, i) => (
-                <option key={i} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+            {loadingCats ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <select
+                name="targetCategory"
+                value={formData.targetCategory}
+                onChange={async (e) => {
+                  const value = e.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    targetCategory: value,
+                    target: "",
+                    oldTarget: "",
+                  }));
+                  await fetchModelsByCategory(value);
+                }}
+                className="form-select"
+                required
+              >
+                {formData.targetCategory === "" && (
+                  <option value="" disabled>
+                    -- Select category --
+                  </option>
+                )}
+                {categories.map((c, i) => (
+                  <option key={i} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group half">
             <label>Target Part Model (Old) *</label>
-            <select
-              name="oldTarget"
-              value={formData.oldTarget}
-              onChange={handleChange}
-              className="form-select"
-              required
-              disabled={!formData.targetCategory || loadingModels}
-            >
-              {formData.oldTarget === "" && (
-                <option value="" disabled>
-                  {formData.targetCategory
-                    ? "-- Select old part model --"
-                    : "Select category first"}
-                </option>
-              )}
-              {models
-                .filter((m) => m && m !== formData.target) // bỏ trùng với target
-                .map((m, idx) => (
-                  <option key={idx} value={m}>
-                    {m}
+            {loadingModels ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <select
+                name="oldTarget"
+                value={formData.oldTarget}
+                onChange={handleChange}
+                className="form-select"
+                required
+                disabled={!formData.targetCategory}
+              >
+                {formData.oldTarget === "" && (
+                  <option value="" disabled>
+                    {formData.targetCategory
+                      ? "-- Select old part model --"
+                      : "Select category first"}
                   </option>
-                ))}
-            </select>
+                )}
+                {models
+                  .filter((m) => m && m !== formData.target) // bỏ trùng với target
+                  .map((m, idx) => (
+                    <option key={idx} value={m}>
+                      {m}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
 
           <div className="form-group half">
             <label>Target Part Model (New) *</label>
-            <select
-              name="target"
-              value={formData.target}
-              onChange={handleChange}
-              className="form-select"
-              required
-              disabled={!formData.targetCategory || loadingModels}
-            >
-              {formData.target === "" && (
-                <option value="" disabled>
-                  {formData.targetCategory
-                    ? "-- Select part model --"
-                    : "Select category first"}
-                </option>
-              )}
-              {models
-                .filter((m) => m && m !== formData.oldTarget) // bỏ trùng với oldTarget
-                .map((m, idx) => (
-                  <option key={idx} value={m}>
-                    {m}
+            {loadingModels ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <select
+                name="target"
+                value={formData.target}
+                onChange={handleChange}
+                className="form-select"
+                required
+                disabled={!formData.targetCategory}
+              >
+                {formData.target === "" && (
+                  <option value="" disabled>
+                    {formData.targetCategory
+                      ? "-- Select part model --"
+                      : "Select category first"}
                   </option>
-                ))}
-            </select>
+                )}
+                {models
+                  .filter((m) => m && m !== formData.oldTarget) // bỏ trùng với oldTarget
+                  .map((m, idx) => (
+                    <option key={idx} value={m}>
+                      {m}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
         </div>
 

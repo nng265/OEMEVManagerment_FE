@@ -18,6 +18,7 @@ export const CarListContainer = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // ✅ Pagination từ BE (page bắt đầu = 0, size = 20)
   const [pagination, setPagination] = useState({
@@ -26,25 +27,39 @@ export const CarListContainer = () => {
     totalRecords: 0,
   });
   const paginationRef = useRef(pagination);
+  const searchRef = useRef(searchQuery);
 
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
 
+  useEffect(() => {
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
+
   // --- Fetch dữ liệu từ BE ---
-  const fetchVehicles = useCallback(async (pageNumber = 0, pageSize) => {
+  const fetchVehicles = useCallback(async (pageNumber = 0, pageSize, search) => {
     const effectivePageSize =
       typeof pageSize === "number" ? pageSize : paginationRef.current.pageSize;
+    const effectiveSearch =
+      typeof search === "string" ? search : searchRef.current;
 
     try {
       setLoading(true);
       setError(null);
       setSubmitError(null);
 
-      const response = await request(ApiEnum.GET_VEHICLES, {
+      const params = {
         Page: pageNumber,
         Size: effectivePageSize,
-      });
+      };
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      const response = await request(ApiEnum.GET_VEHICLES, params);
 
       const { success, items, totalRecords, page, size, message } =
         normalizePagedResult(response, []);
@@ -107,10 +122,18 @@ export const CarListContainer = () => {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      fetchVehicles(page, size);
+      fetchVehicles(page, size, searchRef.current);
     },
     [fetchVehicles]
   );
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    // Reset về trang đầu khi search
+    fetchVehicles(0, paginationRef.current.pageSize, value);
+  };
 
   const handleWarrantySubmit = (formData) => {
     // Open confirmation dialog first, do not call API yet
@@ -164,7 +187,8 @@ export const CarListContainer = () => {
   const handleRefresh = useCallback(() => {
     fetchVehicles(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchRef.current
     );
   }, [fetchVehicles]);
 
@@ -232,6 +256,8 @@ export const CarListContainer = () => {
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
       />
 
       <ConfirmDialog

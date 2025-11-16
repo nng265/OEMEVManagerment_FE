@@ -1,4 +1,3 @@
-// src/components/templates/DashboardLayout.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 // Giả định cấu trúc thư mục: components/templates, components/organisms, context, configs
@@ -46,7 +45,16 @@ export const DashboardLayout = ({ children }) => {
         return "/Statuscampaign";
       case "overview":
         return "/overview";
+
+      // THÊM MỚI: Ánh xạ path cho Appointment
+      case "staff_appointment":
+        return "/appointment"; // Đảm bảo bạn có route "/appointment" trong App.jsx hoặc routes.jsx
+      // KẾT THÚC THÊM MỚI
+      case "policy_management":
+        return "/policy_management"; // Đảm bảo bạn có route "/policy_management" trong routes.jsx
       // !!! QUAN TRỌNG: Kiểm tra và bổ sung/sửa tất cả các case khác cho khớp routes.jsx !!!
+      case "account_management":
+        return "/account_management";
       default:
         console.warn(
           `Không tìm thấy ánh xạ path cụ thể cho screen ID: ${screenId}`

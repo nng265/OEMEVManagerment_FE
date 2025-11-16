@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./Campaign.css";
+
+/*
+  Component: Campaign
+  Mô tả (VN):
+  - Component presentational để hiển thị danh sách campaign dưới dạng bảng.
+  - Nhận `data` (mảng đã được normalize bởi container), `pagination`, và các
+    callback như `onView`, `onAdd`, `onPageChange`, `onSearch`, `onFilterType`,
+    `onFilterStatus`, `onRefresh`.
+
+  Những điểm cần biết khi đọc mã:
+  - `typeOptions` và `statusOptions` được derive từ `data` hiện tại để render
+    dropdown filter (nếu bật UI filter).
+  - `columns` định nghĩa cột cho `DataTable`, trong đó `render` là function cho
+    custom cell rendering (ví dụ: badge cho status, nút action).
+  - `rows` map `data` sang cấu trúc hàng (row) mà `DataTable` mong đợi, kèm `_raw`
+    để giữ payload gốc nếu cần hành động dựa trên ID gốc.
+*/
 
 export const Campaign = ({
   data = [],
@@ -13,35 +31,27 @@ export const Campaign = ({
   onView,
   onAdd,
   onPageChange,
-  onSearch,
-  onFilterType,
-  onFilterStatus,
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
+  typeFilter = "",
+  onTypeFilterChange,
+  statusFilter = "",
+  onStatusFilterChange,
 }) => {
-  // Local filter states mimic ServiceCenterInventory behavior
-  const [query, setQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  // Type and Status options
+  const typeOptions = [
+    { value: "", label: "All Types" },
+    { value: "Service", label: "Service" },
+    { value: "Recall", label: "Recall" },
+  ];
 
-  useEffect(() => {
-    if (typeof onSearch === "function") onSearch(query);
-  }, [query, onSearch]);
-
-  useEffect(() => {
-    if (typeof onFilterType === "function") onFilterType(typeFilter);
-  }, [typeFilter, onFilterType]);
-
-  useEffect(() => {
-    if (typeof onFilterStatus === "function") onFilterStatus(statusFilter);
-  }, [statusFilter, onFilterStatus]);
-  // Derive filter options from data to keep it in sync with what's shown
-  const typeOptions = Array.from(
-    new Set((data || []).map((c) => c.type).filter(Boolean))
-  );
-  const statusOptions = Array.from(
-    new Set((data || []).map((c) => c.status).filter(Boolean))
-  );
+  const statusOptions = [
+    { value: "", label: "All Status" },
+    { value: "Active", label: "Active" },
+    { value: "Close", label: "Close" },
+  ];
 
   const columns = [
     { key: "title", label: "Campaign" },
@@ -53,6 +63,7 @@ export const Campaign = ({
       label: "Status",
       sortable: true,
       render: (value) => {
+        // Chuẩn hoá giá trị status để tạo CSS class và hiển thị text đẹp hơn
         const normalizedStatus = (value || "unknown").trim().toLowerCase();
         const statusClass = normalizedStatus.replace(/\s+/g, "-");
         const displayText =
@@ -60,6 +71,7 @@ export const Campaign = ({
             ? value.charAt(0).toUpperCase() + value.slice(1)
             : "Unknown";
 
+        // Trả về badge với class động, ví dụ: status-open, status-closed
         return (
           <span className={`status-badge status-${statusClass}`}>
             {displayText}
@@ -103,6 +115,9 @@ export const Campaign = ({
     completedVehicles: c.completedVehicles || 0,
   }));
 
+  // Lưu ý: `rows` là dữ liệu cuối cùng truyền vào `DataTable`. Việc giữ `_raw`
+  // giúp dễ lấy ID gốc hoặc gửi payload gốc khi thao tác (ví dụ: xem hoặc edit).
+
   return (
     <div className="campaign-container">
       <div className="campaign-header">
@@ -112,52 +127,39 @@ export const Campaign = ({
         </Button>
       </div>
 
-      {/* Filters (search + type + status) */}
-      {/* <div
-        className="campaign-filters"
-        style={{ display: "flex", gap: 8, marginBottom: 12 }}
-      >
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ flex: 1, minWidth: 220 }}
-        />
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-        >
-          <option value="">All Types</option>
-          {typeOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">All Statuses</option>
-          {statusOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setQuery("");
-            setTypeFilter("");
-            setStatusFilter("");
-          }}
-          disabled={!query && !typeFilter && !statusFilter}
-        >
-          Clear
-        </Button>
-      </div> */}
+      {/* Search Bar and Filters */}
+      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by Title..."
+            value={searchQuery}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={typeFilter}
+            onChange={onTypeFilterChange}
+            options={typeOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={statusFilter}
+            onChange={onStatusFilterChange}
+            options={statusOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+      </div>
 
       <div className="campaign-table__content">
         <DataTable
@@ -192,11 +194,22 @@ Campaign.propTypes = {
   onView: PropTypes.func,
   onAdd: PropTypes.func.isRequired,
   onPageChange: PropTypes.func,
-  onSearch: PropTypes.func,
-  onFilterType: PropTypes.func,
-  onFilterStatus: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  typeFilter: PropTypes.string,
+  onTypeFilterChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
 };
 
 export default Campaign;
+
+/*
+  Giải thích nhanh về `propTypes` (VN):
+  - `propTypes` dùng để mô tả kiểu dữ liệu props ở runtime (chỉ trong môi trường dev
+    sẽ xuất cảnh báo nếu prop sai kiểu hoặc thiếu prop required).
+  - Ví dụ: `data` là mảng object; `onAdd` bắt buộc phải có vì component cần nút Add.
+  - Không thay thế TypeScript — nhưng giúp catch lỗi sớm khi dùng JS thuần.
+*/

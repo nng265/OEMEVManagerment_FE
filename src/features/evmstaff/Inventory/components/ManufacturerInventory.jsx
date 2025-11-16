@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 
@@ -15,6 +16,10 @@ export const ManufacturerInventory = ({
   onPageChange, // callback từ container để gọi lại API
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
+  statusFilter = "",
+  onStatusFilterChange,
 }) => {
   const totalRecords = pagination?.totalRecords ?? data.length;
   const currentPage = pagination?.pageNumber ?? 0;
@@ -61,12 +66,41 @@ export const ManufacturerInventory = ({
     }
   };
 
+  // Status options for filter
+  const statusOptions = [
+    { value: "", label: "All Status" },
+    { value: "In Stock", label: "In Stock" },
+    { value: "Low Stock", label: "Low Stock" },
+    { value: "Out of Stock", label: "Out of Stock" },
+  ];
+
   return (
     <div style={{ padding: 10 }}>
       <h1 style={{ marginBottom: 16 }}>Manufacturer Inventory</h1>
-      {/* <p style={{ marginBottom: 12, color: "#555" }}>
-        View parts available at the Manufacturer's inventory.
-      </p> */}
+
+      {/* Search Bar and Status Filter */}
+      <div className="inventory-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by Model or Category..."
+            value={searchQuery}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={statusFilter}
+            onChange={onStatusFilterChange}
+            options={statusOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+      </div>
 
       <div style={{ position: "relative" }}>
         {loading && (
@@ -110,6 +144,10 @@ ManufacturerInventory.propTypes = {
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
 };
 
 export default ManufacturerInventory;

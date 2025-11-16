@@ -8,3 +8,5 @@ export { ApprovedClaimModal } from "./ApprovedClaimModal";
 export { DeniedOrRepairedClaimModal } from "./DeniedOrRepairedClaimModal";
 export { CarBackHomeModal } from "./CarBackHomeModal";
 export { SentToManufacturerModal } from "./SentToManufacturerModal";
+export { WarrantyBillModal } from "./WarrantyBillModal";
+export { WarrantyBillPDF } from "./WarrantyBillPDF";

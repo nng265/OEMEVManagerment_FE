@@ -1,0 +1,84 @@
+.policy-table {
+    padding: 18px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.policy-table__header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.size-h1 {
+    margin: 0;
+    font-size: 2.rem;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.policy-table .btn {
+    border-radius: 8px;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.status-active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-unknown {
+    background: #f8fafc;
+    color: #475569;
+}
+
+/* Action column layout */
+.policy-table .data-action {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* icon size */
+.eye-svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Table row hover (DataTable class names may differ; keep it generic) */
+.table-row:hover {
+    background: #fbfdff;
+}
+
+/* Make table cells wrap long text for conditions */
+.table-cell-conditions {
+    white-space: pre-wrap;
+    max-width: 320px;
+    word-wrap: break-word;
+}
+
+/* Responsive tweaks */
+@media (max-width: 760px) {
+    .policy-table {
+        padding: 12px;
+    }
+
+    .size-h1 {
+        font-size: 1.05rem;
+    }
+}
