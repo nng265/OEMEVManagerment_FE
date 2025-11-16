@@ -5,6 +5,7 @@ import { DashboardLayout } from "../components/templates";
 import Login from "../pages/Login.jsx";
 import Home from "../pages/Home.jsx";
 import CusAppointmentForm from "../pages/CusAppointmentForm.jsx";
+import ConfirmAppointment from "../pages/ConfirmAppointment.jsx";
 
 import Dashboard from "../pages/Dashboard.jsx";
 import DashboardEVMSTAFF from "../pages/DashboardEVMSTAFF.jsx";
@@ -44,6 +45,10 @@ export const publicRoutes = [
     path: "/cusappointmentform",
     element: <CusAppointmentForm />,
   },
+  {
+    path: "/confirmappointment",
+    element: <ConfirmAppointment />
+  }
 ];
 
 // Private routes that require authentication

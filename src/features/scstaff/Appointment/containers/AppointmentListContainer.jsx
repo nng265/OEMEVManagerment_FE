@@ -125,7 +125,7 @@ export const AppointmentListContainer = () => {
     try {
       const res = await request(ApiEnum.APPOINTMENT_CREATE, payload);
       await fetchAppointments(pagination.pageNumber, pagination.pageSize);
-      return res;
+      return res.data;
     } catch (err) {
       console.error("Create appointment failed:", err);
       throw err;
@@ -191,6 +191,7 @@ export const AppointmentListContainer = () => {
         fetchTimeSlots={fetchTimeSlots}
         createAppointment={createAppointment}
       />
+
     </>
   );
 };

@@ -194,6 +194,9 @@ export const ApiEnum = {
   CREATE_POLICY: { path: "/WarrantyPolicy", method: "POST" },
   UPDATE_POLICY: { path: "/WarrantyPolicy/:id", method: "PUT" },
   DELETE_POLICY: { path: "/WarrantyPolicy/:id", method: "DELETE" },
+
+  APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
+
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)

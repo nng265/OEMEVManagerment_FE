@@ -55,6 +55,9 @@ function AppointmentForm({
   const [info, setInfo] = useState({ vin: "", model: "", year: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // const [successData, setSuccessData] = useState(null);
+  // const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  // const [lastResponse, setLastResponse] = useState(null);
 
   // Tính ngày nhỏ nhất có thể chọn: hiện tại + 3 ngày
   // (ứng với requirement business: không cho đặt quá gần ngày hiện tại)
