@@ -6,6 +6,7 @@ import { DetailSection } from '../../../../components/molecules/DetailSection/De
 import { DetailModalActions } from '../../../../components/molecules/DetailModalActions/DetailModalActions';
 import { WarrantyRecordsSection } from '../../../../components/molecules/WarrantyRecordsSection/WarrantyRecordsSection';
 import { request, ApiEnum } from '../../../../services/NetworkUntil';
+import { LoadingSpinner } from '../../../../components/atoms/LoadingSpinner/LoadingSpinner';
 import './CreateWarrantyClaimModal.css';
 
 export const CreateWarrantyClaimModal = ({ show, onClose, vehicle, onSubmit }) => {
@@ -160,67 +161,71 @@ export const CreateWarrantyClaimModal = ({ show, onClose, vehicle, onSubmit }) =
           {assignTech && (
             <div className="technicians-section">
               <h5>Assigned Technicians List</h5>
-              {technicians.map((tech) => {
-                
-                // Filter technician list for this row only
-                // Include:
-                // 1. Technicians not in 'selectedTechIds'
-                // 2. Technician already selected in this row (to prevent disappearing after selection)
-                const filteredAvailableTechs = availableTechs.filter(
-                  (availableTech) =>
-                    !selectedTechIds.includes(availableTech.userId) ||
-                    availableTech.userId === tech.selectedValue
-                );
+              {loading ? (
+                <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+                  <LoadingSpinner />
+                </div>
+              ) : error ? (
+                <div className="select-error" style={{ color: "red", padding: "10px" }}>{error}</div>
+              ) : (
+                <>
+                  {technicians.map((tech) => {
+                    
+                    // Filter technician list for this row only
+                    // Include:
+                    // 1. Technicians not in 'selectedTechIds'
+                    // 2. Technician already selected in this row (to prevent disappearing after selection)
+                    const filteredAvailableTechs = availableTechs.filter(
+                      (availableTech) =>
+                        !selectedTechIds.includes(availableTech.userId) ||
+                        availableTech.userId === tech.selectedValue
+                    );
 
-                return (
-                  <div key={tech.id} className="technician-row">
-                    {loading ? (
-                      <div className="select-loading">Loading...</div>
-                    ) : error ? (
-                      <div className="select-error">{error}</div>
-                    ) : (
-                      <select
-                        className="form-select tech-select"
-                        value={tech.selectedValue || ''}
-                        onChange={(e) => {
-                          const updatedTechs = technicians.map(t =>
-                            t.id === tech.id ? { ...t, selectedValue: e.target.value } : t
-                          );
-                          setTechnicians(updatedTechs);
-                        }}
-                      >
-                        <option value="">Select Technician</option>
-                        
-                        {filteredAvailableTechs.map(techOpt => (
-                          <option key={techOpt.userId} value={techOpt.userId}>
-                            {techOpt.name}
-                          </option>
-                        ))}
+                    return (
+                      <div key={tech.id} className="technician-row">
+                        <select
+                          className="form-select tech-select"
+                          value={tech.selectedValue || ''}
+                          onChange={(e) => {
+                            const updatedTechs = technicians.map(t =>
+                              t.id === tech.id ? { ...t, selectedValue: e.target.value } : t
+                            );
+                            setTechnicians(updatedTechs);
+                          }}
+                        >
+                          <option value="">Select Technician</option>
+                          
+                          {filteredAvailableTechs.map(techOpt => (
+                            <option key={techOpt.userId} value={techOpt.userId}>
+                              {techOpt.name}
+                            </option>
+                          ))}
 
-                      </select>
-                    )}
-                    {technicians.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        size="small"
-                        onClick={() => handleRemoveTechnician(tech.id)}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                );
-              })}
-              <Button
-                type="button"
-                variant="secondary"
-                size="small"
-                onClick={handleAddTechnician}
-                className="mt-2"
-              >
-                Add Technician
-              </Button>
+                        </select>
+                        {technicians.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="danger"
+                            size="small"
+                            onClick={() => handleRemoveTechnician(tech.id)}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="small"
+                    onClick={handleAddTechnician}
+                    className="mt-2"
+                  >
+                    Add Technician
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </DetailSection>

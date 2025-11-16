@@ -2,11 +2,11 @@
 // const API_URL = "http://localhost:3001";
 // const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
 
-const API_BASE_URL =
-  "https://overimpressibly-unsubject-mirna.ngrok-free.dev/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
+  LOGIN_GOOGLE: { path: "/auth/google-login", method: "POST" },
 
   // Dashboard
   GET_DASHBOARD_SC_SUMMARY: { path: "/Dashboard/sc/summary", method: "GET" },
@@ -159,7 +159,26 @@ export const ApiEnum = {
     path: "/CampaignVehicle/:id/repaired",
     method: "PUT",
   },
-
+  CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
+  CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
+  CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
+  CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET" },
+  CAMPAIGNVEHICLE_STAFF_REPAIRED: {
+    path: "/CampaignVehicle/:id/repaired",
+    method: "PUT",
+  },
+  CAMPAIGNVEHICLE_STAFF_DONE: {
+    path: "/CampaignVehicle/:id/done",
+    method: "PUT",
+  },
+  CAMPAIGNVEHICLE_STAFF_TECH: {
+    path: "/CampaignVehicle/:id/assign-techs",
+    method: "POST",
+  },
+    GET_CAMPAIGN_VEHICLE_STATUSES: {
+    path: "/CampaignVehicle/statuses",
+    method: "GET",
+  },
   CLOSE_CAMPAIGN: { path: "/Campaign/:id/close", method: "PUT" },
 
   ORGANIZATION: { path: "/Organization", method: "GET" },

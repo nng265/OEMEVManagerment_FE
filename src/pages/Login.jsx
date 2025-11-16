@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 // Assuming Button and Input are correctly exported from their paths
 import { Button } from "../components/atoms/Button/Button";
 import { Input } from "../components/atoms/Input/Input";
+import { GoogleLogin } from "@react-oauth/google";
+import { request, ApiEnum } from "../services/NetworkUntil";
 import "./Login.css"; // Make sure the path is correct
 
 const Login = () => {
@@ -59,6 +61,40 @@ const Login = () => {
       );
     } finally {
       setIsLoading(false); // Stop loading
+    }
+  };
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    if (!credentialResponse || !credentialResponse.credential) {
+      setError("Google credential not found");
+      return;
+    }
+
+    try {
+      const res = await request(ApiEnum.LOGIN_GOOGLE, {
+        credential: credentialResponse.credential,
+      });
+
+      if (res.success) {
+        const { accessToken, refreshToken, employeeId, role } = res.data;
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: employeeId,
+            role: role
+          })
+        );
+        if (res.data.role === "EVM_STAFF") navigate("/dashboardevmstaff");
+        else if (res.data.role === "SC_TECH") navigate("/overview");
+        else navigate("/dashboard");
+      } else {
+        setError(res.message || "Google login failed");
+      }
+    } catch (err) {
+      console.error("Google login error:", err);
+      setError("Google login failed");
     }
   };
 
@@ -146,6 +182,14 @@ const Login = () => {
               {isLoading ? "Logging in..." : "Login"}
             </Button>
           </form>
+          {/* Google Login */}
+          <div style={{ marginTop: "20px", textAlign: "center" }}>
+            <p>or</p>
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => setError("Google login failed")}
+            />
+          </div>
         </div>
 
         <div className="login-footer">

@@ -30,7 +30,6 @@ import { normalizePagedResult } from "../../../../services/helpers";
 export const EVMStaffCampaignContainer = () => {
   // --- STATE ---
   const [campaigns, setCampaigns] = useState([]);
-  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
@@ -38,13 +37,10 @@ export const EVMStaffCampaignContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
-  const [clientPagination, setClientPagination] = useState({
-    pageNumber: 0,
-    pageSize: 10,
-  });
 
   const paginationRef = useRef(pagination);
   const latestRequestRef = useRef(0);
+  
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
@@ -65,11 +61,37 @@ export const EVMStaffCampaignContainer = () => {
 
   // --- FILTER STATES ---
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
+  const searchRef = useRef("");
+  const typeRef = useRef("");
+  const statusRef = useRef("");
+
+  useEffect(() => {
+    searchRef.current = debouncedSearchQuery;
+  }, [debouncedSearchQuery]);
+
+  useEffect(() => {
+    typeRef.current = selectedType;
+  }, [selectedType]);
+
+  useEffect(() => {
+    statusRef.current = selectedStatus;
+  }, [selectedStatus]);
+
+  // Debounce search query để tránh request liên tục
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500); // Delay 500ms sau khi user ngừng gõ
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
+
   // ===== FETCH LIST =====
-  const fetchCampaign = useCallback(async (pageNumber = 0, size) => {
+  const fetchCampaign = useCallback(async (pageNumber = 0, size, search, type, status) => {
     const effectiveSize =
       typeof size === "number" && size > 0
         ? size
@@ -78,6 +100,12 @@ export const EVMStaffCampaignContainer = () => {
       typeof pageNumber === "number" && pageNumber >= 0
         ? pageNumber
         : paginationRef.current.pageNumber;
+    const effectiveSearch =
+      typeof search === "string" ? search : searchRef.current;
+    const effectiveType =
+      typeof type === "string" ? type : typeRef.current;
+    const effectiveStatus =
+      typeof status === "string" ? status : statusRef.current;
 
     const requestId = latestRequestRef.current + 1;
     latestRequestRef.current = requestId;
@@ -86,10 +114,27 @@ export const EVMStaffCampaignContainer = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await request(ApiEnum.CAMPAIGN_SCSTAFF, {
+      const params = {
         Page: effectivePage,
         Size: effectiveSize,
-      });
+      };
+
+      // Thêm search query nếu có
+      if (effectiveSearch && effectiveSearch.trim()) {
+        params.Search = effectiveSearch.trim();
+      }
+
+      // Thêm type filter nếu có
+      if (effectiveType && effectiveType.trim()) {
+        params.Type = effectiveType.trim();
+      }
+
+      // Thêm status filter nếu có
+      if (effectiveStatus && effectiveStatus.trim()) {
+        params.Status = effectiveStatus.trim();
+      }
+
+      const response = await request(ApiEnum.CAMPAIGN_SCSTAFF, params);
 
       // Chuẩn hoá kết quả phân trang bằng hàm helper (trả về cấu trúc chuẩn)
       const {
@@ -145,7 +190,6 @@ export const EVMStaffCampaignContainer = () => {
       } else {
         // Nếu API trả success=false, reset danh sách và show lỗi
         setCampaigns([]);
-        setFilteredCampaigns([]);
         setPagination((prev) => ({
           ...prev,
           pageNumber: effectivePage,
@@ -164,7 +208,6 @@ export const EVMStaffCampaignContainer = () => {
           "Unable to load campaigns.";
         // Reset dữ liệu hiển thị
         setCampaigns([]);
-        setFilteredCampaigns([]);
         setPagination((prev) => ({
           ...prev,
           pageNumber: effectivePage,
@@ -181,64 +224,27 @@ export const EVMStaffCampaignContainer = () => {
     }
   }, []);
 
+  // Fetch khi filters thay đổi
   useEffect(() => {
-    fetchCampaign(
-      paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
-    );
-  }, [fetchCampaign]);
+    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
+    fetchCampaign(0, paginationRef.current.pageSize, debouncedSearchQuery, selectedType, selectedStatus);
+  }, [fetchCampaign, debouncedSearchQuery, selectedType, selectedStatus]);
 
-  // ===== GIẢI THÍCH FILTERS =====
-  // Các effect và handlers phía dưới xử lý search + filter client-side.
-  // Khi người dùng nhập search hoặc chọn filter, chúng ta lọc trên mảng `campaigns`
-  // đã tải về (client-side). Nếu có filter active, UI sẽ dùng `clientPagination`
-  // để phân trang local, ngược lại dùng pagination server.
+  // ===== HANDLERS =====
+  const handleSearchChange = (e) => {
+    const value = e.target.value || "";
+    setSearchQuery(value);
+  };
 
-  // ===== SEARCH + FILTER =====
-  useEffect(() => {
-    let result = [...campaigns];
+  const handleTypeFilterChange = (e) => {
+    const value = e.target.value || "";
+    setSelectedType(value);
+  };
 
-    // search
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter((c) => c.title.toLowerCase().includes(q));
-    }
-
-    // filter by type
-    if (selectedType) {
-      result = result.filter((c) => c.type === selectedType);
-    }
-
-    // filter by status
-    if (selectedStatus) {
-      result = result.filter((c) => c.status === selectedStatus);
-    }
-
-    setFilteredCampaigns(result);
-  }, [campaigns, searchQuery, selectedType, selectedStatus]);
-
-  // Khi thay đổi bộ lọc (search/type/status) reset page client về 0
-
-  useEffect(() => {
-    setClientPagination((prev) => ({ ...prev, pageNumber: 0 }));
-  }, [searchQuery, selectedType, selectedStatus]);
-
-  const filtersActive =
-    Boolean(searchQuery) || Boolean(selectedType) || Boolean(selectedStatus);
-
-  const handleSearch = useCallback((query) => setSearchQuery(query || ""), []);
-  const handleTypeFilter = useCallback(
-    (type) => setSelectedType(type || ""),
-    []
-  );
-  const handleStatusFilter = useCallback(
-    (status) => setSelectedStatus(status || ""),
-    []
-  );
-
-  // NOTE: handlers phía trên được memoized bằng useCallback để tránh
-  // tạo lại hàm khi component re-render, giúp truyền xuống component con
-  // mà không gây re-render không cần thiết.
+  const handleStatusFilterChange = (e) => {
+    const value = e.target.value || "";
+    setSelectedStatus(value);
+  };
 
   // ===== ADD + VIEW =====
   const handleViewCampaign = (campaign) => {
@@ -270,7 +276,10 @@ export const EVMStaffCampaignContainer = () => {
 
       await fetchCampaign(
         paginationRef.current.pageNumber,
-        paginationRef.current.pageSize
+        paginationRef.current.pageSize,
+        searchRef.current,
+        typeRef.current,
+        statusRef.current
       );
     } catch (e) {
       console.error("❌ Lỗi khi tạo campaign:", e);
@@ -280,39 +289,26 @@ export const EVMStaffCampaignContainer = () => {
   };
 
   // ===== PAGINATION =====
-  const derivedPagination = useMemo(
-    () =>
-      filtersActive
-        ? {
-            pageNumber: clientPagination.pageNumber,
-            pageSize: clientPagination.pageSize,
-            totalRecords: filteredCampaigns.length,
-          }
-        : pagination,
-    [filtersActive, clientPagination, pagination, filteredCampaigns.length]
-  );
-
   const handlePageChange = useCallback(
     (pageIndex, newPageSize) => {
-      if (filtersActive) {
-        setClientPagination((prev) => ({
-          pageNumber: Math.max(
-            0,
-            typeof pageIndex === "number" ? pageIndex : prev.pageNumber
-          ),
-          pageSize: newPageSize || prev.pageSize,
-        }));
-      } else {
-        fetchCampaign(pageIndex, newPageSize || paginationRef.current.pageSize);
-      }
+      fetchCampaign(
+        pageIndex,
+        newPageSize || paginationRef.current.pageSize,
+        searchRef.current,
+        typeRef.current,
+        statusRef.current
+      );
     },
-    [filtersActive, fetchCampaign]
+    [fetchCampaign]
   );
 
   const handleRefresh = useCallback(() => {
     fetchCampaign(
       paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
+      paginationRef.current.pageSize,
+      searchRef.current,
+      typeRef.current,
+      statusRef.current
     );
   }, [fetchCampaign]);
 
@@ -320,19 +316,22 @@ export const EVMStaffCampaignContainer = () => {
   return (
     <div style={{ marginTop: 40 }}>
       <Campaign
-        data={filtersActive ? filteredCampaigns : campaigns}
+        data={campaigns}
         loading={loading}
         error={error}
-        pagination={derivedPagination}
-        serverSide={!filtersActive}
+        pagination={pagination}
+        serverSide={true}
         onView={handleViewCampaign}
         onAdd={handleAddCampaign}
         onPageChange={handlePageChange}
-        onSearch={handleSearch}
-        onFilterType={handleTypeFilter}
-        onFilterStatus={handleStatusFilter}
         onRefresh={handleRefresh}
         refreshing={loading}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        typeFilter={selectedType}
+        onTypeFilterChange={handleTypeFilterChange}
+        statusFilter={selectedStatus}
+        onStatusFilterChange={handleStatusFilterChange}
       />
 
       <ViewCampaignModal

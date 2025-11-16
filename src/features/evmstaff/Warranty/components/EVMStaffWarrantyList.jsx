@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { formatDate } from "../../../../services/helpers";
 
@@ -14,6 +15,11 @@ export const EVMStaffWarrantyList = ({
   onPageChange,
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
+  statusFilter = "",
+  onStatusFilterChange,
+  statusOptions = [],
 }) => {
   // ✅ Cấu hình cột hiển thị trong bảng
   const columns = [
@@ -83,6 +89,30 @@ export const EVMStaffWarrantyList = ({
     <div style={{ padding: 8 }}>
       <h1 style={{ marginBottom: 30, marginTop: 30 }}>Sent To Manufacturer Claims</h1>
 
+      {/* Search Bar and Status Filter */}
+      <div className="warranty-claim-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by VIN, Customer Name, or Phone..."
+            value={searchQuery || ""}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={statusFilter || ""}
+            onChange={onStatusFilterChange}
+            options={statusOptions || [{ value: "", label: "All Statuses" }]}
+            fullWidth
+            size="md"
+          />
+        </div>
+      </div>
+
       <div style={{ position: "relative" }}>
         {loading && (
           <div className="data-table-loading">
@@ -126,6 +156,11 @@ EVMStaffWarrantyList.propTypes = {
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
+  statusOptions: PropTypes.array,
 };
 
 export default EVMStaffWarrantyList;

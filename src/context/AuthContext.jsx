@@ -28,12 +28,13 @@ export const AuthProvider = ({ children }) => {
       console.log("Login response:", res);
 
       if (res.success && res.data && res.data.accessToken) {
-        const { role = 'user', accessToken } = res.data;
+        const { role = 'user', accessToken, name, fullName } = res.data;
         
         const userData = { 
           username, 
           role,
-          id: res.data.id || null
+          id: res.data.id || null,
+          name: name || fullName || username // Lưu tên để dùng cho chữ ký
         };
 
         setUser(userData);

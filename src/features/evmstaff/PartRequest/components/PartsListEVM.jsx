@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { formatDate } from "../../../../services/helpers";
 import "./PartsListEVM.css";
@@ -15,6 +16,8 @@ export default function PartsListEVM({
   onPageChange,
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
 }) {
   const items = Array.isArray(data)
     ? data
@@ -126,6 +129,19 @@ export default function PartsListEVM({
       <h1 style={{ marginBottom: 30, marginTop: 30 }}>
         Parts Requests from Service Centers
       </h1>
+
+      {/* Search Bar */}
+      <div className="parts-search-filter" style={{ marginBottom: "20px" }}>
+        <Input
+          type="text"
+          placeholder="Search by Service Center Name..."
+          value={searchQuery || ""}
+          onChange={onSearchChange}
+          fullWidth
+          size="md"
+        />
+      </div>
+
       <div style={{ position: "relative" }}>
         {loading && (
           <div className="data-table-loading">
@@ -169,4 +185,6 @@ PartsListEVM.propTypes = {
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
 };

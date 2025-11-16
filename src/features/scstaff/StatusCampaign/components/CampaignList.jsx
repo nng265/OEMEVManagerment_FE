@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { toast } from "react-toastify";
@@ -19,7 +20,20 @@ const CampaignList = ({
   onPageChange,
   onRefresh,
   refreshing = false,
+  searchQuery = "",
+  onSearchChange,
+  typeFilter = "",
+  onTypeFilterChange,
+  statusFilter = "",
+  onStatusFilterChange,
+  statusOptions = [],
 }) => {
+  // Type options for filter
+  const typeOptions = [
+    { value: "", label: "All Types" },
+    { value: "Service", label: "Service" },
+    { value: "Recall", label: "Recall" },
+  ];
   const [selectedRow, setSelectedRow] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [confirmTitle, setConfirmTitle] = useState("");
@@ -31,7 +45,7 @@ const CampaignList = ({
     () => [
       { key: "vin", label: "VIN", sortable: true },
       { key: "customer", label: "Customer", sortable: true },
-      { key: "type", label: "Title", sortable: true },
+      { key: "title", label: "Title", sortable: true },
       {
         key: "status",
         label: "Status",
@@ -105,6 +119,40 @@ const CampaignList = ({
   return (
     <div className="campaign-table">
       <h1 className="size-h1">Campaign Vehicles</h1>
+
+      {/* Search Bar and Filters */}
+      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by Campaign Title, VIN, or Customer Name..."
+            value={searchQuery}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={typeFilter}
+            onChange={onTypeFilterChange}
+            options={typeOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+        <div style={{ flex: 1 }}>
+          <Input
+            type="select"
+            value={statusFilter}
+            onChange={onStatusFilterChange}
+            options={statusOptions}
+            fullWidth
+            size="md"
+          />
+        </div>
+      </div>
 
       {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
 
@@ -187,6 +235,13 @@ CampaignList.propTypes = {
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  typeFilter: PropTypes.string,
+  onTypeFilterChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
+  statusOptions: PropTypes.array,
 };
 
 export default CampaignList;
