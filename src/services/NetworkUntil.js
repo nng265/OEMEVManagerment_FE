@@ -1,7 +1,3 @@
-// src/services/NetworkUntil.js
-// const API_URL = "http://localhost:3001";
-// const API_BASE_URL = "https://maximum-glorious-ladybird.ngrok-free.app/api"; //của D
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const ApiEnum = {
@@ -189,14 +185,18 @@ export const ApiEnum = {
   },
   APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
+    APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
+
 
   POLICY_MANAGEMENT: { path: "/WarrantyPolicy", method: "GET" },
   CREATE_POLICY: { path: "/WarrantyPolicy", method: "POST" },
   UPDATE_POLICY: { path: "/WarrantyPolicy/:id", method: "PUT" },
   DELETE_POLICY: { path: "/WarrantyPolicy/:id", method: "DELETE" },
 
-  APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
-
+  ACCOUNT_MANAGEMENT: { path: "/Employee/accounts", method: "GET" },
+  CREATE_ACCOUNT: { path: "/Employee/createAccount", method: "POST" },
+  UPDATE_ACCOUNT: { path: "/Employee/updateAccount/:id", method: "PUT" },
+  DELETE_ACCOUNT: { path: "/Employee/deleteAccount/:id", method: "DELETE" },
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)

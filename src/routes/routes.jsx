@@ -1,7 +1,8 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { DashboardLayout } from "../components/templates";
-// import Login from "../features/auth/components/Login";
+import { element } from "prop-types";
+
 import Login from "../pages/Login.jsx";
 import Home from "../pages/Home.jsx";
 import CusAppointmentForm from "../pages/CusAppointmentForm.jsx";
@@ -29,8 +30,9 @@ import { EVMPartsListContainer } from "../features/evmstaff/PartRequest/containe
 import { EVMStaffInventoryContainer } from "../features/evmstaff/Inventory/containers/EVMStaffInventoryContainer.jsx";
 import { EVMStaffCampaignContainer } from "../features/evmstaff/CampaignEVM/containers/EVMStaffCampaignContainer.jsx";
 import OverViewContainer from "../features/dashboard/containers/OverViewContainer.jsx";
-import { element } from "prop-types";
+
 import PolicyContainers from "../features/admin/policy/containers/PolicyContainer.jsx";
+import AccountContainers from "../features/admin/account/containers/AccountContainer.jsx";
 // Public routes that don't require authentication
 export const publicRoutes = [
   {
@@ -141,6 +143,10 @@ export const privateRoutes = [
       {
         path: "policy_management",
         element: <PolicyContainers />,
+      },
+      {
+        path: "account_management",
+        element: <AccountContainers />,
       },
     ],
   },
