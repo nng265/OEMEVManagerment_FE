@@ -61,7 +61,6 @@ export const EVMStaffCampaignContainer = () => {
 
   // --- FILTER STATES ---
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
@@ -70,8 +69,8 @@ export const EVMStaffCampaignContainer = () => {
   const statusRef = useRef("");
 
   useEffect(() => {
-    searchRef.current = debouncedSearchQuery;
-  }, [debouncedSearchQuery]);
+    searchRef.current = searchQuery;
+  }, [searchQuery]);
 
   useEffect(() => {
     typeRef.current = selectedType;
@@ -80,15 +79,6 @@ export const EVMStaffCampaignContainer = () => {
   useEffect(() => {
     statusRef.current = selectedStatus;
   }, [selectedStatus]);
-
-  // Debounce search query để tránh request liên tục
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500); // Delay 500ms sau khi user ngừng gõ
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
 
   // ===== FETCH LIST =====
   const fetchCampaign = useCallback(async (pageNumber = 0, size, search, type, status) => {
@@ -175,7 +165,6 @@ export const EVMStaffCampaignContainer = () => {
 
         // Cập nhật state với dữ liệu đã normalize
         setCampaigns(normalized);
-        setFilteredCampaigns(normalized);
         // Cập nhật pagination dựa trên kết quả normalize
         setPagination({
           pageNumber:
@@ -224,27 +213,38 @@ export const EVMStaffCampaignContainer = () => {
     }
   }, []);
 
-  // Fetch khi filters thay đổi
+  // Fetch khi component mount
   useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchCampaign(0, paginationRef.current.pageSize, debouncedSearchQuery, selectedType, selectedStatus);
-  }, [fetchCampaign, debouncedSearchQuery, selectedType, selectedStatus]);
+    fetchCampaign(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize,
+      searchQuery,
+      selectedType,
+      selectedStatus
+    );
+  }, [fetchCampaign]);
 
   // ===== HANDLERS =====
-  const handleSearchChange = (e) => {
+  const handleSearchChange = useCallback((e) => {
     const value = e.target.value || "";
     setSearchQuery(value);
-  };
+    // Reset về trang đầu khi search
+    fetchCampaign(0, paginationRef.current.pageSize, value, typeRef.current, statusRef.current);
+  }, [fetchCampaign]);
 
-  const handleTypeFilterChange = (e) => {
+  const handleTypeFilterChange = useCallback((e) => {
     const value = e.target.value || "";
     setSelectedType(value);
-  };
+    // Reset về trang đầu khi đổi type
+    fetchCampaign(0, paginationRef.current.pageSize, searchRef.current, value, statusRef.current);
+  }, [fetchCampaign]);
 
-  const handleStatusFilterChange = (e) => {
+  const handleStatusFilterChange = useCallback((e) => {
     const value = e.target.value || "";
     setSelectedStatus(value);
-  };
+    // Reset về trang đầu khi đổi status
+    fetchCampaign(0, paginationRef.current.pageSize, searchRef.current, typeRef.current, value);
+  }, [fetchCampaign]);
 
   // ===== ADD + VIEW =====
   const handleViewCampaign = (campaign) => {
