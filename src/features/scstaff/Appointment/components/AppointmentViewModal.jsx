@@ -4,9 +4,22 @@ import Modal from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import "./AppointmentViewModal.css";
 
+/*
+
+  Mapping trường (ví dụ):
+  - customerName <- appointment.customerName || appointment.name
+  - vin <- appointment.vin || appointment.vehicleVin
+  - appointmentId <- appointment.appointmentId || appointment.id
+
+  Lưu ý UX:
+  - Nếu `appointment` null => không render gì (component parent chịu trách nhiệm
+    điều khiển `isOpen` và `appointment` truyền vào).
+*/
+
 const AppointmentViewModal = ({ isOpen, onClose, appointment }) => {
   if (!appointment) return null;
 
+  // Chuẩn hoá một số trường để hiển thị
   const customerName = appointment.customerName ?? appointment.name ?? "-";
   const vin = appointment.vin ?? appointment.vehicleVin ?? "-";
   const type = appointment.appointmentType ?? appointment.type ?? "-";

@@ -4,6 +4,32 @@ import { toast } from "react-toastify";
 import ConfirmDialog from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { Button } from "../../../../components/atoms/Button/Button";
 
+/*
+  - Form tạo lịch hẹn gồm 4 bước (stepper):
+      1) Chọn Service Center
+      2) Chọn ngày bảo trì (maintenance date)
+      3) Chọn khung giờ (time slot)
+      4) Nhập thông tin xe (VIN, model, year)
+  - Component này chịu trách nhiệm validation đơn giản phía client,
+    hiển thị các slot lấy từ API (thông qua fetchTimeSlots) và gửi payload
+    chuẩn tới hàm `createAppointment` do container truyền vào.
+
+  Props:
+  - onSuccess(res): callback khi tạo thành công (thường để đóng modal + refresh)
+  - centers: danh sách trung tâm dịch vụ (id, name, contact...)
+  - fetchTimeSlots(orgId, date): hàm để lấy các khung giờ còn trống
+  - createAppointment(payload): hàm gửi payload lên server để tạo appointment
+
+  Lưu ý về payload gửi đi (được build trong confirmAppointment):
+  - appointmentDate: string (YYYY-MM-DD)
+  - appointmentType: 'WARRANTY' | 'CAMPAIGN' (uppercase)
+  - model: string
+  - serviceCenterId: string
+  - slot: slotCode (tùy API: có thể là slot id hoặc mã slot)
+  - vin: string (uppercase)
+  - year: number
+*/
+
 const formatDate = (date) => date.toISOString().split("T")[0];
 
 const STEPS = [
@@ -30,6 +56,8 @@ function AppointmentForm({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Tính ngày nhỏ nhất có thể chọn: hiện tại + 3 ngày
+  // (ứng với requirement business: không cho đặt quá gần ngày hiện tại)
   const { minDateStr } = useMemo(() => {
     const today = new Date();
     const min = new Date(today);
@@ -38,6 +66,9 @@ function AppointmentForm({
   }, []);
 
   // Fetch available slots when center or date changes
+  // Khi người dùng chọn center hoặc chọn ngày, gọi API lấy timeslots
+  // - reset selectedTime/selectedSlot trước khi set data mới
+  // - fetchTimeSlots do container cung cấp (loại bỏ dependency API từ component)
   useEffect(() => {
     const loadSlots = async () => {
       if (!selectedCenter?.id || !selectedDate || !fetchTimeSlots) return;
@@ -46,6 +77,7 @@ function AppointmentForm({
         setSelectedTime("");
         setSelectedSlot(null);
         const slots = await fetchTimeSlots(selectedCenter.id, selectedDate);
+        // Expecting slots to be array-like. Map/normalize ở đây nếu cần.
         setTimeSlots(slots || []);
       } catch (err) {
         console.error("Failed to load timeslots:", err);
@@ -74,6 +106,7 @@ function AppointmentForm({
 
   const handleConfirmAppointment = () => setIsDialogOpen(true);
 
+  // Gọi khi người dùng xác nhận dialog: build payload và gọi createAppointment
   const confirmAppointment = async () => {
     if (!selectedCenter) {
       toast.error("Please select a service center.");
@@ -109,6 +142,7 @@ function AppointmentForm({
       return;
     }
 
+    // Payload gửi đến API - chuẩn hoá một số trường (uppercase VIN, year number)
     const payload = {
       appointmentDate: selectedDate,
       appointmentType: appointmentType.toUpperCase(),
@@ -123,6 +157,7 @@ function AppointmentForm({
       setIsLoading(true);
       const res = await createAppointment(payload);
       setIsDialogOpen(false);
+      // Nếu có callback onSuccess (container truyền vào), gọi để ví dụ đóng modal + refresh
       if (typeof onSuccess === "function") onSuccess(res);
     } catch (err) {
       console.error("Create appointment error:", err);
@@ -136,6 +171,7 @@ function AppointmentForm({
     }
   };
 
+  // Render bước (stepper) đơn giản để người dùng biết đang đứng ở bước nào
   const renderSteps = () => (
     <div className="steps">
       {STEPS.map((label, i) => (
@@ -151,7 +187,7 @@ function AppointmentForm({
       <h2 className="appointment-title">Vehicle Service Appointment</h2>
       {renderSteps()}
 
-      {/* STEP 1 */}
+      {/* STEP 1: Chọn Service Center */}
       {step === 1 && (
         <div className="step-box">
           <h3 className="step-title">Select Service Center</h3>
@@ -178,7 +214,7 @@ function AppointmentForm({
         </div>
       )}
 
-      {/* STEP 2 */}
+      {/* STEP 2: Chọn ngày bảo trì */}
       {step === 2 && (
         <div className="step-box">
           <div className="summary-box">
@@ -208,7 +244,7 @@ function AppointmentForm({
         </div>
       )}
 
-      {/* STEP 3 */}
+      {/* STEP 3: Chọn khung giờ (Time Slot) */}
       {step === 3 && (
         <div className="step-box">
           <div className="summary-box">
@@ -263,7 +299,7 @@ function AppointmentForm({
         </div>
       )}
 
-      {/* STEP 4 */}
+      {/* STEP 4: Nhập thông tin xe và xác nhận */}
       {step === 4 && (
         <div className="step-box">
           <div className="summary-box">

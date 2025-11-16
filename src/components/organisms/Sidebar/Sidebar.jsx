@@ -161,6 +161,23 @@ const IconTechTask = () => (
     <path d="M19 15.8v1.5M19 21.5V23M15.8 19H14.3M23 19h-1.5" />
   </svg>
 );
+const IconPolicy = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* Shield outline */}
+    <path d="M12 2l7 4v5c0 5-3.5 9-7 11-3.5-2-7-6-7-11V6l7-4z" />
+    {/* Checkmark */}
+    <path d="M9 12l2 2 4-4" />
+  </svg>
+);
 
 // THÊM MỚI: Icon cho Appointment
 const IconAppointment = () => (
@@ -236,6 +253,9 @@ export const Sidebar = ({
       case "staff_appointment":
         return <IconAppointment />;
       // KẾT THÚC THÊM MỚI
+
+      case "policy_management":
+        return <IconPolicy />;
 
       default:
         return <IconDefault />; // Fallback icon

@@ -1,23 +1,16 @@
 // src/configs/roleScreen.js
 export const roleScreens = {
   ADMIN: [
-    { id: "dashboard", label: "Dashboard" },
     {
-      id: "staff_approval",
-      label: "Approve Requests",
-      component: "StaffApproval",
+      id: "policy_management",
+      label: "Policy Management",
+      component: "PolicyContainer",
     },
     {
-      id: "staff_approval",
-      label: "Approve Requests",
-      component: "StaffApproval",
+      id: "account_management",
+      label: "Account Management",
+      component: "AccountContainer",
     },
-    {
-      id: "technician_vehicle_status",
-      label: "Update Vehicle Status",
-      component: "TechnicianVehicleStatus",
-    },
-    { id: "manage_vehicles", label: "Manage Vehicles", component: "Vehicles" },
   ],
   SC_STAFF: [
     { id: "dashboard", label: "Dashboard" },
