@@ -171,6 +171,11 @@ export const ApiEnum = {
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
 
   APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
+  Appointment_CHECKIN: { path: "/Appointment/:appointmentId/check-in", method: "PUT"},
+  Appointment_NOSHOW: { path: "/Appointment/:appointmentId/no-show", method: "PUT"},
+  Appointment_RESCHEDULE: { path: "/Appointment/:appointmentId/reschedule", method: "PUT"},
+  Appointment_DONE: { path: "/Appointment/:appointmentId/done", method: "PUT"},
+  Appointment_CANCEL: { path: "/Appointment/:appointmentId/cancel", method: "PUT"},
 
 };
 /**
