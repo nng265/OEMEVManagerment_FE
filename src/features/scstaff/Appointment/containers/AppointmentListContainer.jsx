@@ -1,7 +1,13 @@
+/* File: AppointmentListContainer.js (Sửa lỗi "Trang trắng")
+  - Sửa lỗi: Chỉ render RescheduleModal khi isRescheduleOpen=true.
+  - Đã bao gồm logic useRef để mở modal an toàn.
+*/
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import AppointmentList from "../components/AppointmentList";
 import AppointmentCreateModal from "../components/AppointmentCreateModal";
 import AppointmentViewModal from "../components/AppointmentViewModal";
+// IMPORT MODAL MỚI
+import AppointmentRescheduleModal from "../components/AppointmentRescheduleModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { toast } from "react-toastify";
 
@@ -24,12 +30,15 @@ export const AppointmentListContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
-  // Điều khiển hiển thị modal tạo
   const [showAddModal, setShowAddModal] = useState(false);
   // Appointment đang được xem chi tiết
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   // Điều khiển hiển thị modal xem chi tiết
   const [showViewModal, setShowViewModal] = useState(false);
+  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+
+  // Ref để chống race condition khi dời lịch
+  const isRescheduling = useRef(false);
 
   // Ref giữ id request mới nhất để tránh race condition khi gọi API nhiều lần
   const latestRequestRef = useRef(0);
@@ -139,7 +148,6 @@ export const AppointmentListContainer = () => {
 
   // Callback khi user đổi trang/trangSize ở DataTable
   const handlePageChange = (pageIndex, newPageSize) => {
-    // If DataTable is 0-based, pass pageIndex directly to API (consistent with Campaign)
     fetchAppointments(pageIndex, newPageSize ?? pagination.pageSize);
   };
 
@@ -160,6 +168,104 @@ export const AppointmentListContainer = () => {
     setShowViewModal(true);
   };
 
+  // === START: CÁC HÀM ACTIONS ĐÃ SỬA ===
+
+  // Hàm mới để xử lý đóng modal an toàn
+  const handleCloseViewModal = () => {
+    setShowViewModal(false);
+    if (!isRescheduling.current) {
+      setSelectedAppointment(null);
+    }
+    // *Không* reset ref ở đây.
+  };
+
+  // Hàm mới để đóng Reschedule Modal
+  const handleCloseRescheduleModal = () => {
+    setIsRescheduleOpen(false);
+    setSelectedAppointment(null);
+    isRescheduling.current = false;
+  };
+
+  // Hàm chung (Đã sửa payload)
+  const callAppointmentAction = async (
+    apiEnum,
+    payload, // { params: { ... }, ...body }
+    successMsg
+  ) => {
+    try {
+      await request(apiEnum, payload);
+      toast.success(successMsg);
+      handleRefresh();
+      setShowViewModal(false);
+      setIsRescheduleOpen(false);
+      setSelectedAppointment(null);
+    } catch (err) {
+      console.error(`${successMsg} error:`, err);
+      toast.error(
+        err?.responseData?.message || `Action failed: ${err.message}`
+      );
+      throw err;
+    }
+  };
+
+  const handleCheckIn = (appointmentId) => {
+    callAppointmentAction(
+      ApiEnum.APPOINTMENT_CHECKIN,
+      { params: { appointmentId } },
+      "Appointment checked in!"
+    );
+  };
+
+  const handleNoShow = (appointmentId) => {
+    callAppointmentAction(
+      ApiEnum.APPOINTMENT_NOSHOW,
+      { params: { appointmentId } },
+      "Marked as No-Show!"
+    );
+  };
+
+  const handleCancel = (appointmentId) => {
+    if (!window.confirm("Are you sure you want to cancel this appointment?"))
+      return;
+    callAppointmentAction(
+      ApiEnum.APPOINTMENT_CANCEL,
+      { params: { appointmentId } },
+      "Appointment cancelled."
+    );
+  };
+
+  const handleDone = (appointmentId) => {
+    callAppointmentAction(
+      ApiEnum.APPOINTMENT_DONE,
+      { params: { appointmentId } },
+      "Appointment marked as Done!"
+    );
+  };
+
+  // Cập nhật hàm click dời lịch
+  const handleRescheduleClick = () => {
+    isRescheduling.current = true;
+    setShowViewModal(false);
+    setIsRescheduleOpen(true);
+  };
+
+  // (Đã sửa payload)
+  const handleRescheduleSubmit = async (newDate, newSlot) => {
+    if (!selectedAppointment) return;
+
+    await callAppointmentAction(
+      ApiEnum.APPOINTMENT_RESCHEDULE,
+      {
+        params: { appointmentId: selectedAppointment.id },
+        appointmentDate: newDate,
+        slot: newSlot,
+      },
+      "Appointment rescheduled!"
+    );
+  };
+
+  // === END: CÁC HÀM ACTIONS ĐÃ SỬA ===
+
   return (
     <>
       <AppointmentList
@@ -176,11 +282,13 @@ export const AppointmentListContainer = () => {
 
       <AppointmentViewModal
         isOpen={showViewModal}
-        onClose={() => {
-          setShowViewModal(false);
-          setSelectedAppointment(null);
-        }}
+        onClose={handleCloseViewModal}
         appointment={selectedAppointment}
+        onCheckIn={handleCheckIn}
+        onNoShow={handleNoShow}
+        onCancel={handleCancel}
+        onDone={handleDone}
+        onRescheduleClick={handleRescheduleClick}
       />
 
       <AppointmentCreateModal
@@ -192,6 +300,17 @@ export const AppointmentListContainer = () => {
         createAppointment={createAppointment}
       />
 
+      {/* === SỬA LỖI: Thêm {isRescheduleOpen && ...} === */}
+      {isRescheduleOpen && (
+        <AppointmentRescheduleModal
+          isOpen={isRescheduleOpen}
+          onClose={handleCloseRescheduleModal}
+          appointment={selectedAppointment}
+          fetchTimeSlots={fetchTimeSlots}
+          onSubmit={handleRescheduleSubmit}
+        />
+      )}
+      {/* === KẾT THÚC SỬA LỖI === */}
     </>
   );
 };

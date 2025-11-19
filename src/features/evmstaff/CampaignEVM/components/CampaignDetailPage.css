@@ -1,0 +1,165 @@
+/* ===== PAGE WRAPPER ===== */
+.campaign-detail-page {
+    padding: 24px;
+    color: #050505;
+    font-family: Inter, sans-serif;
+}
+
+/* ===== TITLES ===== */
+.campaign-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.campaign-description {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+/* ===== INFO CARD ROW ===== */
+/* ===== INFO CARD ROW ===== */
+.campaign-info-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+/* ===== UPGRADED INFO CARD ===== */
+.campaign-info-card {
+    flex: 1;
+    /* card tự giãn rộng bằng nhau */
+    min-width: 260px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    transition: all 0.2s ease;
+}
+
+.campaign-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.campaign-info-label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.campaign-info-value {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    color: #1f2937;
+}
+
+
+/* ===== STATISTICS SECTION ===== */
+.campaign-section-title {
+    font-size: 18px;
+    margin: 20px 0 10px;
+    font-weight: 600;
+}
+
+.campaign-info-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.stat-block {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+    border-radius: 12px;
+    width: 180px;
+    text-align: center;
+}
+
+.info-block-label {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.large-stat {
+    margin-top: 6px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* ===== TABLE STYLES ===== */
+.campaign-table-wrapper {
+    /* disable horizontal scroll — table should fit the container */
+    overflow-x: visible;
+    margin-top: 10px;
+}
+
+/* allow table cells to wrap so the table doesn't force horizontal scrolling */
+.campaign-table th,
+.campaign-table td {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.campaign-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.campaign-table thead tr {
+    background: #f3f4f6;
+}
+
+.campaign-table th {
+    text-align: left;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.campaign-table td {
+    padding: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.campaign-table tr:hover td {
+    background: #f9fafb;
+}
+
+/* Empty state */
+.table-empty {
+    padding: 14px;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Back button row */
+.back-row {
+    margin-bottom: 12px;
+}
+
+/* Footer */
+.campaign-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e0e0e0;
+}

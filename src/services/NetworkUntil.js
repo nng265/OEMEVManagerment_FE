@@ -136,6 +136,10 @@ export const ApiEnum = {
 
   CREATE_CAMPAIGN: { path: "/Campaign", method: "POST" },
   CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
+  CAMPAIGN_VEHICLE_STATUSES: {
+    path: "/Campaign/:id/vehicle-statuses",
+    method: "GET",
+  },
   CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
   CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
   CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET" },
@@ -171,7 +175,7 @@ export const ApiEnum = {
     path: "/CampaignVehicle/:id/assign-techs",
     method: "POST",
   },
-    GET_CAMPAIGN_VEHICLE_STATUSES: {
+  GET_CAMPAIGN_VEHICLE_STATUSES: {
     path: "/CampaignVehicle/statuses",
     method: "GET",
   },
@@ -185,12 +189,21 @@ export const ApiEnum = {
   },
   APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
-    APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
 
+  APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
+  Appointment_CHECKIN: { path: "/Appointment/:appointmentId/check-in", method: "PUT"},
+  Appointment_NOSHOW: { path: "/Appointment/:appointmentId/no-show", method: "PUT"},
+  Appointment_RESCHEDULE: { path: "/Appointment/:appointmentId/reschedule", method: "PUT"},
+  Appointment_DONE: { path: "/Appointment/:appointmentId/done", method: "PUT"},
+  Appointment_CANCEL: { path: "/Appointment/:appointmentId/cancel", method: "PUT"},
 
   POLICY_MANAGEMENT: { path: "/WarrantyPolicy", method: "GET" },
   CREATE_POLICY: { path: "/WarrantyPolicy", method: "POST" },
   UPDATE_POLICY: { path: "/WarrantyPolicy/:id", method: "PUT" },
+  DEACTIVATE_POLICY: {
+    path: "/WarrantyPolicy/deactivatePolicy/:id",
+    method: "PATCH",
+  },
   DELETE_POLICY: { path: "/WarrantyPolicy/:id", method: "DELETE" },
 
   ACCOUNT_MANAGEMENT: { path: "/Employee/accounts", method: "GET" },

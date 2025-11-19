@@ -382,7 +382,7 @@ const PolicyContainer = () => {
     setError(null);
 
     try {
-      await request(ApiEnum.DELETE_POLICY, {
+      await request(ApiEnum.DEACTIVATE_POLICY, {
         params: { id: selectedPolicy.policyId }, // tự động replace :id
       });
 

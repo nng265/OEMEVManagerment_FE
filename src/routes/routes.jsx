@@ -29,6 +29,7 @@ import { EVMStaffWarrantyListContainer } from "../features/evmstaff/Warranty/con
 import { EVMPartsListContainer } from "../features/evmstaff/PartRequest/containers/EVMPartsListContainer.jsx";
 import { EVMStaffInventoryContainer } from "../features/evmstaff/Inventory/containers/EVMStaffInventoryContainer.jsx";
 import { EVMStaffCampaignContainer } from "../features/evmstaff/CampaignEVM/containers/EVMStaffCampaignContainer.jsx";
+import CampaignDetailPage from "../features/evmstaff/CampaignEVM/components/CampaignDetailPage.jsx";
 import OverViewContainer from "../features/dashboard/containers/OverViewContainer.jsx";
 
 import PolicyContainers from "../features/admin/policy/containers/PolicyContainer.jsx";
@@ -49,8 +50,8 @@ export const publicRoutes = [
   },
   {
     path: "/confirmappointment",
-    element: <ConfirmAppointment />
-  }
+    element: <ConfirmAppointment />,
+  },
 ];
 
 // Private routes that require authentication
@@ -139,6 +140,10 @@ export const privateRoutes = [
       {
         path: "evmstaff_campaign",
         element: <EVMStaffCampaignContainer />,
+      },
+      {
+        path: "evmstaff_campaign/:id",
+        element: <CampaignDetailPage />,
       },
       {
         path: "policy_management",
