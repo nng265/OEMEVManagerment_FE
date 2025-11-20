@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_D;
+
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -238,6 +240,9 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
   let url = `${API_BASE_URL}${endpoint.path}`;
   const token = localStorage.getItem("token");
 
+  const shouldSkipAuth = Boolean(extraHeaders.skipAuth);
+  if (shouldSkipAuth) delete extraHeaders.skipAuth;
+
   // Thay placeholder trong path nếu có (vd: /user/:id -> /user/123)
   if (data.params) {
     Object.entries(data.params).forEach(([key, value]) => {
@@ -249,7 +254,7 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
   const headers = {
     "Content-Type": "application/json",
     "ngrok-skip-browser-warning": "true",
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(token && !shouldSkipAuth && { Authorization: `Bearer ${token}` }),
     ...extraHeaders,
   };
 

@@ -61,15 +61,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = (userData, accessToken) => {
+    setUser(userData);
+    setToken(accessToken);
+
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", accessToken);
+  };
+
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+
+    if (window.google?.accounts?.id) {
+      google.accounts.id.disableAutoSelect();
+    }
+    
     setUser(null);
     setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, login, loginWithGoogle, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

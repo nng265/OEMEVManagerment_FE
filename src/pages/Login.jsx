@@ -64,8 +64,10 @@ const Login = () => {
     }
   };
 
+  const { loginWithGoogle } = useAuth();
+
   const handleGoogleLogin = async (credentialResponse) => {
-    if (!credentialResponse || !credentialResponse.credential) {
+    if (!credentialResponse?.credential) {
       setError("Google credential not found");
       return;
     }
@@ -77,17 +79,14 @@ const Login = () => {
 
       if (res.success) {
         const { accessToken, refreshToken, employeeId, role } = res.data;
-        localStorage.setItem("token", accessToken);
+
+        // update context state (QUAN TRỌNG)
+        loginWithGoogle({ id: employeeId, role }, accessToken);
+
         localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: employeeId,
-            role: role
-          })
-        );
-        if (res.data.role === "EVM_STAFF") navigate("/dashboardevmstaff");
-        else if (res.data.role === "SC_TECH") navigate("/overview");
+
+        if (role === "EVM_STAFF") navigate("/dashboardevmstaff");
+        else if (role === "SC_TECH") navigate("/overview");
         else navigate("/dashboard");
       } else {
         setError(res.message || "Google login failed");
