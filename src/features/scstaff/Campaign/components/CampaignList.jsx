@@ -23,14 +23,12 @@ const CampaignList = ({
   statusFilter = "",
   onStatusFilterChange,
 }) => {
-  // Type options for filter
   const typeOptions = [
     { value: "", label: "All Types" },
     { value: "Service", label: "Service" },
     { value: "Recall", label: "Recall" },
   ];
 
-  // Status options for filter
   const statusOptions = [
     { value: "", label: "All Status" },
     { value: "Active", label: "Active" },
@@ -68,8 +66,8 @@ const CampaignList = ({
           style={{
             display: "flex",
             gap: "8px",
-            justifyContent: "center", // Căn giữa ngang
-            alignItems: "center", // Căn giữa dọc
+            justifyContent: "flex-start",
+            alignItems: "center",
           }}
         >
           <Button size="small" variant="light" onClick={() => onView?.(row)}>
@@ -109,12 +107,19 @@ const CampaignList = ({
     <div className="campaign-table">
       <h2 className="size-h1">Campaign Management</h2>
 
-      {/* Search Bar and Filters */}
-      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+      <div
+        className="campaign-filters"
+        style={{
+          display: "flex",
+          gap: "15px",
+          marginBottom: "20px",
+          alignItems: "flex-end",
+        }}
+      >
         <div style={{ flex: 2 }}>
           <Input
             type="text"
-            placeholder="Search by Campaign Title..."
+            placeholder="Search by Campaign..."
             value={searchQuery}
             onChange={onSearchChange}
             fullWidth

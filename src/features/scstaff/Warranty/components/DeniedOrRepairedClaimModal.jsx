@@ -33,7 +33,7 @@ export const DeniedOrRepairedClaimModal = ({
         onClose={onClose}
         warrantyData={warrantyData}
       >
-        <Button variant="info" onClick={handleViewBill}>
+        <Button variant="light" onClick={handleViewBill}>
           View Bill
         </Button>
         <Button variant="success" onClick={handleCustomerGetCarClick}>

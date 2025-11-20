@@ -159,22 +159,7 @@ export const ApiEnum = {
     path: "/CampaignVehicle/:id/repaired",
     method: "PUT",
   },
-  CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
-  CREATE_COMPAIGN: { path: "/Campaign", method: "POST" },
-  CREATE_COMPAIGN_VEHICLE: { path: "/CampaignVehicle", method: "POST" },
-  CAMPAIGNVEHICLE_STAFF: { path: "/CampaignVehicle", method: "GET" },
-  CAMPAIGNVEHICLE_STAFF_REPAIRED: {
-    path: "/CampaignVehicle/:id/repaired",
-    method: "PUT",
-  },
-  CAMPAIGNVEHICLE_STAFF_DONE: {
-    path: "/CampaignVehicle/:id/done",
-    method: "PUT",
-  },
-  CAMPAIGNVEHICLE_STAFF_TECH: {
-    path: "/CampaignVehicle/:id/assign-techs",
-    method: "POST",
-  },
+
   GET_CAMPAIGN_VEHICLE_STATUSES: {
     path: "/CampaignVehicle/statuses",
     method: "GET",
@@ -190,12 +175,27 @@ export const ApiEnum = {
   APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
 
-  APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
-  Appointment_CHECKIN: { path: "/Appointment/:appointmentId/check-in", method: "PUT"},
-  Appointment_NOSHOW: { path: "/Appointment/:appointmentId/no-show", method: "PUT"},
-  Appointment_RESCHEDULE: { path: "/Appointment/:appointmentId/reschedule", method: "PUT"},
-  Appointment_DONE: { path: "/Appointment/:appointmentId/done", method: "PUT"},
-  Appointment_CANCEL: { path: "/Appointment/:appointmentId/cancel", method: "PUT"},
+  APPOINTMENT_CONFIRM: {
+    path: "/Appointment/:appointmentId/confirm",
+    method: "PUT",
+  },
+  Appointment_CHECKIN: {
+    path: "/Appointment/:appointmentId/check-in",
+    method: "PUT",
+  },
+  Appointment_NOSHOW: {
+    path: "/Appointment/:appointmentId/no-show",
+    method: "PUT",
+  },
+  Appointment_RESCHEDULE: {
+    path: "/Appointment/:appointmentId/reschedule",
+    method: "PUT",
+  },
+  Appointment_DONE: { path: "/Appointment/:appointmentId/done", method: "PUT" },
+  Appointment_CANCEL: {
+    path: "/Appointment/:appointmentId/cancel",
+    method: "PUT",
+  },
 
   POLICY_MANAGEMENT: { path: "/WarrantyPolicy", method: "GET" },
   CREATE_POLICY: { path: "/WarrantyPolicy", method: "POST" },

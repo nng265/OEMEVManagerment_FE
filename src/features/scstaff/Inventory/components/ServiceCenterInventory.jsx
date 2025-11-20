@@ -7,14 +7,6 @@ import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./ServiceCenterInventory.css";
 
-/**
- * View hiển thị Inventory của Service Center
- * Props:
- * - data: danh sách items
- * - categories: danh sách category để lọc
- * - loading: boolean (trạng thái tải)
- * - onSearch, onFilter, onRequest: callback từ container
- */
 export const ServiceCenterInventory = ({
   data = [],
   categories = [],
@@ -121,7 +113,15 @@ export const ServiceCenterInventory = ({
         <h1 className="size-h1">Service Center Inventory</h1>
 
         {/* Search Bar and Status Filter */}
-        <div className="inventory-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div
+          className="inventory-filters"
+          style={{
+            display: "flex",
+            gap: "15px",
+            marginBottom: "20px",
+            alignItems: "flex-end",
+          }}
+        >
           <div style={{ flex: 2 }}>
             <Input
               type="text"

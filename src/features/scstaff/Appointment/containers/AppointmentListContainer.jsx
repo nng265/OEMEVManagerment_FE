@@ -1,25 +1,11 @@
-/* File: AppointmentListContainer.js (Sửa lỗi "Trang trắng")
-  - Sửa lỗi: Chỉ render RescheduleModal khi isRescheduleOpen=true.
-  - Đã bao gồm logic useRef để mở modal an toàn.
-*/
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import AppointmentList from "../components/AppointmentList";
 import AppointmentCreateModal from "../components/AppointmentCreateModal";
 import AppointmentViewModal from "../components/AppointmentViewModal";
-// IMPORT MODAL MỚI
+
 import AppointmentRescheduleModal from "../components/AppointmentRescheduleModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { toast } from "react-toastify";
-
-/*
-  Container: AppointmentListContainer
-
- 
-  Điểm quan trọng:
-  - Dùng `latestRequestRef` để tránh race condition khi user thay đổi nhanh page/filter
-  - `fetchTimeSlots` và `createAppointment` được export/định nghĩa ở đây để modal/form
-    có thể gọi lại mà không phải biết chi tiết API.
-*/
 
 export const AppointmentListContainer = () => {
   const [appointments, setAppointments] = useState([]);
@@ -61,8 +47,6 @@ export const AppointmentListContainer = () => {
         Size: size,
       });
 
-      // Nếu có request mới hơn đã được gửi đi (latestRequestRef thay đổi)
-      // thì bỏ qua response cũ này (tránh cập nhật state bằng dữ liệu lỗi thời)
       if (requestId !== latestRequestRef.current) return;
 
       const items = Array.isArray(res.data?.items) ? res.data.items : [];
@@ -80,18 +64,15 @@ export const AppointmentListContainer = () => {
     }
   }, []);
 
-  // Fetch service centers for the create form (delegated to container)
-  // Lấy danh sách service centers một lần khi component mount
-  // - mounted flag dùng để tránh gọi setState khi component đã unmount
   useEffect(() => {
     let mounted = true;
     const loadCenters = async () => {
       try {
         const res = await request(ApiEnum.ORGANIZATION, {});
         const data = Array.isArray(res) ? res : res?.data || [];
-        // Nếu component đã unmount trước khi response về thì không setState
+
         if (!mounted) return;
-        // Map payload về định dạng chung mà form cần (fallback nhiều trường khác nhau)
+
         setCenters(
           data.map((o) => ({
             id:
@@ -107,7 +88,7 @@ export const AppointmentListContainer = () => {
       }
     };
     loadCenters();
-    // Cleanup: trước khi unmount, set mounted false để response sau đó bỏ qua
+
     return () => {
       mounted = false;
     };
@@ -141,22 +122,18 @@ export const AppointmentListContainer = () => {
     }
   };
 
-  // Khi component mount hoặc pagination thay đổi thì fetch lại danh sách
   useEffect(() => {
     fetchAppointments(pagination.pageNumber, pagination.pageSize);
   }, [fetchAppointments, pagination.pageNumber, pagination.pageSize]);
 
-  // Callback khi user đổi trang/trangSize ở DataTable
   const handlePageChange = (pageIndex, newPageSize) => {
     fetchAppointments(pageIndex, newPageSize ?? pagination.pageSize);
   };
 
-  // Callback để refresh dữ liệu theo trang hiện tại (ví dụ: từ nút refresh)
   const handleRefresh = useCallback(() => {
     fetchAppointments(pagination.pageNumber, pagination.pageSize);
   }, [fetchAppointments, pagination.pageNumber, pagination.pageSize]);
 
-  // Khi form tạo appointment báo thành công
   const handleAddSuccess = () => {
     setShowAddModal(false);
     toast.success("Appointment created successfully!");
@@ -168,30 +145,20 @@ export const AppointmentListContainer = () => {
     setShowViewModal(true);
   };
 
-  // === START: CÁC HÀM ACTIONS ĐÃ SỬA ===
-
-  // Hàm mới để xử lý đóng modal an toàn
   const handleCloseViewModal = () => {
     setShowViewModal(false);
     if (!isRescheduling.current) {
       setSelectedAppointment(null);
     }
-    // *Không* reset ref ở đây.
   };
 
-  // Hàm mới để đóng Reschedule Modal
   const handleCloseRescheduleModal = () => {
     setIsRescheduleOpen(false);
     setSelectedAppointment(null);
     isRescheduling.current = false;
   };
 
-  // Hàm chung (Đã sửa payload)
-  const callAppointmentAction = async (
-    apiEnum,
-    payload, // { params: { ... }, ...body }
-    successMsg
-  ) => {
+  const callAppointmentAction = async (apiEnum, payload, successMsg) => {
     try {
       await request(apiEnum, payload);
       toast.success(successMsg);
@@ -242,14 +209,12 @@ export const AppointmentListContainer = () => {
     );
   };
 
-  // Cập nhật hàm click dời lịch
   const handleRescheduleClick = () => {
     isRescheduling.current = true;
     setShowViewModal(false);
     setIsRescheduleOpen(true);
   };
 
-  // (Đã sửa payload)
   const handleRescheduleSubmit = async (newDate, newSlot) => {
     if (!selectedAppointment) return;
 
@@ -263,8 +228,6 @@ export const AppointmentListContainer = () => {
       "Appointment rescheduled!"
     );
   };
-
-  // === END: CÁC HÀM ACTIONS ĐÃ SỬA ===
 
   return (
     <>
@@ -300,7 +263,6 @@ export const AppointmentListContainer = () => {
         createAppointment={createAppointment}
       />
 
-      {/* === SỬA LỖI: Thêm {isRescheduleOpen && ...} === */}
       {isRescheduleOpen && (
         <AppointmentRescheduleModal
           isOpen={isRescheduleOpen}
@@ -310,7 +272,6 @@ export const AppointmentListContainer = () => {
           onSubmit={handleRescheduleSubmit}
         />
       )}
-      {/* === KẾT THÚC SỬA LỖI === */}
     </>
   );
 };

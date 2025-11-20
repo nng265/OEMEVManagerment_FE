@@ -121,11 +121,19 @@ const CampaignList = ({
       <h1 className="size-h1">Campaign Vehicles</h1>
 
       {/* Search Bar and Filters */}
-      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+      <div
+        className="campaign-filters"
+        style={{
+          display: "flex",
+          gap: "15px",
+          marginBottom: "20px",
+          alignItems: "flex-end",
+        }}
+      >
         <div style={{ flex: 2 }}>
           <Input
             type="text"
-            placeholder="Search by Campaign Title, VIN, or Customer Name..."
+            placeholder="Search by VIN, or Customer..."
             value={searchQuery}
             onChange={onSearchChange}
             fullWidth

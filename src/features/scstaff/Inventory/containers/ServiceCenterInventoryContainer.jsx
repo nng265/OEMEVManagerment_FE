@@ -92,113 +92,118 @@ export const ServiceCenterInventoryContainer = () => {
   }, [fetchCategories]);
 
   // ========== 1️⃣ LOAD INVENTORY ==========
-  const fetchInventory = useCallback(async (pageNumber = 0, size, search, status) => {
-    const effectiveSize =
-      typeof size === "number" && size > 0
-        ? size
-        : paginationRef.current.pageSize;
-    const effectivePage =
-      typeof pageNumber === "number" && pageNumber >= 0
-        ? pageNumber
-        : paginationRef.current.pageNumber;
-    const effectiveSearch =
-      typeof search === "string" ? search : searchRef.current;
-    const effectiveStatus =
-      typeof status === "string" ? status : statusFilterRef.current;
+  const fetchInventory = useCallback(
+    async (pageNumber = 0, size, search, status) => {
+      const effectiveSize =
+        typeof size === "number" && size > 0
+          ? size
+          : paginationRef.current.pageSize;
+      const effectivePage =
+        typeof pageNumber === "number" && pageNumber >= 0
+          ? pageNumber
+          : paginationRef.current.pageNumber;
+      const effectiveSearch =
+        typeof search === "string" ? search : searchRef.current;
+      const effectiveStatus =
+        typeof status === "string" ? status : statusFilterRef.current;
 
-    const requestId = latestRequestRef.current + 1;
-    latestRequestRef.current = requestId;
+      const requestId = latestRequestRef.current + 1;
+      latestRequestRef.current = requestId;
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const params = {
-        Page: effectivePage,
-        Size: effectiveSize,
-      };
+      try {
+        const params = {
+          Page: effectivePage,
+          Size: effectiveSize,
+        };
 
-      // Thêm search query nếu có
-      if (effectiveSearch && effectiveSearch.trim()) {
-        params.Search = effectiveSearch.trim();
+        // Thêm search query nếu có
+        if (effectiveSearch && effectiveSearch.trim()) {
+          params.Search = effectiveSearch.trim();
+        }
+
+        // Thêm status filter nếu có
+        if (effectiveStatus && effectiveStatus.trim()) {
+          params.Status = effectiveStatus.trim();
+        }
+
+        const response = await request(ApiEnum.GET_PART, params);
+
+        const {
+          success,
+          items: rawItems,
+          totalRecords,
+          page,
+          size: pageSize,
+          message,
+        } = normalizePagedResult(response, []);
+
+        if (requestId !== latestRequestRef.current) {
+          return;
+        }
+
+        if (success) {
+          const normalized = rawItems.map((p, index) => ({
+            id: p.id ?? p.partId ?? `${p.model ?? "part"}-${index}`,
+            model: p.model ?? p.name ?? "",
+            category: p.category ?? p.categoryName ?? "",
+            status: p.status ?? p.inventoryStatus ?? "",
+            stockQuantity: p.stockQuantity ?? p.stockQty ?? 0,
+            _raw: p,
+          }));
+
+          setItems(normalized);
+          setFilteredItems(normalized);
+          setPagination({
+            pageNumber:
+              typeof page === "number" && page >= 0 ? page : effectivePage,
+            pageSize:
+              typeof pageSize === "number" && pageSize > 0
+                ? pageSize
+                : effectiveSize,
+            totalRecords:
+              typeof totalRecords === "number"
+                ? totalRecords
+                : normalized.length,
+          });
+        } else {
+          setItems([]);
+          setFilteredItems([]);
+          setPagination((prev) => ({
+            ...prev,
+            pageNumber: effectivePage,
+            pageSize: effectiveSize,
+            totalRecords: 0,
+          }));
+          setError(message || "Unable to load inventory.");
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải inventory:", err);
+        if (requestId === latestRequestRef.current) {
+          const message =
+            err?.responseData?.message ||
+            err?.message ||
+            "Unable to load inventory.";
+          setItems([]);
+          setFilteredItems([]);
+          setPagination((prev) => ({
+            ...prev,
+            pageNumber: effectivePage,
+            pageSize: effectiveSize,
+            totalRecords: 0,
+          }));
+          setError(message);
+        }
+      } finally {
+        if (requestId === latestRequestRef.current) {
+          setLoading(false);
+        }
       }
-
-      // Thêm status filter nếu có
-      if (effectiveStatus && effectiveStatus.trim()) {
-        params.Status = effectiveStatus.trim();
-      }
-
-      const response = await request(ApiEnum.GET_PART, params);
-
-      const {
-        success,
-        items: rawItems,
-        totalRecords,
-        page,
-        size: pageSize,
-        message,
-      } = normalizePagedResult(response, []);
-
-      if (requestId !== latestRequestRef.current) {
-        return;
-      }
-
-      if (success) {
-        const normalized = rawItems.map((p, index) => ({
-          id: p.id ?? p.partId ?? `${p.model ?? "part"}-${index}`,
-          model: p.model ?? p.name ?? "",
-          category: p.category ?? p.categoryName ?? "",
-          status: p.status ?? p.inventoryStatus ?? "",
-          stockQuantity: p.stockQuantity ?? p.stockQty ?? 0,
-          _raw: p,
-        }));
-
-        setItems(normalized);
-        setFilteredItems(normalized);
-        setPagination({
-          pageNumber:
-            typeof page === "number" && page >= 0 ? page : effectivePage,
-          pageSize:
-            typeof pageSize === "number" && pageSize > 0
-              ? pageSize
-              : effectiveSize,
-          totalRecords:
-            typeof totalRecords === "number" ? totalRecords : normalized.length,
-        });
-      } else {
-        setItems([]);
-        setFilteredItems([]);
-        setPagination((prev) => ({
-          ...prev,
-          pageNumber: effectivePage,
-          pageSize: effectiveSize,
-          totalRecords: 0,
-        }));
-        setError(message || "Unable to load inventory.");
-      }
-    } catch (err) {
-      console.error("Lỗi khi tải inventory:", err);
-      if (requestId === latestRequestRef.current) {
-        const message =
-          err?.responseData?.message ||
-          err?.message ||
-          "Unable to load inventory.";
-        setItems([]);
-        setFilteredItems([]);
-        setPagination((prev) => ({
-          ...prev,
-          pageNumber: effectivePage,
-          pageSize: effectiveSize,
-          totalRecords: 0,
-        }));
-        setError(message);
-      }
-    } finally {
-      if (requestId === latestRequestRef.current) {
-        setLoading(false);
-      }
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     fetchInventory(
@@ -209,7 +214,6 @@ export const ServiceCenterInventoryContainer = () => {
     );
   }, [fetchInventory]);
 
-  // ========== 2️⃣ SEARCH + FILTER (Combined) ==========
   const handleSearch = useCallback((query) => {
     setSearchQuery(query || "");
   }, []);
@@ -218,22 +222,36 @@ export const ServiceCenterInventoryContainer = () => {
     setSelectedCategory(category || "");
   }, []);
 
-  const handleSearchChange = useCallback((e) => {
-    const value = e.target.value || "";
-    setSearchQuery(value);
-    // Reset về trang đầu khi search
-    fetchInventory(0, paginationRef.current.pageSize, value, statusFilterRef.current);
-  }, [fetchInventory]);
+  const handleSearchChange = useCallback(
+    (e) => {
+      const value = e.target.value || "";
+      setSearchQuery(value);
+      // Reset về trang đầu khi search
+      fetchInventory(
+        0,
+        paginationRef.current.pageSize,
+        value,
+        statusFilterRef.current
+      );
+    },
+    [fetchInventory]
+  );
 
-  const handleStatusFilterChange = useCallback((e) => {
-    const value = e.target.value || "";
-    setStatusFilter(value);
-    // Reset về trang đầu khi đổi status
-    fetchInventory(0, paginationRef.current.pageSize, searchRef.current, value);
-  }, [fetchInventory]);
+  const handleStatusFilterChange = useCallback(
+    (e) => {
+      const value = e.target.value || "";
+      setStatusFilter(value);
+      // Reset về trang đầu khi đổi status
+      fetchInventory(
+        0,
+        paginationRef.current.pageSize,
+        searchRef.current,
+        value
+      );
+    },
+    [fetchInventory]
+  );
 
-  // ========== 3️⃣ CREATE REQUEST ==========
-  // Fetch all part models for dropdown (called initially)
   const fetchPartModelsForDropdown = useCallback(async () => {
     setLoadingModels(true);
     try {
@@ -270,14 +288,11 @@ export const ServiceCenterInventoryContainer = () => {
 
     setLoadingModels(true);
     try {
-      // Use GET_PART_MODEL endpoint with category query param
-
       const res = await request(ApiEnum.GET_PART_MODELS, {
         category: category,
       });
       console.log("Models by category response:", res);
 
-      // Normalize response - could be direct array or nested in data
       const partList = Array.isArray(res)
         ? res
         : res?.success && Array.isArray(res.data)
@@ -301,7 +316,6 @@ export const ServiceCenterInventoryContainer = () => {
   }, []);
 
   const handleCreateRequestSubmit = (addedParts) => {
-    // Open confirm first
     pendingAddedPartsRef.current = addedParts;
     const count = Array.isArray(addedParts) ? addedParts.length : 0;
     setConfirmTitle("Confirm Parts Request");
@@ -360,7 +374,12 @@ export const ServiceCenterInventoryContainer = () => {
           : paginationRef.current.pageNumber
       );
 
-      fetchInventory(nextPage, nextSize, searchRef.current, statusFilterRef.current);
+      fetchInventory(
+        nextPage,
+        nextSize,
+        searchRef.current,
+        statusFilterRef.current
+      );
     },
     [fetchInventory]
   );
@@ -374,10 +393,8 @@ export const ServiceCenterInventoryContainer = () => {
     );
   }, [fetchInventory]);
 
-  // ========== 5️⃣ RENDER ==========
   return (
     <div>
-      {/* Nút tạo mới thủ công */}
       <div
         style={{
           display: "flex",
@@ -386,7 +403,6 @@ export const ServiceCenterInventoryContainer = () => {
         }}
       />
 
-      {/* Bảng Inventory */}
       <ServiceCenterInventory
         data={items}
         categories={categories}
@@ -406,7 +422,6 @@ export const ServiceCenterInventoryContainer = () => {
         onStatusFilterChange={handleStatusFilterChange}
       />
 
-      {/* Modal tạo request */}
       <CreatePartsRequestModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
