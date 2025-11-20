@@ -1,9 +1,7 @@
-// src/components/organisms/Navbar/Navbar.jsx
 import React from "react";
 import "./Navbar.css";
-import { useAuth } from "../../../context/AuthContext"; // Import useAuth
+import { useAuth } from "../../../context/AuthContext";
 
-// Helper function to get initials or abbreviation
 const getUserAbbreviation = (username = "", role = "") => {
   if (!username && !role) return "?";
   if (username) return username.slice(0, 2).toUpperCase();
@@ -20,7 +18,7 @@ const getUserAbbreviation = (username = "", role = "") => {
 };
 
 export const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
-  const { user } = useAuth(); // Get user from context
+  const { user } = useAuth();
   const today = new Date();
   const formattedDate = today.toLocaleDateString("vi-VN", {
     day: "2-digit",
@@ -39,7 +37,6 @@ export const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
     >
       <div className="navbar-container">
         <div className="navbar-left">
-          {/* Sidebar Toggle Button */}
           <button
             onClick={toggleSidebar}
             className="navbar-toggle-btn"
@@ -61,12 +58,10 @@ export const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
               />
             </svg>
           </button>
-          {/* Date Display */}
           <div className="navbar-date">{formattedDate}</div>
         </div>
 
         <div className="navbar-right">
-          {/* User Info */}
           {user && (
             <div className="navbar-user-info">
               <span className="navbar-user-icon">{userAbbr}</span>
@@ -79,4 +74,4 @@ export const Navbar = ({ isSidebarOpen, toggleSidebar }) => {
   );
 };
 
-export default Navbar; // Ensure default export if used as such
+export default Navbar;

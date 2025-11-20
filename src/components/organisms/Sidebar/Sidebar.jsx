@@ -1,9 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 import "./Sidebar.css";
 import { roleScreens } from "../../../configs/roleScreen";
-
-// --- Icon Components ---
 
 const IconDashboard = () => (
   <svg
@@ -154,9 +152,7 @@ const IconTechTask = () => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    {/* Wrench body */}
     <path d="M14.7 6.3a4 4 0 0 0-5.6 5.6l-4.6 4.6a1.5 1.5 0 0 0 2.1 2.1l4.6-4.6a4 4 0 0 0 5.6-5.6l-1.4 1.4a2 2 0 0 1-2.8 0l-.7-.7a2 2 0 0 1 0-2.8l1.4-1.4z" />
-    {/* Gear/task indicator */}
     <circle cx="19" cy="19" r="1.8" />
     <path d="M19 15.8v1.5M19 21.5V23M15.8 19H14.3M23 19h-1.5" />
   </svg>
@@ -172,14 +168,12 @@ const IconPolicy = () => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    {/* Shield outline */}
     <path d="M12 2l7 4v5c0 5-3.5 9-7 11-3.5-2-7-6-7-11V6l7-4z" />
-    {/* Checkmark */}
+
     <path d="M9 12l2 2 4-4" />
   </svg>
 );
 
-// THÊM MỚI: Icon cho Appointment
 const IconAppointment = () => (
   <svg
     width="20"
@@ -198,23 +192,18 @@ const IconAppointment = () => (
     <polyline points="10 9 9 9 8 9"></polyline>
   </svg>
 );
-// KẾT THÚC THÊM MỚI
 
 export const Sidebar = ({
   role,
   selectedScreen,
-  setSelectedScreen, // Function to update the selected screen state in parent
+  setSelectedScreen,
   logout,
-  isOpen = true, // Default to open, controlled by DashboardLayout
+  isOpen = true,
 }) => {
-  // Get screens available for the current user role
   const screens = roleScreens[role] || [];
 
-  // Function to determine which icon to render based on screen ID
   const getScreenIcon = (screenId) => {
-    switch (
-      screenId?.toLowerCase() // Use lower case for robust matching
-    ) {
+    switch (screenId?.toLowerCase()) {
       case "dashboard":
       case "overview":
       case "dashboardevmstaff":
@@ -222,53 +211,41 @@ export const Sidebar = ({
       case "staff_vehicle":
         return <IconVehicle />;
       case "staff_warranty":
-      case "evm_warranty_claims": // EVM staff also uses warranty icon
+      case "evm_warranty_claims":
         return <IconWarranty />;
       case "staff_parts_request":
-      case "evm_parts_list": // EVM staff parts request
+      case "evm_parts_list":
         return <IconParts />;
-      case "service_center_inventory": // Match the ID used in roleScreen config
-      case "manufacturer_inventory": // Match the ID used in roleScreen config
+      case "service_center_inventory":
+      case "manufacturer_inventory":
         return <IconInventory />;
-      case "technician_vehicle_status": // Technician Task View
-        // You might want a specific icon for tasks, using default for now
+      case "technician_vehicle_status":
         return <IconTechTask />;
-      // Add cases for ADMIN roles if defined
       case "staff_approval":
-      case "technician_vehicle_status_admin": // Example admin view
+      case "technician_vehicle_status_admin":
       case "manage_vehicles":
-        // Add specific icons or use default
         return <IconDefault />;
       case "staff_campaign":
       case "evm_campaigns":
       case "campaign":
         return <IconCampaign />;
-
       case "staff_campaign_vehicle":
       case "status_campaign":
       case "campaignvehicle":
         return <IconCampaignVehicle />;
-
-      // THÊM MỚI
       case "staff_appointment":
         return <IconAppointment />;
-      // KẾT THÚC THÊM MỚI
-
       case "policy_management":
         return <IconPolicy />;
-
       default:
-        return <IconDefault />; // Fallback icon
+        return <IconDefault />;
     }
   };
 
   return (
-    // Apply 'collapsed' class based on the isOpen prop
     <aside className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
-      {/* Sidebar Header: Logo, Brand Name, User Role */}
       <div className="sidebar-header">
         <div className="brand">
-          {/* Use SVG Logo */}
           <svg
             className="brand-logo"
             viewBox="0 0 100 100"
@@ -283,7 +260,6 @@ export const Sidebar = ({
         <div className="sidebar-user">
           <div className="user-role">
             <div className="role-icon">
-              {/* User Icon SVG */}
               <svg
                 width="14"
                 height="14"
@@ -297,38 +273,29 @@ export const Sidebar = ({
                 />
               </svg>
             </div>
-            {/* Display the role text */}
             <span className="role-text">{role || "User"}</span>
           </div>
         </div>
       </div>
 
-      {/* Sidebar Navigation: List of screens */}
       <nav className="sidebar-nav">
         {screens.map((screen) => (
           <div
             key={screen.id}
-            // Apply 'sidebar-item-active' class if the screen is selected
             className={`sidebar-item ${
               selectedScreen?.id === screen.id ? "sidebar-item-active" : ""
             }`}
-            // Call setSelectedScreen when an item is clicked
             onClick={() => setSelectedScreen(screen)}
-            // Add title attribute for tooltip, useful when sidebar is collapsed
             title={screen.label}
           >
-            {/* Render the appropriate icon */}
             <div className="sidebar-item-icon">{getScreenIcon(screen.id)}</div>
-            {/* Render the screen label */}
             <span className="sidebar-item-text">{screen.label}</span>
           </div>
         ))}
       </nav>
 
-      {/* Sidebar Footer: Logout Button */}
       <div className="sidebar-footer">
         <button className="logout-button" onClick={logout}>
-          {/* Logout Icon SVG */}
           <svg
             width="20"
             height="20"
@@ -344,7 +311,6 @@ export const Sidebar = ({
               strokeLinejoin="round"
             />
           </svg>
-          {/* Logout text */}
           <span>Logout</span>
         </button>
       </div>
@@ -352,13 +318,12 @@ export const Sidebar = ({
   );
 };
 
-// Add PropTypes for better component documentation and error checking
 Sidebar.propTypes = {
-  role: PropTypes.string, // The role of the current user
-  selectedScreen: PropTypes.object, // The currently active screen object
-  setSelectedScreen: PropTypes.func.isRequired, // Function to change the active screen
-  logout: PropTypes.func.isRequired, // Function to handle user logout
-  isOpen: PropTypes.bool, // State controlling if the sidebar is open or collapsed
+  role: PropTypes.string,
+  selectedScreen: PropTypes.object,
+  setSelectedScreen: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
 };
 
 // Optional: Define default props if needed
@@ -367,4 +332,4 @@ Sidebar.propTypes = {
 //   role: 'guest', // Example default role
 // };
 
-export default Sidebar; // Ensure default export if used as such elsewhere
+export default Sidebar;

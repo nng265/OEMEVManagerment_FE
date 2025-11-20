@@ -1,10 +1,9 @@
-// src/components/molecules/DataTable/DataTable.jsx
-import React, { useState, useMemo, useId } from 'react';
-import PropTypes from 'prop-types';
-import './DataTable.css';
-import { LoadingSpinner } from '../../atoms/LoadingSpinner/LoadingSpinner';
-import { Input } from '../../atoms/Input/Input';
-import { Button } from '../../atoms/Button/Button';
+import React, { useState, useMemo, useId } from "react";
+import PropTypes from "prop-types";
+import "./DataTable.css";
+import { LoadingSpinner } from "../../atoms/LoadingSpinner/LoadingSpinner";
+import { Input } from "../../atoms/Input/Input";
+import { Button } from "../../atoms/Button/Button";
 
 export const DataTable = ({
   data = [],
@@ -16,7 +15,7 @@ export const DataTable = ({
   pagination = true,
   pageSize = 10,
   totalRecords = 0,
-  currentPage = 0, // 0-based index
+  currentPage = 0,
   onPageChange,
   searchable = false,
   exportable = false,
@@ -25,22 +24,21 @@ export const DataTable = ({
   striped = true,
   hoverable = true,
   dense = false,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = "Search...",
   onSearchChange,
   toolbarActions,
   onRefresh,
   refreshing = false,
-  refreshLabel = 'Refresh',
+  refreshLabel = "Refresh",
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const searchInputId = useId();
   const searchInputName = useMemo(
-    () => `datatable-search-${String(searchInputId).replace(/:/g, '-')}`,
+    () => `datatable-search-${String(searchInputId).replace(/:/g, "-")}`,
     [searchInputId]
   );
 
-  // ✅ Search local
   const filteredData = useMemo(() => {
     if (!searchable || serverSide || !searchTerm.trim()) return data;
     return data.filter((row) =>
@@ -50,7 +48,6 @@ export const DataTable = ({
     );
   }, [data, searchTerm, searchable, serverSide]);
 
-  // ✅ Sort local
   const sortedData = useMemo(() => {
     if (!sortable || !sortConfig.key) return filteredData;
 
@@ -58,10 +55,10 @@ export const DataTable = ({
     if (!activeColumn) return filteredData;
 
     const resolveValue = (row) => {
-      if (typeof activeColumn.getSortValue === 'function') {
+      if (typeof activeColumn.getSortValue === "function") {
         return activeColumn.getSortValue(row);
       }
-      if (typeof activeColumn.sortValue === 'function') {
+      if (typeof activeColumn.sortValue === "function") {
         return activeColumn.sortValue(row[activeColumn.key], row);
       }
       return row[activeColumn.key];
@@ -69,49 +66,50 @@ export const DataTable = ({
 
     const toComparable = (value) => {
       if (value === null || value === undefined) {
-        return { type: 'null', value: null };
+        return { type: "null", value: null };
       }
 
       const { sortType } = activeColumn;
 
-      if (sortType === 'number') {
+      if (sortType === "number") {
         const numeric = Number(value);
         return Number.isNaN(numeric)
-          ? { type: 'string', value: String(value).toLowerCase() }
-          : { type: 'number', value: numeric };
+          ? { type: "string", value: String(value).toLowerCase() }
+          : { type: "number", value: numeric };
       }
 
-      if (sortType === 'date') {
-        const timestamp = value instanceof Date ? value.getTime() : Date.parse(value);
+      if (sortType === "date") {
+        const timestamp =
+          value instanceof Date ? value.getTime() : Date.parse(value);
         return Number.isNaN(timestamp)
-          ? { type: 'string', value: String(value).toLowerCase() }
-          : { type: 'number', value: timestamp };
+          ? { type: "string", value: String(value).toLowerCase() }
+          : { type: "number", value: timestamp };
       }
 
-      if (typeof value === 'number') {
-        return { type: 'number', value };
+      if (typeof value === "number") {
+        return { type: "number", value };
       }
 
       if (value instanceof Date) {
-        return { type: 'number', value: value.getTime() };
+        return { type: "number", value: value.getTime() };
       }
 
-      if (typeof value === 'boolean') {
-        return { type: 'number', value: value ? 1 : 0 };
+      if (typeof value === "boolean") {
+        return { type: "number", value: value ? 1 : 0 };
       }
 
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         const trimmed = value.trim();
-        if (sortType !== 'string' && trimmed !== '') {
+        if (sortType !== "string" && trimmed !== "") {
           const numericCandidate = Number(trimmed);
           if (!Number.isNaN(numericCandidate)) {
-            return { type: 'number', value: numericCandidate };
+            return { type: "number", value: numericCandidate };
           }
         }
-        return { type: 'string', value: trimmed.toLowerCase() };
+        return { type: "string", value: trimmed.toLowerCase() };
       }
 
-      return { type: 'string', value: String(value).toLowerCase() };
+      return { type: "string", value: String(value).toLowerCase() };
     };
 
     const sorted = [...filteredData].sort((a, b) => {
@@ -126,33 +124,32 @@ export const DataTable = ({
 
       let comparison = 0;
 
-      if (aComparable.type === 'number' && bComparable.type === 'number') {
+      if (aComparable.type === "number" && bComparable.type === "number") {
         comparison = aComparable.value - bComparable.value;
       } else {
         const aStr = String(aComparable.value);
         const bStr = String(bComparable.value);
         comparison = aStr.localeCompare(bStr, undefined, {
           numeric: true,
-          sensitivity: 'base',
+          sensitivity: "base",
         });
       }
 
-      return sortConfig.direction === 'asc' ? comparison : -comparison;
+      return sortConfig.direction === "asc" ? comparison : -comparison;
     });
 
     return sorted;
   }, [filteredData, sortConfig, sortable, columns]);
 
-  // ✅ Pagination client-side (0-based)
   const totalPages = serverSide
     ? Math.ceil(totalRecords / pageSize)
     : Math.ceil(sortedData.length / pageSize);
 
-  const paginatedData = !serverSide && pagination
-    ? sortedData.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
-    : sortedData;
+  const paginatedData =
+    !serverSide && pagination
+      ? sortedData.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+      : sortedData;
 
-  // ✅ Page change (gửi ra ngoài)
   const handlePageChange = (pageIndex) => {
     if (onPageChange) onPageChange(pageIndex, pageSize);
   };
@@ -165,39 +162,35 @@ export const DataTable = ({
   const handleSearchInputChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    if (typeof onSearchChange === 'function') {
+    if (typeof onSearchChange === "function") {
       onSearchChange(value);
     }
   };
 
-  // ✅ Sort handler
   const handleSort = (column) => {
     if (!sortable || column?.sortable === false) return;
     const key = column.key;
     if (!key) return;
     setSortConfig((prev) => ({
       key,
-      direction:
-        prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
     }));
   };
 
-  // ✅ Export CSV (optional)
   const handleExport = () => {
     const csv = [
-      columns.map(c => c.label).join(','),
-      ...sortedData.map(row =>
-        columns.map(c => `"${row[c.key] ?? ''}"`).join(',')
+      columns.map((c) => c.label).join(","),
+      ...sortedData.map((row) =>
+        columns.map((c) => `"${row[c.key] ?? ""}"`).join(",")
       ),
-    ].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = 'data.csv';
+    link.download = "data.csv";
     link.click();
   };
 
-  // ✅ Loading
   if (isLoading) {
     return (
       <div className="data-table-loading">
@@ -207,15 +200,15 @@ export const DataTable = ({
   }
 
   const tableClasses = [
-    'table',
-    striped && 'table-striped',
-    hoverable && 'table-hover',
-    dense && 'table-sm',
+    "table",
+    striped && "table-striped",
+    hoverable && "table-hover",
+    dense && "table-sm",
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
-  const showRefreshButton = typeof onRefresh === 'function';
+  const showRefreshButton = typeof onRefresh === "function";
 
   const handleRefreshClick = () => {
     if (!showRefreshButton || refreshing) {
@@ -225,13 +218,12 @@ export const DataTable = ({
   };
 
   const shouldShowSearch =
-    searchable && (!serverSide || typeof onSearchChange === 'function');
+    searchable && (!serverSide || typeof onSearchChange === "function");
   const shouldShowToolbar =
     shouldShowSearch || exportable || toolbarActions || showRefreshButton;
 
   return (
     <div className="data-table-container">
-      {/* Toolbar */}
       {shouldShowToolbar && (
         <div className="data-table-toolbar">
           {shouldShowSearch && (
@@ -256,7 +248,7 @@ export const DataTable = ({
                   onClick={handleRefreshClick}
                   disabled={refreshing}
                 >
-                  {refreshing ? 'Refreshing...' : refreshLabel}
+                  {refreshing ? "Refreshing..." : refreshLabel}
                 </Button>
               )}
               {toolbarActions}
@@ -270,8 +262,7 @@ export const DataTable = ({
         </div>
       )}
 
-      {/* Table */}
-      <div className={responsive ? 'table-responsive' : ''}>
+      <div className={responsive ? "table-responsive" : ""}>
         <table className={tableClasses}>
           <thead>
             <tr>
@@ -281,12 +272,12 @@ export const DataTable = ({
                   <th
                     key={column.key}
                     onClick={() => handleSort(column)}
-                    className={columnSortable ? 'sortable' : ''}
+                    className={columnSortable ? "sortable" : ""}
                   >
                     {column.label}
                     {columnSortable && sortConfig.key === column.key && (
                       <span className={`sort-icon ${sortConfig.direction}`}>
-                        {sortConfig.direction === 'asc' ? '▲' : '▼'}
+                        {sortConfig.direction === "asc" ? "▲" : "▼"}
                       </span>
                     )}
                   </th>
@@ -322,14 +313,15 @@ export const DataTable = ({
         </table>
       </div>
 
-      {/* Pagination */}
       {pagination && (
         <div className="data-table-footer">
           <div className="page-size-selector">
             <span>Rows per page:</span>
             <select value={pageSize} onChange={handlePageSizeChange}>
               {[10, 20, 50, 100].map((size) => (
-                <option key={size} value={size}>{size}</option>
+                <option key={size} value={size}>
+                  {size}
+                </option>
               ))}
             </select>
           </div>
@@ -338,12 +330,14 @@ export const DataTable = ({
             {serverSide ? (
               <>
                 Showing {currentPage * pageSize + 1}–
-                {Math.min((currentPage + 1) * pageSize, totalRecords)} of {totalRecords}
+                {Math.min((currentPage + 1) * pageSize, totalRecords)} of{" "}
+                {totalRecords}
               </>
             ) : (
               <>
                 Showing {currentPage * pageSize + 1}–
-                {Math.min((currentPage + 1) * pageSize, sortedData.length)} of {sortedData.length}
+                {Math.min((currentPage + 1) * pageSize, sortedData.length)} of{" "}
+                {sortedData.length}
               </>
             )}
           </div>
@@ -375,7 +369,9 @@ export const DataTable = ({
                 .map((pageIndex) => (
                   <Button
                     key={pageIndex}
-                    variant={pageIndex === currentPage ? 'primary' : 'secondary'}
+                    variant={
+                      pageIndex === currentPage ? "primary" : "secondary"
+                    }
                     size="sm"
                     onClick={() => handlePageChange(pageIndex)}
                   >

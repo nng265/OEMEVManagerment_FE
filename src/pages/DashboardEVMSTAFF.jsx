@@ -12,7 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
   LineChart,
-  Line
+  Line,
 } from "recharts";
 import "./DashboardEVMSTAFF.css";
 import { request, ApiEnum } from "../services/NetworkUntil";
@@ -20,26 +20,24 @@ import { request, ApiEnum } from "../services/NetworkUntil";
 const COLORS = ["#4F46E5", "#8B5CF6", "#A78BFA"];
 
 export default function DashboardEVMSTAFF() {
-  // State cho từng loại dữ liệu
   const [totalWarrantyClaims, setTotalWarrantyClaims] = useState(0);
   const [totalPartsRequests, setTotalPartsRequests] = useState(0);
   const [activeCampaigns, setActiveCampaigns] = useState(0);
   const [campaignParticipationRate, setCampaignParticipationRate] = useState(0);
-  
+
   const [warrantyData, setWarrantyData] = useState([]);
   const [campaignParticipation, setCampaignParticipation] = useState([]);
   const [topPolicies, setTopPolicies] = useState([]);
   const [partsRequestData, setPartsRequestData] = useState([]);
   const [centerWarranty, setCenterWarranty] = useState([]);
-  
+
   const [loading, setLoading] = useState(true);
 
-  // Fetch Total Warranty Claims
   const fetchTotalWarrantyClaims = async () => {
     try {
       const response = await request(ApiEnum.API_GET_TOTAL_WARRANTY_CLAIMS);
       console.log("Total Warranty Claims:", response);
-      
+
       if (response.success && response.data !== undefined) {
         setTotalWarrantyClaims(response.data || 0);
       }
@@ -48,12 +46,11 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Total Parts Requests
   const fetchTotalPartsRequests = async () => {
     try {
       const response = await request(ApiEnum.API_GET_TOTAL_PARTS_REQUESTS);
       console.log("Total Parts Requests:", response);
-      
+
       if (response.success && response.data !== undefined) {
         setTotalPartsRequests(response.data || 0);
       }
@@ -62,12 +59,11 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Active Campaigns Count
   const fetchActiveCampaigns = async () => {
     try {
       const response = await request(ApiEnum.API_GET_ACTIVE_CAMPAIGNS_COUNT);
       console.log("Active Campaigns:", response);
-      
+
       if (response.success && response.data !== undefined) {
         setActiveCampaigns(response.data || 0);
       }
@@ -76,33 +72,34 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Campaign Participation Rate
   const fetchCampaignParticipation = async () => {
     try {
       const response = await request(ApiEnum.API_GET_CAMPAIGN_PARTICIPATION);
       console.log("Campaign Participation:", response);
-      
+
       if (response.success && response.data) {
         const data = response.data;
         const participating = data.participating || 0;
         const affected = data.affected || 0;
-        
-        const rate = affected > 0 
-          ? Math.round((participating / affected) * 100)
-          : 0;
-        
+
+        const rate =
+          affected > 0 ? Math.round((participating / affected) * 100) : 0;
+
         setCampaignParticipationRate(rate);
-        
-        // Cập nhật pie chart data
+
         const notParticipating = affected - participating;
         const pieData = [
           {
             name: "Participated",
-            value: affected > 0 ? Math.round((participating / affected) * 100) : 0,
+            value:
+              affected > 0 ? Math.round((participating / affected) * 100) : 0,
           },
           {
             name: "Not Participated",
-            value: affected > 0 ? Math.round((notParticipating / affected) * 100) : 0,
+            value:
+              affected > 0
+                ? Math.round((notParticipating / affected) * 100)
+                : 0,
           },
         ];
         setCampaignParticipation(pieData);
@@ -112,14 +109,13 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Warranty Claims Trend (6 months)
   const fetchWarrantyTrend = async () => {
     try {
       const response = await request(ApiEnum.API_GET_WARRANTY_CLAIMS_TREND);
       console.log("Warranty Claims Trend:", response);
-      
+
       if (response.success && response.data) {
-        const formattedData = response.data.map(item => ({
+        const formattedData = response.data.map((item) => ({
           month: item.monthName?.split(" ")[0] || item.month || "",
           claims: item.count || 0,
         }));
@@ -130,14 +126,13 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Top Warranty Policies
   const fetchTopPolicies = async () => {
     try {
       const response = await request(ApiEnum.API_GET_TOP_WARRANTY_POLICIES);
       console.log("Top Warranty Policies:", response);
-      
+
       if (response.success && response.data) {
-        const formattedPolicies = response.data.map(item => ({
+        const formattedPolicies = response.data.map((item) => ({
           policy: item.name || "",
           count: item.count || 0,
         }));
@@ -148,14 +143,13 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Parts Request Ranking
   const fetchPartsRequestRanking = async () => {
     try {
       const response = await request(ApiEnum.API_GET_PARTS_REQUEST_RANKING);
       console.log("Parts Request Ranking:", response);
-      
+
       if (response.success && response.data) {
-        const formattedParts = response.data.map(item => ({
+        const formattedParts = response.data.map((item) => ({
           part: item.model || "",
           requests: item.quantity || 0,
         }));
@@ -166,14 +160,15 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch Warranty by Service Center
   const fetchWarrantyByCenter = async () => {
     try {
-      const response = await request(ApiEnum.API_GET_WARRANTY_BY_SERVICE_CENTER);
+      const response = await request(
+        ApiEnum.API_GET_WARRANTY_BY_SERVICE_CENTER
+      );
       console.log("Warranty by Service Center:", response);
-      
+
       if (response.success && response.data) {
-        const formattedCenters = response.data.map(item => ({
+        const formattedCenters = response.data.map((item) => ({
           center: item.orgName || "",
           claims: item.count || 0,
         }));
@@ -184,13 +179,13 @@ export default function DashboardEVMSTAFF() {
     }
   };
 
-  // Fetch tất cả dữ liệu khi component mount
+  // fetch tat ca dl khi component mount
   useEffect(() => {
     const fetchAllData = async () => {
       try {
         setLoading(true);
-        
-        // Gọi tất cả API song song
+
+        // goi tat ca api song song
         await Promise.all([
           fetchTotalWarrantyClaims(),
           fetchTotalPartsRequests(),
@@ -213,12 +208,10 @@ export default function DashboardEVMSTAFF() {
   return (
     <div className="main-content">
       <div className="dashboard-wrapper">
-
         <div className="dashboard-header">
           <h1>Manufacturer Dashboard</h1>
         </div>
 
-        {/* CARDS */}
         <div className="cards">
           <div className="card">
             <h4>Total Warranty Claims</h4>
@@ -238,10 +231,7 @@ export default function DashboardEVMSTAFF() {
           </div>
         </div>
 
-        {/* CHART GRID */}
         <div className="chart-grid">
-
-          {/* Warranty - Line */}
           <div className="chart-box">
             <h3 className="chart-title">Warranty Claims Trend</h3>
             {loading ? (
@@ -274,20 +264,26 @@ export default function DashboardEVMSTAFF() {
             )}
           </div>
 
-          {/* Warranty by Policy */}
           <div className="chart-box">
             <h3 className="chart-title"> Policies</h3>
             <table className="data-table">
-              <thead><tr><th>Policy</th><th>Claims</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Policy</th>
+                  <th>Claims</th>
+                </tr>
+              </thead>
               <tbody>
                 {topPolicies.map((i, idx) => (
-                  <tr key={idx}><td>{i.policy}</td><td>{i.count}</td></tr>
+                  <tr key={idx}>
+                    <td>{i.policy}</td>
+                    <td>{i.count}</td>
+                  </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {/* Service Centers Claim Count */}
           <div className="chart-box">
             <h3 className="chart-title">Warranty Claims by Service Center</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -302,7 +298,6 @@ export default function DashboardEVMSTAFF() {
             </ResponsiveContainer>
           </div>
 
-          {/* Part Requests */}
           <div className="chart-box">
             <h3 className="chart-title">Top Requested Parts</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -317,7 +312,6 @@ export default function DashboardEVMSTAFF() {
             </ResponsiveContainer>
           </div>
 
-          {/* Campaign Pie + Details */}
           <div className="campaign-box">
             <div className="campaign-chart">
               {loading ? (
@@ -364,7 +358,6 @@ export default function DashboardEVMSTAFF() {
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>

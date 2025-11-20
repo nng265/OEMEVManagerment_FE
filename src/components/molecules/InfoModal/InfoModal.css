@@ -22,22 +22,18 @@
   line-height: 1.5;
 }
 
-/* Info variant */
 .info-modal-info .info-modal-icon {
   color: var(--bs-info);
 }
 
-/* Success variant */
 .info-modal-success .info-modal-icon {
   color: var(--bs-success);
 }
 
-/* Warning variant */
 .info-modal-warning .info-modal-icon {
   color: var(--bs-warning);
 }
 
-/* Error variant */
 .info-modal-error .info-modal-icon {
   color: var(--bs-danger);
 }

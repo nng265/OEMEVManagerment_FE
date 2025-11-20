@@ -53,7 +53,6 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Modal sizes */
 .modal-sm .modal-dialog {
   max-width: 300px;
 }
@@ -156,7 +155,6 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Responsive adjustments */
 @media (max-width: 576px) {
   .modal-dialog {
     margin: 1rem;
@@ -171,12 +169,12 @@
   }
 }
 
-/* Animation for modal open/close */
 @keyframes modalIn {
   from {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -186,6 +184,7 @@
 .modal-content {
   animation: modalIn 0.2s ease-out;
 }
+
 .modal-footer {
   border: 0;
   border-radius: 0.25rem;
@@ -197,7 +196,6 @@
   opacity: 0.75;
 }
 
-/* Image preview modal (no white frame, full-bleed image) */
 .modal.modal-image .modal-content {
   background: transparent;
   border: none;
@@ -231,7 +229,6 @@
   display: none;
 }
 
-/* Close button overlay for image preview */
 .modal.modal-image .image-close-btn {
   position: absolute;
   top: 12px;
@@ -240,7 +237,7 @@
   height: 40px;
   border-radius: 20px;
   border: none;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   font-size: 22px;
   line-height: 1;
@@ -252,5 +249,5 @@
 }
 
 .modal.modal-image .image-close-btn:hover {
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.65);
 }

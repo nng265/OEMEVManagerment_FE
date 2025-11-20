@@ -100,7 +100,6 @@
   gap: var(--bs-modal-footer-gap);
 }
 
-/* Modal sizes */
 .modal-sm {
   --bs-modal-width: 300px;
 }
@@ -113,18 +112,17 @@
   --bs-modal-width: 1140px;
 }
 
-/* Responsive adjustments */
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: var(--bs-modal-width);
     margin: 1.75rem auto;
   }
+
   .modal-dialog-centered {
     min-height: calc(100% - 3.5rem);
   }
 }
 
-/* Animation */
 .modal-backdrop {
   --bs-backdrop-zindex: 1050;
   --bs-backdrop-bg: #000;
@@ -146,7 +144,6 @@
   opacity: var(--bs-backdrop-opacity);
 }
 
-/* Custom styles */
 .btn-close {
   box-sizing: content-box;
   width: 1em;

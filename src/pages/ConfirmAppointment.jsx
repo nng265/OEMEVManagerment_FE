@@ -24,7 +24,7 @@ const ConfirmAppointment = () => {
 
     const confirm = async () => {
       try {
-        // 👉 Tạo endpoint động bằng cách replace :appointmentId
+        //tao endpoint dong bang cach replace :appointmentId
         const dynamicEndpoint = {
           ...ApiEnum.APPOINTMENT_CONFIRM,
           path: ApiEnum.APPOINTMENT_CONFIRM.path.replace(
@@ -37,8 +37,8 @@ const ConfirmAppointment = () => {
 
         const res = await request(
           dynamicEndpoint,
-          { token }, // body chỉ có token
-          { skipAuth: true } // không gửi Bearer token
+          { token },
+          { skipAuth: true }
         );
 
         console.log("📥 API Response:", res);

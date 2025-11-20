@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, uploadFiles, ApiEnum } from "../../../services/NetworkUntil";
 import { TechnicianVehicleStatusView } from "../components/TechnicianVehicleStatusView";
-import { formatDate, normalizePagedResult } from "../../../services/helpers"; // Assuming you have this helper
-import { Button } from "../../../components/atoms"; // Import Button for actions
+import { formatDate, normalizePagedResult } from "../../../services/helpers";
+import { Button } from "../../../components/atoms";
 
 export const TechnicianVehicleStatusContainer = () => {
   const [workOrders, setWorkOrders] = useState([]);
@@ -10,7 +10,6 @@ export const TechnicianVehicleStatusContainer = () => {
   const [error, setError] = useState(null);
   const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  // part to replace/repair
   const [categories, setCategories] = useState([]);
   const [models, setModels] = useState([]);
   const [serials, setSerials] = useState([]);
@@ -20,7 +19,6 @@ export const TechnicianVehicleStatusContainer = () => {
     totalRecords: 0,
   });
 
-  // Filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [targetFilter, setTargetFilter] = useState("");
@@ -47,43 +45,37 @@ export const TechnicianVehicleStatusContainer = () => {
     typeRef.current = typeFilter;
   }, [typeFilter]);
 
-  // Debounce search query để tránh request liên tục
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-    }, 500); // Delay 500ms sau khi user ngừng gõ
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
-  // --- UPDATED COLUMNS DEFINITION ---
   const columns = [
     {
-      key: "vin", // Key for sorting (using nested value)
-      label: "VIN", // Changed label
+      key: "vin",
+      label: "VIN",
       sortable: true,
-      // Render function to access nested data
-      render: (_, row) => row?.vin || "-", // Access warrantyClaim.vin
+      render: (_, row) => row?.vin || "-",
     },
     {
-      key: "target", // Key for sorting (using nested value)
-      label: "Target", // Changed label to match image
+      key: "target",
+      label: "Target",
       sortable: true,
-      // Render function to access nested data
-      render: (_, row) => row.target || "-", // Access warrantyClaim.failureDesc
+      render: (_, row) => row.target || "-",
     },
     {
-      key: "type", // Correct top-level key for 'Task'
-      label: "Task", // Changed label to match image
+      key: "type",
+      label: "Task",
       sortable: true,
     },
     {
-      key: "status", // Correct top-level key for work order status
-      label: "Status", // Changed label to match image
+      key: "status",
+      label: "Status",
       sortable: true,
       render: (value) => {
-        // Keep status badge rendering
-        // Adjust class generation if needed based on actual status values
         const statusClass = (value || "unknown")
           .toLowerCase()
           .replace(/ /g, "-")
@@ -94,10 +86,9 @@ export const TechnicianVehicleStatusContainer = () => {
       },
     },
     {
-      key: "startDate", // Correct top-level key for date
-      label: "Date", // Changed label to match image
+      key: "startDate",
+      label: "Date",
       sortable: true,
-      // Format date only (no time)
       render: (value) =>
         formatDate(value, "vi-VN", {
           year: "numeric",
@@ -106,20 +97,19 @@ export const TechnicianVehicleStatusContainer = () => {
         }),
     },
     {
-      // Actions column
       key: "actions",
-      label: "Actions", // Changed label to match image
+      label: "Actions",
       sortable: false,
       render: (_, row) => (
         <Button
-          variant="primary" // Match 'View Details' button style
+          variant="light"
           size="small"
           onClick={(e) => {
             e.stopPropagation();
-            handleViewWorkOrderDetail(row); // Function to handle viewing details
+            handleViewWorkOrderDetail(row);
           }}
         >
-          View
+          <img src="/eye.png" style={{ width: "22px" }} alt="View" />
         </Button>
       ),
     },
@@ -128,8 +118,6 @@ export const TechnicianVehicleStatusContainer = () => {
   const fetchCategories = useCallback(async () => {
     try {
       const response = await request(ApiEnum.GET_PART_CATEGORIES);
-      console.log("Category response:", response);
-      // normalize possible shapes
       const raw = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
@@ -137,7 +125,6 @@ export const TechnicianVehicleStatusContainer = () => {
         : Array.isArray(response?.data)
         ? response.data
         : [];
-      // map to plain string names to match <option value>
       const catNames = raw
         .map((item) =>
           typeof item === "string"
@@ -153,55 +140,69 @@ export const TechnicianVehicleStatusContainer = () => {
     }
   }, []);
 
-  const fetchWorkOrders = useCallback(async (pageNumber = 0, pageSize, search, target, type) => {
-    const effectivePageSize =
-      typeof pageSize === "number" ? pageSize : paginationRef.current.pageSize;
-    const effectiveSearch =
-      typeof search === "string" ? search : searchRef.current;
-    const effectiveTarget =
-      typeof target === "string" ? target : targetRef.current;
-    const effectiveType =
-      typeof type === "string" ? type : typeRef.current;
+  const fetchWorkOrders = useCallback(
+    async (pageNumber = 0, pageSize, search, target, type) => {
+      const effectivePageSize =
+        typeof pageSize === "number"
+          ? pageSize
+          : paginationRef.current.pageSize;
+      const effectiveSearch =
+        typeof search === "string" ? search : searchRef.current;
+      const effectiveTarget =
+        typeof target === "string" ? target : targetRef.current;
+      const effectiveType = typeof type === "string" ? type : typeRef.current;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const params = {
-        Page: pageNumber,
-        Size: effectivePageSize,
-      };
+      try {
+        const params = {
+          Page: pageNumber,
+          Size: effectivePageSize,
+        };
 
-      // Thêm search query nếu có
-      if (effectiveSearch && effectiveSearch.trim()) {
-        params.Search = effectiveSearch.trim();
-      }
+        if (effectiveSearch && effectiveSearch.trim()) {
+          params.Search = effectiveSearch.trim();
+        }
 
-      // Thêm target filter nếu có
-      if (effectiveTarget && effectiveTarget.trim()) {
-        params.Target = effectiveTarget.trim();
-      }
+        if (effectiveTarget && effectiveTarget.trim()) {
+          params.Target = effectiveTarget.trim();
+        }
 
-      // Thêm type filter nếu có
-      if (effectiveType && effectiveType.trim()) {
-        params.Type = effectiveType.trim();
-      }
+        if (effectiveType && effectiveType.trim()) {
+          params.Type = effectiveType.trim();
+        }
 
-      const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, params);
+        const response = await request(ApiEnum.GET_WORK_ORDERS_BY_TECH, params);
 
-      const { success, items, totalRecords, page, size, message } =
-        normalizePagedResult(response, []);
+        const { success, items, totalRecords, page, size, message } =
+          normalizePagedResult(response, []);
 
-      if (success) {
-        setWorkOrders(items);
-        setPagination({
-          pageNumber: typeof page === "number" ? page : pageNumber,
-          pageSize:
-            typeof size === "number" && size > 0 ? size : effectivePageSize,
-          totalRecords:
-            typeof totalRecords === "number" ? totalRecords : items.length,
-        });
-      } else {
+        if (success) {
+          setWorkOrders(items);
+          setPagination({
+            pageNumber: typeof page === "number" ? page : pageNumber,
+            pageSize:
+              typeof size === "number" && size > 0 ? size : effectivePageSize,
+            totalRecords:
+              typeof totalRecords === "number" ? totalRecords : items.length,
+          });
+        } else {
+          setWorkOrders([]);
+          setPagination((prev) => ({
+            ...prev,
+            pageNumber,
+            pageSize: effectivePageSize,
+            totalRecords: 0,
+          }));
+          setError(message || "Unable to load work order list.");
+        }
+      } catch (err) {
+        console.error("Error fetching work orders:", err);
+        const message =
+          err?.responseData?.message ||
+          err?.message ||
+          "An error occurred while loading work order list.";
         setWorkOrders([]);
         setPagination((prev) => ({
           ...prev,
@@ -209,26 +210,13 @@ export const TechnicianVehicleStatusContainer = () => {
           pageSize: effectivePageSize,
           totalRecords: 0,
         }));
-        setError(message || "Unable to load work order list.");
+        setError(message);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching work orders:", err);
-      const message =
-        err?.responseData?.message ||
-        err?.message ||
-        "An error occurred while loading work order list.";
-      setWorkOrders([]);
-      setPagination((prev) => ({
-        ...prev,
-        pageNumber,
-        pageSize: effectivePageSize,
-        totalRecords: 0,
-      }));
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     fetchCategories();
@@ -236,26 +224,15 @@ export const TechnicianVehicleStatusContainer = () => {
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchWorkOrders(0, paginationRef.current.pageSize, debouncedSearchQuery, targetFilter, typeFilter);
+    fetchWorkOrders(
+      0,
+      paginationRef.current.pageSize,
+      debouncedSearchQuery,
+      targetFilter,
+      typeFilter
+    );
   }, [fetchWorkOrders, debouncedSearchQuery, targetFilter, typeFilter]);
 
-  // const fetchWorkOrders = async () => {
-  //   setIsLoading(true);
-  //   setError(null);
-  //   try {
-  //     // ✅ Dùng mock data thay vì gọi API
-  //     await new Promise((resolve) => setTimeout(resolve, 300)); // giả delay 300ms
-  //     console.log("Mock Work Orders:", mockWorkOrders);
-  //     setWorkOrders(mockWorkOrders);
-  //   } catch (err) {
-  //     console.error("Error loading mock work orders:", err);
-  //     setError("An error occurred while loading mock data.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // Lấy danh sách model theo category
   const fetchModels = async (categoryName) => {
     try {
       if (!categoryName) {
@@ -265,7 +242,6 @@ export const TechnicianVehicleStatusContainer = () => {
       const response = await request(ApiEnum.GET_PART_MODELS, {
         category: categoryName,
       });
-      console.log("Model response:", response);
       const mods = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
@@ -274,14 +250,13 @@ export const TechnicianVehicleStatusContainer = () => {
         ? response.data
         : [];
       setModels(mods);
-      return mods; // Return data để modal có thể dùng
+      return mods;
     } catch (error) {
       console.error("Error fetching models:", error);
       return [];
     }
   };
 
-  // Lấy danh sách serial theo vin và model
   const fetchSerial = async (vin, modelName) => {
     try {
       if (!vin || !modelName) {
@@ -289,14 +264,11 @@ export const TechnicianVehicleStatusContainer = () => {
         return [];
       }
 
-      console.log("fetchSerial called with:", { vin, modelName });
-
       const response = await request(ApiEnum.GET_PART_SERIAL, {
         vin: vin,
         model: modelName,
       });
 
-      console.log("Serial response:", response);
       const sers = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
@@ -305,7 +277,7 @@ export const TechnicianVehicleStatusContainer = () => {
         ? response.data
         : [];
       setSerials(sers);
-      return sers; // Return data để modal có thể dùng
+      return sers;
     } catch (error) {
       console.error("Error fetching serials:", error);
       setSerials([]);
@@ -319,7 +291,6 @@ export const TechnicianVehicleStatusContainer = () => {
       const response = await request(ApiEnum.GET_PART_CATEGORY_BY_MODEL, {
         model: modelName,
       });
-      console.log("Category-by-model response:", response);
 
       const resolveList = (value) => {
         if (!value && value !== "") return [];
@@ -344,29 +315,27 @@ export const TechnicianVehicleStatusContainer = () => {
     }
   }, []);
 
-  //  Hàm upload hình ảnh kèm mô tả tiếng Việt từng bước
   const uploadImages = async (claimId, files = []) => {
     if (!claimId || !files.length) return [];
 
     try {
-      //  Tạo formData để chứa danh sách file gửi lên server
+      //  tao formData de chua danh sach file gui len server
       const formData = new FormData();
 
-      //  Mỗi file được thêm vào formData với key là "files"
+      //  MMoi file duoc them vao formData voi key la "files"
       files.forEach((f) => formData.append("files", f));
 
-      // Log để kiểm tra dữ liệu formData trước khi gửi
+      // Log de kiem tra du lieu formData trc khi gui
       for (let [key, value] of formData.entries()) {
-        console.log(`Key: ${key}, Value: ${value.name || value}`);
+        // debug mapping key -> value
       }
 
-      // Gửi request lên API /images/multi/:claimId
+      // GGui request len API /images/multi/:claimId
       const res = await uploadFiles(ApiEnum.UPLOAD_IMAGE, {
-        params: { claimId }, // claimId sẽ thay thế :claimId trong path
-        files: files, // uploadFiles sẽ tự động xử lý files array
+        params: { claimId }, // claimId se thay the :claimId trong path
+        files: files, // uploadFiles tu dong xu li files array
       });
 
-      // Chuẩn hóa dữ liệu trả về
       const uploaded = Array.isArray(res)
         ? res
         : res?.success && Array.isArray(res.data)
@@ -375,7 +344,7 @@ export const TechnicianVehicleStatusContainer = () => {
         ? res.data
         : [];
 
-      console.log(" Upload thành công:", uploaded);
+      // uploaded images handled
       return uploaded;
     } catch (err) {
       console.error(" Lỗi khi upload hình:", err);
@@ -391,7 +360,13 @@ export const TechnicianVehicleStatusContainer = () => {
       ...payload,
     });
     const { pageNumber, pageSize } = paginationRef.current;
-    await fetchWorkOrders(pageNumber, pageSize, searchRef.current, targetRef.current, typeRef.current);
+    await fetchWorkOrders(
+      pageNumber,
+      pageSize,
+      searchRef.current,
+      targetRef.current,
+      typeRef.current
+    );
     return res;
   };
 
@@ -411,13 +386,17 @@ export const TechnicianVehicleStatusContainer = () => {
 
     const res = await request(endpoint, data);
     const { pageNumber, pageSize } = paginationRef.current;
-    await fetchWorkOrders(pageNumber, pageSize, searchRef.current, targetRef.current, typeRef.current);
+    await fetchWorkOrders(
+      pageNumber,
+      pageSize,
+      searchRef.current,
+      targetRef.current,
+      typeRef.current
+    );
     return res;
   };
 
-  // Handler for the View button
   const handleViewWorkOrderDetail = (order) => {
-    console.log("Viewing Work Order:", order);
     setSelectedWorkOrder(order);
     setShowDetailModal(true);
   };
@@ -429,7 +408,13 @@ export const TechnicianVehicleStatusContainer = () => {
 
   const handlePageChange = useCallback(
     (page, size) => {
-      fetchWorkOrders(page, size, searchRef.current, targetRef.current, typeRef.current);
+      fetchWorkOrders(
+        page,
+        size,
+        searchRef.current,
+        targetRef.current,
+        typeRef.current
+      );
     },
     [fetchWorkOrders]
   );
@@ -462,7 +447,7 @@ export const TechnicianVehicleStatusContainer = () => {
   return (
     <TechnicianVehicleStatusView
       data={workOrders}
-      columns={columns} // Pass the updated columns
+      columns={columns}
       loading={isLoading}
       error={error}
       pagination={pagination}
@@ -478,15 +463,13 @@ export const TechnicianVehicleStatusContainer = () => {
       selectedWorkOrder={selectedWorkOrder}
       showDetailModal={showDetailModal}
       onCloseDetailModal={handleCloseDetailModal}
-      categories={categories} //Lưu dữ liệu thực tế để React render ra giao diện
+      categories={categories}
       models={models}
       serials={serials}
-      // pass helper functions so modal can load models/serials on demand
-      fetchCategories={fetchCategories} // Gọi API, lấy dữ liệu và cập nhật vào state
+      fetchCategories={fetchCategories}
       fetchModels={fetchModels}
       fetchSerial={fetchSerial}
       fetchCategoryByModel={fetchCategoryByModel}
-      // API helpers passed to modal so network calls live in container
       uploadImages={uploadImages}
       submitInspection={submitInspection}
       submitRepair={submitRepair}

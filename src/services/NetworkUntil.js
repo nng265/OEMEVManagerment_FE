@@ -4,11 +4,12 @@ export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
   LOGIN_GOOGLE: { path: "/auth/google-login", method: "POST" },
 
-  // Dashboard
+  // ===== Dashboard (SC) =====
   GET_DASHBOARD_SC_SUMMARY: { path: "/Dashboard/sc/summary", method: "GET" },
+  // ===== Dashboard (EVM) =====
   GET_DASHBOARD_EVM_SUMMARY: { path: "/Dashboard/evm/summary", method: "GET" },
 
-  // Dashboard EVM Staff - Individual APIs
+  // — EVM Metrics (Dashboard widgets)
   API_GET_TOTAL_WARRANTY_CLAIMS: {
     path: "/WarrantyClaim/count/sent-to-manufacturer",
     method: "GET",
@@ -36,18 +37,18 @@ export const ApiEnum = {
     method: "GET",
   },
 
-  // GET_FUNCTIONS: { path: "/functions", method: "GET" },
+  // ===== Warranty Claims =====
   GET_WARRANTY_CLAIMS: { path: "/WarrantyClaim", method: "GET" },
-  // GET_WARRANTY_CLAIM_DETAIL: { path: "/WarrantyClaim/detail", method: "GET" },
-  GET_VEHICLES: { path: "/vehicle", method: "GET" },
   CREATE_WARRANTY_CLAIM: { path: "/WarrantyClaim", method: "POST" },
   ASSIGN_TECHNICIAN: {
     path: "/WarrantyClaim/:targetId/assign-techs",
     method: "POST",
   },
 
+  // ===== Employees / Technicians =====
   GET_TECHNICIANS: { path: "/Employee", method: "GET" },
 
+  // ===== Technician Tasks (Work Orders) =====
   GET_WORK_ORDERS_BY_TECH: { path: "/workOrder", method: "GET" },
   GET_WORK_ORDER_TASK_COUNTS: { path: "/WorkOrder/task-counts", method: "GET" },
   GET_WORK_ORDER_TASK_GROUP_COUNTS: {
@@ -58,13 +59,11 @@ export const ApiEnum = {
     path: "/WorkOrder/by-tech/inspection",
     method: "GET",
   },
-  // GET_WARRANTY_CLAIMS_BY_STATUS: {
-  //   path: "/WarrantyClaim/filter/:status",
-  //   method: "GET",
-  // },
+
   GET_WARRANTY_STATUSES: { path: "/WarrantyClaim/status", method: "GET" },
   GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
-  // UPDATE_WORK_ORDER: { path: "/WorkOrder", method: "PUT" },
+
+  // ===== Inventory / Parts Catalog =====
   GET_PART_CATEGORIES: { path: "/Part/categories", method: "GET" },
   GET_PART_MODELS: { path: "/Part/models", method: "GET" },
   GET_PART_CATEGORY_BY_MODEL: {
@@ -73,6 +72,8 @@ export const ApiEnum = {
   },
   GET_PART: { path: "/Part", method: "GET" },
   GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
+
+  // ===== Warranty Claim Actions =====
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
   UPLOAD_IMAGE: { path: "/Image/multi/:claimId", method: "POST" },
@@ -98,13 +99,24 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/car-back-center",
     method: "PUT",
   },
-  // ASSIGN_TECHNICIAN: { path: "/workOrder/:targetId", method: "POST" },
+
+  // ===== Assignments / People =====
   GET_ASSIGNED_TECHNICIANS: {
     path: "/workOrder/assigned-techs",
     method: "GET",
   },
+
+  // ===== Images =====
   DELETE_IMAGE: { path: "/Image/:imageId", method: "DELETE" },
-  // NEED_CONFIRM: { path: "/WarrantyClaim/need-confirm", method: "GET" },
+
+  // ===== Vehicles =====
+  GET_VEHICLES: { path: "/vehicle", method: "GET" },
+  GET_VEHICLE_POLICIES: {
+    path: "/warrantyClaim/vehicle-policies/:vin",
+    method: "GET",
+  },
+
+  // ===== Warranty Processing =====
   GET_VEHICLE_POLICIES: {
     path: "/warrantyClaim/vehicle-policies/:vin",
     method: "GET",
@@ -119,9 +131,9 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/inspection",
     method: "PUT",
   },
-  // SHOW_REQUEST_PARTS_EVMSTAFF: { path: "/PartOrder/evmstaff", method: "GET" },
-  // SHOW_REQUEST_PARTS_SCSTAFF: { path: "/PartOrder/scstaff", method: "GET" },
   GET_REQUEST_PARTS: { path: "/PartOrder", method: "GET" },
+
+  // ===== Parts Requests (Orders) =====
   CONFIRM_PREPARE: { path: "/PartOrder/:orderId/confirm", method: "PUT" },
   DELIVERED_CLICK: { path: "/PartOrder/:orderId/delivery", method: "PUT" },
   UPDATE_REQUESTED_DATE: {
@@ -134,6 +146,7 @@ export const ApiEnum = {
     method: "PUT",
   },
 
+  // ===== Campaigns =====
   CREATE_CAMPAIGN: { path: "/Campaign", method: "POST" },
   CAMPAIGN_SCSTAFF: { path: "/Campaign", method: "GET" },
   CAMPAIGN_VEHICLE_STATUSES: {
@@ -181,7 +194,10 @@ export const ApiEnum = {
   },
   CLOSE_CAMPAIGN: { path: "/Campaign/:id/close", method: "PUT" },
 
+  // ===== Organization =====
   ORGANIZATION: { path: "/Organization", method: "GET" },
+
+  // ===== Appointments =====
   APPOINTMENT: { path: "/Appointment", method: "GET" },
   APPOINTMENT_TIMESLOTS: {
     path: "/Appointment/available-timeslots",
@@ -190,13 +206,29 @@ export const ApiEnum = {
   APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
 
-  APPOINTMENT_CONFIRM: { path: "/Appointment/:appointmentId/confirm", method: "PUT" },
-  Appointment_CHECKIN: { path: "/Appointment/:appointmentId/check-in", method: "PUT"},
-  Appointment_NOSHOW: { path: "/Appointment/:appointmentId/no-show", method: "PUT"},
-  Appointment_RESCHEDULE: { path: "/Appointment/:appointmentId/reschedule", method: "PUT"},
-  Appointment_DONE: { path: "/Appointment/:appointmentId/done", method: "PUT"},
-  Appointment_CANCEL: { path: "/Appointment/:appointmentId/cancel", method: "PUT"},
+  APPOINTMENT_CONFIRM: {
+    path: "/Appointment/:appointmentId/confirm",
+    method: "PUT",
+  },
+  Appointment_CHECKIN: {
+    path: "/Appointment/:appointmentId/check-in",
+    method: "PUT",
+  },
+  Appointment_NOSHOW: {
+    path: "/Appointment/:appointmentId/no-show",
+    method: "PUT",
+  },
+  Appointment_RESCHEDULE: {
+    path: "/Appointment/:appointmentId/reschedule",
+    method: "PUT",
+  },
+  Appointment_DONE: { path: "/Appointment/:appointmentId/done", method: "PUT" },
+  Appointment_CANCEL: {
+    path: "/Appointment/:appointmentId/cancel",
+    method: "PUT",
+  },
 
+  // ===== Policy Management =====
   POLICY_MANAGEMENT: { path: "/WarrantyPolicy", method: "GET" },
   CREATE_POLICY: { path: "/WarrantyPolicy", method: "POST" },
   UPDATE_POLICY: { path: "/WarrantyPolicy/:id", method: "PUT" },
@@ -206,6 +238,7 @@ export const ApiEnum = {
   },
   DELETE_POLICY: { path: "/WarrantyPolicy/:id", method: "DELETE" },
 
+  // ===== Account Management =====
   ACCOUNT_MANAGEMENT: { path: "/Employee/accounts", method: "GET" },
   CREATE_ACCOUNT: { path: "/Employee/createAccount", method: "POST" },
   UPDATE_ACCOUNT: { path: "/Employee/updateAccount/:id", method: "PUT" },

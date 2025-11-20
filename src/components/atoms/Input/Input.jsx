@@ -1,4 +1,3 @@
-// src/components/atoms/Input/Input.jsx
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 import "./Input.css";
@@ -20,9 +19,8 @@ export const Input = forwardRef(
       hint,
       readOnly = false,
       fullWidth = false,
-      // Props mới cho select
       options = [],
-      // Props mới cho textarea
+
       rows,
       ...props
     },
@@ -127,7 +125,6 @@ Input.propTypes = {
   hint: PropTypes.node,
   readOnly: PropTypes.bool,
   fullWidth: PropTypes.bool,
-  // Props cho select
   options: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.any.isRequired,
@@ -135,7 +132,6 @@ Input.propTypes = {
       disabled: PropTypes.bool,
     })
   ),
-  // Props cho textarea
   rows: PropTypes.number,
 };
 

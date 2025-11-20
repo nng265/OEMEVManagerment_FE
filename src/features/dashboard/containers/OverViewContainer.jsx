@@ -15,7 +15,6 @@ export default function OverViewContainer() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState("m"); // 'm' for month, 'y' for year
 
-  // Fetch Task Counts (Total, In Progress, Completed)
   const fetchTaskCounts = async () => {
     try {
       const response = await request(ApiEnum.GET_WORK_ORDER_TASK_COUNTS);
@@ -34,30 +33,29 @@ export default function OverViewContainer() {
     }
   };
 
-  // Fetch Task Group Counts (Warranty, Campaign, Inspection, Repair)
   const fetchTaskGroupCounts = async (unit) => {
     try {
       const response = await request(ApiEnum.GET_WORK_ORDER_TASK_GROUP_COUNTS, {
-        unit: unit, // 'y' for year, 'm' for month
+        unit: unit, // 'y'  year, 'm' month
       });
       console.log("Task Group Counts API:", response);
 
       if (response.success && response.data && response.data.items) {
         const items = response.data.items;
-        
-        // Tính toán số lượng theo target và type
+
+        // tinh toan ssl theo target va type
         const warranty = items
           .filter((item) => item.target === "Warranty")
           .reduce((sum, item) => sum + (item.count || 0), 0);
-        
+
         const campaign = items
           .filter((item) => item.target === "Campaign")
           .reduce((sum, item) => sum + (item.count || 0), 0);
-        
+
         const inspection = items
           .filter((item) => item.type === "Inspection")
           .reduce((sum, item) => sum + (item.count || 0), 0);
-        
+
         const repair = items
           .filter((item) => item.type === "Repair")
           .reduce((sum, item) => sum + (item.count || 0), 0);
@@ -75,7 +73,6 @@ export default function OverViewContainer() {
     }
   };
 
-  // Fetch all dashboard data
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {

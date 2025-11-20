@@ -8,7 +8,7 @@ export const RoleBasedRedirect = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // Redirect based on user role
+  // chuyen huong dua tren vai tro nguoi dung
   if (user.role === "EVM_STAFF") {
     return <Navigate to="/dashboardevmstaff" replace />;
   }
@@ -17,8 +17,7 @@ export const RoleBasedRedirect = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  if(user.role === "SC_TECH") {
-    return <Navigate to="/overview" replace/>
+  if (user.role === "SC_TECH") {
+    return <Navigate to="/overview" replace />;
   }
-//   return <Navigate to="/dashboard" replace />;
 };
