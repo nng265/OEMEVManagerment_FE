@@ -18,7 +18,6 @@ export const TechnicianVehicleStatusView = ({
   onRefresh,
   refreshing = false,
 
-  // Filter props
   searchQuery = "",
   onSearchChange,
   targetFilter = "",
@@ -26,7 +25,6 @@ export const TechnicianVehicleStatusView = ({
   typeFilter = "",
   onTypeFilterChange,
 
-  // 2. NHẬN CÁC PROPS TỪ CONTAINER
   selectedWorkOrder,
   showDetailModal,
   onCloseDetailModal,
@@ -43,14 +41,12 @@ export const TechnicianVehicleStatusView = ({
   submitInspection,
   submitRepair,
 }) => {
-  // Target options (warranty/campaign)
   const targetOptions = [
     { value: "", label: "All Targets" },
     { value: "Warranty", label: "Warranty" },
     { value: "Campaign", label: "Campaign" },
   ];
 
-  // Type options (inspection/repair)
   const typeOptions = [
     { value: "", label: "All Types" },
     { value: "Inspection", label: "Inspection" },
@@ -60,13 +56,19 @@ export const TechnicianVehicleStatusView = ({
   return (
     <ErrorBoundary>
       <div className="technician-status-view">
-        {/* Header */}
         <div className="technician-status-header">
           <h2>Assigned Work Orders</h2>
         </div>
 
-        {/* Search Bar and Filters */}
-        <div className="work-order-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div
+          className="work-order-filters"
+          style={{
+            display: "flex",
+            gap: "15px",
+            marginBottom: "20px",
+            alignItems: "flex-end",
+          }}
+        >
           <div style={{ flex: 2 }}>
             <Input
               type="text"
@@ -99,7 +101,6 @@ export const TechnicianVehicleStatusView = ({
           </div>
         </div>
 
-        {/* Handle Loading / Error / Empty / Data */}
         {loading ? (
           <div className="loading-container">
             <LoadingSpinner size="lg" />
@@ -128,20 +129,19 @@ export const TechnicianVehicleStatusView = ({
             pageSize={pagination?.pageSize ?? 10}
             onPageChange={onPageChange}
             hoverable
-            striped
             loadingMessage="Loading work orders..."
             onRefresh={onRefresh}
             refreshing={refreshing}
           />
         )}
 
-        {/* 3. RENDER MODAL KHI STATE LÀ TRUE */}
+        {/* render modal khi state la true */}
         {showDetailModal && selectedWorkOrder && (
           <WorkOrderDetailModal
-            key={selectedWorkOrder.workOrderId} // ✅ thêm key để React refresh modal khi đổi task
+            key={selectedWorkOrder.workOrderId} // them key React refresh modal khi doi task
             isOpen={showDetailModal}
             onClose={onCloseDetailModal}
-            workOrderData={selectedWorkOrder} // Prop này khớp với file WorkOrderDetailModal.jsx
+            workOrderData={selectedWorkOrder}
             categories={categories}
             models={models}
             serials={serials}
@@ -149,7 +149,6 @@ export const TechnicianVehicleStatusView = ({
             fetchModels={fetchModels}
             fetchSerial={fetchSerial}
             fetchCategoryByModel={fetchCategoryByModel}
-            // truyền handlers xuống modal (container giữ network logic)
             uploadImages={uploadImages}
             submitInspection={submitInspection}
             submitRepair={submitRepair}
@@ -160,7 +159,6 @@ export const TechnicianVehicleStatusView = ({
   );
 };
 
-// 4. CẬP NHẬT LẠI PROP TYPES (bỏ comment)
 TechnicianVehicleStatusView.propTypes = {
   data: PropTypes.array,
   columns: PropTypes.array.isRequired,
@@ -181,7 +179,6 @@ TechnicianVehicleStatusView.propTypes = {
   onTargetFilterChange: PropTypes.func,
   typeFilter: PropTypes.string,
   onTypeFilterChange: PropTypes.func,
-  // Thêm prop types cho modal
   selectedWorkOrder: PropTypes.object,
   showDetailModal: PropTypes.bool,
   onCloseDetailModal: PropTypes.func,

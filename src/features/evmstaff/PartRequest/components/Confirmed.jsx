@@ -10,6 +10,11 @@ export function Comfirm({ request, onClose, onDelivered, isLoading }) {
     setIsConfirmOpen(true);
   };
 
+  const formatDate = (date) => {
+  if (!date) return "";
+  return new Date(date).toISOString().split("T")[0];
+};
+
   const handleConfirmDialog = () => {
     setIsConfirmOpen(false);
     onDelivered(request.orderId);
@@ -26,12 +31,7 @@ export function Comfirm({ request, onClose, onDelivered, isLoading }) {
   return (
     <div className="popup-overlay">
       <div className="popup-card">
-        <div className="popup-header">
           <h3>Parts Request Details</h3>
-          <button className="close-btn" onClick={handleClose}>
-            ×
-          </button>
-        </div>
 
         <div className="popup-body">
           <div className="info-row">
@@ -41,14 +41,14 @@ export function Comfirm({ request, onClose, onDelivered, isLoading }) {
             <strong>Service Center:</strong> {request.serviceCenter}
           </div>
           <div className="info-row">
-            <strong>Requested Date:</strong> {request.requestedDate}
+            <strong>Requested Date:</strong> {formatDate(request.requestedDate)}
           </div>
           <div className="info-row">
             <strong>Expected Date:</strong>{" "}
             {request.waitingDate || request.expectedDate}
           </div>
 
-          <h4>Delivered Parts</h4>
+          <h3>Delivered Parts</h3>
           <table className="parts-detail">
             <thead>
               <tr>

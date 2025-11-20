@@ -4,7 +4,7 @@ import { normalizePagedResult } from "../../../../services/helpers";
 import PartsListEVM from "../components/PartsListEVM";
 import Pending from "../components/Pending";
 import Waiting from "../components/Waiting";
-import Confirmed, { Comfirm } from "../components/Confirmed";
+import Confirmed from "../components/Confirmed";
 import Delivered from "../components/Delivered";
 import { toast } from "react-toastify";
 
@@ -21,9 +21,10 @@ export const EVMPartsListContainer = () => {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-
+  const [statusFilter, setStatusFilter] = useState("");
   const paginationRef = useRef(pagination);
   const searchRef = useRef("");
+  const statusRef = useRef("");
 
   useEffect(() => {
     paginationRef.current = pagination;
@@ -33,86 +34,137 @@ export const EVMPartsListContainer = () => {
     searchRef.current = debouncedSearchQuery;
   }, [debouncedSearchQuery]);
 
-  // Debounce search query để tránh request liên tục
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500); // Delay 500ms sau khi user ngừng gõ
+    statusRef.current = statusFilter;
+  }, [statusFilter]);
 
-    return () => clearTimeout(timeoutId);
+  // Debounce search
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(t);
   }, [searchQuery]);
 
-  // === Fetch danh sách request ===
-  const fetchPartsRequests = useCallback(async (pageNumber = 0, pageSize, search) => {
-    const effectivePageSize =
-      typeof pageSize === "number" && pageSize > 0
-        ? pageSize
-        : paginationRef.current.pageSize;
-    const effectiveSearch =
-      typeof search === "string" ? search : searchRef.current;
+  const fetchPartsRequests = useCallback(
+    async (pageNumber = 0, pageSize, search, status) => {
+      const effectivePageSize =
+        typeof pageSize === "number" && pageSize > 0
+          ? pageSize
+          : paginationRef.current.pageSize;
 
-    setLoading(true);
-    setError(null);
-    try {
-      const params = {
-        Page: pageNumber,
-        Size: effectivePageSize,
-      };
+      const effectiveSearch =
+        typeof search === "string" ? search : searchRef.current;
 
-      // Thêm search query nếu có
-      if (effectiveSearch && effectiveSearch.trim()) {
-        params.Search = effectiveSearch.trim();
-      }
+      const effectiveStatus =
+        typeof status === "string" ? status : statusRef.current;
 
-      const res = await request(ApiEnum.GET_REQUEST_PARTS, params);
+      setLoading(true);
+      setError(null);
 
-      const { success, items, totalRecords, page, size, message } =
-        normalizePagedResult(res, []);
+      try {
+        const params = {
+          Page: pageNumber,
+          Size: effectivePageSize,
+        };
 
-      if (success) {
-        setPartsRequests(items);
-        setPagination({
-          pageNumber: typeof page === "number" ? page : pageNumber,
-          pageSize:
-            typeof size === "number" && size > 0 ? size : effectivePageSize,
-          totalRecords:
-            typeof totalRecords === "number" ? totalRecords : items.length,
-        });
-      } else {
+        if (effectiveSearch && effectiveSearch.trim()) {
+          params.Search = effectiveSearch.trim();
+        }
+
+        // ⭐ NEW: add Status param
+        if (effectiveStatus && effectiveStatus.trim()) {
+          params.Status = effectiveStatus;
+        }
+
+        const res = await request(ApiEnum.GET_REQUEST_PARTS, params);
+
+        const { success, items, totalRecords, page, size, message } =
+          normalizePagedResult(res, []);
+
+        if (success) {
+          setPartsRequests(items);
+          setPagination({
+            pageNumber: typeof page === "number" ? page : pageNumber,
+            pageSize:
+              typeof size === "number" && size > 0 ? size : effectivePageSize,
+            totalRecords:
+              typeof totalRecords === "number" ? totalRecords : items.length,
+          });
+        } else {
+          setPartsRequests([]);
+          setPagination({
+            pageNumber,
+            pageSize: effectivePageSize,
+            totalRecords: 0,
+          });
+          setError(message || "Unable to load parts requests");
+        }
+      } catch (err) {
+        console.error("❌ EVMParts fetch error:", err);
+        const message =
+          err?.responseData?.message ||
+          err?.message ||
+          "Unable to load parts requests";
         setPartsRequests([]);
-        setPagination((prev) => ({
-          ...prev,
+        setPagination({
           pageNumber,
           pageSize: effectivePageSize,
           totalRecords: 0,
-        }));
-        setError(message || "Unable to load parts requests");
+        });
+        setError(message);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("❌ EVMParts fetch error:", err);
-      const message =
-        err?.responseData?.message ||
-        err?.message ||
-        "Unable to load parts requests";
-      setPartsRequests([]);
-      setPagination((prev) => ({
-        ...prev,
-        pageNumber,
-        pageSize: effectivePageSize,
-        totalRecords: 0,
-      }));
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchPartsRequests(0, paginationRef.current.pageSize, debouncedSearchQuery);
-  }, [fetchPartsRequests, debouncedSearchQuery]);
+    fetchPartsRequests(
+      0,
+      paginationRef.current.pageSize,
+      debouncedSearchQuery,
+      statusFilter
+    );
+  }, [debouncedSearchQuery]);
 
-  // === Handlers gọi API ===
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
+    fetchPartsRequests(
+      0,
+      paginationRef.current.pageSize,
+      searchRef.current,
+      statusFilter
+    );
+  }, [statusFilter]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value || "");
+  };
+
+  // ⭐ NEW: status filter change
+  const handleStatusFilterChange = (e) => {
+    setStatusFilter(e.target.value || "");
+  };
+
+  const handlePageChange = useCallback(
+    (page, size) => {
+      fetchPartsRequests(page, size, searchRef.current, statusRef.current);
+    },
+    [fetchPartsRequests]
+  );
+
+  const handleRefresh = useCallback(() => {
+    fetchPartsRequests(
+      paginationRef.current.pageNumber,
+      paginationRef.current.pageSize,
+      searchRef.current,
+      statusRef.current
+    );
+  }, [fetchPartsRequests]);
+
   const handleSetRequestedDate = async (orderId, requestedDate) => {
     setIsActionLoading(true);
     try {
@@ -120,15 +172,13 @@ export const EVMPartsListContainer = () => {
         params: { orderId },
         expectedDate: requestedDate,
       });
+
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize, searchRef.current);
+      fetchPartsRequests(pageNumber, pageSize, searchRef.current, statusRef.current);
       setSelectedRequest(null);
       toast.success("Expected date updated successfully!");
-    } catch (err) {
-      // const errorMsg =
-      //   err.responseData?.message || "Failed to set requested date";
-      // toast.error(`Error: ${errorMsg}`);
-      toast.warning(`Error: Please select a valid date`);
+    } catch {
+      toast.warning("Error: Please select a valid date");
     } finally {
       setIsActionLoading(false);
     }
@@ -140,14 +190,13 @@ export const EVMPartsListContainer = () => {
       await request(ApiEnum.CONFIRM_PREPARE, {
         params: { orderId },
       });
+
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize, searchRef.current);
+      fetchPartsRequests(pageNumber, pageSize, searchRef.current, statusRef.current);
       setSelectedRequest(null);
       toast.success("Request confirmed and moved to preparation!");
-    } catch (err) {
-      // const errorMsg = err.responseData?.message || "Failed to confirm";
-      // toast.error(`Error: ${errorMsg}`);
-      toast.error(`Error: Unable to confirm request`);
+    } catch {
+      toast.error("Error: Unable to confirm request");
     } finally {
       setIsActionLoading(false);
     }
@@ -159,61 +208,41 @@ export const EVMPartsListContainer = () => {
       await request(ApiEnum.DELIVERED_CLICK, {
         params: { orderId },
       });
+
       const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize, searchRef.current);
+      fetchPartsRequests(pageNumber, pageSize, searchRef.current, statusRef.current);
       setSelectedRequest(null);
       toast.success("Request marked as delivered!");
-    } catch (err) {
-      // const errorMsg = err.responseData?.message || "Failed to mark delivered";
-      // toast.error(`Error: ${errorMsg}`);
-      toast.error(`Error: Unable to mark request as delivered`);
+    } catch {
+      toast.error("Error: Unable to mark request as delivered");
     } finally {
       setIsActionLoading(false);
     }
   };
 
-  const handlePageChange = useCallback(
-    (page, size) => {
-      fetchPartsRequests(page, size, searchRef.current);
-    },
-    [fetchPartsRequests]
-  );
-
-  const handleRefresh = useCallback(() => {
-    fetchPartsRequests(
-      paginationRef.current.pageNumber,
-      paginationRef.current.pageSize,
-      searchRef.current
-    );
-  }, [fetchPartsRequests]);
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value || "";
-    setSearchQuery(value);
-  };
-
-  // === UI render ===
   return (
     <>
       <PartsListEVM
         data={partsRequests}
         loading={loading}
         error={error}
-        onView={(req) => setSelectedRequest(req)}
+        onView={setSelectedRequest}
         pagination={pagination}
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+
+        statusFilter={statusFilter}
+        onStatusFilterChange={handleStatusFilterChange}
       />
 
-      {/* === Pending Popup === */}
       {selectedRequest?.status === "Pending" && (
         <Pending
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onSetDate={handleSetRequestedDate} // ✅ lưu ngày Pending
+          onSetDate={handleSetRequestedDate}
           onConfirm={handleConfirmAndPrepare}
           isLoading={isActionLoading}
         />
@@ -223,7 +252,7 @@ export const EVMPartsListContainer = () => {
         <Waiting
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onSetDate={handleSetRequestedDate} // ✅ cập nhật ngày Waiting
+          onSetDate={handleSetRequestedDate}
           onConfirm={handleConfirmAndPrepare}
           isLoading={isActionLoading}
         />

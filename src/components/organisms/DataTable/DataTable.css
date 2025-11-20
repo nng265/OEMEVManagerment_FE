@@ -1,44 +1,41 @@
-/* src/components/organisms/DataTable/DataTable.css */
-/* Container */
 .data-table-container {
   width: 100%;
   background-color: #fff;
-  border-radius: 12px; /* Smoother radius */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Softer shadow */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  border: 1px solid #e6e6e6; /* Consistent border */
-  overflow: hidden; /* Important for border-radius */
+  border: 1px solid #e6e6e6;
+  overflow: hidden;
 }
 
-/* Loading state */
 .data-table-loading {
   display: flex;
-  flex-direction: column; /* Stack spinner and text */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 200px; /* Ensure some height */
+  min-height: 200px;
   padding: 2rem;
   gap: 1rem;
 }
+
 .data-table-loading-message {
   color: var(--text-muted);
 }
 
-/* Toolbar */
 .data-table-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem; /* More horizontal padding */
+  padding: 1rem 1.5rem;
   gap: 1rem;
   border-bottom: 1px solid var(--border-color);
   flex-wrap: wrap;
-  background-color: #f8f9fa; /* Light background for toolbar */
+  background-color: #f8f9fa;
 }
 
 .data-table-toolbar .color {
-  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Gradient xanh biển */
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
   color: #fff;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -68,19 +65,18 @@
 .data-table-search {
   min-width: 250px;
 }
+
 .data-table-search .input-wrapper {
-  /* Target potential wrapper */
-  margin-bottom: 0; /* Remove margin if input adds it */
+  margin-bottom: 0;
 }
 
 .data-table-toolbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* Slightly larger gap */
-  margin-left: auto; /* Pushes actions to the right */
+  gap: 0.75rem;
+  margin-left: auto;
 }
 
-/* Table */
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -89,40 +85,36 @@
 .table {
   width: 100%;
   margin-bottom: 0;
-  border-collapse: collapse; /* Ensure borders connect */
+  border-collapse: collapse;
 }
 
-/* Table variants */
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.02); /* Very subtle striping */
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(
-    var(--bs-primary-rgb),
-    0.04
-  ); /* Primary color tint on hover */
+  background-color: rgba(var(--bs-primary-rgb),
+      0.04);
 }
 
-/* Table cells - REDUCED PADDING */
 .table th,
 .table td {
-  padding: 0.75rem 1rem; /* Reduced padding */
+  padding: 0.75rem 1rem;
   vertical-align: middle;
   border-bottom: 1px solid var(--border-color);
   text-align: left;
-  white-space: nowrap; /* Prevent headers wrapping initially */
-}
-.table td {
-  white-space: normal; /* Allow cell content to wrap */
+  white-space: nowrap;
 }
 
-/* Table headers */
+.table td {
+  white-space: normal;
+}
+
 .table th {
-  background-color: #f8f9fa; /* Consistent light header */
+  background-color: #f8f9fa;
   font-weight: 600;
-  color: #495057; /* Slightly darker header text */
-  border-bottom-width: 2px; /* Thicker bottom border for header */
+  color: #495057;
+  border-bottom-width: 2px;
 }
 
 .table th.sortable {
@@ -132,7 +124,7 @@
 }
 
 .table th.sortable:hover {
-  background-color: #e9ecef; /* Darker hover for header */
+  background-color: #e9ecef;
 }
 
 .sort-icon {
@@ -144,14 +136,14 @@
   color: var(--primary-color);
   opacity: 0.4;
 }
+
 .sort-icon.asc,
 .sort-icon.desc {
   opacity: 1;
 }
 
-/* Table body */
 .table tbody tr:last-child td {
-  border-bottom: none; /* Remove border on last row */
+  border-bottom: none;
 }
 
 .table tbody tr.clickable {
@@ -159,22 +151,20 @@
 }
 
 .table tbody {
-  min-height: auto; /* <-- THỬ THÊM DÒNG NÀY VÀO ĐÂY */
+  min-height: auto;
 }
 
-/* Footer */
 .data-table-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem; /* Consistent padding */
+  padding: 0.75rem 1.5rem;
   border-top: 1px solid var(--border-color);
   gap: 1rem;
   flex-wrap: wrap;
-  background-color: #f8f9fa; /* Light background for footer */
+  background-color: #f8f9fa;
 }
 
-/* Page size selector */
 .page-size-selector {
   display: flex;
   align-items: center;
@@ -191,16 +181,14 @@
   font-size: 0.875rem;
 }
 
-/* Pagination */
 .pagination {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 0; /* Remove default margin */
+  margin: 0;
 }
 
 .pagination .btn {
-  /* Style pagination buttons */
   font-size: 0.8rem;
   padding: 0.25rem 0.6rem;
 }
@@ -211,40 +199,43 @@
   white-space: nowrap;
 }
 
-/* Empty state */
 .text-center {
-  /* Used for noDataMessage */
   text-align: center;
   padding: 2rem;
   color: var(--text-muted);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .data-table-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
+
   .data-table-toolbar-actions {
     width: 100%;
     justify-content: flex-end;
     margin-left: 0;
   }
+
   .data-table-footer {
     flex-direction: column;
-    align-items: center; /* Center items */
+    align-items: center;
   }
+
   .pagination {
     justify-content: center;
   }
+
   .table th,
   .table td {
-    padding: 0.6rem 0.8rem; /* Further reduce padding on small screens */
-    white-space: normal; /* Allow wrapping */
+    padding: 0.6rem 0.8rem;
+    white-space: normal;
   }
+
   .table th.sortable {
     padding-right: 1.5rem;
   }
+
   .sort-icon {
     right: 0.5rem;
   }

@@ -62,55 +62,61 @@ const CampaignListContainer = () => {
     statusFilterRef.current = statusFilter;
   }, [statusFilter]);
 
-  const fetchCampaigns = useCallback(async (pageNumber = 0, size = 10, search, type, status) => {
-    const requestId = ++latestRequestRef.current;
-    setLoading(true);
-    setError(null);
+  const fetchCampaigns = useCallback(
+    async (pageNumber = 0, size = 10, search, type, status) => {
+      const requestId = ++latestRequestRef.current;
+      setLoading(true);
+      setError(null);
 
-    const effectiveSearch = typeof search === "string" ? search : searchRef.current;
-    const effectiveType = typeof type === "string" ? type : typeFilterRef.current;
-    const effectiveStatus = typeof status === "string" ? status : statusFilterRef.current;
+      const effectiveSearch =
+        typeof search === "string" ? search : searchRef.current;
+      const effectiveType =
+        typeof type === "string" ? type : typeFilterRef.current;
+      const effectiveStatus =
+        typeof status === "string" ? status : statusFilterRef.current;
 
-    try {
-      const params = {
-        Page: pageNumber,
-        Size: size,
-      };
+      try {
+        const params = {
+          Page: pageNumber,
+          Size: size,
+        };
 
-      // Thêm search query nếu có
-      if (effectiveSearch && effectiveSearch.trim()) {
-        params.Search = effectiveSearch.trim();
+        // Thêm search query nếu có
+        if (effectiveSearch && effectiveSearch.trim()) {
+          params.Search = effectiveSearch.trim();
+        }
+
+        // Thêm type filter nếu có
+        if (effectiveType && effectiveType.trim()) {
+          params.Type = effectiveType.trim();
+        }
+
+        // Thêm status filter nếu có
+        if (effectiveStatus && effectiveStatus.trim()) {
+          params.Status = effectiveStatus.trim();
+        }
+
+        const res = await request(ApiEnum.CAMPAIGN_SCSTAFF, params);
+
+        if (requestId !== latestRequestRef.current) return;
+
+        const items = Array.isArray(res.data?.items) ? res.data.items : [];
+
+        setCampaigns(items);
+        setPagination({
+          pageNumber: res.data.pageNumber ?? pageNumber,
+          pageSize: res.data.pageSize ?? size,
+          totalRecords: res.data.totalRecords ?? items.length,
+        });
+      } catch (err) {
+        console.error("Error loading campaigns:", err);
+        setError("Failed to load campaigns.");
+      } finally {
+        setLoading(false);
       }
-
-      // Thêm type filter nếu có
-      if (effectiveType && effectiveType.trim()) {
-        params.Type = effectiveType.trim();
-      }
-
-      // Thêm status filter nếu có
-      if (effectiveStatus && effectiveStatus.trim()) {
-        params.Status = effectiveStatus.trim();
-      }
-
-      const res = await request(ApiEnum.CAMPAIGN_SCSTAFF, params);
-
-      if (requestId !== latestRequestRef.current) return;
-
-      const items = Array.isArray(res.data?.items) ? res.data.items : [];
-
-      setCampaigns(items);
-      setPagination({
-        pageNumber: res.data.pageNumber ?? pageNumber,
-        pageSize: res.data.pageSize ?? size,
-        totalRecords: res.data.totalRecords ?? items.length,
-      });
-    } catch (err) {
-      console.error("Error loading campaigns:", err);
-      setError("Failed to load campaigns.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   // load technicians for create modal
   useEffect(() => {
@@ -136,11 +142,29 @@ const CampaignListContainer = () => {
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchCampaigns(0, pagination.pageSize, debouncedSearchQuery, typeFilter, statusFilter);
-  }, [fetchCampaigns, pagination.pageSize, debouncedSearchQuery, typeFilter, statusFilter]);
+    fetchCampaigns(
+      0,
+      pagination.pageSize,
+      debouncedSearchQuery,
+      typeFilter,
+      statusFilter
+    );
+  }, [
+    fetchCampaigns,
+    pagination.pageSize,
+    debouncedSearchQuery,
+    typeFilter,
+    statusFilter,
+  ]);
 
   const handlePageChange = (pageIndex, newPageSize) => {
-    fetchCampaigns(pageIndex, newPageSize, searchRef.current, typeFilterRef.current, statusFilterRef.current);
+    fetchCampaigns(
+      pageIndex,
+      newPageSize,
+      searchRef.current,
+      typeFilterRef.current,
+      statusFilterRef.current
+    );
   };
 
   const handleSearchChange = (e) => {
@@ -170,10 +194,6 @@ const CampaignListContainer = () => {
   };
 
   const handleAddSubmit = (newCampaign) => {
-    // Open confirmation first
-    //giữ dữ liệu tạm khi người dùng submit form (trong modal) nhưng cần xác nhận qua ConfirmDialog trước khi call API.
-    //dùng ref thay vì state: ref không gây rerender khi thay đổi, và an toàn khi ta chỉ cần lưu giá trị
-    // giữa các re-render cho action sắp diễn ra. Dùng state sẽ gây rerender không cần thiết.
     pendingAddRef.current = newCampaign;
     const vin = newCampaign?.vin || "";
     setConfirmTitle("Confirm Add Vehicle to Campaign");

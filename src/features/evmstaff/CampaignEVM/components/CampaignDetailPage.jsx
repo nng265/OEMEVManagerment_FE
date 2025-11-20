@@ -31,12 +31,16 @@ const formatStatus = (raw) => {
     .join(" ");
 };
 
-const CampaignDetailPage = () => {
-  const { id } = useParams();
+const CampaignDetailPage = ({ campaign: propCampaign = null, id: propId = null, onClose = null }) => {
+  const params = useParams();
+  const paramId = params?.id;
+  const id = propId ?? paramId;
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [campaign, setCampaign] = useState(location.state?.campaign ?? null);
+  const [campaign, setCampaign] = useState(
+    propCampaign ?? location.state?.campaign ?? null
+  );
   const [vehicleStatuses, setVehicleStatuses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -78,17 +82,14 @@ const CampaignDetailPage = () => {
     if (id) loadStatuses();
   }, [id]);
 
-  const goBack = () => navigate(-1);
+  const goBack = () => {
+    if (typeof onClose === "function") return onClose();
+    return navigate(-1);
+  };
 
   return (
     <div className="campaign-detail-page" style={{ padding: 24 }}>
-      <h2 className="campaign-title">
-        {campaign?.title ?? campaign?._raw?.title ?? "Campaign Detail"}
-      </h2>
-
-      <p className="campaign-description">
-        Description: {campaign?.description ?? campaign?._raw?.description}
-      </p>
+      <h2 className="campaign-section-title">Details</h2>
 
       <div className="campaign-info-container">
         <div className="campaign-info-card">
@@ -111,9 +112,16 @@ const CampaignDetailPage = () => {
             {campaign?.period ?? campaign?._raw?.period ?? "-"}
           </div>
         </div>
+
+        <div className="campaign-info-card">
+          <div className="campaign-info-label">Description:</div>
+          <div className="campaign-info-value">
+            {campaign?.description ?? campaign?._raw?.description}
+          </div>
+        </div>
       </div>
 
-      <h3 className="campaign-section-title">Campaign Statistics</h3>
+      <h2 className="campaign-section-title">Campaign Statistics</h2>
 
       <div className="campaign-info-row">
         <div className="campaign-info-block stat-block">
@@ -145,7 +153,7 @@ const CampaignDetailPage = () => {
         </div>
       </div>
 
-      <h3>Vehicles</h3>
+      {/* <h2 className="campaign-section-title">Vehicles</h2>
 
       {loading && <div>Loading vehicle statuses...</div>}
       {error && <div style={{ color: "red" }}>{error}</div>}
@@ -200,7 +208,7 @@ const CampaignDetailPage = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
       <div className="campaign-footer">
         <div>
@@ -328,7 +336,8 @@ const CampaignDetailPage = () => {
             await request(ApiEnum.CLOSE_CAMPAIGN, { params: { id } });
             toast.success("Campaign closed successfully");
             setShowConfirm(false);
-            navigate(-1);
+            if (typeof onClose === "function") onClose();
+            else navigate(-1);
           } catch (err) {
             console.error("Failed to close campaign:", err);
             toast.error("Failed to close campaign");

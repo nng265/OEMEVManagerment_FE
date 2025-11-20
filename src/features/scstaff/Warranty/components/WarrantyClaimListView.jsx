@@ -77,11 +77,19 @@ export const WarrantyClaimListView = ({
         <h1 className="size-h1">Warranty Claims List</h1>
 
         {/* Search Bar and Status Filter */}
-        <div className="warranty-claim-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+        <div
+          className="warranty-claim-filters"
+          style={{
+            display: "flex",
+            gap: "15px",
+            marginBottom: "20px",
+            alignItems: "flex-end",
+          }}
+        >
           <div style={{ flex: 2 }}>
             <Input
               type="text"
-              placeholder="Search by VIN, Customer Name, or Phone..."
+              placeholder="Search by VIN, Customer Description..."
               value={searchQuery || ""}
               onChange={onSearchChange}
               fullWidth

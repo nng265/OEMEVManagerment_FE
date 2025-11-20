@@ -1,6 +1,3 @@
-// File: AppointmentRescheduleModal.js
-// ----- BẢN ĐÃ FIX KHÔNG DOUBLE TOAST -----
-
 import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
@@ -48,12 +45,9 @@ const AppointmentRescheduleModal = ({
     appointment?.organizationId ??
     null;
 
-  const customerName =
-    appointment?.customerName ?? appointment?.name ?? "-";
-  const phone =
-    appointment?.customerPhoneNumber ?? appointment?.phone ?? "-";
-  const email =
-    appointment?.customerEmail ?? appointment?.email ?? "-";
+  const customerName = appointment?.customerName ?? appointment?.name ?? "-";
+  const phone = appointment?.customerPhoneNumber ?? appointment?.phone ?? "-";
+  const email = appointment?.customerEmail ?? appointment?.email ?? "-";
 
   const vin = appointment?.vin ?? appointment?.vehicleVin ?? "-";
   const model = appointment?.model ?? "-";

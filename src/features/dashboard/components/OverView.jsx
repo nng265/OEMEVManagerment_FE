@@ -25,7 +25,6 @@ export default function OverView({
 
   return (
     <div style={{ padding: 24, background: "#f5f7fb", minHeight: "100vh" }}>
-      {/* ✅ KPI Cards */}
       <div
         style={{
           display: "flex",
@@ -39,23 +38,19 @@ export default function OverView({
             label: "Total Tasks",
             value: stats.total,
             color: "#2563eb",
-            icon: "📌",
           },
           {
             label: "In Progress",
             value: stats.inProgress,
             color: "#eab308",
-            icon: "⚙️",
           },
           {
             label: "Completed",
             value: stats.completed,
             color: "#22c55e",
-            icon: "✅",
           },
         ].map((item, i) => (
           <div key={i} style={{ ...kpiStyle }}>
-            {/* ✅ Icon nền mờ giống ảnh */}
             <div
               style={{
                 position: "absolute",
@@ -82,7 +77,6 @@ export default function OverView({
         ))}
       </div>
 
-      {/* ✅ Filter Unit */}
       <Typography variant="body1" sx={{ mb: 1 }}>
         Filter by Period
       </Typography>
@@ -96,7 +90,6 @@ export default function OverView({
         <MenuItem value="y">Current Year</MenuItem>
       </Select>
 
-      {/* ✅ Chart Card */}
       <div
         style={{
           background: "#fff",

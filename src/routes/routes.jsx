@@ -11,18 +11,13 @@ import ConfirmAppointment from "../pages/ConfirmAppointment.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import DashboardEVMSTAFF from "../pages/DashboardEVMSTAFF.jsx";
 import { RoleBasedRedirect } from "./RoleBasedRedirect.jsx";
-
 import { CarListContainer } from "../features/scstaff/Vehicles/containers/CarListContainer.jsx";
 import { WarrantyClaimListContainer } from "../features/scstaff/Warranty/containers/WarrantyClaimListContainer.jsx";
 import { ServiceCenterInventoryContainer } from "../features/scstaff/Inventory/containers/ServiceCenterInventoryContainer.jsx";
 import { PartsRequestContainer } from "../features/scstaff/Parts Requests/containers/PartsRequestContainer.jsx";
 import CampaignListContainer from "../features/scstaff/Campaign/containers/CampaignListContainer.jsx";
 import Statuscampaign from "../features/scstaff/StatusCampaign/container/CampaignListContainer.jsx";
-// THÊM MỚI: Import component AppointmentListContainer
-// (Giả định bạn đặt file theo cấu trúc tôi đã hướng dẫn)
 import { AppointmentListContainer } from "../features/scstaff/Appointment/containers/AppointmentListContainer.jsx";
-// KẾT THÚC THÊM MỚI
-
 import { TechnicianVehicleStatusContainer } from "../features/technician/containers/TechnicianVehicleStatusContainer.jsx";
 import { PrivateRoute } from "./PrivateRoutes";
 import { EVMStaffWarrantyListContainer } from "../features/evmstaff/Warranty/containers/EVMStaffWarrantyListContainer.jsx";
@@ -31,10 +26,8 @@ import { EVMStaffInventoryContainer } from "../features/evmstaff/Inventory/conta
 import { EVMStaffCampaignContainer } from "../features/evmstaff/CampaignEVM/containers/EVMStaffCampaignContainer.jsx";
 import CampaignDetailPage from "../features/evmstaff/CampaignEVM/components/CampaignDetailPage.jsx";
 import OverViewContainer from "../features/dashboard/containers/OverViewContainer.jsx";
-
 import PolicyContainers from "../features/admin/policy/containers/PolicyContainer.jsx";
 import AccountContainers from "../features/admin/account/containers/AccountContainer.jsx";
-// Public routes that don't require authentication
 export const publicRoutes = [
   {
     path: "/login",
@@ -54,7 +47,7 @@ export const publicRoutes = [
   },
 ];
 
-// Private routes that require authentication
+// dinh nghia cac route cho nguoi dung da dang nhap
 export const privateRoutes = [
   {
     path: "/",
@@ -70,26 +63,32 @@ export const privateRoutes = [
         path: "",
         element: <RoleBasedRedirect />,
       },
+
       {
         path: "dashboard",
         element: <Dashboard />,
       },
+
       {
         path: "dashboardevmstaff",
         element: <DashboardEVMSTAFF />,
       },
+
       {
         path: "overview",
         element: <OverViewContainer />,
       },
+
       {
         path: "vehicles",
         element: <CarListContainer />,
       },
+
       {
         path: "technician",
         element: <TechnicianVehicleStatusContainer />,
       },
+
       {
         path: "warranty",
         element: <WarrantyClaimListContainer />,
@@ -130,25 +129,26 @@ export const privateRoutes = [
         element: <Statuscampaign />,
       },
 
-      // THÊM MỚI: Route cho màn hình Appointment
       {
         path: "appointment",
         element: <AppointmentListContainer />,
       },
-      // KẾT THÚC THÊM MỚI
 
       {
         path: "evmstaff_campaign",
         element: <EVMStaffCampaignContainer />,
       },
+
       {
         path: "evmstaff_campaign/:id",
         element: <CampaignDetailPage />,
       },
+
       {
         path: "policy_management",
         element: <PolicyContainers />,
       },
+
       {
         path: "account_management",
         element: <AccountContainers />,

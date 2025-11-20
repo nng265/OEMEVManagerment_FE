@@ -34,7 +34,7 @@ export const CarListView = ({
       <div className="search-bar-wrapper" style={{ marginBottom: "20px" }}>
         <Input
           type="text"
-          placeholder="Search by VIN, Model, Customer Name, or Phone..."
+          placeholder="Search by VIN, Model, Customer,..."
           value={searchQuery}
           onChange={onSearchChange}
           fullWidth

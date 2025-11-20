@@ -1,4 +1,3 @@
-// src/configs/roleScreen.js
 export const roleScreens = {
   ADMIN: [
     {
@@ -27,13 +26,11 @@ export const roleScreens = {
       component: "ServiceCenterInventory",
     },
     { id: "staff_campaign", label: "Campaign", component: "Campaign" },
-    // THÊM MỚI
     {
       id: "staff_appointment",
       label: "Appointment",
       component: "AppointmentListContainer",
     },
-    // KẾT THÚC THÊM MỚI
     {
       id: "status_campaign",
       label: "CampaignVehicle",

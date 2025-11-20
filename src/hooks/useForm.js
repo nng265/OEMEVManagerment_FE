@@ -1,16 +1,15 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 export const useForm = ({
   initialValues = {},
   validate = () => ({}),
-  onSubmit = () => {}
+  onSubmit = () => {},
 }) => {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset form to initial values
   const resetForm = useCallback(() => {
     setValues(initialValues);
     setErrors({});
@@ -18,112 +17,106 @@ export const useForm = ({
     setIsSubmitting(false);
   }, [initialValues]);
 
-  // Set a specific field value
   const setFieldValue = useCallback((field, value) => {
-    setValues(prev => ({
+    setValues((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   }, []);
 
-  // Set a specific field error
   const setFieldError = useCallback((field, error) => {
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
-      [field]: error
+      [field]: error,
     }));
   }, []);
 
-  // Mark a field as touched
   const setFieldTouched = useCallback((field, isTouched = true) => {
-    setTouched(prev => ({
+    setTouched((prev) => ({
       ...prev,
-      [field]: isTouched
+      [field]: isTouched,
     }));
   }, []);
 
-  // Handle field change
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
-    const fieldValue = type === 'checkbox' ? checked : value;
+    const fieldValue = type === "checkbox" ? checked : value;
 
-    setValues(prev => ({
+    setValues((prev) => ({
       ...prev,
-      [name]: fieldValue
+      [name]: fieldValue,
     }));
   }, []);
 
-  // Handle field blur
   const handleBlur = useCallback((e) => {
     const { name } = e.target;
-    setTouched(prev => ({
+    setTouched((prev) => ({
       ...prev,
-      [name]: true
+      [name]: true,
     }));
   }, []);
 
-  // Validate form
   const validateForm = useCallback(() => {
     const validationErrors = validate(values);
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
   }, [values, validate]);
 
-  // Handle form submission
-  const handleSubmit = useCallback(async (e) => {
-    if (e) e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      if (e) e.preventDefault();
 
-    // Mark all fields as touched
-    const touchedFields = Object.keys(values).reduce(
-      (acc, key) => ({ ...acc, [key]: true }),
-      {}
-    );
-    setTouched(touchedFields);
+      const touchedFields = Object.keys(values).reduce(
+        (acc, key) => ({ ...acc, [key]: true }),
+        {}
+      );
+      setTouched(touchedFields);
 
-    // Validate form
-    const isValid = validateForm();
-    if (!isValid) return;
+      const isValid = validateForm();
+      if (!isValid) return;
 
-    setIsSubmitting(true);
-    try {
-      await onSubmit(values);
-    } catch (error) {
-      console.error('Form submission error:', error);
-      setErrors(prev => ({
-        ...prev,
-        submit: error.message
-      }));
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [values, validateForm, onSubmit]);
+      setIsSubmitting(true);
+      try {
+        await onSubmit(values);
+      } catch (error) {
+        console.error("Form submission error:", error);
+        setErrors((prev) => ({
+          ...prev,
+          submit: error.message,
+        }));
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [values, validateForm, onSubmit]
+  );
 
   return {
-    // Form state
+    // form state
     values,
     errors,
     touched,
     isSubmitting,
 
-    // Form handlers
+    // form handlers
     handleChange,
     handleBlur,
     handleSubmit,
 
-    // Field helpers
+    // field helpers
     setFieldValue,
     setFieldError,
     setFieldTouched,
 
-    // Form helpers
+    // form helpers
     resetForm,
     validateForm,
 
-    // Dirty state
+    // dirty state
     isDirty: Object.keys(touched).length > 0,
-    
-    // Is the form valid?
-    isValid: Object.keys(errors).length === 0
+
+    // the form is valid
+    isValid: Object.keys(errors).length === 0,
   };
 };
 

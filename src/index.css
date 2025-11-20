@@ -1,21 +1,20 @@
-/* src/index.css */
 :root {
-  /* Colors */
-  --primary-color: #00509d; /* Deep Blue */
+  --primary-color: #00509d;
   --primary-darker: #003666;
-  --secondary-color: #6c757d; /* Gray */
+  --secondary-color: #6c757d;
   --secondary-darker: #5a6268;
-  --success-color: #28a745; /* Green */
+  --success-color: #28a745;
   --success-darker: #218838;
-  --danger-color: #dc3545; /* Red */
+  --danger-color: #dc3545;
   --danger-darker: #c82333;
-  --warning-color: #ffc107; /* Yellow */
+  --warning-color: #ffc107;
+
   --warning-darker: #e0a800;
-  --info-color: #17a2b8; /* Teal */
+  --info-color: #17a2b8;
   --info-darker: #138496;
-  --light-color: #f8f9fa; /* Off-white */
+  --light-color: #f8f9fa;
   --light-darker: #e2e6ea;
-  --dark-color: #1a2035; /* Dark Blue/Gray for Sidebar */
+  --dark-color: #1a2035;
   --dark-darker: #131726;
   --text-light: #ffffff;
   --text-dark: #212529;
@@ -37,7 +36,7 @@
   --bs-light-darker: var(--light-darker);
   --bs-dark: var(--dark-color);
   --bs-dark-darker: var(--dark-darker);
-  --bs-primary-rgb: 0, 80, 157; /* RGB for primary color */
+  --bs-primary-rgb: 0, 80, 157;
 
   /* Semantic Colors */
   --color-primary: var(--primary-color);
@@ -80,13 +79,13 @@
   -moz-osx-font-smoothing: grayscale;
 
   color: var(--text-dark);
-  background-color: #f4f7fc; /* Light background for the main content area */
+  background-color: #f4f7fc;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f4f7fc; /* Ensure body also has the light background */
+  background-color: #f4f7fc;
 }
 
 /* Base styles for scrollbars for a more modern look */
@@ -94,31 +93,22 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
 
-/* === BẮT ĐẦU SỬA LỖI === */
 
-/* Xóa bỏ bộ chọn * (dấu sao) */
-/* * {
-  transition: background-color var(--transition-speed) var(--transition-ease),
-    color var(--transition-speed) var(--transition-ease),
-    border-color var(--transition-speed) var(--transition-ease),
-    box-shadow var(--transition-speed) var(--transition-ease),
-    transform var(--transition-speed) var(--transition-ease),
-    width var(--transition-speed) var(--transition-ease),
-    left var(--transition-speed) var(--transition-ease);
-} 
-*/
 
 /* Thay thế bằng các bộ chọn cụ thể, an toàn hơn */
 button,
@@ -127,8 +117,12 @@ input,
 select,
 textarea,
 .btn,
-.MuiPaper-root, /* Áp dụng cho thẻ Paper (StatCard) của MUI */
-.MuiButtonBase-root /* Áp dụng cho các nút của MUI */ {
+.MuiPaper-root,
+/* Áp dụng cho thẻ Paper (StatCard) của MUI */
+.MuiButtonBase-root
+
+/* Áp dụng cho các nút của MUI */
+  {
   transition: background-color var(--transition-speed) var(--transition-ease),
     color var(--transition-speed) var(--transition-ease),
     border-color var(--transition-speed) var(--transition-ease),
@@ -136,12 +130,9 @@ textarea,
     transform var(--transition-speed) var(--transition-ease);
 }
 
-/* === KẾT THÚC SỬA LỖI === */
 
-/* Main content area padding */
 .main-content {
   padding: calc(var(--navbar-height) -50px) 24px 24px;
-  /* Chỉ áp dụng transition cho margin-left, KHÔNG áp dụng cho transform */
   transition: margin-left var(--transition-speed) var(--transition-ease);
 }
 

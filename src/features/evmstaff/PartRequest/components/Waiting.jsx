@@ -9,6 +9,17 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
   );
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  const getNextDay = (dateStr) => {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split("T")[0];
+};
+
+  const formatDate = (date) => {
+  if (!date) return "";
+  return new Date(date).toISOString().split("T")[0];
+};
+
   const handleSetDateClick = () => {
     if (!requestedDate) {
       toast.warning("Please select a date first.");
@@ -39,12 +50,7 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
   return (
     <div className="popup-overlay">
       <div className="popup-card">
-        <div className="popup-header">
           <h3>Parts Request Details</h3>
-          <button className="close-btn" onClick={handleClose}>
-            ×
-          </button>
-        </div>
 
         <div className="popup-body">
           <div className="info-row">
@@ -54,14 +60,15 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
             <strong>Service Center:</strong> {request.serviceCenter}
           </div>
           <div className="info-row">
-            <strong>Requested Date:</strong> {request.requestedDate}
+            <strong>Requested Date:</strong> {formatDate(request.requestedDate)}
           </div>
           <div className="info-row">
             <strong>Expected Delivery:</strong>{" "}
             {request.expectedDate || "Not set"}
           </div>
 
-          <h4>Parts List</h4>
+          <h3>Parts List</h3>
+
           <table className="parts-detail">
             <thead>
               <tr>
@@ -88,6 +95,7 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
             <input
               type="date"
               value={requestedDate}
+              min={getNextDay(request.requestedDate)}
               onChange={(e) => setRequestedDate(e.target.value)}
             />
           </div>

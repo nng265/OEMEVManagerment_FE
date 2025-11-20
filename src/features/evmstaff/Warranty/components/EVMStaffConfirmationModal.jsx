@@ -129,31 +129,38 @@ export const EVMStaffConfirmationModal = ({
       )}
 
       {/* 4. Các nút Actions */}
-      <DetailModalActions onBack={handleClose} backLabel="Back">
-        {/* Các nút bên phải */}
-        <Button
-          variant="warning"
-          onClick={handleNeedMoreInfoClick}
-          isLoading={isLoading}
-        >
-          {showReasonInput ? "Submit Reason" : "Need more info"}
-        </Button>
-        <Button
-          variant="danger"
-          onClick={handleDenyClick}
-          isLoading={isLoading}
-        >
-          Deny
-        </Button>
-        <Button
-          variant="success"
-          onClick={handleApproveClick}
-          disabled={!vehicleWarrantyId} // Vô hiệu hóa nếu chưa chọn policy
-          isLoading={isLoading}
-        >
-          Approve
-        </Button>
-      </DetailModalActions>
+<DetailModalActions onBack={handleClose} backLabel="Back">
+  {/* Chỉ hiện các nút này khi status là Sent To Manufacturer */}
+  {warrantyData.status === "Sent To Manufacturer" && (
+    <>
+      <Button
+        variant="warning"
+        onClick={handleNeedMoreInfoClick}
+        isLoading={isLoading}
+      >
+        {showReasonInput ? "Submit Reason" : "Need more info"}
+      </Button>
+
+      <Button
+        variant="danger"
+        onClick={handleDenyClick}
+        isLoading={isLoading}
+      >
+        Deny
+      </Button>
+
+      <Button
+        variant="success"
+        onClick={handleApproveClick}
+        disabled={!vehicleWarrantyId} 
+        isLoading={isLoading}
+      >
+        Approve
+      </Button>
+    </>
+  )}
+</DetailModalActions>
+
     </Modal>
   );
 };
