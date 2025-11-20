@@ -9,14 +9,12 @@ import "../components/UI.css";
 const Repaired = ({ open, onClose, data, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const pendingActionRef = useRef(null);
-  // === Dùng các hàm helper giống CampaignViewModal ===
   const displayValue = (value) => {
     if (value === 0 || value === null || value === undefined || value === "") {
       return "—";
     }
     return value;
   };
-  // ===================================================
 
   const campaign = data?.raw ?? {};
   const vehicle = campaign.vehicle ?? {};
@@ -56,7 +54,6 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
       showFooter={false}
     >
       <div className="campaign-modal">
-        {/* === Section 1: Thông tin Khách hàng & Xe === */}
         <h3 className="campaign-section-title">
           Customer & Vehicle Information
         </h3>
@@ -95,7 +92,6 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
           </div>
         </div>
 
-        {/* === Section 2: Thông tin Chiến dịch === */}
         <h3 className="campaign-section-title">Campaign Details</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block full-width">
@@ -126,7 +122,6 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
           </div>
         </div>
 
-        {/* === Section 3: Linh kiện thay thế === */}
         <h3 className="campaign-section-title">Parts Replacement</h3>
         <div className="campaign-info-block full-width">
           {replacements.length > 0 ? (
@@ -151,7 +146,6 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
           )}
         </div>
 
-        {/* === Footer === */}
         <div
           className="campaign-footer"
           style={{ justifyContent: "space-between" }}

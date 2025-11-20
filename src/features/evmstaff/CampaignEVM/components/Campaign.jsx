@@ -23,7 +23,6 @@ export const Campaign = ({
   statusFilter = "",
   onStatusFilterChange,
 }) => {
-
   const typeOptions = [
     { value: "", label: "All Types" },
     { value: "Service", label: "Service" },
@@ -46,7 +45,6 @@ export const Campaign = ({
       label: "Status",
       sortable: true,
       render: (value) => {
-        // Chuẩn hoá giá trị status để tạo CSS class và hiển thị text đẹp hơn
         const normalizedStatus = (value || "unknown").trim().toLowerCase();
         const statusClass = normalizedStatus.replace(/\s+/g, "-");
         const displayText =
@@ -54,7 +52,6 @@ export const Campaign = ({
             ? value.charAt(0).toUpperCase() + value.slice(1)
             : "Unknown";
 
-        // Trả về badge với class động, ví dụ: status-open, status-closed
         return (
           <span className={`status-badge status-${statusClass}`}>
             {displayText}
@@ -81,7 +78,6 @@ export const Campaign = ({
     id: c?._raw?.campaignId || c?._raw?.id || c?.campaignId || c?.id || i,
     _raw: c?._raw || c,
 
-    // Display fields
     description: c.description || "",
     target: c.target || "—",
     title: c.title || "—",
@@ -101,13 +97,25 @@ export const Campaign = ({
     <div className="campaign-container">
       <div className="campaign-header">
         <h1>Campaign Management</h1>
-        <Button variant="success" onClick={onAdd}>
-          + Add Campaign
+        <Button variant="light" onClick={onAdd}>
+          <img
+            src="../../../../../public/add.png"
+            alt="Create campaign"
+            style={{ width: "50px" }}
+          />{" "}
         </Button>
       </div>
 
       {/* Search Bar and Filters */}
-      <div className="campaign-filters" style={{ display: "flex", gap: "15px", marginBottom: "20px", alignItems: "flex-end" }}>
+      <div
+        className="campaign-filters"
+        style={{
+          display: "flex",
+          gap: "15px",
+          marginBottom: "20px",
+          alignItems: "flex-end",
+        }}
+      >
         <div style={{ flex: 2 }}>
           <Input
             type="text"

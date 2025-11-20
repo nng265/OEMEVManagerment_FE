@@ -1,5 +1,3 @@
-// export default ServiceCenterInventory;
-
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
@@ -15,13 +13,11 @@ export const ServiceCenterInventory = ({
   onSearch,
   onFilter,
   onRequest,
-  // pagination props
   pagination,
   onPageChange,
   serverSide = true,
   onRefresh,
   refreshing = false,
-  // New props for search and status filter
   searchQuery = "",
   onSearchChange,
   statusFilter = "",
@@ -30,7 +26,6 @@ export const ServiceCenterInventory = ({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
 
-  // Gọi search/filter mỗi khi thay đổi input
   useEffect(() => {
     if (typeof onSearch === "function") {
       onSearch(query);
@@ -43,7 +38,6 @@ export const ServiceCenterInventory = ({
     }
   }, [category, onFilter]);
 
-  // Cấu hình cột cho bảng
   const columns = [
     { key: "model", label: "Model" },
     { key: "category", label: "Category" },
@@ -73,8 +67,12 @@ export const ServiceCenterInventory = ({
       label: "Action",
       sortable: false,
       render: (_v, row) => (
-        <Button size="small" variant="primary" onClick={() => onRequest(row)}>
-          Request Part
+        <Button size="small" variant="light" onClick={() => onRequest(row)}>
+          <img
+            src="../../../../../public/request.png"
+            alt="Request Part"
+            style={{ width: "40px" }}
+          />
         </Button>
       ),
     },

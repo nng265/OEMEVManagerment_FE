@@ -17,27 +17,17 @@ export const AppointmentListContainer = () => {
     totalRecords: 0,
   });
   const [showAddModal, setShowAddModal] = useState(false);
-  // Appointment đang được xem chi tiết
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-  // Điều khiển hiển thị modal xem chi tiết
   const [showViewModal, setShowViewModal] = useState(false);
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
 
-  // Ref để chống race condition khi dời lịch
   const isRescheduling = useRef(false);
 
-  // Ref giữ id request mới nhất để tránh race condition khi gọi API nhiều lần
   const latestRequestRef = useRef(0);
-  // Danh sách service centers (dùng trong form tạo)
   const [centers, setCenters] = useState([]);
 
-  // Hàm fetch dữ liệu appointments từ server
-  // - useCallback để tránh tạo lại hàm ở mỗi render
-  // - pageNumber/pageSize dùng để phân trang phía server
   const fetchAppointments = useCallback(async (pageNumber = 0, size = 10) => {
-    // Tăng request id và lưu vào biến cục bộ để check race khi response về
     const requestId = ++latestRequestRef.current;
-    // Bật trạng thái loading và reset lỗi
     setLoading(true);
     setError(null);
 
@@ -94,9 +84,6 @@ export const AppointmentListContainer = () => {
     };
   }, []);
 
-  // Delegate fetching timeslots to container so modal/form can call it
-  // Hàm lấy timeslots cho service center + ngày cụ thể
-  // - Trả về mảng slot hoặc [] nếu lỗi/thiếu param
   const fetchTimeSlots = async (orgId, date) => {
     if (!orgId || !date) return [];
     try {
@@ -108,9 +95,6 @@ export const AppointmentListContainer = () => {
       return [];
     }
   };
-
-  // Hàm tạo appointment (được truyền xuống form)
-  // - Sau khi tạo thành công sẽ gọi lại fetchAppointments để refresh danh sách
   const createAppointment = async (payload) => {
     try {
       const res = await request(ApiEnum.APPOINTMENT_CREATE, payload);

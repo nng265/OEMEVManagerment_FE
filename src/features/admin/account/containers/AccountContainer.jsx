@@ -13,7 +13,6 @@ const AccountContainer = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Client-side pagination state
   const [clientPagination, setClientPagination] = useState({
     pageNumber: 0,
     pageSize: 10,
@@ -27,12 +26,11 @@ const AccountContainer = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState(""); // Giữ lại nếu bạn muốn filter theo Role
+  const [selectedStatus, setSelectedStatus] = useState("");
 
-  const [organizations, setOrganizations] = useState([]); // State cho Organization
+  const [organizations, setOrganizations] = useState([]);
   const latestRequestRef = useRef(0);
 
-  // --- SỬA LỖI 3 & 4: Dùng useCallback và xóa 'status' ---
   const normalizeAccount = useCallback(
     (p) => {
       if (!p) return null;
@@ -41,14 +39,12 @@ const AccountContainer = () => {
         email: p.email,
         role: p.role,
         orgId: p.orgId,
-        // Tìm 'name' từ state 'organizations'
         organizationName:
           organizations.find((org) => org.orgId === p.orgId)?.name || p.orgId,
-        // status: p.status || "Active", // <-- ĐÃ XÓA
-        __raw: p, // Giữ data gốc
+        __raw: p,
       };
     },
-    [organizations] // Thêm dependency
+    [organizations]
   );
 
   const openCreateModal = () => {
@@ -73,14 +69,12 @@ const AccountContainer = () => {
     setShowDeleteModal(true);
   };
 
-  // --- Lấy danh sách tài khoản (Client-side) ---
   const fetchAccounts = useCallback(async () => {
     const requestId = ++latestRequestRef.current;
     setLoading(true);
     setError(null);
 
     try {
-      // API này bạn đổi tên, tôi giữ nguyên
       const res = await request(ApiEnum.ACCOUNT_MANAGEMENT, {});
 
       if (requestId !== latestRequestRef.current) return;
@@ -100,7 +94,6 @@ const AccountContainer = () => {
     }
   }, []);
 
-  // --- Lấy danh sách Organizations ---
   const fetchOrganizations = useCallback(async () => {
     try {
       const res = await request(ApiEnum.ORGANIZATION);
@@ -117,17 +110,13 @@ const AccountContainer = () => {
   }, []);
 
   useEffect(() => {
-    // Gọi cả hai API khi component mount
     const loadData = async () => {
       setLoading(true);
-      await Promise.all([
-        fetchOrganizations(), // Lấy Org trước
-        fetchAccounts(), // Lấy Account sau
-      ]);
+      await Promise.all([fetchOrganizations(), fetchAccounts()]);
       setLoading(false);
     };
     loadData();
-  }, [fetchAccounts, fetchOrganizations]); // Chỉ gọi 1 lần
+  }, [fetchAccounts, fetchOrganizations]);
 
   // --- Lọc Client-side (Sau khi cả 2 API đã chạy) ---
   useEffect(() => {
