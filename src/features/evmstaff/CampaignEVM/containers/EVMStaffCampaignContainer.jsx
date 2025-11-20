@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import Campaign from "../components/Campaign";
+import CampaignDetailPage from "../components/CampaignDetailPage";
+import Modal from "../../../../components/molecules/Modal/Modal";
 import { AddCampaignModal } from "../components/AddCampaignModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
@@ -58,6 +60,8 @@ export const EVMStaffCampaignContainer = () => {
   // --- MODAL STATES (replaced by page navigation) ---
   // No modal for view; navigation goes to CampaignDetailPage
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedCampaignForDetail, setSelectedCampaignForDetail] = useState(null);
 
   // --- FILTER STATES ---
   const [searchQuery, setSearchQuery] = useState("");
@@ -279,19 +283,9 @@ export const EVMStaffCampaignContainer = () => {
 
   // ===== ADD + VIEW =====
   const handleViewCampaign = (campaign) => {
-    // Navigate to detail page instead of opening modal
-    const campaignId =
-      campaign._raw?.campaignId || campaign._raw?.id || campaign.id;
-    if (campaignId) {
-      navigate(`/evmstaff_campaign/${campaignId}`, { state: { campaign } });
-    } else {
-      // fallback: still navigate without id (will show empty page)
-      console.warn(
-        "Missing campaign id, navigating to list as fallback",
-        campaign
-      );
-      navigate(`/evmstaff_campaign`);
-    }
+    // Open detail in modal instead of navigating to a separate page
+    setSelectedCampaignForDetail(campaign);
+    setShowDetailModal(true);
   };
 
   const handleAddCampaign = () => setShowAddModal(true);
@@ -382,6 +376,26 @@ export const EVMStaffCampaignContainer = () => {
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddSubmit}
       />
+
+      <Modal
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        title={
+          selectedCampaignForDetail
+            ? selectedCampaignForDetail.title
+            : "Campaign Detail"
+        }
+        size="lg"
+        showFooter={false}
+        centered
+      >
+        {showDetailModal && (
+          <CampaignDetailPage
+            campaign={selectedCampaignForDetail}
+            onClose={() => setShowDetailModal(false)}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

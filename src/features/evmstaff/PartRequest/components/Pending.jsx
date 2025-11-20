@@ -16,6 +16,10 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
     }
     onSetDate(request.orderId, requestedDate); // cập nhật Requested Date
   };
+  const formatDate = (date) => {
+  if (!date) return "";
+  return new Date(date).toISOString().split("T")[0];
+};
 
   const handleConfirmClick = () => {
     setIsConfirmOpen(true);
@@ -39,12 +43,7 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
   return (
     <div className="popup-overlay">
       <div className="popup-card">
-        <div className="popup-header">
           <h3>Parts Request Details</h3>
-          <button className="close-btn" onClick={handleClose}>
-            ×
-          </button>
-        </div>
 
         <div className="popup-body">
           <div className="info-row">
@@ -57,10 +56,11 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
             <strong>Requested By:</strong> {request.requestedBy}
           </div>
           <div className="info-row">
-            <strong>Requested Date:</strong> {request.requestedDate}
+            <strong>Requested Date:</strong> {formatDate(request.requestedDate)}
+
           </div>
 
-          <h4>Parts List</h4>
+          <h3>Parts List</h3>
           <table className="parts-detail">
             <thead>
               <tr>

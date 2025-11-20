@@ -5,23 +5,6 @@ import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import "./Campaign.css";
 
-/*
-  Component: Campaign
-  Mô tả (VN):
-  - Component presentational để hiển thị danh sách campaign dưới dạng bảng.
-  - Nhận `data` (mảng đã được normalize bởi container), `pagination`, và các
-    callback như `onView`, `onAdd`, `onPageChange`, `onSearch`, `onFilterType`,
-    `onFilterStatus`, `onRefresh`.
-
-  Những điểm cần biết khi đọc mã:
-  - `typeOptions` và `statusOptions` được derive từ `data` hiện tại để render
-    dropdown filter (nếu bật UI filter).
-  - `columns` định nghĩa cột cho `DataTable`, trong đó `render` là function cho
-    custom cell rendering (ví dụ: badge cho status, nút action).
-  - `rows` map `data` sang cấu trúc hàng (row) mà `DataTable` mong đợi, kèm `_raw`
-    để giữ payload gốc nếu cần hành động dựa trên ID gốc.
-*/
-
 export const Campaign = ({
   data = [],
   loading = false,
@@ -40,7 +23,7 @@ export const Campaign = ({
   statusFilter = "",
   onStatusFilterChange,
 }) => {
-  // Type and Status options
+
   const typeOptions = [
     { value: "", label: "All Types" },
     { value: "Service", label: "Service" },
@@ -95,7 +78,6 @@ export const Campaign = ({
   ];
 
   const rows = data.map((c, i) => ({
-    // Preserve identifiers to support actions that need IDs
     id: c?._raw?.campaignId || c?._raw?.id || c?.campaignId || c?.id || i,
     _raw: c?._raw || c,
 
@@ -114,9 +96,6 @@ export const Campaign = ({
     inProgressVehicles: c.inProgressVehicles || 0,
     completedVehicles: c.completedVehicles || 0,
   }));
-
-  // Lưu ý: `rows` là dữ liệu cuối cùng truyền vào `DataTable`. Việc giữ `_raw`
-  // giúp dễ lấy ID gốc hoặc gửi payload gốc khi thao tác (ví dụ: xem hoặc edit).
 
   return (
     <div className="campaign-container">
@@ -205,11 +184,3 @@ Campaign.propTypes = {
 };
 
 export default Campaign;
-
-/*
-  Giải thích nhanh về `propTypes` (VN):
-  - `propTypes` dùng để mô tả kiểu dữ liệu props ở runtime (chỉ trong môi trường dev
-    sẽ xuất cảnh báo nếu prop sai kiểu hoặc thiếu prop required).
-  - Ví dụ: `data` là mảng object; `onAdd` bắt buộc phải có vì component cần nút Add.
-  - Không thay thế TypeScript — nhưng giúp catch lỗi sớm khi dùng JS thuần.
-*/

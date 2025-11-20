@@ -7,15 +7,15 @@ export function Delivered({ request, onClose, isLoading }) {
   const handleClose = () => {
     onClose();
   };
+  const formatDate = (date) => {
+  if (!date) return "";
+  return new Date(date).toISOString().split("T")[0];
+};
+
   return (
     <div className="popup-overlay">
       <div className="popup-card">
-        <div className="popup-header">
           <h3>Parts Request Details</h3>
-          <button className="close-btn" onClick={handleClose}>
-            ×
-          </button>
-        </div>
 
         <div className="popup-body">
           <div className="info-row">
@@ -25,14 +25,15 @@ export function Delivered({ request, onClose, isLoading }) {
             <strong>Service Center:</strong> {request.serviceCenter}
           </div>
           <div className="info-row">
-            <strong>Requested Date:</strong> {request.requestedDate}
+            <strong>Requested Date:</strong> {formatDate(request.requestedDate)}
+
           </div>
           <div className="info-row">
             <strong>Expected Date:</strong>{" "}
             {request.waitingDate || request.expectedDate}
           </div>
 
-          <h4>Delivered Parts</h4>
+          <h3>Delivered Parts</h3>
           <table className="parts-detail">
             <thead>
               <tr>

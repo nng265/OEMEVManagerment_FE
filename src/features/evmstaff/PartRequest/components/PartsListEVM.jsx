@@ -18,7 +18,10 @@ export default function PartsListEVM({
   refreshing = false,
   searchQuery = "",
   onSearchChange,
+  statusFilter = "",
+  onStatusFilterChange,
 }) {
+
   const items = Array.isArray(data)
     ? data
     : data?.data?.items ?? data?.items ?? [];
@@ -130,16 +133,38 @@ export default function PartsListEVM({
         Parts Requests from Service Centers
       </h1>
 
-      {/* Search Bar */}
-      <div className="parts-search-filter" style={{ marginBottom: "20px" }}>
-        <Input
-          type="text"
-          placeholder="Search by Service Center Name..."
-          value={searchQuery || ""}
-          onChange={onSearchChange}
-          fullWidth
-          size="md"
-        />
+      {/* Search Bar + Status Filter */}
+      <div
+        className="parts-search-filter"
+        style={{ display: "flex", gap: 12, marginBottom: "20px", alignItems: "flex-end" }}
+      >
+        <div style={{ flex: 2 }}>
+          <Input
+            type="text"
+            placeholder="Search by Service Center Name..."
+            value={searchQuery || ""}
+            onChange={onSearchChange}
+            fullWidth
+            size="md"
+          />
+        </div>
+
+        <div style={{ flex: 1, maxWidth: 220 }}>
+          <Input
+            type="select"
+            value={statusFilter}
+            onChange={onStatusFilterChange}
+            options={[
+              { value: "", label: "All Status" },
+              { value: "Pending", label: "Pending" },
+              { value: "Approved", label: "Approved" },
+              { value: "Delivered", label: "Delivered" },
+              { value: "Closed", label: "Closed" },
+            ]}
+            fullWidth
+            size="md"
+          />
+        </div>
       </div>
 
       <div style={{ position: "relative" }}>
