@@ -1,5 +1,3 @@
-// src/pages/Dashboard/Dashboard.jsx (hoặc đường dẫn của bạn)
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -19,15 +17,11 @@ import {
 
 import { request, ApiEnum } from "../services/NetworkUntil";
 
-// --- Biểu tượng (Icon) ---
-import BuildIcon from "@mui/icons-material/Build"; // Icon cho "Đang sửa"
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"; // Icon cho "Lịch hẹn"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // Icon cho "Sẵn sàng giao"
-import CampaignIcon from "@mui/icons-material/Campaign"; // Icon cho "Campaign"
+import BuildIcon from "@mui/icons-material/Build";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CampaignIcon from "@mui/icons-material/Campaign";
 
-/**
- * Component Thẻ thống kê (StatCard)
- */
 const StatCard = ({ title, value, icon: IconComponent, loading, color }) => (
   <Paper
     elevation={3}
@@ -61,8 +55,8 @@ const StatCard = ({ title, value, icon: IconComponent, loading, color }) => (
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: `${color}20`, // Màu nền mờ
-        color: `${color}`, // Màu icon
+        backgroundColor: `${color}20`,
+        color: `${color}`,
       }}
     >
       <IconComponent />
@@ -70,14 +64,10 @@ const StatCard = ({ title, value, icon: IconComponent, loading, color }) => (
   </Paper>
 );
 
-/**
- * Component Dashboard chính (Dành cho SC_STAFF)
- */
 const Dashboard = () => {
   const { user } = useAuth();
   const theme = useTheme();
 
-  // State cho dữ liệu từ API
   const [stats, setStats] = useState({
     vehiclesInService: 0,
     scheduledAppointments: 0,
@@ -87,7 +77,6 @@ const Dashboard = () => {
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingCharts, setLoadingCharts] = useState(true);
 
-  // Dữ liệu cho biểu đồ
   const [lineChartData, setLineChartData] = useState({
     labels: [],
     series: [
@@ -124,7 +113,6 @@ const Dashboard = () => {
     ],
   });
 
-  // Fetch dữ liệu từ API
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -136,7 +124,6 @@ const Dashboard = () => {
         if (response.success && response.data) {
           const data = response.data;
 
-          // Cập nhật stats
           setStats({
             vehiclesInService: data.vehicleInServiceCount || 0,
             scheduledAppointments: data.scheduledAppointmentCount || 0,
@@ -144,7 +131,6 @@ const Dashboard = () => {
             activeCampaigns: data.activeCampaignCount || 0,
           });
 
-          // Cập nhật line chart (Warranty Claims Last 6 Months)
           if (data.warrantyClaimLastSixMonths) {
             const labels = data.warrantyClaimLastSixMonths.map(
               (item) => item.monthName
@@ -166,19 +152,25 @@ const Dashboard = () => {
             });
           }
 
-          // Cập nhật pie chart (Technician Workload)
           if (data.techWorkOrderCounts) {
-            const colors = ["#00509D", "#0079B8", "#00A3D2", "#00CCEB", "#5CE1E6"];
-            const pieChartData = data.techWorkOrderCounts.map((tech, index) => ({
-              id: index,
-              value: tech.workOrderCount,
-              label: tech.techName,
-              color: colors[index % colors.length],
-            }));
+            const colors = [
+              "#00509D",
+              "#0079B8",
+              "#00A3D2",
+              "#00CCEB",
+              "#5CE1E6",
+            ];
+            const pieChartData = data.techWorkOrderCounts.map(
+              (tech, index) => ({
+                id: index,
+                value: tech.workOrderCount,
+                label: tech.techName,
+                color: colors[index % colors.length],
+              })
+            );
             setPieData(pieChartData);
           }
 
-          // Cập nhật bar chart (Campaign Progress)
           if (data.activeCampaignProgress) {
             setCampaignProgressData({
               labels: ["Active Campaigns"],
@@ -211,7 +203,7 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [])
+  }, []);
 
   return (
     <Box sx={{ p: 3, backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
@@ -253,7 +245,7 @@ const Dashboard = () => {
             value={stats.activeCampaigns}
             icon={CampaignIcon}
             loading={loadingStats}
-            color="#17a2b8" // Màu info
+            color="#17a2b8"
           />
         </Grid>
       </Grid>
@@ -291,7 +283,6 @@ const Dashboard = () => {
           </Paper>
         </Grid>
 
-        {/* Biểu đồ tròn (Pie Chart) */}
         <Grid item xs={12} md={4}>
           <Paper
             elevation={3}
@@ -329,7 +320,7 @@ const Dashboard = () => {
                 }}
               >
                 <PieChart
-                  width={300} // 👈 cố định kích thước để không co lại
+                  width={300}
                   height={300}
                   series={[
                     {
@@ -339,7 +330,7 @@ const Dashboard = () => {
                       outerRadius: 100,
                       paddingAngle: 3,
                       cornerRadius: 5,
-                      animation: false, // 👈 tắt animation tự động co lại
+                      animation: fals,
                     },
                   ]}
                   sx={{
@@ -363,7 +354,6 @@ const Dashboard = () => {
           </Paper>
         </Grid>
 
-        {/* Biểu đồ cột ngang (Bar Chart) */}
         <Grid item xs={12} md={12}>
           <Paper
             elevation={3}

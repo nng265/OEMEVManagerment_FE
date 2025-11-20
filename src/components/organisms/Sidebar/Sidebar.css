@@ -1,18 +1,17 @@
-/* src/components/organisms/Sidebar/Sidebar.css */
 .sidebar {
   display: flex;
   flex-direction: column;
   width: var(--sidebar-open-width);
   height: 100vh;
-  background-color: var(--dark-color); /* Use CSS variable */
-  color: rgba(255, 255, 255, 0.8); /* Lighter text color */
-  transition: width var(--transition-speed) var(--transition-ease); /* Smooth transition */
+  background-color: var(--dark-color);
+  color: rgba(255, 255, 255, 0.8);
+  transition: width var(--transition-speed) var(--transition-ease);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
-  overflow-x: hidden; /* Hide horizontal overflow during transition */
+  overflow-x: hidden;
 }
 
 .sidebar.collapsed {
@@ -20,12 +19,12 @@
 }
 
 .sidebar-header {
-  padding: 20px 16px; /* Adjust padding */
+  padding: 20px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex; /* Use flex for better alignment */
-  flex-direction: column; /* Stack logo/name and user role */
-  align-items: flex-start; /* Align items to the start */
-  min-height: var(--navbar-height); /* Match navbar height */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: var(--navbar-height);
   box-sizing: border-box;
 }
 
@@ -33,71 +32,70 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px; /* Space below brand */
-  width: 100%; /* Ensure brand takes full width */
+  margin-bottom: 16px;
+  width: 100%;
 }
 
 .brand-logo {
-  width: 40px; /* Slightly smaller logo */
+  width: 40px;
   height: 40px;
   border-radius: 8px;
-  flex-shrink: 0; /* Prevent logo from shrinking */
+  flex-shrink: 0;
 }
 
 .brand-name {
-  font-size: 1.2rem; /* Slightly smaller font */
+  font-size: 1.2rem;
   font-weight: 700;
   color: white;
   letter-spacing: -0.5px;
-  white-space: nowrap; /* Prevent wrapping */
+  white-space: nowrap;
   opacity: 1;
-  transition: opacity 0.1s ease-out; /* Fade out quickly */
+  transition: opacity 0.1s ease-out;
 }
 
-/* Hide brand name when collapsed */
 .sidebar.collapsed .brand-name {
   opacity: 0;
-  width: 0; /* Collapse width */
-  overflow: hidden; /* Hide overflow */
+  width: 0;
+  overflow: hidden;
 }
 
-/* Center logo when collapsed */
 .sidebar.collapsed .brand {
   justify-content: center;
-  /* margin-bottom: 0; Remove margin when collapsed */
 }
+
 .sidebar.collapsed .brand-logo {
-  margin-left: -5px; /* Fine-tune logo position */
+  margin-left: -5px;
 }
 
 .sidebar-user {
-  width: 100%; /* Take full width */
+  width: 100%;
 }
 
 .user-role {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 10px; /* Smaller padding */
-  background: rgba(255, 255, 255, 0.08); /* Slightly less visible background */
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   width: 100%;
   box-sizing: border-box;
   transition: padding var(--transition-speed) var(--transition-ease);
-  overflow: hidden; /* Hide text overflow during transition */
+  overflow: hidden;
 }
 
 .role-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px; /* Smaller icon container */
+  width: 24px;
   height: 24px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
   color: white;
   flex-shrink: 0;
 }
+
 .role-icon svg {
   width: 14px;
   height: 14px;
@@ -105,7 +103,7 @@
 
 .role-text {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.85rem; /* Smaller font */
+  font-size: 0.85rem;
   font-weight: 500;
   text-transform: capitalize;
   white-space: nowrap;
@@ -115,7 +113,7 @@
 
 .sidebar.collapsed .user-role {
   justify-content: center;
-  padding: 6px; /* Minimal padding */
+  padding: 6px;
 }
 
 .sidebar.collapsed .role-text {
@@ -126,7 +124,7 @@
 
 .sidebar-nav {
   flex-grow: 1;
-  padding: 16px 12px; /* Adjust padding */
+  padding: 16px 12px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -134,36 +132,37 @@
 .sidebar-item {
   display: flex;
   align-items: center;
-  padding: 10px 14px; /* Adjust padding */
+  padding: 10px 14px;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease,
     padding-left 0.2s ease;
   margin: 4px 0;
-  border-radius: 6px; /* Slightly smaller radius */
+  border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
-  white-space: nowrap; /* Prevent text wrapping */
-  overflow: hidden; /* Hide overflow */
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidebar.collapsed .sidebar-item {
   justify-content: center;
-  padding: 10px; /* Minimal padding */
+  padding: 10px;
 }
 
 .sidebar-item-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px; /* Icon size */
+  width: 24px;
   height: 24px;
-  margin-right: 12px; /* Space between icon and text */
+  margin-right: 12px;
   flex-shrink: 0;
   transition: margin-right var(--transition-speed) var(--transition-ease);
 }
+
 .sidebar-item-icon svg {
-  width: 20px; /* SVG size */
+  width: 20px;
   height: 20px;
 }
 
@@ -178,7 +177,8 @@
 
 .sidebar.collapsed .sidebar-item-text {
   opacity: 0;
-  width: 0; /* Collapse width */
+  width: 0;
+
   overflow: hidden;
 }
 
@@ -188,10 +188,11 @@
 }
 
 .sidebar-item-active {
-  background-color: var(--primary-color); /* Use primary color */
+  background-color: var(--primary-color);
   color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 80, 157, 0.3);
 }
+
 .sidebar-item-active:hover {
   background-color: var(--primary-darker);
 }
@@ -199,25 +200,25 @@
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: auto; /* Push footer to bottom */
+  margin-top: auto;
 }
 
 .logout-button {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Align left */
+  justify-content: flex-start;
   gap: 12px;
   width: 100%;
   padding: 10px 14px;
-  background-color: transparent; /* Transparent background */
-  border: 1px solid rgba(220, 53, 69, 0.5); /* Red border */
+  background-color: transparent;
+  border: 1px solid rgba(220, 53, 69, 0.5);
   border-radius: 6px;
-  color: #dc3545; /* Red text */
+  color: #dc3545;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
-  white-space: nowrap; /* Prevent wrapping */
-  overflow: hidden; /* Hide overflow */
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .logout-button svg {
@@ -227,8 +228,8 @@
 }
 
 .logout-button:hover {
-  background-color: rgba(220, 53, 69, 0.1); /* Light red background on hover */
-  color: #c82333; /* Darker red on hover */
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #c82333;
   border-color: rgba(220, 53, 69, 0.8);
 }
 

@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { DetailSection } from '../DetailSection/DetailSection';
-import './WarrantyRecordsSection.css';
+import React from "react";
+import PropTypes from "prop-types";
+import { DetailSection } from "../DetailSection/DetailSection";
+import "./WarrantyRecordsSection.css";
 
 const formatDate = (dateString) => {
-  if (!dateString) return '-';
+  if (!dateString) return "-";
   try {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   } catch {
     return dateString;
@@ -22,19 +22,30 @@ const formatDate = (dateString) => {
  * @param {string} status - Current warranty claim status (for conditional display)
  * @param {boolean} isApplied - Whether to show as "Applied Policies" or "Active Warranty Records"
  */
-export const WarrantyRecordsSection = ({ warrantyRecords, status, isApplied = false }) => {
+export const WarrantyRecordsSection = ({
+  warrantyRecords,
+  status,
+  isApplied = false,
+}) => {
   if (!warrantyRecords || warrantyRecords.length === 0) return null;
 
-  // Determine title based on context
-  // For approved/later statuses in warranty feature: show applied policy
-  // For others: show active warranty records
-  const shouldShowAsApplied = isApplied || (status && 
-    ['APPROVED', 'ASSIGNED_TECHNICIAN', 'IN_PROGRESS', 'SENT_TO_MANUFACTURER', 
-     'MANUFACTURER_REPAIRED', 'REPAIRED', 'DENIED', 'CAR_BACK_HOME'].includes(status));
+  const shouldShowAsApplied =
+    isApplied ||
+    (status &&
+      [
+        "APPROVED",
+        "ASSIGNED_TECHNICIAN",
+        "IN_PROGRESS",
+        "SENT_TO_MANUFACTURER",
+        "MANUFACTURER_REPAIRED",
+        "REPAIRED",
+        "DENIED",
+        "CAR_BACK_HOME",
+      ].includes(status));
 
-  const title = shouldShowAsApplied 
-    ? 'Applied Warranty Policy' 
-    : 'Active Warranty Records';
+  const title = shouldShowAsApplied
+    ? "Applied Warranty Policy"
+    : "Active Warranty Records";
 
   return (
     <DetailSection title={title}>

@@ -16,10 +16,12 @@
   left: var(--sidebar-open-width);
   width: calc(100% - var(--sidebar-open-width));
 }
+
 .navbar.sidebar-collapsed {
   left: var(--sidebar-collapsed-width);
   width: calc(100% - var(--sidebar-collapsed-width));
 }
+
 .navbar-container {
   display: flex;
   align-items: center;
@@ -44,14 +46,14 @@
   color: var(--text-muted);
   font-weight: 500;
   white-space: nowrap;
-  margin-left: 4px; /* thêm khoảng cách nhỏ nếu cần */
+  margin-left: 4px;
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-left: auto; /* đẩy sang phải */
+  margin-left: auto;
   flex-shrink: 0;
 }
 
@@ -131,7 +133,6 @@
   }
 }
 
-/* Remove unused styles */
 .navbar-title,
 .navbar-role-selector,
 .user-avatar,

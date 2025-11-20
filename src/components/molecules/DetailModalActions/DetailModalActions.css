@@ -1,22 +1,18 @@
-/* src/components/molecules/DetailModalActions/DetailModalActions.css */
 .detail-modal-actions {
   display: flex;
-  justify-content: space-between; /* Pushes Back button left and right group right */
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   margin-top: 24px;
-  padding-top: 16px; /* Add some space above */
-  border-top: 1px solid var(--border-color); /* Separator line */
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
 }
 
-/* Group for buttons on the right */
 .detail-modal-actions-right {
   display: flex;
   gap: 12px;
-  /* No margin-left needed due to justify-content: space-between */
 }
 
-/* If only the Back button exists, it stays left */
-.detail-modal-actions > button:first-child:last-child {
-  margin-right: auto; /* Keeps it left */
+.detail-modal-actions>button:first-child:last-child {
+  margin-right: auto;
 }

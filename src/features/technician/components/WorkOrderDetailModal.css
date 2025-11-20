@@ -26,10 +26,13 @@
 }
 
 .info-row {
-  padding: 12px;
-  background-color: #f8fafc;
+  padding: 10px 14px;
+  background-color: #fafafa;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
 }
 
 .info-row:hover {
@@ -37,20 +40,23 @@
 }
 
 .info-row .label {
-  font-size: 13px;
-  color: #64748b;
-  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  min-width: 110px;
 }
 
 .info-row .content {
-  font-size: 15px;
-  color: #334155;
+  font-size: 14px;
+  color: #1e293b;
   font-weight: 500;
+  line-height: 1.4;
+  flex: 1;
+  word-break: break-word;
 }
 
-/* ========== COMMON BADGE STYLE ========== */
 .badge {
   display: inline-block;
   padding: 6px 12px;
@@ -61,30 +67,22 @@
   letter-spacing: 0.2px;
 }
 
-/* ============================
-   🧰 TYPE BADGES (Repair / Inspection / Maintenance)
-============================ */
+
 .badge.status-repair {
   background-color: #fef3c7;
-  /* warm yellow */
   color: #92400e;
 }
 
 .badge.status-inspection {
   background-color: #e0f2fe;
-  /* light blue */
   color: #1e3a8a;
 }
 
 .badge.status-maintenance {
   background-color: #fce7f3;
-  /* pinkish */
   color: #9d174d;
 }
 
-/* ============================
-   🚦 STATUS BADGES (Pending / In Progress / Completed / Under Inspection)
-============================ */
 .badge.status-pending {
   background-color: #fff7ed;
   color: #b45309;
@@ -106,9 +104,7 @@
   color: #475569;
 }
 
-/* ============================
-   ✨ Optional polish
-============================ */
+
 .badge+.badge {
   margin-left: 6px;
 }
@@ -121,7 +117,6 @@
 }
 
 
-/* Description and Notes */
 .text-block {
   grid-column: 1 / -1;
   padding: 16px;
@@ -136,7 +131,6 @@
   color: #475569;
 }
 
-/* Modal footer */
 .inspection-form {
   margin-top: 20px;
   border-top: 1px solid #e2e8f0;
@@ -269,7 +263,6 @@
   gap: 12px;
 }
 
-/* Responsive styles */
 @media (max-width: 640px) {
   .info-container {
     grid-template-columns: 1fr;
@@ -286,7 +279,6 @@
   }
 }
 
-/* Parts table styles */
 .parts-table {
   width: 100%;
   border-radius: 8px;
@@ -319,25 +311,10 @@
 .parts-row .col {
   display: flex;
   align-items: center;
-  justify-content: center;
-  /* ✅ Căn giữa ngang */
-  text-align: center;
+  justify-content: flex-start;
+  text-align: left;
 }
 
-.parts-row .col.select-wrap select,
-.parts-row .col select {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #e2e8f0;
-  background-color: #f8fafc;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #0f172a;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-
-/* Input và Select trong cột có khoảng cách và font đồng đều */
 .parts-row .col input,
 .parts-row .col select {
   width: 100%;
@@ -347,9 +324,11 @@
   font-size: 14px;
   color: #0f172a;
   background-color: #f8fafc;
-  text-align: center;
-  /* ✅ Căn giữa text bên trong */
+  text-align: left;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .parts-row .col input:focus,
@@ -360,15 +339,8 @@
   background-color: #fff;
 }
 
-
-
-.parts-row .col select:focus {
-  border-color: #3b82f6;
-  background-color: #fff;
-}
-
 .parts-row .col select:disabled {
-  opacity: 0.6;
+  opacity: .55;
   background-color: #f1f5f9;
 }
 
@@ -385,7 +357,6 @@
   font-size: 13px;
 }
 
-/* Make grid adapt on smaller screens */
 @media (max-width: 900px) {
   .parts-row {
     grid-template-columns: repeat(3, 1fr) 80px;
@@ -408,52 +379,20 @@
 
   .parts-row-header {
     display: none;
-    /* compact view hides header */
   }
 }
 
-/* Empty state note for parts table */
 .parts-empty-note {
   padding: 12px;
   background: #f8fafc;
-  border: 1px dashed #e2e8f0;
+  border: 1px #e2e8f0;
   color: #475569;
   border-radius: 6px;
-  margin: 8px 0 12px 0;
+  margin: 8px 0 12px;
   font-size: 14px;
 }
 
-/* Image preview overlay */
-.image-preview-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 24px;
-}
 
-.image-preview-overlay img {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 8px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-}
-
-.image-preview-close {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* New serial input styling */
 .new-serial-input {
   width: 100%;
   padding: 8px 10px;
@@ -462,20 +401,9 @@
   font-size: 14px;
 }
 
-/* Khi select/input đã có giá trị, làm nổi bật để dễ nhận biết */
 .has-value {
-  background-color: #ffffff !important;
-  /* trắng để nổi bật giữa nền */
+  background-color: #fff !important;
   border-color: #c7e0ff !important;
-  /* viền xanh nhạt */
   font-weight: 600;
   color: #0f172a;
-}
-
-/* Giúp hiển thị full text khi nội dung dài: title được set trên element */
-.parts-row .col select.has-value,
-.parts-row .col input.has-value {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
 }
