@@ -31,7 +31,6 @@
   font-size: 14px;
 }
 
-/* ===================== STATUS BADGE STYLE ===================== */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -64,12 +63,10 @@
   border-color: #90caf9;
 }
 
-/* Hover effect */
 .status-badge:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* ===================== STATUS BADGE STYLE ===================== */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -102,7 +99,6 @@
   border-color: #90caf9;
 }
 
-/* Hover effect */
 .status-badge:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }

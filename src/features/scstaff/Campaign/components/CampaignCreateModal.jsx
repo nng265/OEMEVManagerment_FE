@@ -56,11 +56,6 @@ export const CampaignCreateModal = ({
     setSelectedTechs((s) => s.filter((_, i) => i !== index));
   };
 
-  // ===== THAY ĐỔI MỚI 1: Logic cho Yêu cầu 1 =====
-  /**
-   * Xử lý khi toggle checkbox "Assign Technicians"
-   * Reset danh sách tech về 1 hàng trống mỗi khi bật/tắt
-   */
   const handleAssignTechToggle = (e) => {
     const isChecked = e.target.checked;
     setAssignTechnicians(isChecked);
@@ -72,24 +67,18 @@ export const CampaignCreateModal = ({
     if (!dateString) return "—";
     try {
       const date = new Date(dateString);
-      // Định dạng kiểu "August 4, 2025"
+
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
       });
     } catch (error) {
-      // <-- Đây là dòng 29
-      // ===== SỬA LỖI Ở ĐÂY =====
-      // In lỗi ra console để sử dụng biến 'error'
       console.error("Error formatting date:", dateString, error);
-      // ==========================
 
-      // Nếu lỗi, trả về 10 ký tự đầu (YYYY-MM-DD)
       return dateString.substring(0, 10);
     }
   };
-  // ==============================================
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -113,7 +102,6 @@ export const CampaignCreateModal = ({
     }
 
     const uniqueValidTechs = [...new Set(validTechs)];
-    // ========================================================
 
     onSubmit({
       ...formData,
@@ -132,8 +120,6 @@ export const CampaignCreateModal = ({
     >
       <form className="add-campaign-form" onSubmit={handleSubmit}>
         {error && <p className="error-text">{error}</p>}
-
-        {/* ... (Các form group 'Campaign' và 'Campaign Type' không đổi) ... */}
 
         <div className="form-group">
           <label>Campaign</label>
@@ -188,7 +174,6 @@ export const CampaignCreateModal = ({
         </div>
 
         <div className="campaign-info-row">
-          {/* Thẻ Target Part (nửa chiều rộng) */}
           <div className="campaign-info-block">
             <span className="info-block-label">Target Part</span>
             <span className="info-block-value">
@@ -197,14 +182,13 @@ export const CampaignCreateModal = ({
           </div>
         </div>
         <div className="campaign-info-row">
-          {/* Thẻ Ngày bắt đầu (nửa chiều rộng) */}
           <div className="campaign-info-block">
             <span className="info-block-label">Start Date</span>
             <span className="info-block-value">
               {formatDate(initialCampaign?.startDate)}
             </span>
           </div>
-          {/* Thẻ Ngày kết thúc (nửa chiều rộng) */}
+
           <div className="campaign-info-block">
             <span className="info-block-label">End Date</span>
             <span className="info-block-value">
@@ -228,7 +212,6 @@ export const CampaignCreateModal = ({
             <input
               type="checkbox"
               checked={assignTechnicians}
-              // ===== THAY ĐỔI MỚI 3: Gắn handler cho Yêu cầu 1 =====
               onChange={handleAssignTechToggle}
             />
             Assign Technicians
@@ -239,9 +222,7 @@ export const CampaignCreateModal = ({
           <div className="form-group technician-assignment-box">
             <label>Assigned Technicians List</label>
 
-            {/* ===== THAY ĐỔI MỚI 4: Logic cho Yêu cầu 2 ===== */}
             {selectedTechs.map((currentTechValue, index) => {
-              // Lấy danh sách ID đã được chọn ở CÁC HÀNG KHÁC
               const otherSelectedIds = selectedTechs
                 .filter((_, i) => i !== index) // Lọc bỏ hàng hiện tại
                 .filter(Boolean); // Lọc bỏ các giá trị rỗng ""
@@ -263,7 +244,6 @@ export const CampaignCreateModal = ({
                   >
                     <option value="">Select technician...</option>
 
-                    {/* Render danh sách tech đã được lọc */}
                     {availableOptions.map((t) => (
                       <option
                         key={t.id ?? t.employeeId ?? t.userId}
@@ -286,7 +266,6 @@ export const CampaignCreateModal = ({
                 </div>
               );
             })}
-            {/* ======================================================== */}
 
             <Button
               variant="secondary"

@@ -1,5 +1,3 @@
-/* File: AppointmentViewModal.jsx — FULL VERSION WITH CANCEL API FIXED */
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Modal from "../../../../components/molecules/Modal/Modal";
@@ -8,13 +6,11 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { toast } from "react-toastify";
 import "./AppointmentViewModal.css";
 
-// Hàm lấy local YYYY-MM-DD
 const getTodayString = () => {
   const today = new Date();
   return today.toISOString().split("T")[0];
 };
 
-// Format chuẩn YYYY-MM-DD
 const formatDateOnly = (iso) => {
   if (!iso) return "-";
   try {
@@ -40,7 +36,6 @@ const AppointmentViewModal = ({
 
   if (!appointment) return null;
 
-  // Chuẩn hoá một số trường để hiển thị
   const customerName = appointment.customerName ?? appointment.name ?? "-";
   const phone = appointment.customerPhoneNumber ?? appointment.phone ?? "-";
   const email = appointment.customerEmail ?? appointment.email ?? "-";
@@ -70,7 +65,7 @@ const AppointmentViewModal = ({
 
       toast.success("Appointment cancelled successfully!");
 
-      if (typeof onCancel === "function") ;
+      if (typeof onCancel === "function");
       onClose();
     } catch (err) {
       console.error("Cancel error:", err);
@@ -82,7 +77,6 @@ const AppointmentViewModal = ({
     }
   };
 
-  // Render footer buttons
   const renderFooterActions = () => {
     const today = getTodayString();
     const isToday = date === today;
@@ -94,7 +88,11 @@ const AppointmentViewModal = ({
         if (isToday) {
           return (
             <>
-              <Button variant="danger" onClick={handleCancel} disabled={isCancelling}>
+              <Button
+                variant="danger"
+                onClick={handleCancel}
+                disabled={isCancelling}
+              >
                 {isCancelling ? "Cancelling..." : "Cancel"}
               </Button>
 
@@ -109,7 +107,7 @@ const AppointmentViewModal = ({
                       _: 1,
                     });
                     toast.success("Marked as No Show");
-                    if (typeof onNoShow === "function") ;
+                    if (typeof onNoShow === "function");
                   } catch (err) {
                     toast.error(err?.responseData?.message || "Failed");
                   } finally {
@@ -132,7 +130,7 @@ const AppointmentViewModal = ({
                       _: 1,
                     });
                     toast.success("Checked in successfully");
-                    if (typeof onCheckIn === "function") ;
+                    if (typeof onCheckIn === "function");
                   } catch (err) {
                     toast.error(err?.responseData?.message || "Failed");
                   } finally {
@@ -148,7 +146,11 @@ const AppointmentViewModal = ({
         } else if (!isPast) {
           return (
             <>
-              <Button variant="danger" onClick={handleCancel} disabled={isCancelling}>
+              <Button
+                variant="danger"
+                onClick={handleCancel}
+                disabled={isCancelling}
+              >
                 {isCancelling ? "Cancelling..." : "Cancel"}
               </Button>
 
@@ -185,7 +187,9 @@ const AppointmentViewModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={appointmentId ? `Appointment ${appointmentId}` : "Appointment Details"}
+      title={
+        appointmentId ? `Appointment ${appointmentId}` : "Appointment Details"
+      }
       size="xl"
       showFooter={false}
     >
