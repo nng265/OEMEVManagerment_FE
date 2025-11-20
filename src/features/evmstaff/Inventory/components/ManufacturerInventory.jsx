@@ -4,16 +4,12 @@ import { Input } from "../../../../components/atoms/Input/Input";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 
-/**
- * View cho Manufacturer Inventory (EVM staff)
- * Hiển thị danh sách part + phân trang theo server
- */
 export const ManufacturerInventory = ({
   data = [],
   loading = false,
   error = null,
   pagination,
-  onPageChange, // callback từ container để gọi lại API
+  onPageChange, 
   onRefresh,
   refreshing = false,
   searchQuery = "",
@@ -50,7 +46,6 @@ export const ManufacturerInventory = ({
     },
   ];
 
-  // Chuẩn hóa dữ liệu cho DataTable
   const rows = (data || []).map((item, index) => ({
     id: item.id || index,
     model: item.model || "-",
@@ -59,14 +54,12 @@ export const ManufacturerInventory = ({
     status: item.status || "-",
   }));
 
-  // Hàm xử lý đổi trang (truyền ra ngoài container)
   const handlePageChange = (pageIndex, newPageSize) => {
     if (typeof onPageChange === "function") {
       onPageChange(pageIndex, newPageSize);
     }
   };
 
-  // Status options for filter
   const statusOptions = [
     { value: "", label: "All Status" },
     { value: "In Stock", label: "In Stock" },

@@ -80,8 +80,6 @@ export const Campaign = ({
   const rows = data.map((c, i) => ({
     id: c?._raw?.campaignId || c?._raw?.id || c?.campaignId || c?.id || i,
     _raw: c?._raw || c,
-
-    // Display fields
     description: c.description || "",
     target: c.target || "—",
     title: c.title || "—",

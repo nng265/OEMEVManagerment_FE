@@ -25,10 +25,11 @@ function Home() {
         <div className="nav-links">
           <a href="/home">Home</a>
           <a href="/cusappointmentform" className="btn">
-            Đặt lịch hẹn
+            Book Appointment
           </a>
         </div>
       </nav>
+
       <nav
         style={{
           position: "fixed",
@@ -79,7 +80,7 @@ function Home() {
               fontWeight: 600,
             }}
           >
-            Đặt lịch hẹn
+            Book Appointment
           </a>
         </div>
       </nav>
@@ -88,11 +89,11 @@ function Home() {
         <div className="hero__content">
           <h1>EVM Service</h1>
           <p>
-            Đặt lịch bảo dưỡng, sửa chữa xe điện nhanh chóng và chính xác với
-            đội ngũ kỹ thuật viên chuyên nghiệp.
+            Schedule maintenance and repair for your electric vehicle quickly
+            and accurately with our team of professional technicians.
           </p>
           <a className="hero__cta" href="/cusappointmentform">
-            Đặt lịch ngay
+            Book Now
           </a>
         </div>
       </section>
@@ -103,14 +104,14 @@ function Home() {
             <img src="https://images.pexels.com/photos/4489736/pexels-photo-4489736.jpeg?auto=compress&cs=tinysrgb&w=1600" />
           </div>
           <div className="feature__content">
-            <h2>Bảo hành xe toàn diện</h2>
+            <h2>Comprehensive Vehicle Warranty</h2>
             <p>
-              Dịch vụ bảo hành chính hãng giúp bạn yên tâm trên mọi hành trình…
+              Official warranty service ensures peace of mind on every journey…
             </p>
             <ul>
-              <li>Kiểm tra định kỳ</li>
-              <li>Cập nhật phần mềm</li>
-              <li>Thay thế linh kiện</li>
+              <li>Periodic inspection</li>
+              <li>Software updates</li>
+              <li>Component replacement</li>
             </ul>
           </div>
         </article>
@@ -120,15 +121,14 @@ function Home() {
             <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?q=80&w=1400&auto=format&fit=crop" />
           </div>
           <div className="feature__content">
-            <h2>Phụ tùng & sửa chữa</h2>
+            <h2>Parts & Repair</h2>
             <p>
-              Kho phụ tùng đạt chuẩn giúp việc sửa chữa nhanh chóng và chính
-              xác.
+              A certified parts warehouse enables fast and accurate repairs.
             </p>
             <ul>
-              <li>Linh kiện chính hãng</li>
-              <li>Quy trình tiêu chuẩn</li>
-              <li>Bảo hành sau sửa chữa</li>
+              <li>Genuine components</li>
+              <li>Standardized processes</li>
+              <li>Post-repair warranty</li>
             </ul>
           </div>
         </article>
@@ -136,18 +136,16 @@ function Home() {
         <article className="feature">
           <div className="feature__media">
             <img
-              src="https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=1600
-
-"
+              src="https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=1600"
             />
           </div>
           <div className="feature__content">
-            <h2>Chính sách bảo hành</h2>
-            <p>Minh bạch – rõ ràng – hỗ trợ khách hàng tối đa…</p>
+            <h2>Warranty Policies</h2>
+            <p>Transparent – clear – maximum customer support…</p>
             <ul>
-              <li>Thông tin công khai</li>
-              <li>Yêu cầu bảo hành online</li>
-              <li>Nhắc lịch bảo dưỡng</li>
+              <li>Public information</li>
+              <li>Online warranty requests</li>
+              <li>Maintenance reminders</li>
             </ul>
           </div>
         </article>
@@ -161,25 +159,29 @@ function Home() {
         <div className="footer__top">
           <div className="footer__brand">
             <h3>EV System</h3>
-            <p>Nền tảng quản lý bảo hành – sửa chữa – chiến dịch xe điện.</p>
+            <p>
+              The platform for managing warranty – repair – electric vehicle
+              service campaigns.
+            </p>
           </div>
           <div className="footer__links">
-            <h4>Dịch vụ</h4>
+            <h4>Services</h4>
             <ul>
               <li>
-                <a href="/cusappointmentform">Đặt lịch</a>
+                <a href="/cusappointmentform">Book Appointment</a>
               </li>
             </ul>
           </div>
           <div className="footer__contact">
-            <h4>Liên hệ</h4>
+            <h4>Contact</h4>
             <ul>
               <li>Email: support@evsystem.vn</li>
               <li>Hotline: 1900-1234</li>
-              <li>Địa chỉ: 123 EV Avenue, HCM</li>
+              <li>Address: 123 EV Avenue, HCM</li>
             </ul>
           </div>
         </div>
+
         <div className="footer__bottom">
           © {new Date().getFullYear()} EV System. All rights reserved.
         </div>

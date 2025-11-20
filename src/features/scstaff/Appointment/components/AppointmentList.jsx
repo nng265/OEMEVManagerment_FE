@@ -2,20 +2,42 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
-import "../../../scstaff/Campaign/components/CampaignList.css";
+import "./AppointmentList.css";
 
 const renderStatus = (value) => {
-  let statusClass = "status-";
-  if (value === "Pending") statusClass += "draft";
-  else if (value === "Scheduled") statusClass += "active";
-  else statusClass += "closed";
+  if (!value) return <span className="status-badge status-unknown">Unknown</span>;
 
-  const displayText = value
-    ? value.charAt(0).toUpperCase() + value.slice(1)
-    : "Unknown";
+  // chuẩn hoá text về dạng class
+  const normalized = value
+    .toLowerCase()
+    .replace(/[\s-]/g, "_")        // space hoặc - → _
+    .replace(/__+/g, "_")          // bỏ double _
+    .trim();
 
-  return <span className={`status-badge ${statusClass}`}>{displayText}</span>;
+  // chuyển sang class
+  const statusMap = {
+    pending: "pending",
+    not_confirmed: "not-confirmed",
+    scheduled: "scheduled",
+    confirmed: "confirmed",
+    done: "done",
+    canceled: "cancelled",
+    cancelled: "cancelled",
+    no_show: "no-show",
+    checked_in: "checked-in",
+  };
+
+  const className = statusMap[normalized] || "unknown";
+
+  const displayText =
+    value
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase()) ?? "Unknown";
+
+  return <span className={`status-badge status-${className}`}>{displayText}</span>;
 };
+
+
 
 const AppointmentList = ({
   data = [],
