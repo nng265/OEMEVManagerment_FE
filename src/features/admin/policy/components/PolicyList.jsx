@@ -64,6 +64,13 @@ const PolicyList = ({
             Edit
           </Button>
 
+          <Button
+            size="small"
+            variant="light"
+            onClick={() => onDeletePolicy(row.raw)}
+          >
+            Delete
+          </Button>
           {/* DELETE moved into Edit modal for better UX */}
         </div>
       ),

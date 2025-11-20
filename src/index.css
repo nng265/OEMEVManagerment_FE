@@ -108,8 +108,6 @@ body {
   background: #a1a1a1;
 }
 
-
-
 /* Thay thế bằng các bộ chọn cụ thể, an toàn hơn */
 button,
 a,
@@ -121,15 +119,16 @@ textarea,
 /* Áp dụng cho thẻ Paper (StatCard) của MUI */
 .MuiButtonBase-root
 
-/* Áp dụng cho các nút của MUI */
-  {
+/* Áp dụng cho các nút của MUI */ {
   transition: background-color var(--transition-speed) var(--transition-ease),
     color var(--transition-speed) var(--transition-ease),
     border-color var(--transition-speed) var(--transition-ease),
     box-shadow var(--transition-speed) var(--transition-ease),
     transform var(--transition-speed) var(--transition-ease);
 }
-
+.MuiGrid-root {
+  justify-content: space-between;
+}
 
 .main-content {
   padding: calc(var(--navbar-height) -50px) 24px 24px;

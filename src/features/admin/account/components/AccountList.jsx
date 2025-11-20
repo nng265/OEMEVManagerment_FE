@@ -91,7 +91,7 @@ const AccountList = ({
         data={rows}
         columns={columns}
         isLoading={loading}
-        searchable={true}
+        searchable={false}
         pagination={true} // Vẫn bật
         serverSide={serverSide} // Vẫn false
         // --- KHÔI PHỤC CÁC PROPS PHÂN TRANG ---
@@ -108,7 +108,6 @@ const AccountList = ({
         noDataMessage={error ? String(error) : "No accounts found"}
         onRefresh={onRefresh}
         refreshing={refreshing}
-        onSearch={onSearch}
         onFilterStatus={onFilterStatus}
       />
     </div>

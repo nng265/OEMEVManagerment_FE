@@ -8,6 +8,7 @@
 
 .size-h1 {
   margin-bottom: 20px;
+  margin-top: 16px;
 }
 
 .campaign-table__header {
@@ -15,6 +16,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  margin-top: 16px;
 }
 
 .campaign-filters {

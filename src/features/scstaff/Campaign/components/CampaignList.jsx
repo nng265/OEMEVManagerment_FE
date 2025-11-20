@@ -105,7 +105,9 @@ const CampaignList = ({
 
   return (
     <div className="campaign-table">
-      <h2 className="size-h1">Campaign Management</h2>
+      <h2 className="size-h1" style={{ marginTop: "22px" }}>
+        Campaign Management
+      </h2>
 
       <div
         className="campaign-filters"
