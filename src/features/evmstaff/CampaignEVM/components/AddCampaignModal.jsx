@@ -24,7 +24,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
   // Tính ngày min = ngày hôm nay + 1
   const getMinDate = () => {
     const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setDate(tomorrow.getDate());
     return tomorrow.toISOString().split("T")[0];
   };
   const minDate = getMinDate();
@@ -143,7 +143,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       !formData.title ||
       !formData.type ||
       !formData.targetCategory ||
-      !formData.oldTarget || 
+      !formData.oldTarget ||
       !formData.target ||
       !formData.startDate ||
       !formData.endDate ||
@@ -162,8 +162,8 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       type: formData.type,
       title: formData.title,
       description: formData.description,
-      partModel: formData.oldTarget, 
-      replacementPartModel: formData.target, 
+      partModel: formData.oldTarget,
+      replacementPartModel: formData.target,
       startDate: formData.startDate,
       endDate: formData.endDate,
     };
@@ -252,7 +252,13 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
           <div className="form-group half">
             <label>Target Category *</label>
             {loadingCats ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "10px",
+                }}
+              >
                 <LoadingSpinner />
               </div>
             ) : (
@@ -291,7 +297,13 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
           <div className="form-group half">
             <label>Target Part Model (Old) *</label>
             {loadingModels ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "10px",
+                }}
+              >
                 <LoadingSpinner />
               </div>
             ) : (
@@ -324,7 +336,13 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
           <div className="form-group half">
             <label>Target Part Model (New) *</label>
             {loadingModels ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "10px",
+                }}
+              >
                 <LoadingSpinner />
               </div>
             ) : (
@@ -344,7 +362,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
                   </option>
                 )}
                 {models
-                  .filter((m) => m && m !== formData.oldTarget) 
+                  .filter((m) => m && m !== formData.oldTarget)
                   .map((m, idx) => (
                     <option key={idx} value={m}>
                       {m}
