@@ -2,17 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
-import "../components/UI.css"; // THAY ĐỔI: Import CSS mới
+import "../components/UI.css";
 
 const Done = ({ open, onClose, data }) => {
-  // === Dùng các hàm helper giống CampaignViewModal ===
   const displayValue = (value) => {
     if (value === 0 || value === null || value === undefined || value === "") {
       return "—";
     }
     return value;
   };
-  // ===================================================
 
   const campaign = data?.raw ?? {};
   const customer = campaign.customer ?? {};
@@ -28,7 +26,6 @@ const Done = ({ open, onClose, data }) => {
       showFooter={false}
     >
       <div className="campaign-modal">
-        {/* === Section 1: Thông tin Khách hàng & Xe === */}
         <h3 className="campaign-section-title">
           Customer & Vehicle Information
         </h3>
@@ -67,7 +64,6 @@ const Done = ({ open, onClose, data }) => {
           </div>
         </div>
 
-        {/* === Section 2: Thông tin Chiến dịch === */}
         <h3 className="campaign-section-title">Campaign Details</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block full-width">
@@ -98,7 +94,6 @@ const Done = ({ open, onClose, data }) => {
           </div>
         </div>
 
-        {/* === Section 3: Linh kiện thay thế === */}
         <h3 className="campaign-section-title">Parts Replacement</h3>
         <div className="campaign-info-block full-width">
           {replacements.length > 0 ? (
@@ -123,7 +118,6 @@ const Done = ({ open, onClose, data }) => {
           )}
         </div>
 
-        {/* === Footer === */}
         <div className="campaign-footer">
           <Button variant="secondary" onClick={onClose}>
             Back

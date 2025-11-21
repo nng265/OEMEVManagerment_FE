@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import ConfirmDialog from "../components/molecules/ConfirmDialog/ConfirmDialog";
 import { Button } from "../components/atoms/Button/Button";
 import { request, ApiEnum } from "../services/NetworkUntil";
+import { LoadingSpinner } from "../components/atoms/LoadingSpinner/LoadingSpinner";
 
 const formatDate = (date) => date.toISOString().split("T")[0];
 const STEPS = [
@@ -23,7 +24,7 @@ const SuccessPopup = ({ isOpen, data, onClose }) => {
         <h2>Booking Success!</h2>
 
         <div className="success-item">
-          <b>Đã đặt lịch thông qua Email:</b> {data.email}
+          <b>Scheduled by Email:</b> {data.email}
         </div>
 
         <div className="popup-btn-group">
@@ -135,7 +136,7 @@ const CusAppointmentForm = () => {
       toast.error("Please complete all steps.");
       return;
     }
-
+    setIsLoading(true);
     const slotCode = selectedSlot.slot || selectedSlot.id || selectedTime;
 
     const payload = {
@@ -165,10 +166,11 @@ const CusAppointmentForm = () => {
     } catch (err) {
       const msg = err?.responseData?.message || err?.message || "Error";
       toast.error(msg);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  /* ---------- Step bullets ---------- */
   const renderSteps = () => (
     <div className="steps">
       {STEPS.map((label, i) => (
@@ -188,7 +190,7 @@ const CusAppointmentForm = () => {
         <div className="nav-links">
           <a href="/home">Home</a>
           <a href="/cusappointmentform" className="btn">
-            Đặt lịch hẹn
+            Book Appointment
           </a>
         </div>
       </nav>
@@ -403,6 +405,12 @@ const CusAppointmentForm = () => {
                 Confirm Appointment
               </Button>
             </div>
+            {isLoading && (
+  <div className="loading-overlay">
+    <LoadingSpinner size="lg" variant="primary" />
+  </div>
+)}
+
           </div>
         )}
 

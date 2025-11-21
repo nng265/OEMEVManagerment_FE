@@ -7,6 +7,8 @@
 
 .size-h1 {
   margin-bottom: 30px;
+  font-size: 2.125rem;
+  padding: 20px;
 }
 
 .error-message {
@@ -107,8 +109,8 @@
 }
 
 .table th.sortable {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    text-align: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  text-align: center;
 }

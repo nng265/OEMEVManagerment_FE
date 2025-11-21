@@ -330,7 +330,7 @@ const Dashboard = () => {
                       outerRadius: 100,
                       paddingAngle: 3,
                       cornerRadius: 5,
-                      animation: fals,
+                      animation: false,
                     },
                   ]}
                   sx={{

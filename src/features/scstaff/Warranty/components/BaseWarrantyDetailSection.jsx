@@ -1,5 +1,3 @@
-// src/features/warranty/components/BaseWarrantyDetailSection.jsx
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
@@ -37,7 +35,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
 
   return (
     <>
-      {/* Customer Information */}
       <DetailSection title="Customer Information">
         <div className="detail-grid">
           <div className="detail-item">
@@ -53,7 +50,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
         </div>
       </DetailSection>
 
-      {/* Vehicle Information */}
       <DetailSection title="Vehicle Information">
         <div className="detail-grid">
           <div className="detail-item">
@@ -71,13 +67,11 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
         </div>
       </DetailSection>
 
-      {/* Warranty Records / Policy Information */}
       <WarrantyRecordsSection
         warrantyRecords={warrantyData?.showPolicy}
         status={warrantyData?.status}
       />
 
-      {/* Issue Description */}
       <DetailSection title="Issue Description">
         <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
           {warrantyData?.failureDesc && (
@@ -97,7 +91,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
         </div>
       </DetailSection>
 
-      {/* Attachments */}
       {warrantyData?.attachments?.length > 0 && (
         <DetailSection title="Attachments">
           <div
@@ -122,7 +115,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
               </div>
             ))}
 
-            {/* Preview modal */}
             <Modal
               isOpen={isPreviewOpen}
               onClose={closePreview}
@@ -156,7 +148,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
         </DetailSection>
       )}
 
-      {/* Approved Warranty Record */}
       {warrantyData?.policyName && (
         <DetailSection title="Approved Warranty Record">
           <div className="detail-grid">
@@ -173,7 +164,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
         </DetailSection>
       )}
 
-      {/* Parts / Components */}
       {warrantyData?.showClaimParts?.length > 0 && (
         <DetailSection title="Parts / Components Details">
           {warrantyData.showClaimParts.map((p, idx) => (
@@ -189,10 +179,7 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
                   <span className="label">Action:</span>
                   <span className="value">{p.action || "-"}</span>
                 </div>
-                {/* <div className="detail-item">
-                  <span className="label">Category:</span>
-                  <span className="value">{p.category || "-"}</span>
-                </div> */}
+
                 <div className="detail-item">
                   <span className="label">Model:</span>
                   <span className="value">{p.model || "-"}</span>
@@ -207,12 +194,6 @@ export const BaseWarrantyDetailSection = ({ warrantyData }) => {
                     <span className="value">{p.serialNumberNew}</span>
                   </div>
                 )}
-                {/* {p.status && (
-                  <div className="detail-item">
-                    <span className="label">Status:</span>
-                    <span className="value">{p.status}</span>
-                  </div>
-                )} */}
               </div>
             </div>
           ))}

@@ -1,20 +1,14 @@
-// src/features/warranty/components/UnderRepairModal.jsx
-import React from 'react';
-import PropTypes from 'prop-types';
-import { WarrantyClaimDetailModal } from './WarrantyClaimDetailModal';
+import React from "react";
+import PropTypes from "prop-types";
+import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 
-/**
- * Modal for "Under Repair" status
- * Read-only modal - only shows Back button (left side)
- */
-export const UnderRepairModal = ({ 
-  isOpen, 
-  onClose, 
+export const UnderRepairModal = ({
+  isOpen,
+  onClose,
   warrantyData,
   assignedTechnicians = [],
-  loadingAssignedTechs = false
+  loadingAssignedTechs = false,
 }) => {
-  // Assigned Technicians Section
   const assignedTechniciansSection = (
     <div className="detail-section assigned-technicians-section">
       <h4>Assigned Technicians</h4>
@@ -45,9 +39,7 @@ export const UnderRepairModal = ({
       showBackButton={true}
       backButtonLabel="Back"
       additionalContent={assignedTechniciansSection}
-    >
-      {/* No action buttons - only Back button will show on the left */}
-    </WarrantyClaimDetailModal>
+    ></WarrantyClaimDetailModal>
   );
 };
 
@@ -56,5 +48,5 @@ UnderRepairModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   warrantyData: PropTypes.object,
   assignedTechnicians: PropTypes.array,
-  loadingAssignedTechs: PropTypes.bool
+  loadingAssignedTechs: PropTypes.bool,
 };

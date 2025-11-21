@@ -48,23 +48,36 @@ export const EVMStaffWarrantyList = ({
       label: "Actions",
       sortable: false,
       render: (_, row) => (
-        <div style={{ display: "flex", gap: 8 }}>
-          <Button
-            variant="light"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onView?.(row.raw);
-            }}
-          >
-            <img
-              src="../../../../../public/eye.png"
-              className="eye-svg"
-              style={{ width: "22px" }}
-            />
-          </Button>
-        </div>
-      ),
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Button
+      variant="light"
+      size="sm"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "4px",
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onView?.(row.raw);
+      }}
+    >
+      <img
+        src="../../../../../public/eye.png"
+        className="eye-svg"
+        style={{ width: "22px" }}
+      />
+    </Button>
+  </div>
+),
+
     },
   ];
 

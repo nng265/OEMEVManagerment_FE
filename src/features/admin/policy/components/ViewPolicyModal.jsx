@@ -16,7 +16,6 @@ export const ViewPolicyModal = ({ isOpen, onClose, policy }) => {
       showFooter={false}
     >
       <div className="policy-modal">
-        {/* === Section 1: Policy Overview === */}
         <h3 className="policy-section-title">Policy Information</h3>
 
         <div className="policy-info-row">
@@ -26,7 +25,6 @@ export const ViewPolicyModal = ({ isOpen, onClose, policy }) => {
           </div>
         </div>
 
-        {/* === Section 2: Policy Details === */}
         <h3 className="policy-section-title">Coverage Details</h3>
 
         <div className="policy-info-row">
@@ -43,7 +41,6 @@ export const ViewPolicyModal = ({ isOpen, onClose, policy }) => {
           </div>
         </div>
 
-        {/* === Section 3: Conditions === */}
         <h3 className="policy-section-title">Conditions</h3>
         <div className="policy-info-row">
           <div className="policy-info-block full-width">
@@ -53,7 +50,6 @@ export const ViewPolicyModal = ({ isOpen, onClose, policy }) => {
           </div>
         </div>
 
-        {/* === Footer === */}
         <div className="policy-footer">
           <Button variant="secondary" onClick={onClose}>
             Close

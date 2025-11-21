@@ -246,17 +246,14 @@ export const Sidebar = ({
     <aside className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         <div className="brand">
-          <svg
-            className="brand-logo"
-            viewBox="0 0 100 100"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M50 0L93.3 25V75L50 100L6.7 75V25L50 0Z" fill="#00509D" />
-            <path d="M50 15L79.3 30V70L50 85L20.7 70V30L50 15Z" fill="white" />
-          </svg>
-          <span className="brand-name">EV System</span>
-        </div>
+  <img
+    src="../../../../public/logo.png"
+    alt="EV Logo"
+    className="brand-logo"
+  />
+  <span className="brand-name">EV System</span>
+</div>
+
         <div className="sidebar-user">
           <div className="user-role">
             <div className="role-icon">

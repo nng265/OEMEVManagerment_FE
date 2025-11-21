@@ -13,8 +13,8 @@ const ConfirmAppointment = () => {
     const token = urlParams.get("token");
     const appointmentId = urlParams.get("appointmentId");
 
-    console.log("👉 URL token:", token);
-    console.log("👉 URL appointmentId:", appointmentId);
+    console.log("URL token:", token);
+    console.log("URL appointmentId:", appointmentId);
 
     if (!token || !appointmentId) {
       setError("Invalid or missing token / appointment id!");
@@ -25,21 +25,19 @@ const ConfirmAppointment = () => {
     const confirm = async () => {
       try {
         //tao endpoint dong bang cach replace :appointmentId
+        const basePath = ApiEnum.APPOINTMENT_CONFIRM.path.replace(
+          ":appointmentId",
+          appointmentId
+        );
+
         const dynamicEndpoint = {
           ...ApiEnum.APPOINTMENT_CONFIRM,
-          path: ApiEnum.APPOINTMENT_CONFIRM.path.replace(
-            ":appointmentId",
-            appointmentId
-          ),
+          path: `${basePath}?${new URLSearchParams({ token }).toString()}`,
         };
 
         console.log("📤 Calling API:", dynamicEndpoint.path);
 
-        const res = await request(
-          dynamicEndpoint,
-          { token },
-          { skipAuth: true }
-        );
+        const res = await request(dynamicEndpoint, {}, { skipAuth: true });
 
         console.log("📥 API Response:", res);
 

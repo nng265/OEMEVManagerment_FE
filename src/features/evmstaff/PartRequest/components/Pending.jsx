@@ -14,7 +14,7 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
       toast.warning("Please select a date first.");
       return;
     }
-    onSetDate(request.orderId, requestedDate); // cập nhật Requested Date
+    onSetDate(request.orderId, requestedDate);
   };
   const formatDate = (date) => {
   if (!date) return "";
