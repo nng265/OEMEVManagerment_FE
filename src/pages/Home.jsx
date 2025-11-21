@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 import "./Home.css";
 
 const gallery = [
-  "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1600&q=80",
+  // "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1600&q=80",
+  // "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=1600&q=80",
+  "https://i.pinimg.com/1200x/59/13/05/591305f7a920011abf6fea6a97b41718.jpg",
+  "https://i.pinimg.com/1200x/75/d4/67/75d46742218b198613dcddad1de21a34.jpg",
+  "https://i.pinimg.com/1200x/47/c5/4d/47c54d9ea69871ad8a7a9054b5f1eea1.jpg",
+  "https://i.pinimg.com/1200x/03/5b/c9/035bc92aa2947d71b75ce8cb85b4d98c.jpg",
+  "https://i.pinimg.com/1200x/f6/ad/c0/f6adc03b3097fac0a6e40d8ae75f8e8d.jpg",
 ];
 
 function Home() {
@@ -135,9 +140,7 @@ function Home() {
 
         <article className="feature">
           <div className="feature__media">
-            <img
-              src="https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=1600"
-            />
+            <img src="https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=1600" />
           </div>
           <div className="feature__content">
             <h2>Warranty Policies</h2>
