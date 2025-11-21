@@ -80,12 +80,12 @@ const AppointmentList = ({
         style={{ display: "flex", alignItems: "center" }}
       >
         <h2 className="size-h1">Appointment Management</h2>
-        <Button
-          variant="primary"
-          style={{ marginLeft: "auto" }}
-          onClick={onAdd}
-        >
-          + Add Appointment
+        <Button variant="light" style={{ marginLeft: "auto" }} onClick={onAdd}>
+          <img
+            src="../../../../../public/add.png"
+            alt="Create Appointment"
+            style={{ width: "18px" }}
+          />
         </Button>
       </div>
 

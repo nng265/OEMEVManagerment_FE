@@ -1,12 +1,9 @@
-// AssignTechnicianModal.jsx
-
 import React, { useState, useEffect } from "react";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
-
 
 export const AssignTechnicianModal = (props) => {
   const isOpen = props.isOpen ?? props.show ?? false;
@@ -27,7 +24,6 @@ export const AssignTechnicianModal = (props) => {
         const response = await request(ApiEnum.GET_TECHNICIANS);
 
         if (response.success) {
-          // Remove role filter as agreed
           const techList = response.data;
           setAvailableTechs(techList);
         } else {
@@ -43,7 +39,7 @@ export const AssignTechnicianModal = (props) => {
 
     if (isOpen) {
       fetchTechnicians();
-      setTechnicians([{ id: 1 }]); // Reset to 1 technician on open
+      setTechnicians([{ id: 1 }]);
     }
   }, [isOpen]);
 
@@ -75,13 +71,10 @@ export const AssignTechnicianModal = (props) => {
     onSubmit(formData);
   };
 
-  // --- THAY ĐỔI MỚI: TÍNH TOÁN CÁC ID ĐÃ CHỌN ---
-  // Lấy danh sách tất cả các userId đã được chọn trong các dropdown
   const selectedIds = technicians.map((t) => t.selectedValue).filter(Boolean);
 
   if (!claimData) return null;
 
-  // Details for Technician Section
   const detailsForTechnicianSection = claimData.notes && (
     <DetailSection title="Details for Technician">
       <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
@@ -97,11 +90,12 @@ export const AssignTechnicianModal = (props) => {
     </DetailSection>
   );
 
-  // Assign Technician Section
   const assignTechnicianSection = (
     <DetailSection title="Assign Technician">
       {loading ? (
-        <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+        <div
+          style={{ display: "flex", justifyContent: "center", padding: "20px" }}
+        >
           <LoadingSpinner />
         </div>
       ) : (
@@ -124,10 +118,6 @@ export const AssignTechnicianModal = (props) => {
                 <option value="">Select Technician</option>
 
                 {availableTechs.map((techOpt) => {
-                  // Filter condition to display technician:
-                  // 1. Technician NOT selected (not in 'selectedIds')
-                  //    OR
-                  // 2. Technician IS selected by THIS dropdown
                   const isAvailable =
                     !selectedIds.includes(techOpt.userId) ||
                     techOpt.userId === tech.selectedValue;

@@ -1,12 +1,7 @@
-// src/features/warranty/components/DoneWarrantyModal.jsx
-import React from 'react';
-import PropTypes from 'prop-types';
-import { WarrantyClaimDetailModal } from './WarrantyClaimDetailModal';
+import React from "react";
+import PropTypes from "prop-types";
+import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 
-/**
- * Modal for "Done Warranty" status
- * Read-only modal - only shows Back button (left side)
- */
 export const DoneWarrantyModal = ({ isOpen, onClose, warrantyData }) => {
   return (
     <WarrantyClaimDetailModal
@@ -15,14 +10,12 @@ export const DoneWarrantyModal = ({ isOpen, onClose, warrantyData }) => {
       warrantyData={warrantyData}
       showBackButton={true}
       backButtonLabel="Back"
-    >
-      {/* No action buttons - only Back button will show on the left */}
-    </WarrantyClaimDetailModal>
+    ></WarrantyClaimDetailModal>
   );
 };
 
 DoneWarrantyModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  warrantyData: PropTypes.object
+  warrantyData: PropTypes.object,
 };

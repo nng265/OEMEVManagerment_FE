@@ -1,4 +1,3 @@
-// src/features/warranty/components/WarrantyClaimListView.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../../components/organisms";
@@ -18,7 +17,6 @@ import { DoneWarrantyModal } from "./DoneWarrantyModal";
 import "./WarrantyClaimListView.css";
 
 export const WarrantyClaimListView = ({
-  // Dữ liệu props
   data,
   columns,
   loading,
@@ -26,14 +24,12 @@ export const WarrantyClaimListView = ({
   pagination,
   onPageChange,
 
-  // Filter props
   statusFilter,
   onStatusFilterChange,
   statusOptions,
   searchQuery,
   onSearchChange,
 
-  // Modal state và handlers
   selectedClaim,
   showDetailModal,
   onCloseDetailModal,
@@ -41,7 +37,6 @@ export const WarrantyClaimListView = ({
   onCloseAssignModal,
   onAssignSubmit,
 
-  // Status-specific modals
   showPendingConfirmationModal,
   onClosePendingConfirmationModal,
   showApprovedModal,
@@ -65,7 +60,6 @@ export const WarrantyClaimListView = ({
   onFetchTechnicians,
   loadingTechnicians,
 
-  // Assigned technicians (for under inspection/repair)
   assignedTechnicians,
   loadingAssignedTechs,
   onRefresh,
@@ -76,7 +70,6 @@ export const WarrantyClaimListView = ({
       <div className="warranty-claim-list-view">
         <h1 className="size-h1">Warranty Claims List</h1>
 
-        {/* Search Bar and Status Filter */}
         <div
           className="warranty-claim-filters"
           style={{
@@ -108,7 +101,6 @@ export const WarrantyClaimListView = ({
           </div>
         </div>
 
-        {/* Handle Loading / Error / Empty / Data */}
         {loading ? (
           <div className="loading-container">
             <LoadingSpinner size="lg" />
@@ -132,14 +124,11 @@ export const WarrantyClaimListView = ({
             )}
           </div>
         ) : (
-          // Render DataTable when data available
           <DataTable
             data={data}
             columns={columns}
-            isLoading={false} // Loading handled outside
-            // onRowClick={onRowClick} // Remove if only using buttons in 'actions' column
-            noDataMessage="No warranty claims found" // For filter/search with no results
-            // Enable DataTable features
+            isLoading={false}
+            noDataMessage="No warranty claims found"
             searchable={true}
             pagination={true}
             serverSide={true}
@@ -252,7 +241,6 @@ export const WarrantyClaimListView = ({
   );
 };
 
-// PropTypes để kiểm tra kiểu dữ liệu props
 WarrantyClaimListView.propTypes = {
   data: PropTypes.array,
   columns: PropTypes.array.isRequired,

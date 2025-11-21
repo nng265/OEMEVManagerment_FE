@@ -77,12 +77,12 @@ const CampaignList = ({
           </Button>
 
           {(row.status === "ACTIVE" || row.status === "Active") && (
-            <Button
-              size="small"
-              variant="primary"
-              onClick={() => onAdd?.(row)}
-            >
-              Add
+            <Button size="small" variant="light" onClick={() => onAdd?.(row)}>
+              <img
+                src="../../../../../public/add.png"
+                alt="Create Campaign "
+                style={{ width: "18px" }}
+              />
             </Button>
           )}
         </div>

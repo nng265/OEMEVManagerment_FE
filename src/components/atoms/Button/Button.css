@@ -163,3 +163,30 @@
   outline: 0;
   box-shadow: 0 0 0 0.2rem var(--color-primary-light);
 }
+
+/* Refresh button pill style */
+.btn-refresh {
+  border-radius: 999px;
+  padding: 0.35rem 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-image: linear-gradient(
+    135deg,
+    var(--color-success) 0%,
+    var(--color-success) 60%,
+    var(--color-success) 100%
+  );
+}
+
+.btn-refresh:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.15);
+}
+
+.btn-refresh:disabled {
+  filter: grayscale(0.2) brightness(0.95);
+  box-shadow: none;
+}

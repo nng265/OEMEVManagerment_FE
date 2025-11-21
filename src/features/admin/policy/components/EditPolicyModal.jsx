@@ -67,8 +67,6 @@ export const EditPolicyModal = ({
           onChange={handleChange}
         />
 
-        {/* 🔥 Status đã bị xóa hoàn toàn */}
-
         <label>Conditions</label>
         <textarea
           name="conditions"

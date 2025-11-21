@@ -80,11 +80,15 @@ const AccountList = ({
         <h2 className="size-h1">Account Management</h2>
         <Button
           size="small"
-          variant="primary"
+          variant="light"
           onClick={() => onCreateAccount?.()}
           style={{ marginLeft: "auto" }}
         >
-          Create Account
+          <img
+            src="../../../../../public/add.png"
+            alt="Create Account"
+            style={{ width: "45px" }}
+          />
         </Button>
       </div>
       <DataTable

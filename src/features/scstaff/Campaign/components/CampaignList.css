@@ -25,7 +25,14 @@
   align-items: flex-end;
 }
 
-/* Badge — đồng bộ styling */
+.campaign-filters input,
+.campaign-filters select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;

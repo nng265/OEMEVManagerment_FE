@@ -58,7 +58,6 @@
     margin-top: 16px;
 }
 
-/* Form & modal improvements */
 .policy-form {
     display: flex;
     flex-direction: column;
@@ -91,15 +90,12 @@
     gap: 8px;
     align-items: center;
     margin-top: 8px;
-    /* Layout: first child (Cancel) -> left; other actions -> right */
-    /* Using `margin-right: auto` on the first child pushes the rest to the right */
 }
 
 .modal-footer>*:first-child {
     margin-right: auto;
 }
 
-/* Button visual tweaks for consistency */
 .modal-footer button {
     padding: 8px 14px;
     border-radius: 6px;
@@ -107,7 +103,6 @@
     cursor: pointer;
 }
 
-/* Small responsive helper */
 @media (max-width: 640px) {
     .policy-info-block {
         min-width: 100%;

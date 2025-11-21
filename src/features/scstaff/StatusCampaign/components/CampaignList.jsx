@@ -28,7 +28,6 @@ const CampaignList = ({
   onStatusFilterChange,
   statusOptions = [],
 }) => {
-  // Type options for filter
   const typeOptions = [
     { value: "", label: "All Types" },
     { value: "Service", label: "Service" },
@@ -76,7 +75,7 @@ const CampaignList = ({
             onClick={() => setSelectedRow(row)}
           >
             <img
-              src="/eye.png" // <-- dùng public path chuẩn
+              src="/eye.png"
               alt="View"
               className="eye-svg"
               style={{ width: "22px" }}
@@ -92,14 +91,12 @@ const CampaignList = ({
   const pageNumber = pagination.pageNumber ?? 0;
   const pageSize = pagination.pageSize ?? 10;
 
-  // --- optional confirm dialog handler nếu sau này dùng ---
   const performPendingAction = async () => {
     const action = pendingActionRef.current;
     if (!action) return;
 
     setIsActionLoading(true);
     try {
-      // TODO: Thực hiện hành động xác nhận ở đây
       toast.success("Action confirmed successfully!");
     } catch (err) {
       console.error("Action failed:", err);
@@ -111,7 +108,6 @@ const CampaignList = ({
     }
   };
 
-  // --- modal chọn theo status ---
   const normalizedStatus = selectedRow?.status
     ? selectedRow.status.trim().toLowerCase()
     : "";
@@ -120,7 +116,6 @@ const CampaignList = ({
     <div className="campaign-table">
       <h1 className="size-h1">Campaign Vehicles</h1>
 
-      {/* Search Bar and Filters */}
       <div
         className="campaign-filters"
         style={{
@@ -179,7 +174,6 @@ const CampaignList = ({
         refreshing={refreshing}
       />
 
-      {/* Dynamic modal */}
       {normalizedStatus === "waiting for unassigned repair" && (
         <WaitingForRepair
           open
@@ -220,7 +214,6 @@ const CampaignList = ({
         <Done open data={selectedRow} onClose={() => setSelectedRow(null)} />
       )}
 
-      {/* ConfirmDialog (dự phòng cho hành động khác) */}
       <ConfirmDialog
         isOpen={isConfirmOpen}
         title={confirmTitle}

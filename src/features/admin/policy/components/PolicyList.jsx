@@ -63,8 +63,6 @@ const PolicyList = ({
           >
             Edit
           </Button>
-
-          {/* DELETE moved into Edit modal for better UX */}
         </div>
       ),
     },
@@ -76,7 +74,6 @@ const PolicyList = ({
     conditions: p.conditions ?? "-",
     coveragePeriodMonths: p.coveragePeriodMonths ?? "-",
     status: p.status ?? (p.active ? "Active" : "Inactive"),
-    // Preserve original/raw payload for actions (edit/delete/view)
     raw: p.__raw ?? p._raw ?? p,
   }));
   return (
@@ -85,14 +82,18 @@ const PolicyList = ({
         className="policy-table__header"
         style={{ display: "flex", alignItems: "center" }}
       >
-        <h2 className="size-h1">Policy Management</h2>
+        <h1 className="size-h1">Policy Management</h1>
         <Button
           size="small"
-          variant="primary"
+          variant="light"
           onClick={() => onCreatePolicy?.()}
           style={{ marginLeft: "auto" }}
         >
-          Create Policy
+          <img
+            src="../../../../../public/add.png"
+            alt="Create Policy"
+            style={{ width: "45px" }}
+          />
         </Button>
       </div>
 

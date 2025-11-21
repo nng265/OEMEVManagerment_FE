@@ -1,5 +1,3 @@
-// src/features/warranty/components/DeniedOrRepairedClaimModal.jsx
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
@@ -41,7 +39,6 @@ export const DeniedOrRepairedClaimModal = ({
         </Button>
       </WarrantyClaimDetailModal>
 
-      {/* Bill Preview Modal */}
       <WarrantyBillModal
         isOpen={showBillModal}
         onClose={handleCloseBillModal}
