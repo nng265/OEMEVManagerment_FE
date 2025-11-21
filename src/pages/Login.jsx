@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/atoms/Button/Button";
 import { Input } from "../components/atoms/Input/Input";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { request, ApiEnum } from "../services/NetworkUntil";
 import "./Login.css";
 
@@ -58,33 +58,41 @@ const Login = () => {
     }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const res = await request(ApiEnum.LOGIN_GOOGLE, {
-          credential: tokenResponse.access_token,
-        });
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setIsLoading(true);
+      setError("");
 
-        if (res.success) {
-          const { accessToken, refreshToken, employeeId, role } = res.data;
+      const res = await request(ApiEnum.LOGIN_GOOGLE, {
+        credential: credentialResponse.credential, // id_token từ Google
+      });
 
-          loginWithGoogle({ id: employeeId, role }, accessToken);
+      if (res.success) {
+        const { accessToken, refreshToken, employeeId, role } = res.data;
 
+        loginWithGoogle({ id: employeeId, role }, accessToken);
+
+        if (refreshToken) {
           localStorage.setItem("refreshToken", refreshToken);
-
-          if (role === "EVM_STAFF") navigate("/dashboardevmstaff");
-          else if (role === "SC_TECH") navigate("/overview");
-          else navigate("/dashboard");
-        } else {
-          setError(res.message || "Google login failed");
         }
-      } catch (err) {
-        console.error("Google login error:", err);
-        setError("Google login failed");
+
+        if (role === "EVM_STAFF") navigate("/dashboardevmstaff");
+        else if (role === "SC_TECH") navigate("/overview");
+        else navigate("/dashboard");
+      } else {
+        setError(res.message || "Google login failed");
       }
-    },
-    onError: () => setError("Google login failed"),
-  });
+    } catch (err) {
+      console.error("Google login error:", err);
+      setError(err?.responseData?.message || "Google login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google login failed. Please try again.");
+  };
 
   return (
     <div className="login-container">
@@ -157,16 +165,15 @@ const Login = () => {
           <div className="google-wrapper">
             <p>or</p>
 
-            <button
-              className="google-custom-btn"
-              onClick={() => googleLogin()}
-            >
-              <img
-                src="https://developers.google.com/identity/images/g-logo.png"
-                alt="google"
-              />
-              <span>Sign in with Google</span>
-            </button>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              theme="outline"
+              size="large"
+              text="signin_with"
+              shape="rectangular"
+              width="100%"
+            />
           </div>
         </div>
 
