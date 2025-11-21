@@ -14,10 +14,18 @@
 }
 
 .size-h1 {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  margin-top: 16px;
 }
 
-/* Filters giống Inventory */
+.campaign-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
 .campaign-filters {
   display: flex;
   gap: 15px;

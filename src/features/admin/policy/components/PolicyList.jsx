@@ -63,6 +63,14 @@ const PolicyList = ({
           >
             Edit
           </Button>
+
+          <Button
+            size="small"
+            variant="light"
+            onClick={() => onDeletePolicy(row.raw)}
+          >
+            Delete
+          </Button>
         </div>
       ),
     },

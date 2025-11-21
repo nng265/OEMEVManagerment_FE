@@ -4,7 +4,7 @@ import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { toast } from "react-toastify";
-import "./AccountModal.css"; // Dùng chung CSS
+import "./AccountModal.css";
 
 // Định nghĩa các Role
 const ROLES = ["SC_STAFF", "SC_TECH", "EVM_STAFF", "ADMIN"];
@@ -20,6 +20,7 @@ export const CreateAccountModal = ({
   const initialForm = {
     email: "",
     passwordHash: "",
+    confirmPassword: "",
     name: "",
     role: "",
     orgId: "",
@@ -43,6 +44,7 @@ export const CreateAccountModal = ({
   const handleSubmit = async () => {
     const emailVal = String(form.email || "").trim();
     const passwordVal = String(form.passwordHash || "").trim();
+    const confirmPassword = String(form.confirmPassword || "").trim();
     const nameVal = String(form.name || "").trim();
     const roleVal = String(form.role || "").trim();
     const orgIdVal = String(form.orgId || "").trim();
@@ -55,6 +57,20 @@ export const CreateAccountModal = ({
       toast.error("Password is required");
       return;
     }
+
+    // 💡 BẮT ĐẦU: Logic kiểm tra Confirm Password
+    if (!confirmPassword) {
+      toast.error("Confirm Password is required");
+      return;
+    }
+    if (passwordVal !== confirmPassword) {
+      toast.error("Password and Confirm Password do not match.");
+      // Tùy chọn: Xóa trường confirmPassword sau khi báo lỗi
+      setForm((prev) => ({ ...prev, confirmPassword: "" }));
+      return;
+    }
+    // 💡 KẾT THÚC: Logic kiểm tra Confirm Password
+
     if (!nameVal) {
       toast.error("Name is required");
       return;
@@ -72,6 +88,7 @@ export const CreateAccountModal = ({
     const payload = {
       email: emailVal,
       passwordHash: passwordVal,
+      confirmPassword: confirmPassword,
       name: nameVal,
       role: roleVal,
       orgId: orgIdVal,
@@ -85,6 +102,7 @@ export const CreateAccountModal = ({
   const isFormValid =
     String(form.email || "").trim() !== "" &&
     String(form.passwordHash || "").trim() !== "" &&
+    String(form.confirmPassword || "").trim() !== "" &&
     String(form.name || "").trim() !== "" &&
     String(form.role || "").trim() !== "" &&
     String(form.orgId || "").trim() !== "";
@@ -107,14 +125,12 @@ export const CreateAccountModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Create Account" // Đổi tiêu đề
-      size="lg" // 'lg' có thể hơi to, 'md' sẽ vừa
+      title="Create Account"
+      size="lg"
       showFooter={false}
     >
       <div className="account-form">
         {" "}
-        {/* Đổi class CSS */}
-        {/* --- Form cho Account --- */}
         <label>Email</label>
         <input
           type="email"
@@ -129,9 +145,16 @@ export const CreateAccountModal = ({
           value={form.passwordHash}
           onChange={handleChange}
         />
+        <label>Confirm Password</label>
+        <input
+          type="password"
+          name="confirmPassword"
+          value={form.confirmPassword}
+          onChange={handleChange}
+        />
         <label>Name</label>
         <input
-          type="name"
+          type="text"
           name="name"
           value={form.name}
           onChange={handleChange}
@@ -158,7 +181,6 @@ export const CreateAccountModal = ({
             </option>
           ))}
         </select>
-        {/* --- Hết form --- */}
         <div className="modal-footer">
           <Button variant="secondary" onClick={onClose}>
             Cancel
@@ -175,10 +197,10 @@ export const CreateAccountModal = ({
 
       <ConfirmDialog
         isOpen={showConfirm}
-        title="Create Account" // Đổi tiêu đề
+        title="Create Account"
         message={`Are you sure you want to create account for "${
           form.email || "(no email)"
-        }"?`} // Đổi nội dung
+        }"?`}
         onCancel={() => setShowConfirm(false)}
         onConfirm={handleConfirmCreate}
       />
@@ -186,12 +208,11 @@ export const CreateAccountModal = ({
   );
 };
 
-// Đổi propTypes
 CreateAccountModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
-  organizations: PropTypes.arrayOf(PropTypes.object).isRequired, // Thêm
+  organizations: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default CreateAccountModal; // Đổi export
+export default CreateAccountModal;
