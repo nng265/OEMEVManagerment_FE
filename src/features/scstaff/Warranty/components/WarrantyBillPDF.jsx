@@ -1,5 +1,3 @@
-// src/features/scstaff/Warranty/components/WarrantyBillPDF.jsx
-
 import React from "react";
 import PropTypes from "prop-types";
 import "./WarrantyBillPDF.css";
@@ -25,11 +23,15 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
   const isDenied = warrantyData.status?.toLowerCase() === "denied";
   const isRepaired = warrantyData.status?.toLowerCase() === "repaired";
 
-  // Get SC Staff name from localStorage
   const getStaffName = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
-      return userData?.name || userData?.fullName || userData?.username || "_______________";
+      return (
+        userData?.name ||
+        userData?.fullName ||
+        userData?.username ||
+        "_______________"
+      );
     } catch {
       return "_______________";
     }
@@ -41,7 +43,6 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
 
   return (
     <div ref={ref} className="warranty-bill-pdf">
-      {/* Header */}
       <div className="bill-header">
         <h1>WARRANTY CLAIM BILL</h1>
         <div className="bill-info">
@@ -54,13 +55,14 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
         </div>
       </div>
 
-      {/* Customer Information */}
       <div className="bill-section">
         <h2>Customer Information</h2>
         <div className="bill-grid">
           <div className="bill-item">
             <span className="bill-label">Name:</span>
-            <span className="bill-value">{warrantyData.customerName || "-"}</span>
+            <span className="bill-value">
+              {warrantyData.customerName || "-"}
+            </span>
           </div>
           <div className="bill-item">
             <span className="bill-label">Phone:</span>
@@ -71,7 +73,6 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
         </div>
       </div>
 
-      {/* Vehicle Information */}
       <div className="bill-section">
         <h2>Vehicle Information</h2>
         <div className="bill-grid">
@@ -90,10 +91,8 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
         </div>
       </div>
 
-      {/* For DENIED status */}
       {isDenied && (
         <>
-          {/* Technician Description */}
           <div className="bill-section">
             <h2>Technician Assessment</h2>
             <div className="bill-item full-width">
@@ -106,7 +105,6 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
             </div>
           </div>
 
-          {/* Applied Warranty Policies */}
           {warrantyData.showPolicy && warrantyData.showPolicy.length > 0 && (
             <div className="bill-section">
               <h2>Applied Warranty Policies</h2>
@@ -123,8 +121,14 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
                   {warrantyData.showPolicy.map((policy, idx) => (
                     <tr key={idx}>
                       <td>{policy.policyType || "-"}</td>
-                      <td>{policy.duration ? `${policy.duration} months` : "-"}</td>
-                      <td>{policy.mileageLimit ? `${policy.mileageLimit} km` : "-"}</td>
+                      <td>
+                        {policy.duration ? `${policy.duration} months` : "-"}
+                      </td>
+                      <td>
+                        {policy.mileageLimit
+                          ? `${policy.mileageLimit} km`
+                          : "-"}
+                      </td>
                       <td>{policy.coverageDetails || "-"}</td>
                     </tr>
                   ))}
@@ -133,7 +137,6 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
             </div>
           )}
 
-          {/* Attachments/Images */}
           {warrantyData.attachments && warrantyData.attachments.length > 0 && (
             <div className="bill-section">
               <h2>Supporting Images</h2>
@@ -153,10 +156,8 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
         </>
       )}
 
-      {/* For REPAIRED status */}
       {isRepaired && (
         <>
-          {/* Issue Description */}
           <div className="bill-section">
             <h2>Issue Description</h2>
             <div className="bill-item full-width">
@@ -171,7 +172,6 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
             )}
           </div>
 
-          {/* Attachments/Images */}
           {warrantyData.attachments && warrantyData.attachments.length > 0 && (
             <div className="bill-section">
               <h2>Images</h2>
@@ -189,49 +189,50 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
             </div>
           )}
 
-          {/* Approved Warranty Policy */}
           {warrantyData.policyName && (
             <div className="bill-section">
               <h2>Approved Warranty Coverage</h2>
               <div className="bill-item full-width">
                 <span className="bill-label">Policy Name:</span>
-                <p className="bill-value" style={{ fontWeight: '600', color: '#2c5282' }}>
+                <p
+                  className="bill-value"
+                  style={{ fontWeight: "600", color: "#2c5282" }}
+                >
                   {warrantyData.policyName}
                 </p>
               </div>
             </div>
           )}
 
-          {/* Repair Information - Parts/Components */}
-          {warrantyData.showClaimParts && warrantyData.showClaimParts.length > 0 && (
-            <div className="bill-section">
-              <h2>Repair Information - Parts/Components</h2>
-              <table className="bill-table">
-                <thead>
-                  <tr>
-                    <th>Action</th>
-                    <th>Model/Part Name</th>
-                    <th>Old Serial Number</th>
-                    <th>New Serial Number</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {warrantyData.showClaimParts.map((part, idx) => (
-                    <tr key={idx}>
-                      <td>{part.action || "-"}</td>
-                      <td>{part.model || "-"}</td>
-                      <td>{part.serialNumberOld || "-"}</td>
-                      <td>{part.serialNumberNew || "-"}</td>
+          {warrantyData.showClaimParts &&
+            warrantyData.showClaimParts.length > 0 && (
+              <div className="bill-section">
+                <h2>Repair Information - Parts/Components</h2>
+                <table className="bill-table">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+                      <th>Model/Part Name</th>
+                      <th>Old Serial Number</th>
+                      <th>New Serial Number</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody>
+                    {warrantyData.showClaimParts.map((part, idx) => (
+                      <tr key={idx}>
+                        <td>{part.action || "-"}</td>
+                        <td>{part.model || "-"}</td>
+                        <td>{part.serialNumberOld || "-"}</td>
+                        <td>{part.serialNumberNew || "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
         </>
       )}
 
-      {/* Signature Section */}
       <div className="bill-section signatures">
         <h2>Signatures</h2>
         <div className="signature-grid">
@@ -250,10 +251,10 @@ export const WarrantyBillPDF = React.forwardRef(({ warrantyData }, ref) => {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="bill-footer">
         <p>
-          This document serves as an official record of the warranty claim process.
+          This document serves as an official record of the warranty claim
+          process.
         </p>
         <p>
           For any questions or concerns, please contact our customer service.

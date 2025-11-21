@@ -1,20 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Modal } from '../../../../components/molecules/Modal/Modal';
-import { DetailModalActions } from '../../../../components/molecules/DetailModalActions/DetailModalActions';
-import { BaseWarrantyDetailSection } from './BaseWarrantyDetailSection';
-import './WarrantyClaimDetailModal.css';
+import React from "react";
+import PropTypes from "prop-types";
+import { Modal } from "../../../../components/molecules/Modal/Modal";
+import { DetailModalActions } from "../../../../components/molecules/DetailModalActions/DetailModalActions";
+import { BaseWarrantyDetailSection } from "./BaseWarrantyDetailSection";
+import "./WarrantyClaimDetailModal.css";
 
-// This component is now a WRAPPER - accepts children (additional action buttons)
-export const WarrantyClaimDetailModal = ({ 
-  isOpen, 
-  onClose, 
-  warrantyData, 
+export const WarrantyClaimDetailModal = ({
+  isOpen,
+  onClose,
+  warrantyData,
   title,
-  children, // Additional action buttons (right side)
-  showBackButton = true, // Always show Back/Cancel button on left by default
-  backButtonLabel = "Back", // Label for Back button
-  additionalContent // Additional content to render after BaseWarrantyDetailSection
+  children,
+  showBackButton = true,
+  backButtonLabel = "Back",
+  additionalContent,
 }) => {
   if (!warrantyData) return null;
 
@@ -22,17 +21,14 @@ export const WarrantyClaimDetailModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title || `Warranty Claim Details - ${warrantyData.status || ''}`}
+      title={title || `Warranty Claim Details - ${warrantyData.status || ""}`}
       size="lg"
       showFooter={false}
     >
-      {/* Common information display section */}
       <BaseWarrantyDetailSection warrantyData={warrantyData} />
 
-      {/* Additional content (e.g., assigned technicians section) */}
       {additionalContent}
 
-      {/* Action buttons section - uses DetailModalActions component */}
       <DetailModalActions
         onBack={onClose}
         backLabel={backButtonLabel}

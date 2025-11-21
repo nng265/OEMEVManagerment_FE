@@ -1,24 +1,22 @@
 .campaign-table {
   padding: 30px 20px 30px 20px;
-  margin-left: 10px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-
 .size-h1 {
   margin-bottom: 30px;
 }
 
-/* Header */
 .campaign-table__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 0 12px 0;
   margin-bottom: 12px;
-  border-bottom: 2px solid #f1f5f9;
+  margin-top: 25px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .campaign-table__header h1 {
@@ -27,7 +25,6 @@
   color: #1e293b;
 }
 
-/* Bộ lọc */
 .campaign-filters {
   display: flex;
   align-items: center;
@@ -59,7 +56,6 @@
   background-color: #cbd5e0;
 }
 
-/* ===================== STATUS BADGE (UNIVERSAL) ===================== */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -75,37 +71,32 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* ===================== COLOR THEMES ===================== */
 
-/* WAITING */
 .status-badge.status-waiting-for-unassigned-repair {
   background-color: #e0f2fe;
   color: #075985;
   border-color: #bae6fd;
 }
 
-/* UNDER REPAIR */
+
 .status-badge.status-under-repair {
   background-color: #fef9c3;
   color: #854d0e;
   border-color: #fde68a;
 }
 
-/* DONE WARRANTY */
 .status-badge.status-done {
   background-color: #fff7ed;
   color: #df0f0f;
   border-color: #fed7aa;
 }
 
-/* UNDER REPAIR */
 .status-badge.status-repaired {
   background-color: #e0f7e9;
   color: #166534;
   border-color: #a7f3d0;
 }
 
-/* Hover effect */
 .status-badge:hover {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }

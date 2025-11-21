@@ -1,16 +1,9 @@
-// export default EVMStaffInventoryContainer;
 
-// src/features/evm/containers/EVMStaffInventoryContainer.jsx
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
 import ManufacturerInventory from "../components/ManufacturerInventory";
 
-/**
- * Container cho màn hình Manufacturer Inventory (EVM Staff)
- * - Hỗ trợ phân trang phía server
- * - Khi đổi trang thì gọi lại API
- */
 export const EVMStaffInventoryContainer = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,9 +43,6 @@ export const EVMStaffInventoryContainer = () => {
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
-  // =====================
-  // FETCH INVENTORY
-  // =====================
   const fetchInventory = useCallback(async (pageNumber = 0, size, search, status) => {
     const effectiveSize =
       typeof size === "number" && size > 0
@@ -79,12 +69,10 @@ export const EVMStaffInventoryContainer = () => {
         Size: effectiveSize,
       };
 
-      // Thêm search query nếu có
       if (effectiveSearch && effectiveSearch.trim()) {
         params.Search = effectiveSearch.trim();
       }
 
-      // Thêm status filter nếu có
       if (effectiveStatus && effectiveStatus.trim()) {
         params.Status = effectiveStatus.trim();
       }
@@ -163,9 +151,6 @@ export const EVMStaffInventoryContainer = () => {
     fetchInventory(0, paginationRef.current.pageSize, debouncedSearchQuery, statusFilter);
   }, [fetchInventory, debouncedSearchQuery, statusFilter]);
 
-  // =====================
-  // HANDLERS
-  // =====================
   const handlePageChange = useCallback(
     (pageIndex, newPageSize) => {
       const nextPage = Math.max(
@@ -203,9 +188,6 @@ export const EVMStaffInventoryContainer = () => {
     setStatusFilter(value);
   };
 
-  // =====================
-  // RENDER
-  // =====================
   return (
     <div style={{ marginTop: 40 }}>
       <ManufacturerInventory

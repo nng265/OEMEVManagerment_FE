@@ -1,15 +1,12 @@
-/* src/features/scstaff/Warranty/components/WarrantyBillPDF.css */
-
 .warranty-bill-pdf {
   background: white;
   padding: 40px;
   font-family: "Arial", sans-serif;
   color: #333;
-  max-width: 210mm; /* A4 width */
+  max-width: 210mm;
   margin: 0 auto;
 }
 
-/* Header */
 .bill-header {
   text-align: center;
   margin-bottom: 30px;
@@ -58,7 +55,6 @@
   color: #3c3;
 }
 
-/* Sections */
 .bill-section {
   margin-bottom: 25px;
   page-break-inside: avoid;
@@ -73,7 +69,6 @@
   margin-bottom: 15px;
 }
 
-/* Grid Layout */
 .bill-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -106,7 +101,6 @@
   word-wrap: break-word;
 }
 
-/* Table */
 .bill-table {
   width: 100%;
   border-collapse: collapse;
@@ -138,7 +132,6 @@
   background-color: #f0f8ff;
 }
 
-/* Images */
 .bill-images {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -160,7 +153,6 @@
   display: block;
 }
 
-/* Signatures */
 .signatures {
   margin-top: 40px;
   page-break-inside: avoid;
@@ -204,7 +196,6 @@
   margin-top: 5px;
 }
 
-/* Footer */
 .bill-footer {
   margin-top: 40px;
   padding-top: 20px;
@@ -219,7 +210,6 @@
   line-height: 1.6;
 }
 
-/* Print styles */
 @media print {
   .warranty-bill-pdf {
     padding: 20px;

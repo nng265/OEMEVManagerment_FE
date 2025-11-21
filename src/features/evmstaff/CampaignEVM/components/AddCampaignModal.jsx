@@ -9,20 +9,6 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { toast } from "react-toastify";
 import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 
-/*
-  AddCampaignModal (VN):
-  - Modal chứa form tạo campaign (presentational + nhẹ xử lý form state).
-  - Trách nhiệm:
-    * Quản lý state form local (title, type, category, models, dates, description)
-    * Lấy danh mục part categories và models theo category khi modal mở
-    * Validate form cơ bản, build payload và show ConfirmDialog trước khi gửi
-    * Không gọi API trực tiếp để tạo campaign (container sẽ handle thông qua onSubmit)
-
-  Ghi chú:
-  - `onSubmit` được container truyền vào; modal chỉ build payload và gọi onSubmit
-    khi user confirm.
-*/
-
 export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -35,20 +21,19 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     description: "",
   });
 
-  // formData lưu toàn bộ trạng thái input của form.
-  // Các trường có comment rõ ràng: `oldTarget` là model cũ, `target` là model mới.
-
+  // Tính ngày min = ngày hôm nay + 1
+  const getMinDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  };
+  const minDate = getMinDate();
   const [categories, setCategories] = useState([]);
   const [models, setModels] = useState([]);
   const [loadingCats, setLoadingCats] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
-
-  // Thêm state cho ConfirmDialog
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingPayload, setPendingPayload] = useState(null);
-
-  // showConfirm/pendingPayload dùng để tạm giữ payload trước khi user confirm
-
   //  Reset form mỗi khi mở lại modal
   useEffect(() => {
     if (isOpen) {
@@ -64,8 +49,6 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       });
     }
   }, [isOpen]);
-
-  // Khi modal mở lại, reset form để tránh giữ dữ liệu cũ
 
   // Fetch categories
   useEffect(() => {
@@ -90,10 +73,6 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
     if (isOpen) fetchCategories();
   }, [isOpen]);
 
-  // Lấy danh mục part khi modal mở. Nếu API trả mảng trực tiếp hoặc object { success, data }
-  // đều xử lý được.
-
-  // Fetch models theo category
   const fetchModelsByCategory = async (category) => {
     if (!category) {
       setModels([]);
@@ -118,12 +97,8 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   // Khi chọn category, gọi hàm này để lấy danh sách models tương ứng.
-
-  //  Handle input thay đổi
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    //  Nếu chọn Type → reset model
     if (name === "type") {
       setFormData((prev) => ({
         ...prev,
@@ -133,8 +108,6 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       }));
       return;
     }
-
-    //  Nếu chọn Category → reset models + fetch mới
     if (name === "targetCategory") {
       setFormData((prev) => ({
         ...prev,
@@ -145,8 +118,6 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       fetchModelsByCategory(value);
       return;
     }
-
-    //  Nếu chọn oldTarget → reset target nếu bị trùng
     if (name === "oldTarget") {
       setFormData((prev) => ({
         ...prev,
@@ -155,8 +126,6 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       }));
       return;
     }
-
-    //  Nếu chọn target → reset oldTarget nếu bị trùng
     if (name === "target") {
       setFormData((prev) => ({
         ...prev,
@@ -165,16 +134,8 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       }));
       return;
     }
-
-    //  Trường hợp còn lại
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  // handleChange xử lý nhiều trường đặc biệt:
-  // - Khi thay đổi type/category sẽ reset các trường phụ để tránh dữ liệu mâu thuẫn
-  // - Khi chọn oldTarget/target trùng nhau thì reset field kia để đảm bảo khác nhau
-
-  //  Khi nhấn nút "Create" — hiển thị ConfirmDialog
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -182,7 +143,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       !formData.title ||
       !formData.type ||
       !formData.targetCategory ||
-      !formData.oldTarget || //  thêm dòng này
+      !formData.oldTarget || 
       !formData.target ||
       !formData.startDate ||
       !formData.endDate ||
@@ -201,25 +162,17 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
       type: formData.type,
       title: formData.title,
       description: formData.description,
-      partModel: formData.oldTarget, // old
-      replacementPartModel: formData.target, // new
+      partModel: formData.oldTarget, 
+      replacementPartModel: formData.target, 
       startDate: formData.startDate,
       endDate: formData.endDate,
     };
-
-    // Hiện ConfirmDialog
     setPendingPayload(payload);
     setShowConfirm(true);
   };
 
-  // Validation cơ bản trước khi build payload
-  // Sau khi build payload chúng ta không gọi API trực tiếp ở đây, mà lưu payload
-  // vào pendingPayload và hiện ConfirmDialog để user confirm.
-
-  //  Xử lý ConfirmDialog
   const handleConfirm = () => {
     if (pendingPayload) {
-      // Gọi onSubmit do container truyền vào — container sẽ gọi API và xử lý kết quả
       onSubmit(pendingPayload);
     }
     setShowConfirm(false);
@@ -358,7 +311,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
                   </option>
                 )}
                 {models
-                  .filter((m) => m && m !== formData.target) // bỏ trùng với target
+                  .filter((m) => m && m !== formData.target)
                   .map((m, idx) => (
                     <option key={idx} value={m}>
                       {m}
@@ -391,7 +344,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
                   </option>
                 )}
                 {models
-                  .filter((m) => m && m !== formData.oldTarget) // bỏ trùng với oldTarget
+                  .filter((m) => m && m !== formData.oldTarget) 
                   .map((m, idx) => (
                     <option key={idx} value={m}>
                       {m}
@@ -408,6 +361,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
             <Input
               type="date"
               name="startDate"
+              min={minDate}
               value={formData.startDate}
               onChange={handleChange}
             />
@@ -418,6 +372,7 @@ export const AddCampaignModal = ({ isOpen, onClose, onSubmit }) => {
             <Input
               type="date"
               name="endDate"
+              min={minDate}
               value={formData.endDate}
               onChange={handleChange}
             />

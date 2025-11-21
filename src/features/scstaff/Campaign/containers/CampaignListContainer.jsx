@@ -45,12 +45,10 @@ const CampaignListContainer = () => {
     searchRef.current = debouncedSearchQuery;
   }, [debouncedSearchQuery]);
 
-  // Debounce search query để tránh request liên tục
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-    }, 500); // Delay 500ms sau khi user ngừng gõ
-
+    }, 500);
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
@@ -81,17 +79,14 @@ const CampaignListContainer = () => {
           Size: size,
         };
 
-        // Thêm search query nếu có
         if (effectiveSearch && effectiveSearch.trim()) {
           params.Search = effectiveSearch.trim();
         }
 
-        // Thêm type filter nếu có
         if (effectiveType && effectiveType.trim()) {
           params.Type = effectiveType.trim();
         }
 
-        // Thêm status filter nếu có
         if (effectiveStatus && effectiveStatus.trim()) {
           params.Status = effectiveStatus.trim();
         }
@@ -118,7 +113,6 @@ const CampaignListContainer = () => {
     []
   );
 
-  // load technicians for create modal
   useEffect(() => {
     let mounted = true;
     const loadTechs = async () => {
@@ -187,7 +181,6 @@ const CampaignListContainer = () => {
     setShowViewModal(true);
   };
 
-  // If called from a row, accept the campaign to preselect; otherwise open blank
   const handleAdd = (campaign) => {
     setSelectedCampaign(campaign ?? null);
     setShowAddModal(true);

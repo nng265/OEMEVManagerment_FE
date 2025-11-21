@@ -20,7 +20,6 @@ export const CarListContainer = () => {
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // ✅ Pagination từ BE (page bắt đầu = 0, size = 20)
   const [pagination, setPagination] = useState({
     pageNumber: 0,
     pageSize: 10,
@@ -38,42 +37,59 @@ export const CarListContainer = () => {
   }, [searchQuery]);
 
   // --- Fetch dữ liệu từ BE ---
-  const fetchVehicles = useCallback(async (pageNumber = 0, pageSize, search) => {
-    const effectivePageSize =
-      typeof pageSize === "number" ? pageSize : paginationRef.current.pageSize;
-    const effectiveSearch =
-      typeof search === "string" ? search : searchRef.current;
+  const fetchVehicles = useCallback(
+    async (pageNumber = 0, pageSize, search) => {
+      const effectivePageSize =
+        typeof pageSize === "number"
+          ? pageSize
+          : paginationRef.current.pageSize;
+      const effectiveSearch =
+        typeof search === "string" ? search : searchRef.current;
 
-    try {
-      setLoading(true);
-      setError(null);
-      setSubmitError(null);
+      try {
+        setLoading(true);
+        setError(null);
+        setSubmitError(null);
 
-      const params = {
-        Page: pageNumber,
-        Size: effectivePageSize,
-      };
+        const params = {
+          Page: pageNumber,
+          Size: effectivePageSize,
+        };
 
-      // Thêm search query nếu có
-      if (effectiveSearch && effectiveSearch.trim()) {
-        params.Search = effectiveSearch.trim();
-      }
+        if (effectiveSearch && effectiveSearch.trim()) {
+          params.Search = effectiveSearch.trim();
+        }
 
-      const response = await request(ApiEnum.GET_VEHICLES, params);
+        const response = await request(ApiEnum.GET_VEHICLES, params);
 
-      const { success, items, totalRecords, page, size, message } =
-        normalizePagedResult(response, []);
+        const { success, items, totalRecords, page, size, message } =
+          normalizePagedResult(response, []);
 
-      if (success) {
-        setVehicles(items);
-        setPagination({
-          pageNumber: typeof page === "number" ? page : pageNumber,
-          pageSize:
-            typeof size === "number" && size > 0 ? size : effectivePageSize,
-          totalRecords:
-            typeof totalRecords === "number" ? totalRecords : items.length,
-        });
-      } else {
+        if (success) {
+          setVehicles(items);
+          setPagination({
+            pageNumber: typeof page === "number" ? page : pageNumber,
+            pageSize:
+              typeof size === "number" && size > 0 ? size : effectivePageSize,
+            totalRecords:
+              typeof totalRecords === "number" ? totalRecords : items.length,
+          });
+        } else {
+          setVehicles([]);
+          setPagination((prev) => ({
+            ...prev,
+            pageNumber,
+            pageSize: effectivePageSize,
+            totalRecords: 0,
+          }));
+          setError(message || "Unable to load vehicle list.");
+        }
+      } catch (err) {
+        console.error("Error fetching vehicles:", err);
+        const message =
+          err?.responseData?.message ||
+          err?.message ||
+          "An error occurred while loading the vehicle list.";
         setVehicles([]);
         setPagination((prev) => ({
           ...prev,
@@ -81,33 +97,18 @@ export const CarListContainer = () => {
           pageSize: effectivePageSize,
           totalRecords: 0,
         }));
-        setError(message || "Unable to load vehicle list.");
+        setError(message);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching vehicles:", err);
-      const message =
-        err?.responseData?.message ||
-        err?.message ||
-        "An error occurred while loading the vehicle list.";
-      setVehicles([]);
-      setPagination((prev) => ({
-        ...prev,
-        pageNumber,
-        pageSize: effectivePageSize,
-        totalRecords: 0,
-      }));
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
-  // --- Gọi API lần đầu ---
   useEffect(() => {
     fetchVehicles(0, paginationRef.current.pageSize);
   }, [fetchVehicles]);
 
-  // --- Handlers ---
   const handleViewDetail = (vehicle) => {
     setSelectedVehicle(vehicle);
     setSubmitError(null);
@@ -130,13 +131,11 @@ export const CarListContainer = () => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
-    
-    // Reset về trang đầu khi search
+
     fetchVehicles(0, paginationRef.current.pageSize, value);
   };
 
   const handleWarrantySubmit = (formData) => {
-    // Open confirmation dialog first, do not call API yet
     setPendingFormData(formData);
     setIsConfirmOpen(true);
   };
@@ -192,7 +191,6 @@ export const CarListContainer = () => {
     );
   }, [fetchVehicles]);
 
-  // --- Cấu hình DataTable ---
   const columns = [
     { key: "vin", label: "VIN" },
     { key: "customerName", label: "Customer" },
@@ -220,14 +218,18 @@ export const CarListContainer = () => {
             />
           </Button>
           <Button
-            className="variant-primary"
+            className="light"
             size="small"
             onClick={(e) => {
               e.stopPropagation();
               handleCreateWarrantyClaim(row);
             }}
           >
-            🛠️ Create Warranty
+            <img
+              src="../../../../../public/pencil.png"
+              alt="Create Warranty Claim"
+              style={{ width: "20px" }}
+            />
           </Button>
         </div>
       ),

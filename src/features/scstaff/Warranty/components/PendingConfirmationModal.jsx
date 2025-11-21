@@ -1,5 +1,3 @@
-// src/features/warranty/components/PendingConfirmationModal.jsx
-
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button } from "../../../../components/atoms/Button/Button";
@@ -18,11 +16,12 @@ export const PendingConfirmationModal = ({
 }) => {
   const [showInputSection, setShowInputSection] = useState(false);
   const [description, setDescription] = useState("");
-  const [selectedDropdowns, setSelectedDropdowns] = useState([{ id: 1, selectedValue: "" }]);
+  const [selectedDropdowns, setSelectedDropdowns] = useState([
+    { id: 1, selectedValue: "" },
+  ]);
 
   if (!warrantyData) return null;
 
-  // --- When clicking "Request More Information" ---
   const handleRequestMoreInfoClick = () => {
     setShowInputSection(true);
     setDescription("");
@@ -30,7 +29,6 @@ export const PendingConfirmationModal = ({
     onFetchTechnicians?.();
   };
 
-  // --- Send request ---
   const handleSendRequest = () => {
     if (description.trim() === "") {
       alert("Please enter the reason for requesting more information.");
@@ -54,13 +52,19 @@ export const PendingConfirmationModal = ({
   };
 
   const handleAddTechnician = () => {
-    const newId = (selectedDropdowns[selectedDropdowns.length - 1]?.id || 0) + 1;
-    setSelectedDropdowns([...selectedDropdowns, { id: newId, selectedValue: "" }]);
+    const newId =
+      (selectedDropdowns[selectedDropdowns.length - 1]?.id || 0) + 1;
+    setSelectedDropdowns([
+      ...selectedDropdowns,
+      { id: newId, selectedValue: "" },
+    ]);
   };
 
   const handleRemoveTechnician = (idToRemove) => {
     if (selectedDropdowns.length > 1)
-      setSelectedDropdowns(selectedDropdowns.filter((t) => t.id !== idToRemove));
+      setSelectedDropdowns(
+        selectedDropdowns.filter((t) => t.id !== idToRemove)
+      );
   };
 
   const handleTechSelectionChange = (rowId, selectedUserId) => {
@@ -70,14 +74,12 @@ export const PendingConfirmationModal = ({
     setSelectedDropdowns(updated);
   };
 
-  // --- Action buttons ---
   const handleApproveClick = () => onAction?.("sendToManufacturer");
   const handleRejectClick = () => onAction?.("reject");
 
-  // Request More Information Section
   const requestMoreInfoSection = showInputSection ? (
     <DetailSection title="Request More Information">
-      <div className="detail-grid" style={{ gridTemplateColumns: '1fr' }}>
+      <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="detail-item">
           <span className="label">Reason for Request:</span>
           <textarea
@@ -86,17 +88,20 @@ export const PendingConfirmationModal = ({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter detailed reason for requesting more information..."
-            style={{ width: '100%', marginTop: '8px' }}
+            style={{ width: "100%", marginTop: "8px" }}
           />
         </div>
 
-        <div className="detail-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+        <div
+          className="detail-item"
+          style={{ flexDirection: "column", alignItems: "stretch" }}
+        >
           <span className="label">Assign Technician (Optional)</span>
-          
+
           {isLoadingTechnicians ? (
             <p className="loading-text">Loading technician list...</p>
           ) : technicians.length > 0 ? (
-            <div style={{ marginTop: '8px' }}>
+            <div style={{ marginTop: "8px" }}>
               {selectedDropdowns.map((row) => {
                 const selectedOtherIds = selectedDropdowns
                   .filter((r) => r.id !== row.id)
@@ -112,7 +117,9 @@ export const PendingConfirmationModal = ({
                     <select
                       className="form-select tech-select"
                       value={row.selectedValue}
-                      onChange={(e) => handleTechSelectionChange(row.id, e.target.value)}
+                      onChange={(e) =>
+                        handleTechSelectionChange(row.id, e.target.value)
+                      }
                     >
                       <option value="">-- Select Technician --</option>
                       {filteredTechs.map((t) => (
@@ -149,8 +156,11 @@ export const PendingConfirmationModal = ({
           )}
         </div>
 
-        <div style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-          <div className="form-actions" style={{ marginTop: '12px', justifyContent: 'space-between' }}>
+        <div style={{ flexDirection: "column", alignItems: "stretch" }}>
+          <div
+            className="form-actions"
+            style={{ marginTop: "12px", justifyContent: "space-between" }}
+          >
             <Button variant="secondary" onClick={handleCancelInput}>
               Cancel
             </Button>
@@ -163,7 +173,6 @@ export const PendingConfirmationModal = ({
     </DetailSection>
   ) : null;
 
-  // Action buttons - only for "pending confirmation" status
   const actionButtons = !showInputSection && (
     <>
       <Button variant="warning" onClick={handleRequestMoreInfoClick}>

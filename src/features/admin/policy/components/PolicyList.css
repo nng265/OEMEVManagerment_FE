@@ -21,7 +21,6 @@
     border-radius: 8px;
 }
 
-/* Status badges */
 .status-badge {
     display: inline-block;
     padding: 6px 10px;
@@ -46,7 +45,6 @@
     color: #475569;
 }
 
-/* Action column layout */
 .policy-table .data-action {
     display: flex;
     gap: 8px;
@@ -54,25 +52,21 @@
     align-items: center;
 }
 
-/* icon size */
 .eye-svg {
     width: 20px;
     height: 20px;
 }
 
-/* Table row hover (DataTable class names may differ; keep it generic) */
 .table-row:hover {
     background: #fbfdff;
 }
 
-/* Make table cells wrap long text for conditions */
 .table-cell-conditions {
     white-space: pre-wrap;
     max-width: 320px;
     word-wrap: break-word;
 }
 
-/* Responsive tweaks */
 @media (max-width: 760px) {
     .policy-table {
         padding: 12px;

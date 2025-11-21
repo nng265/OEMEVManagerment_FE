@@ -1,5 +1,3 @@
-// src/features/warranty/components/SentToManufacturerModal.jsx
-
 import React from "react";
 import PropTypes from "prop-types";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
