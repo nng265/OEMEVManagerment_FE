@@ -33,7 +33,7 @@ export const roleScreens = {
     },
     {
       id: "status_campaign",
-      label: "CampaignVehicle",
+      label: "Campaign Vehicle",
       component: "StatusCampaign",
     },
   ],

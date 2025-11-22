@@ -8,6 +8,29 @@ import { WarrantyRecordsSection } from '../../../../components/molecules/Warrant
 export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
   if (!vehicle) return null;
 
+  const { serialNumber = [] } = vehicle;
+
+  const serial = () => (
+    <div className="table-responsive">
+      <table className="parts-request-table">
+        <thead>
+          <tr>
+            <th>Part Model</th>
+            <th>Serial</th>
+          </tr>
+        </thead>
+        <tbody>
+          {serialNumber.map((serial, index) => (
+            <tr key={serial.orderItemId || index}>
+              <td>{serial.model || "N/A"}</td>
+              <td>{serial.requestedQuantity ?? 0}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <Modal 
       isOpen={show} 
@@ -52,7 +75,13 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
 
       <WarrantyRecordsSection warrantyRecords={vehicle.policyInformation} />
 
+<<<<<<< Updated upstream
       <DetailModalActions onBack={onClose} backLabel="Close" />
+=======
+      <DetailSection title="Serial List">{serial()}</DetailSection>
+
+      <DetailModalActions onBack={onClose} backLabel="Cancel" />
+>>>>>>> Stashed changes
     </Modal>
   );
 };

@@ -80,6 +80,7 @@ const AppointmentList = ({
         style={{ display: "flex", alignItems: "center" }}
       >
         <h2 className="size-h1">Appointment Management</h2>
+<<<<<<< Updated upstream
         <Button variant="light" style={{ marginLeft: "auto" }} onClick={onAdd}>
           <img
             src="../../../../../public/add.png"
@@ -87,6 +88,22 @@ const AppointmentList = ({
             style={{ width: "18px" }}
           />
         </Button>
+=======
+
+        <div className="appointment-table__right">
+          <Button
+            variant="light"
+            style={{ marginLeft: "auto" }}
+            onClick={onAdd}
+          >
+            <img
+              src="../../../../../public/add.png"
+              alt="Create Appointment"
+              style={{ width: "40px" }}
+            />
+          </Button>
+        </div>
+>>>>>>> Stashed changes
       </div>
 
       <DataTable

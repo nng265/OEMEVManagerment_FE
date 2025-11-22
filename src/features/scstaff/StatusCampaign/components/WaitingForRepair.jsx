@@ -132,15 +132,21 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
     <Modal
       isOpen={open}
       onClose={onClose}
+<<<<<<< Updated upstream
       title="Assign Technician"
       size="xl"
+=======
+      // title="Assign Technician"
+      title={
+        campaign ? `Vehicle - ${campaign.status}` : "Waiting For Repair Details"
+      }
+      size="lg"
+>>>>>>> Stashed changes
       showFooter={false}
     >
       <div className="campaign-modal">
         {/* === Section 1: Thông tin Khách hàng & Xe === */}
-        <h3 className="campaign-section-title">
-          Customer & Vehicle Information
-        </h3>
+        <h3 className="campaign-section-title">Customer</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block">
             <span className="info-block-label">Customer Name</span>
@@ -155,9 +161,11 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
             </span>
           </div>
         </div>
+
+        <h3 className="campaign-section-title">Vehicle Information</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block">
-            <span className="info-block-label">Vehicle Model</span>
+            <span className="info-block-label">Model</span>
             <span className="info-block-value">
               {displayValue(vehicle.model)}
             </span>
