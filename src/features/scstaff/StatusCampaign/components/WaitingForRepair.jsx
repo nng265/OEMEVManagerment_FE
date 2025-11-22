@@ -133,7 +133,7 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
       isOpen={open}
       onClose={onClose}
       title="Assign Technician"
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">
@@ -226,7 +226,13 @@ const WaitingForRepair = ({ open, onClose, data, onSuccess }) => {
         <h3 className="campaign-section-title">Assign Technician *</h3>
         <div className="form-group">
           {loadingTechs ? (
-            <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "20px",
+              }}
+            >
               <LoadingSpinner />
             </div>
           ) : (

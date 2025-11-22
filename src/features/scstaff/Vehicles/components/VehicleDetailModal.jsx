@@ -1,16 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Modal } from '../../../../components/molecules/Modal/Modal';
-import { DetailSection } from '../../../../components/molecules/DetailSection/DetailSection';
-import { DetailModalActions } from '../../../../components/molecules/DetailModalActions/DetailModalActions';
-import { WarrantyRecordsSection } from '../../../../components/molecules/WarrantyRecordsSection/WarrantyRecordsSection';
+import React from "react";
+import PropTypes from "prop-types";
+import { Modal } from "../../../../components/molecules/Modal/Modal";
+import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
+import { DetailModalActions } from "../../../../components/molecules/DetailModalActions/DetailModalActions";
+import { WarrantyRecordsSection } from "../../../../components/molecules/WarrantyRecordsSection/WarrantyRecordsSection";
 
 export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
   if (!vehicle) return null;
 
   return (
-    <Modal 
-      isOpen={show} 
+    <Modal
+      isOpen={show}
       onClose={onClose}
       title="Vehicle Details"
       size="lg"
@@ -43,16 +43,12 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
             <span className="label">Phone:</span>
             <span className="value">{vehicle.customerPhoneNunmber}</span>
           </div>
-          <div className="detail-item">
-            <span className="label">Customer ID:</span>
-            <span className="value">{vehicle.customerId}</span>
-          </div>
         </div>
       </DetailSection>
 
       <WarrantyRecordsSection warrantyRecords={vehicle.policyInformation} />
 
-      <DetailModalActions onBack={onClose} backLabel="Close" />
+      <DetailModalActions onBack={onClose} backLabel="Cancel" />
     </Modal>
   );
 };
@@ -67,6 +63,6 @@ VehicleDetailModal.propTypes = {
     customerName: PropTypes.string,
     customerPhoneNunmber: PropTypes.string,
     customerId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    policyInformation: PropTypes.array
-  })
+    policyInformation: PropTypes.array,
+  }),
 };

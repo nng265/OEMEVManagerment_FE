@@ -5,13 +5,14 @@ import { DataTable } from "../../../../components/organisms/DataTable/DataTable"
 import "./AppointmentList.css";
 
 const renderStatus = (value) => {
-  if (!value) return <span className="status-badge status-unknown">Unknown</span>;
+  if (!value)
+    return <span className="status-badge status-unknown">Unknown</span>;
 
   // chuẩn hoá text về dạng class
   const normalized = value
     .toLowerCase()
-    .replace(/[\s-]/g, "_")        // space hoặc - → _
-    .replace(/__+/g, "_")          // bỏ double _
+    .replace(/[\s-]/g, "_")
+    .replace(/__+/g, "_")
     .trim();
 
   // chuyển sang class
@@ -30,14 +31,13 @@ const renderStatus = (value) => {
   const className = statusMap[normalized] || "unknown";
 
   const displayText =
-    value
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase()) ?? "Unknown";
+    value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) ??
+    "Unknown";
 
-  return <span className={`status-badge status-${className}`}>{displayText}</span>;
+  return (
+    <span className={`status-badge status-${className}`}>{displayText}</span>
+  );
 };
-
-
 
 const AppointmentList = ({
   data = [],
@@ -80,13 +80,24 @@ const AppointmentList = ({
         style={{ display: "flex", alignItems: "center" }}
       >
         <h2 className="size-h1">Appointment Management</h2>
-        <Button variant="light" style={{ marginLeft: "auto" }} onClick={onAdd}>
-          <img
-            src="../../../../../public/add.png"
-            alt="Create Appointment"
-            style={{ width: "18px" }}
-          />
-        </Button>
+
+        <div className="appointment-table__right">
+          <span className="appointment-table__hint">
+            Click to create a new booking for Customer
+          </span>
+
+          <Button
+            variant="light"
+            style={{ marginLeft: "auto" }}
+            onClick={onAdd}
+          >
+            <img
+              src="../../../../../public/add.png"
+              alt="Create Appointment"
+              style={{ width: "40px" }}
+            />
+          </Button>
+        </div>
       </div>
 
       <DataTable

@@ -22,7 +22,7 @@ const Done = ({ open, onClose, data }) => {
       isOpen={open}
       onClose={onClose}
       title="Campaign Done"
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">

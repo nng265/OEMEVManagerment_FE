@@ -19,7 +19,7 @@ export const AppointmentCreateModal = ({
       title="Create New Appointment"
       onClose={onClose}
       showFooter={false}
-      size="xl"
+      size="lg"
     >
       <div className="appointment-modal-body">
         <AppointmentForm

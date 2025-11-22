@@ -254,7 +254,6 @@ export const CarListContainer = () => {
           setPendingFormData(null);
         }}
         pagination={pagination}
-        // ✅ Gọi lại API khi đổi trang hoặc page size
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}

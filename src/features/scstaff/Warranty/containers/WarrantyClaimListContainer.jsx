@@ -397,39 +397,39 @@ export const WarrantyClaimListContainer = () => {
     const labelMap = {
       sendToManufacturer: {
         title: "Confirm Send",
-        message: `Send claim #${selectedWarrantyClaim.claimId} to manufacturer?`,
+        message: `Send claim to manufacturer?`,
         success: "Sent to manufacturer successfully!",
       },
       reject: {
         title: "Confirm Reject",
-        message: `Reject claim #${selectedWarrantyClaim.claimId}?`,
+        message: `Reject claim `,
         success: "Claim rejected successfully!",
       },
       needMoreInfo: {
         title: "Confirm Send Back",
-        message: `Send claim #${selectedWarrantyClaim.claimId} back for more info?`,
+        message: `Send claim back for more info?`,
         success: "Requested more information successfully!",
       },
       doneWarranty: {
         title: "Confirm Complete",
-        message: `Mark claim #${selectedWarrantyClaim.claimId} as completed?`,
+        message: `Mark claim as completed?`,
         success: "Marked as completed successfully!",
       },
       carBackHome: {
         title: "Confirm Return",
-        message: `Mark vehicle returned to customer for claim #${selectedWarrantyClaim.claimId}?`,
+        message: `Mark vehicle returned to customer for claim`,
         success: "Marked vehicle returned to customer!",
       },
       carBackCenter: {
         title: "Confirm Return",
-        message: `Mark vehicle returned to center for claim #${selectedWarrantyClaim.claimId}?`,
+        message: `Mark vehicle returned to center for claim`,
         success: "Marked vehicle returned to center!",
       },
     };
 
     const cfg = labelMap[action] || {
       title: "Confirm",
-      message: `Proceed with action for claim #${selectedWarrantyClaim.claimId}?`,
+      message: `Proceed with action for claim`,
       success: "Action completed successfully!",
     };
 

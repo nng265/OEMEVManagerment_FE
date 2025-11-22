@@ -23,7 +23,7 @@ const UnderRepair = ({ open, onClose, data }) => {
       isOpen={open}
       onClose={onClose}
       title="Vehicle Under Repair"
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">

@@ -87,7 +87,7 @@ export const CreatePartsRequestModal = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Create Parts Request"
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       {addedParts.length > 0 && (

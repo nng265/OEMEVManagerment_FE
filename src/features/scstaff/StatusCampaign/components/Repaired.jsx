@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
@@ -8,7 +8,7 @@ import "../components/UI.css";
 
 const Repaired = ({ open, onClose, data, onSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const pendingActionRef = useRef(null);
+  // const pendingActionRef = useRef(null);
   const displayValue = (value) => {
     if (value === 0 || value === null || value === undefined || value === "") {
       return "—";
@@ -50,7 +50,7 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
       isOpen={open}
       onClose={onClose}
       title="Vehicle Repaired"
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">

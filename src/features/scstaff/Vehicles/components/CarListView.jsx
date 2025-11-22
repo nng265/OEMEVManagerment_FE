@@ -38,7 +38,7 @@ export const CarListView = ({
           value={searchQuery}
           onChange={onSearchChange}
           fullWidth
-          size="md"
+          size="lg"
         />
       </div>
 

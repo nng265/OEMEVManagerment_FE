@@ -67,7 +67,7 @@ export const WarrantyBillModal = ({ isOpen, onClose, warrantyData }) => {
       isOpen={isOpen}
       onClose={onClose}
       title="Warranty Bill Preview"
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="warranty-bill-modal-content">

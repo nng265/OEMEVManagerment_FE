@@ -190,7 +190,7 @@ const AppointmentViewModal = ({
       title={
         appointmentId ? `Appointment ${appointmentId}` : "Appointment Details"
       }
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="appointment-modal">
