@@ -76,7 +76,7 @@ export const EVMPartsListContainer = () => {
         if (effectiveStatus && effectiveStatus.trim()) {
           params.Status = effectiveStatus;
         }
-
+        console.log("🔎 Fetch Params:", params);
         const res = await request(ApiEnum.GET_REQUEST_PARTS, params);
 
         const { success, items, totalRecords, page, size, message } =

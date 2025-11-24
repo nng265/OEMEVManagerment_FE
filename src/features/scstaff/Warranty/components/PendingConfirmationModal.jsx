@@ -20,9 +20,19 @@ export const PendingConfirmationModal = ({
     { id: 1, selectedValue: "" },
   ]);
 
+  const [showRejectSection, setShowRejectSection] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+
   if (!warrantyData) return null;
 
+  // ------------------- Request More Info Handlers -------------------
   const handleRequestMoreInfoClick = () => {
+    // Ẩn Reject form nếu đang mở
+    if (showRejectSection) {
+      setShowRejectSection(false);
+      setRejectReason("");
+    }
+
     setShowInputSection(true);
     setDescription("");
     setSelectedDropdowns([{ id: 1, selectedValue: "" }]);
@@ -62,9 +72,7 @@ export const PendingConfirmationModal = ({
 
   const handleRemoveTechnician = (idToRemove) => {
     if (selectedDropdowns.length > 1)
-      setSelectedDropdowns(
-        selectedDropdowns.filter((t) => t.id !== idToRemove)
-      );
+      setSelectedDropdowns(selectedDropdowns.filter((t) => t.id !== idToRemove));
   };
 
   const handleTechSelectionChange = (rowId, selectedUserId) => {
@@ -74,9 +82,38 @@ export const PendingConfirmationModal = ({
     setSelectedDropdowns(updated);
   };
 
-  const handleApproveClick = () => onAction?.("sendToManufacturer");
-  const handleRejectClick = () => onAction?.("reject");
+  // ------------------- Reject Handlers -------------------
+  const handleRejectClick = () => {
+    // Ẩn Request More Info nếu đang mở
+    if (showInputSection) {
+      setShowInputSection(false);
+      setDescription("");
+      setSelectedDropdowns([{ id: 1, selectedValue: "" }]);
+    }
 
+    if (!showRejectSection) {
+      setShowRejectSection(true);
+      setRejectReason("");
+      return;
+    }
+
+    if (rejectReason.trim() === "") {
+      alert("Please enter the reason for rejection.");
+      return;
+    }
+
+    onAction?.("reject", { description: rejectReason.trim() });
+  };
+
+  const handleCancelReject = () => {
+    setShowRejectSection(false);
+    setRejectReason("");
+  };
+
+  // ------------------- Approve Handler -------------------
+  const handleApproveClick = () => onAction?.("sendToManufacturer");
+
+  // ------------------- Request More Info Section -------------------
   const requestMoreInfoSection = showInputSection ? (
     <DetailSection title="Request More Information">
       <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
@@ -173,7 +210,36 @@ export const PendingConfirmationModal = ({
     </DetailSection>
   ) : null;
 
-  const actionButtons = !showInputSection && (
+  // ------------------- Reject Section -------------------
+  const rejectSection = showRejectSection ? (
+    <DetailSection title="Reject Claim">
+      <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
+        <div className="detail-item">
+          <span className="label">Reason for Rejection:</span>
+          <textarea
+            className="form-textarea"
+            rows={4}
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+            placeholder="Enter reason for rejecting the claim..."
+            style={{ width: "100%", marginTop: "8px" }}
+          />
+        </div>
+
+        <div style={{ marginTop: "12px", display: "flex", gap: "10px", justifyContent: "space-between"}}>
+          <Button variant="secondary"onClick={handleCancelReject}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleRejectClick}>
+           Reject
+          </Button>
+        </div>
+      </div>
+    </DetailSection>
+  ) : null;
+
+  // ------------------- Action Buttons -------------------
+  const actionButtons = !showInputSection && !showRejectSection && (
     <>
       <Button variant="warning" onClick={handleRequestMoreInfoClick}>
         Request More Information
@@ -187,14 +253,20 @@ export const PendingConfirmationModal = ({
     </>
   );
 
+  // ------------------- Return Modal -------------------
   return (
     <WarrantyClaimDetailModal
       isOpen={isOpen}
       onClose={onClose}
       warrantyData={warrantyData}
-      additionalContent={requestMoreInfoSection}
-      showBackButton={!showInputSection}
-      backButtonLabel="Back"
+      additionalContent={
+        <>
+          {requestMoreInfoSection}
+          {rejectSection}
+        </>
+      }
+      showBackButton={!showInputSection && !showRejectSection}
+      backButtonLabel="Cancel"
     >
       {actionButtons}
     </WarrantyClaimDetailModal>

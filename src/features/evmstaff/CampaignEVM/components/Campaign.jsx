@@ -96,6 +96,10 @@ export const Campaign = ({
     <div className="campaign-container">
       <div className="campaign-header">
         <h1>Campaign Management</h1>
+        <div className="account-table__right">
+          <span className="account-table__hint">
+            Click to Create Service Campaign
+          </span>
         <Button variant="light" onClick={onAdd}>
           <img
             src="../../../../../public/add.png"
@@ -103,6 +107,7 @@ export const Campaign = ({
             style={{ width: "50px" }}
           />{" "}
         </Button>
+        </div>
       </div>
 
       {/* Search Bar and Filters */}

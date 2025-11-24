@@ -67,5 +67,6 @@ export const roleScreens = {
       component: "ManufacturerInventory",
     },
     { id: "evm_campaigns", label: "Campaign", component: "EVMStaffCampaign" },
+    { id: "accessory_evm", label: "Accessory", component: "EVMAccessory" },
   ],
 };

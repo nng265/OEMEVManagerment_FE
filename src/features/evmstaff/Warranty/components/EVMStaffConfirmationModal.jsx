@@ -18,9 +18,14 @@ export const EVMStaffConfirmationModal = ({
   const [vehicleWarrantyId, setvehicleWarrantyId] = useState("");
   const [showReasonInput, setShowReasonInput] = useState(false);
   const [reason, setReason] = useState("");
+  const [denyReason, setDenyReason] = useState("");
+  const [showDenyReasonInput, setShowDenyReasonInput] = useState(false);
 
   if (!warrantyData) return null;
-
+  const formatDateOnly = (dateString) => {
+    if (!dateString) return "";
+    return dateString.split("T")[0]; 
+  };
   const rawPolicies =
     warrantyData.showPolicy ||
     warrantyData.raw?.showPolicy ||
@@ -38,28 +43,53 @@ export const EVMStaffConfirmationModal = ({
 
   // Xử lý khi nhấn nút Deny
   const handleDenyClick = () => {
-    console.log("Warranty data", warrantyData);
-    onDeny(warrantyData.claimId);
-  };
+  // Tắt ô Need more info nếu đang mở
+  if (showReasonInput) {
+    setShowReasonInput(false);
+    setReason("");
+  }
+  // Nếu ô Deny chưa mở → mở nó
+  if (!showDenyReasonInput) {
+    setShowDenyReasonInput(true);
+    return;
+  }
+  // Nếu ô Deny đã mở → submit
+  if (denyReason) {
+    onDeny(warrantyData.claimId, denyReason);
+  } else {
+    toast.warning("Please provide a reason for denial.");
+  }
+};
 
   // Xử lý khi nhấn nút Need More Info
   const handleNeedMoreInfoClick = () => {
-    if (!showReasonInput) {
-      setShowReasonInput(true);
-      return;
-    }
-    if (reason) {
-      onNeedMoreInfo(warrantyData.claimId, reason);
-    } else {
-      toast.warning("Please provide a reason.");
-    }
-  };
+  // Tắt ô Deny nếu đang mở
+  if (showDenyReasonInput) {
+    setShowDenyReasonInput(false);
+    setDenyReason("");
+  }
+  // Nếu ô Need more info chưa mở → mở nó
+  if (!showReasonInput) {
+    setShowReasonInput(true);
+    return;
+  }
+  // Nếu ô Need more info đã mở → submit
+  if (reason) {
+    onNeedMoreInfo(warrantyData.claimId, reason);
+  } else {
+    toast.warning("Please provide a reason.");
+  }
+};
+
   const handleClose = () => {
-    setShowReasonInput(false);
-    setReason("");
-    setvehicleWarrantyId("");
-    onClose();
+  setShowReasonInput(false);
+  setReason("");
+  setShowDenyReasonInput(false);
+  setDenyReason("");
+  setvehicleWarrantyId("");
+  onClose();
   };
+
 
   return (
     <Modal
@@ -98,7 +128,7 @@ export const EVMStaffConfirmationModal = ({
                   key={policy.vehicleWarrantyId || policy.policyName}
                   value={policy.vehicleWarrantyId}
                 >
-                  {policy.policyName} (Expires: {policy.endDate})
+                  {policy.policyName} (Expires: {formatDateOnly(policy.startDate)} To {formatDateOnly(policy.endDate)})
                 </option>
               ))}
             </select>
@@ -118,6 +148,20 @@ export const EVMStaffConfirmationModal = ({
               />
             </div>
           )}
+          {/* 4. Phần nhập lý do cho "Den" (chỉ hiện khi nhấn nút) */}
+          {showDenyReasonInput && (
+  <div className="detail-section" style={{ paddingTop: "10px" }}>
+    <h4 className="detail-section-title">Reason not Access</h4>
+    <Input
+      type="textarea"
+      name="denyReason"
+      placeholder="Enter denial reason..."
+      value={denyReason}
+      onChange={(e) => setDenyReason(e.target.value)}
+      fullWidth={true}
+    />
+  </div>
+)}
 
           {/* Các nút Actions */}
           <DetailModalActions onBack={handleClose} backLabel="Back">
