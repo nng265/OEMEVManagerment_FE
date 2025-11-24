@@ -82,10 +82,6 @@ const AppointmentList = ({
         <h2 className="size-h1">Appointment Management</h2>
 
         <div className="appointment-table__right">
-          <span className="appointment-table__hint">
-            Click to create a new booking for Customer
-          </span>
-
           <Button
             variant="light"
             style={{ marginLeft: "auto" }}

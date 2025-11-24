@@ -196,3 +196,328 @@
   background-color: #15803d;
   box-shadow: 0 3px 6px rgba(21, 128, 61, 0.25);
 }
+
+inventory-section {
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.import-excel-btn-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-import-excel {
+  background-color: #3b82f6; /* Màu xanh như hình */
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-import-excel:hover {
+  background-color: #2563eb;
+}
+
+.upload-hint {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Ẩn input file mặc định */
+.hidden-file-input {
+  display: none;
+}
+
+/* ========== REPORT INCIDENT SECTION (Báo hư hỏng) ========== */
+.incident-report-container {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.btn-report-incident {
+  background-color: #ef4444; /* Màu đỏ */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.btn-report-incident:hover {
+  background-color: #dc2626;
+}
+
+.incident-form {
+  margin-top: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.incident-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-input,
+.form-select {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.btn-add-row,
+.btn-remove-row {
+  height: 38px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.2s;
+}
+
+.btn-add-row:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-remove-row:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+.incident-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.inventory-alert {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+parts-request-table th:nth-child(3),
+.parts-request-table th:nth-child(4) {
+  text-align: center;
+}
+
+/* Căn giữa dữ liệu (Data) của cột 3 và 4 */
+.parts-request-table td:nth-child(3),
+.parts-request-table td:nth-child(4) {
+  text-align: center;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1055; /* Cao hơn modal chính */
+}
+
+.popup-container {
+  background: white;
+  border-radius: 12px;
+  width: 500px;
+  max-width: 90%;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.popup-header {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #b91c1c; /* Màu đỏ cảnh báo */
+}
+
+.popup-body {
+  margin-bottom: 24px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.damaged-item-preview {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-model {
+  font-weight: 600;
+  color: #334155;
+}
+
+.item-serial {
+  font-family: monospace;
+  color: #64748b;
+}
+
+.popup-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ========== INCIDENT IMAGE UPLOAD STYLES ========== */
+.incident-image-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Căn xuống đáy cho thẳng hàng với input khác */
+  width: 80px; /* Độ rộng cố định cho cột ảnh */
+}
+
+.image-upload-box {
+  width: 60px;
+  height: 38px; /* Bằng chiều cao input text */
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #f8fafc;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-upload-box:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.upload-icon {
+  font-size: 1.2rem;
+  color: #94a3b8;
+}
+
+.preview-image-mini {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Style cho nút xóa ảnh nhỏ xíu khi rê chuột vào */
+.remove-image-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 0.8rem;
+}
+
+.image-upload-box:hover .remove-image-btn {
+  opacity: 1;
+}
+
+/* Style cho ảnh trong Popup xác nhận */
+.popup-item-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  margin-right: 12px;
+}
+
+.popup-item-row {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}

@@ -17,9 +17,9 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
     onSetDate(request.orderId, requestedDate);
   };
   const formatDate = (date) => {
-  if (!date) return "";
-  return new Date(date).toISOString().split("T")[0];
-};
+    if (!date) return "";
+    return new Date(date).toISOString().split("T")[0];
+  };
 
   const handleConfirmClick = () => {
     setIsConfirmOpen(true);
@@ -43,7 +43,7 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
   return (
     <div className="popup-overlay">
       <div className="popup-card">
-          <h3>Parts Request Details</h3>
+        <h3>Parts Request Details</h3>
 
         <div className="popup-body">
           <div className="info-row">
@@ -57,7 +57,6 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
           </div>
           <div className="info-row">
             <strong>Requested Date:</strong> {formatDate(request.requestedDate)}
-
           </div>
 
           <h3>Parts List</h3>
@@ -83,7 +82,7 @@ export function Pending({ request, onClose, onSetDate, onConfirm, isLoading }) {
           </table>
 
           <div className="expected-date">
-            <label>Update Requested Date:</label>
+            <label>Update Expected Date:</label>
             <input
               type="date"
               value={requestedDate}

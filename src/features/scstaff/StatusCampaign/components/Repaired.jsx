@@ -49,14 +49,13 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
     <Modal
       isOpen={open}
       onClose={onClose}
-      title="Vehicle Repaired"
+      // title="Vehicle Repaired"
+      title={campaign ? `Vehicle - ${campaign.status}` : "Vehicle Details"}
       size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">
-        <h3 className="campaign-section-title">
-          Customer & Vehicle Information
-        </h3>
+        <h3 className="campaign-section-title">Customer</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block">
             <span className="info-block-label">Customer Name</span>
@@ -71,9 +70,11 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
             </span>
           </div>
         </div>
+
+        <h3 className="campaign-section-title">Vehicle Information</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block">
-            <span className="info-block-label">Vehicle Model</span>
+            <span className="info-block-label">Model</span>
             <span className="info-block-value">
               {displayValue(vehicle.model)}
             </span>
@@ -102,12 +103,6 @@ const Repaired = ({ open, onClose, data, onSuccess }) => {
           </div>
         </div>
         <div className="campaign-info-row">
-          <div className="campaign-info-block">
-            <span className="info-block-label">Status</span>
-            <span className="info-block-value">
-              {displayValue(campaign.status)}
-            </span>
-          </div>
           <div className="campaign-info-block">
             <span className="info-block-label">Campaign Type</span>
             <span className="info-block-value">

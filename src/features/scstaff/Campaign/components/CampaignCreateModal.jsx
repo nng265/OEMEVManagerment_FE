@@ -46,6 +46,7 @@ export const CampaignCreateModal = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleAddTech = () => setSelectedTechs((s) => [...s, ""]);
   const handleChangeTech = (index, value) => {
     const updated = [...selectedTechs];
     updated[index] = value;
@@ -265,6 +266,15 @@ export const CampaignCreateModal = ({
                 </div>
               );
             })}
+
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleAddTech}
+              style={{ marginTop: "8px" }}
+            >
+              + Add Technician
+            </Button>
           </div>
         )}
 

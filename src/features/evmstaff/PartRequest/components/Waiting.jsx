@@ -10,15 +10,15 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const getNextDay = (dateStr) => {
-  const d = new Date(dateStr);
-  d.setDate(d.getDate() + 1);
-  return d.toISOString().split("T")[0];
-};
+    const d = new Date(dateStr);
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split("T")[0];
+  };
 
   const formatDate = (date) => {
-  if (!date) return "";
-  return new Date(date).toISOString().split("T")[0];
-};
+    if (!date) return "";
+    return new Date(date).toISOString().split("T")[0];
+  };
 
   const handleSetDateClick = () => {
     if (!requestedDate) {
@@ -50,7 +50,7 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
   return (
     <div className="popup-overlay">
       <div className="popup-card">
-          <h3>Parts Request Details</h3>
+        <h3>Parts Request Details</h3>
 
         <div className="popup-body">
           <div className="info-row">
@@ -91,7 +91,7 @@ export function Waiting({ request, onClose, onSetDate, onConfirm, isLoading }) {
           </table>
 
           <div className="expected-date">
-            <label>Update Requested Date:</label>
+            <label>Update Expected Date:</label>
             <input
               type="date"
               value={requestedDate}
