@@ -86,15 +86,18 @@ const CampaignDetailPage = () => {
         {campaign?.title ?? campaign?._raw?.title ?? "Campaign Detail"}
       </h2>
 
-      <p className="campaign-description">
-        Description: {campaign?.description ?? campaign?._raw?.description}
-      </p>
-
       <div className="campaign-info-container">
         <div className="campaign-info-card">
           <div className="campaign-info-label">Campaign Type</div>
           <div className="campaign-info-value">
             {campaign?.type ?? campaign?._raw?.type ?? "-"}
+          </div>
+        </div>
+
+        <div className="campaign-info-card">
+          <div className="campaign-info-label">Description: </div>
+          <div className="campaign-info-value">
+            {campaign?.description ?? campaign?._raw?.description}
           </div>
         </div>
 

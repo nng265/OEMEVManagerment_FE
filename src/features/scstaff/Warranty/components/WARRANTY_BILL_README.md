@@ -65,7 +65,7 @@ Bill hiển thị:
   model: string,
   year: string | number,
   description: string,
-  technicianDescription: string,  // Dùng cho denied
+  technicianDescription: string,
   failureDesc: string,
   
   // Hình ảnh

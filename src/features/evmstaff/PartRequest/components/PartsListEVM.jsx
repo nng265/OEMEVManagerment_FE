@@ -156,10 +156,10 @@ export default function PartsListEVM({
             onChange={onStatusFilterChange}
             options={[
               { value: "", label: "All Status" },
-              { value: "Pending", label: "Pending" },
-              { value: "Approved", label: "Approved" },
+              { value: "Confirmed", label: "Confirmed" },
               { value: "Delivered", label: "Delivered" },
-              { value: "Closed", label: "Closed" },
+              { value: "Waiting", label: "Waiting" },
+              { value: "Pending", label: "Pending" },
             ]}
             fullWidth
             size="md"

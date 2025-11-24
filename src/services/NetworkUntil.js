@@ -230,6 +230,12 @@ export const ApiEnum = {
   CREATE_ACCOUNT: { path: "/Employee/createAccount", method: "POST" },
   UPDATE_ACCOUNT: { path: "/Employee/updateAccount/:id", method: "PUT" },
   DELETE_ACCOUNT: { path: "/Employee/deleteAccount/:id", method: "DELETE" },
+
+  // ===== Accessory  =====
+// ===== Accessory  =====
+  GET_PART_HISTORY: { path: "/VehiclePartHistory", method: "GET" },
+  GET_PART_STATUS: { path: "/VehiclePartHistory/statuses", method: "GET" },
+  GET_PART_CONDITION: { path: "/VehiclePartHistory/conditions", method: "GET" },
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)
