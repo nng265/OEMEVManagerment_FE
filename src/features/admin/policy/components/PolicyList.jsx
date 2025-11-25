@@ -55,7 +55,6 @@ const PolicyList = ({
             />
           </Button>
 
-          {/* EDIT */}
           <Button
             size="small"
             variant="light"
@@ -86,17 +85,10 @@ const PolicyList = ({
   }));
   return (
     <div className="policy-table">
-      <div
-        className="policy-table__header"
-        style={{ display: "flex", alignItems: "center" }}
-      >
+      <div className="policy-table__header">
         <h1 className="size-h1">Policy Management</h1>
-        <Button
-          size="small"
-          variant="light"
-          onClick={() => onCreatePolicy?.()}
-          style={{ marginLeft: "auto" }}
-        >
+
+        <Button size="small" variant="light" onClick={() => onCreatePolicy?.()}>
           <img
             src="../../../../../public/add.png"
             alt="Create Policy"

@@ -193,6 +193,39 @@ const IconAppointment = () => (
   </svg>
 );
 
+const IconAccount = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="7" r="4"></circle>
+    <path d="M5.5 21a7.5 7.5 0 0 1 13 0"></path>
+  </svg>
+);
+
+const IconPartsAdmin = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 2v20"></path>
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M12 6v6l4 2"></path>
+  </svg>
+);
+
 export const Sidebar = ({
   role,
   selectedScreen,
@@ -237,6 +270,10 @@ export const Sidebar = ({
         return <IconAppointment />;
       case "policy_management":
         return <IconPolicy />;
+      case "account_management":
+        return <IconAccount />;
+      case "parts_management":
+        return <IconPartsAdmin />;
       default:
         return <IconDefault />;
     }
@@ -246,13 +283,13 @@ export const Sidebar = ({
     <aside className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         <div className="brand">
-  <img
-    src="../../../../public/logo.png"
-    alt="EV Logo"
-    className="brand-logo"
-  />
-  <span className="brand-name">EV System</span>
-</div>
+          <img
+            src="../../../../public/logo.png"
+            alt="EV Logo"
+            className="brand-logo"
+          />
+          <span className="brand-name">EV System</span>
+        </div>
 
         <div className="sidebar-user">
           <div className="user-role">

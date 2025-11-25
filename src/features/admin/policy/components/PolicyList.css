@@ -6,9 +6,14 @@
 }
 
 .policy-table__header {
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eef2f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px;
 }
+
+
 
 .size-h1 {
   margin: 0;

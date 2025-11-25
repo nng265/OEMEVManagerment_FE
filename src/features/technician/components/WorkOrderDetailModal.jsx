@@ -737,7 +737,7 @@ export const WorkOrderDetailModal = ({
                 )}
               {workOrderData.warrantyClaim?.notes && (
                 <div className="description-block">
-                  <h5>Technician's Inspection Notes</h5>
+                  <h5> Inspection Notes for Tech</h5>
                   <div className="text-block">
                     <div className="content">
                       {workOrderData.warrantyClaim.notes}
@@ -1126,7 +1126,7 @@ export const WorkOrderDetailModal = ({
           ))}
         </datalist>
 
-        <div className="modal-footer">
+        {/* <div>
           <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
             Close
           </Button>
@@ -1154,6 +1154,46 @@ export const WorkOrderDetailModal = ({
               {isSubmitting ? "Submitting..." : "Save Repair"}
             </Button>
           )}
+        </div> */}
+
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginTop: "16px",
+            alignItems: "center",
+          }}
+        >
+          {/* Nút Close bên trái */}
+          <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
+            Cancel
+          </Button>
+
+          {/* Các nút Save sẽ được đẩy sang phải */}
+          <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
+            {showInspectionEditor && (
+              <Button
+                variant="primary"
+                onClick={handleSubmitInspection}
+                disabled={
+                  (!inspectionDesc.trim() && attachments.length === 0) ||
+                  isSubmitting
+                }
+              >
+                {isSubmitting ? "Submitting..." : "Save Inspection"}
+              </Button>
+            )}
+
+            {isRepair && (
+              <Button
+                variant="primary"
+                onClick={handleSubmitRepair}
+                disabled={parts.length === 0 || isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Save Repair"}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
       <ConfirmDialog

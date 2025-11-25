@@ -100,9 +100,37 @@ export const CreatePolicyModal = ({ isOpen, onClose, onCreate }) => {
         <input
           type="number"
           min="0"
+          inputMode="numeric"
+          pattern="[0-9]*"
           name="coveragePeriodMonths"
           value={form.coveragePeriodMonths}
-          onChange={handleChange}
+          onChange={(e) => {
+            // Giữ chỉ số dương (>=0), loại bỏ ký tự không phải số
+            const raw = e.target.value;
+            const digits = raw.replace(/\D/g, "");
+            setForm({ ...form, coveragePeriodMonths: digits });
+          }}
+          onKeyDown={(e) => {
+            const allowed = [
+              "Backspace",
+              "Delete",
+              "ArrowLeft",
+              "ArrowRight",
+              "Tab",
+              "Enter",
+              "Home",
+              "End",
+            ]; // Không cho '-' 'e' '.'
+            if (allowed.includes(e.key) || /[0-9]/.test(e.key)) return;
+            e.preventDefault();
+          }}
+          onPaste={(e) => {
+            const text = e.clipboardData.getData("text");
+            if (!/^\d+$/.test(text)) {
+              // chỉ toàn số
+              e.preventDefault();
+            }
+          }}
         />
 
         <label>Conditions</label>
@@ -112,7 +140,7 @@ export const CreatePolicyModal = ({ isOpen, onClose, onCreate }) => {
           onChange={handleChange}
         />
 
-        <div className="modal-footer">
+        <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>
@@ -120,6 +148,7 @@ export const CreatePolicyModal = ({ isOpen, onClose, onCreate }) => {
             variant="primary"
             onClick={handleSubmit}
             disabled={!isFormValid}
+            style={{ marginLeft: "auto" }}
           >
             Create
           </Button>

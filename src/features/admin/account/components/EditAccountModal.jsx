@@ -102,31 +102,21 @@ export const EditAccountModal = ({
           </select>
         </div>
 
-        {/* ----- SỬA: KHÔI PHỤC LẠI FOOTER ----- */}
-        {/* Đặt .modal-footer làm anh em với .account-form, KHÔNG đặt bên trong nó */}
-        <div className="modal-footer">
-          {/* Nút Cancel (first-child, sẽ bị đẩy qua trái bởi CSS) */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>
 
-          {/* Các nút còn lại sẽ bị đẩy qua phải */}
-          {/* <Button
-            variant="danger"
-            onClick={onDelete} // Gọi hàm onDelete từ container
-          >
-            Delete
-          </Button> */}
           <Button
             variant="primary"
-            onClick={handleSubmit} // Mở confirm dialog
+            onClick={handleSubmit}
+            style={{ marginLeft: "auto" }}
           >
             Save Changes
           </Button>
         </div>
       </Modal>
 
-      {/* Confirm Dialog (giữ nguyên) */}
       <ConfirmDialog
         isOpen={showConfirm}
         title="Save Changes"

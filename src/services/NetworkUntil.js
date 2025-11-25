@@ -245,6 +245,35 @@ export const ApiEnum = {
   GET_PART_HISTORY: { path: "/VehiclePartHistory", method: "GET" },
   GET_PART_STATUS: { path: "/VehiclePartHistory/statuses", method: "GET" },
   GET_PART_CONDITION: { path: "/VehiclePartHistory/conditions", method: "GET" },
+  // ==== Admin Parts Request =====
+  PART_ORDER_STATUSES: { path: "/PartOrder/statuses", method: "GET" },
+  GET_REASON: { path: "/PartOrder/return-reasons", method: "GET" },
+  GET_CANCEL: { path: "/PartOrder/cancellation-reasons", method: "GET" },
+  GET_PART_ORDERS: { path: "/PartOrder/:orderID", method: "GET" },
+  CANCEL_SHIPEMENT: {
+    path: "/PartOrder/:orderID/cancel-shipment",
+    method: "POST",
+  },
+  //=== DISCREPANCY
+  RESOLVE_DISCREPANCY_OPTIONS: {
+    path: "/PartOrder/discrepancy-resolution-options",
+    method: "GET",
+  },
+  RESOLVE_DISCREPANCY: {
+    path: "/PartOrder/:orderID/resolve-discrepancy",
+    method: "POST",
+  },
+
+  // === EVM Staff Parts Request =====
+  CREATE_PART_ORDER_BY_EVM: {
+    path: "/PartOrder/create-by-evm",
+    method: "POST",
+  },
+  RETURN_SHIPMENT: {
+    path: "/PartOrder/:orderID/return-shipment",
+    method: "POST",
+  },
+  GET_PART_ORDER_BY_ID: { path: "/PartOrder/:orderID", method: "GET" },
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)

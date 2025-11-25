@@ -463,7 +463,6 @@ const PolicyContainer = () => {
         onClose={() => setShowEditModal(false)}
         policy={selectedPolicy}
         onUpdate={handleUpdatePolicy}
-        onDelete={() => setShowDeleteModal(true)}
       />
 
       <ConfirmDialog

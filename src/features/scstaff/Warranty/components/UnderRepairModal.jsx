@@ -37,7 +37,7 @@ export const UnderRepairModal = ({
       onClose={onClose}
       warrantyData={warrantyData}
       showBackButton={true}
-      backButtonLabel="Back"
+      backButtonLabel="Cancel"
       additionalContent={assignedTechniciansSection}
     ></WarrantyClaimDetailModal>
   );

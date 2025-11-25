@@ -402,7 +402,7 @@ export const WarrantyClaimListContainer = () => {
       },
       reject: {
         title: "Confirm Reject",
-        message: `Reject claim `,
+        message: ` Are you sure to reject this claim?`,
         success: "Claim rejected successfully!",
       },
       needMoreInfo: {
