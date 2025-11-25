@@ -1,10 +1,9 @@
-/* ========== GENERAL MODAL STYLING ========== */
+/* ========== GENERAL ========== */
 .modal-status-badge-wrapper {
   margin-bottom: 16px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e5e7eb;
 }
-
 .size-h1 {
   margin-bottom: 24px;
   font-size: 1.8rem;
@@ -12,7 +11,7 @@
   font-weight: 700;
 }
 
-/* ========== STATUS BADGE BASE ========== */
+/* ========== STATUS BADGE ========== */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -22,502 +21,269 @@
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: capitalize;
-  transition: all 0.25s ease-in-out;
-  letter-spacing: 0.3px;
-  min-width: 130px;
+  min-width: 120px;
   text-align: center;
   border: 1px solid transparent;
 }
-
-/* === STATUS COLORS === */
-
-/* 🕐 Pending */
-.status-badge.status-pending {
+.status-pending {
   background: #fff7e6;
   color: #b45309;
   border-color: #fcd34d;
-  box-shadow: 0 1px 4px rgba(180, 83, 9, 0.15);
 }
-
-/* ⏳ Waiting */
-.status-badge.status-waiting {
+.status-waiting {
   background: #e0f2fe;
   color: #0369a1;
   border-color: #7dd3fc;
-  box-shadow: 0 1px 4px rgba(3, 105, 161, 0.15);
 }
-
-/* ✅ Confirmed */
-.status-badge.status-confirmed {
+.status-confirmed {
   background: #ecfdf5;
   color: #047857;
   border-color: #6ee7b7;
-  box-shadow: 0 1px 4px rgba(4, 120, 87, 0.15);
 }
-
-/* 🚚 Delivered */
-.status-badge.status-delivered,
-.status-badge.status-deliverd {
+.status-delivered {
   background: #f0fdf4;
   color: #15803d;
   border-color: #86efac;
-  box-shadow: 0 1px 4px rgba(22, 163, 74, 0.15);
+}
+.status-cancelled {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+.status-returning {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: #fdba74;
 }
 
-/* ❌ Cancelled / Error */
-.status-badge.status-cancelled,
-.status-badge.status-error {
-  background: #fee2e2;
-  color: #b91c1c;
-  border-color: #fecaca;
-  box-shadow: 0 1px 4px rgba(185, 28, 28, 0.15);
-}
-
-/* 💤 Default / Unknown */
-.status-badge.status-unknown {
-  background: #f4f4f5;
-  color: #52525b;
-  border-color: #e4e4e7;
-}
-
-/* === Hover effect === */
-.status-badge:hover {
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* ========== TABLE STYLING ========== */
-.parts-request-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-}
-
-.parts-request-table thead {
-  background-color: #f8fafc;
-}
-
-.parts-request-table th {
-  padding: 12px 14px;
-  text-align: left;
-  font-size: 0.9rem;
-  color: #475569;
-  border-bottom: 1px solid #e2e8f0;
-  font-weight: 600;
-}
-
-.parts-request-table td {
-  padding: 10px 14px;
-  font-size: 0.9rem;
-  color: #1e293b;
-  border-bottom: 1px solid #f1f5f9;
-  background-color: #ffffff;
-}
-
-.parts-request-table tr:hover td {
-  background-color: #f8fafc;
-  transition: background-color 0.2s ease-in-out;
-}
-
-/* ========== TIMELINE ========== */
+/* ========== TIMELINE (BEAUTIFUL VERTICAL) ========== */
 .timeline-container {
   position: relative;
   margin-top: 20px;
-  padding-left: 24px;
-  border-left: 2px solid #e5e7eb;
+  padding-left: 20px; /* Khoảng cách lề trái cho đường kẻ */
+  display: flex;
+  flex-direction: column;
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 20px;
+  padding-left: 24px; /* Khoảng cách từ đường kẻ đến nội dung */
+  padding-bottom: 24px; /* Khoảng cách giữa các item */
 }
 
+/* Đường kẻ dọc nối các item */
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #e2e8f0;
+}
+
+/* Bỏ đường kẻ ở item cuối cùng */
+.timeline-item:last-child::before {
+  display: none;
+}
+
+/* Chấm tròn (Dot) */
 .timeline-dot {
   position: absolute;
-  left: -7px;
-  top: 6px;
+  left: -5px; /* Căn giữa đường kẻ (width 2px, dot 12px -> -5px) */
+  top: 0;
   width: 12px;
   height: 12px;
-  background: #2563eb;
   border-radius: 50%;
-  box-shadow: 0 0 0 4px #dbeafe;
+  background-color: #3b82f6; /* Màu xanh dương */
+  border: 2px solid #fff; /* Viền trắng tạo khoảng cách */
+  box-shadow: 0 0 0 2px #dbeafe; /* Glow nhẹ */
+  z-index: 1;
 }
 
 .timeline-content {
-  margin-left: 16px;
-  background: #f9fafb;
+  background-color: #f8fafc;
   padding: 12px 16px;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
-}
-
-.timeline-content:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
 }
 
 .timeline-title {
   font-weight: 600;
-  color: #1e40af;
+  color: #1e293b;
+  font-size: 0.95rem;
   margin-bottom: 4px;
 }
 
 .timeline-date {
   font-size: 0.85rem;
   color: #64748b;
-  margin-bottom: 4px;
 }
 
-.timeline-notes {
-  font-size: 0.85rem;
-  color: #475569;
-  margin: 0;
-}
-
-.timeline-empty {
-  text-align: center;
-  color: #94a3b8;
-  font-style: italic;
-}
-
-/* ========== BUTTON ENHANCEMENT ========== */
-.detail-modal-actions .btn-success {
-  background-color: #16a34a;
-  border-color: #16a34a;
-  color: white;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.2s ease-in-out;
-}
-
-.detail-modal-actions .btn-success:hover {
-  background-color: #15803d;
-  box-shadow: 0 3px 6px rgba(21, 128, 61, 0.25);
-}
-
-inventory-section {
-  background-color: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.import-excel-btn-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-import-excel {
-  background-color: #3b82f6; /* Màu xanh như hình */
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* ========== TABLE ========== */
+.parts-request-table {
   width: 100%;
-  justify-content: center;
-  transition: background 0.2s;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
-
-.btn-import-excel:hover {
-  background-color: #2563eb;
-}
-
-.upload-hint {
-  margin-top: 8px;
-  font-size: 0.8rem;
-  color: #64748b;
-}
-
-/* Ẩn input file mặc định */
-.hidden-file-input {
-  display: none;
-}
-
-/* ========== REPORT INCIDENT SECTION (Báo hư hỏng) ========== */
-.incident-report-container {
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px dashed #e2e8f0;
-}
-
-.btn-report-incident {
-  background-color: #ef4444; /* Màu đỏ */
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
+.parts-request-table th {
+  text-align: left;
+  padding: 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
   font-size: 0.9rem;
-  transition: background 0.2s;
+  color: #475569;
+}
+.parts-request-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+.parts-request-table th:nth-child(2),
+.parts-request-table th:nth-child(3),
+.parts-request-table td:nth-child(2),
+.parts-request-table td:nth-child(3) {
+  text-align: center;
+  width: 100px;
 }
 
-.btn-report-incident:hover {
-  background-color: #dc2626;
-}
-
-.incident-form {
-  margin-top: 16px;
+/* ========== INVENTORY / FORM ========== */
+.inventory-section {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
+.receipt-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+}
+.step-item {
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+.step-item.active {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.incident-report-container {
+  margin-top: 10px;
+}
 .incident-row {
   display: flex;
   gap: 12px;
-  margin-bottom: 12px;
   align-items: flex-end;
+  margin-bottom: 12px;
 }
-
 .form-group {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  flex: 1;
 }
-
 .form-group label {
   font-size: 0.85rem;
   font-weight: 600;
   color: #475569;
 }
-
 .form-input,
 .form-select {
   padding: 8px 12px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-.btn-add-row,
-.btn-remove-row {
   height: 38px;
-  width: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #cbd5e1;
-  background: white;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #475569;
-  transition: all 0.2s;
-}
-
-.btn-add-row:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-}
-
-.btn-remove-row:hover {
-  background-color: #fee2e2;
-  color: #ef4444;
-  border-color: #fca5a5;
-}
-
-.incident-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #f1f5f9;
-}
-
-.inventory-alert {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
-
-parts-request-table th:nth-child(3),
-.parts-request-table th:nth-child(4) {
-  text-align: center;
-}
-
-/* Căn giữa dữ liệu (Data) của cột 3 và 4 */
-.parts-request-table td:nth-child(3),
-.parts-request-table td:nth-child(4) {
-  text-align: center;
-}
-
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1055; /* Cao hơn modal chính */
-}
-
-.popup-container {
-  background: white;
-  border-radius: 12px;
-  width: 500px;
-  max-width: 90%;
-  padding: 24px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.2s ease-out;
-}
-
-.popup-header {
-  margin-bottom: 16px;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 12px;
-}
-
-.popup-header h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  color: #b91c1c; /* Màu đỏ cảnh báo */
-}
-
-.popup-body {
-  margin-bottom: 24px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.damaged-item-preview {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.item-model {
-  font-weight: 600;
-  color: #334155;
-}
-
-.item-serial {
-  font-family: monospace;
-  color: #64748b;
-}
-
-.popup-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ========== INCIDENT IMAGE UPLOAD STYLES ========== */
-.incident-image-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end; /* Căn xuống đáy cho thẳng hàng với input khác */
-  width: 80px; /* Độ rộng cố định cho cột ảnh */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .image-upload-box {
-  width: 60px;
-  height: 38px; /* Bằng chiều cao input text */
+  width: 100%;
+  height: 38px;
   border: 1px dashed #cbd5e1;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: #f8fafc;
+  background: #fff;
   transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
 }
-
 .image-upload-box:hover {
   border-color: #3b82f6;
-  background-color: #eff6ff;
+  background: #eff6ff;
 }
-
-.upload-icon {
-  font-size: 1.2rem;
-  color: #94a3b8;
-}
-
 .preview-image-mini {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 4px;
 }
 
-/* Style cho nút xóa ảnh nhỏ xíu khi rê chuột vào */
-.remove-image-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  width: 100%;
-  height: 100%;
+.btn-remove-row {
+  height: 38px;
+  width: 38px;
+  min-width: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s;
-  font-size: 0.8rem;
-}
-
-.image-upload-box:hover .remove-image-btn {
-  opacity: 1;
-}
-
-/* Style cho ảnh trong Popup xác nhận */
-.popup-item-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 4px;
-  object-fit: cover;
-  border: 1px solid #e2e8f0;
-  margin-right: 12px;
-}
-
-.popup-item-row {
-  display: flex;
-  align-items: center;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 10px;
+  border: 1px solid #cbd5e1;
+  background: white;
   border-radius: 6px;
-  margin-bottom: 8px;
+  cursor: pointer;
+  color: #ef4444;
+}
+.btn-remove-row:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.import-excel-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 20px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+.btn-import-excel {
+  background: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.validation-success {
+  color: #166534;
+  background: #f0fdf4;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #bbf7d0;
+  margin-top: 12px;
+}
+.validation-error {
+  color: #991b1b;
+  background: #fef2f2;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #fecaca;
+  margin-top: 12px;
 }

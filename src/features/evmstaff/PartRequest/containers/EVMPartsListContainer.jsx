@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-
-import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import {
+  request,
+  uploadFiles,
+  ApiEnum,
+} from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
 import { toast } from "react-toastify";
 
@@ -71,11 +74,9 @@ export const EVMPartsListContainer = () => {
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
-
   useEffect(() => {
     searchRef.current = debouncedSearchQuery;
   }, [debouncedSearchQuery]);
-
   useEffect(() => {
     statusRef.current = statusFilter;
   }, [statusFilter]);
@@ -98,13 +99,11 @@ export const EVMPartsListContainer = () => {
 
       const effectiveSearch =
         typeof search === "string" ? search : searchRef.current;
-
       const effectiveStatus =
         typeof status === "string" ? status : statusRef.current;
 
       setLoading(true);
       setError(null);
-
       try {
         const params = { Page: pageNumber, Size: effectivePageSize };
         if (effectiveSearch?.trim()) params.Search = effectiveSearch.trim();
@@ -134,14 +133,8 @@ export const EVMPartsListContainer = () => {
           totalRecords: totalRecords ?? resultItems.length,
         });
       } catch (err) {
-        console.error("❌ fetch error:", err);
         setPartsRequests([]);
-        setPagination({
-          pageNumber,
-          pageSize: pageSize || paginationRef.current.pageSize,
-          totalRecords: 0,
-        });
-        setError(err?.message || "Unable to load parts requests");
+        setError(err?.message);
       } finally {
         setLoading(false);
       }
@@ -223,7 +216,7 @@ export const EVMPartsListContainer = () => {
       setSelectedRequest(null);
       toast.success("Expected date updated!");
     } catch {
-      toast.warning("Error: Please select a valid date");
+      toast.warning("Error updating date");
     } finally {
       setIsActionLoading(false);
     }
@@ -246,18 +239,37 @@ export const EVMPartsListContainer = () => {
     }
   };
 
-  // ------------------------------------------------------------
-  // Delivered
-  // ------------------------------------------------------------
-  const handleDelivered = async (orderId) => {
+  // === VALIDATE SHIPMENT (UPLOAD EXCEL) ===
+  const handleValidateShipment = async (orderId, file) => {
     setIsActionLoading(true);
     try {
-      await request(ApiEnum.DELIVERED_CLICK, { params: { orderId } });
+      // Gọi API Validate (Dùng API mới trong NetworkUntil.js)
+      const response = await uploadFiles(ApiEnum.VALIDATE_SHIPMENT, {
+        params: { orderId },
+        file: file,
+      });
+      return response;
+    } catch (error) {
+      console.error(error);
+      const msg = error.responseData?.message || "Error validating file";
+      return { success: false, message: msg };
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  // === CONFIRM SHIPMENT (GỬI HÀNG) ===
+  const handleConfirmShipment = async (orderId) => {
+    setIsActionLoading(true);
+    try {
+      // Gọi API Confirm Shipment để chuyển trạng thái sang In Transit
+      await request(ApiEnum.CONFIRM_SHIPMENT, { params: { orderId } }, "PUT");
+
       handleRefresh();
       setSelectedRequest(null);
-      toast.success("Marked as delivered!");
+      toast.success("Shipment confirmed! Status: In Transit.");
     } catch {
-      toast.error("Unable to update status");
+      toast.error("Error confirming shipment");
     } finally {
       setIsActionLoading(false);
     }
@@ -602,11 +614,13 @@ export const EVMPartsListContainer = () => {
         />
       )}
 
+      {/* MODAL CONFIRMED (Đã update logic validate & ship) */}
       {selectedRequest?.status === "Confirmed" && (
         <Confirmed
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onDelivered={handleDelivered}
+          onValidate={handleValidateShipment}
+          onDelivered={handleConfirmShipment} // Gọi hàm Ship
           isLoading={isActionLoading}
         />
       )}
@@ -615,7 +629,6 @@ export const EVMPartsListContainer = () => {
         <Delivered
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onDelivered={handleDelivered}
           isLoading={isActionLoading}
         />
       )}
