@@ -10,6 +10,7 @@ export const roleScreens = {
       label: "Account Management",
       component: "AccountContainer",
     },
+        { id: "accessory_evm", label: "Accessory", component: "EVMAccessory" },
   ],
   SC_STAFF: [
     { id: "dashboard", label: "Dashboard" },
@@ -67,6 +68,5 @@ export const roleScreens = {
       component: "ManufacturerInventory",
     },
     { id: "evm_campaigns", label: "Campaign", component: "EVMStaffCampaign" },
-    { id: "accessory_evm", label: "Accessory", component: "EVMAccessory" },
   ],
 };

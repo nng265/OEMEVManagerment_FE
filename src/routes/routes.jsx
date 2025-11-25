@@ -28,7 +28,7 @@ import CampaignDetailPage from "../features/evmstaff/CampaignEVM/components/Camp
 import OverViewContainer from "../features/dashboard/containers/OverViewContainer.jsx";
 import PolicyContainers from "../features/admin/policy/containers/PolicyContainer.jsx";
 import AccountContainers from "../features/admin/account/containers/AccountContainer.jsx";
-import AccessoryListContainer from "../features/evmstaff/Accessory/containers/AccessoryListContainer.jsx"
+import AccessoryListContainer from "../features/admin/Accessory/containers/AccessoryListContainer.jsx"
 
 export const publicRoutes = [
   {

@@ -115,9 +115,13 @@ export const TechnicianVehicleStatusContainer = () => {
     },
   ];
 
-  const fetchCategories = useCallback(async () => {
+  const fetchCategories = useCallback(async (vin) => {
     try {
-      const response = await request(ApiEnum.GET_PART_CATEGORIES);
+      if (!vin) return [];
+      const response = await request(ApiEnum.GET_PART_CATEGORIES, {
+        vin: vin,
+      });//truyền vào số vin sửa đây nek 
+
       const raw = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
@@ -139,6 +143,12 @@ export const TechnicianVehicleStatusContainer = () => {
       return [];
     }
   }, []);
+  
+  useEffect(() => {
+    if (selectedWorkOrder?.vin) {
+      fetchCategories(selectedWorkOrder.vin);
+    }
+  }, [fetchCategories, selectedWorkOrder]); // mới sửa
 
   const fetchWorkOrders = useCallback(
     async (pageNumber = 0, pageSize, search, target, type) => {
@@ -219,10 +229,6 @@ export const TechnicianVehicleStatusContainer = () => {
   );
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
-  useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
     fetchWorkOrders(
       0,
@@ -233,29 +239,39 @@ export const TechnicianVehicleStatusContainer = () => {
     );
   }, [fetchWorkOrders, debouncedSearchQuery, targetFilter, typeFilter]);
 
-  const fetchModels = async (categoryName) => {
+  const fetchModels = async (vin, categoryName) => {
     try {
-      if (!categoryName) {
+      if (!vin || !categoryName) {
         setModels([]);
         return [];
       }
+
       const response = await request(ApiEnum.GET_PART_MODELS, {
+        vin: vin,
         category: categoryName,
       });
-      const mods = Array.isArray(response)
+
+      const data = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
         ? response.data
         : Array.isArray(response?.data)
         ? response.data
         : [];
-      setModels(mods);
-      return mods;
+      setModels(data);
+      return data;
     } catch (error) {
       console.error("Error fetching models:", error);
+      setModels([]);
       return [];
     }
   };
+
+//   useEffect(() => {
+//   if (selectedWorkOrder?.vin, selectedWorkOrder?.categoryName) {
+//     fetchModels(selectedWorkOrder.vin, selectedWorkOrder.categoryName);
+//   }
+// }, [fetchModels, selectedWorkOrder]); //mới sửa
 
   const fetchSerial = async (vin, modelName) => {
     try {

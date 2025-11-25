@@ -72,7 +72,7 @@ export const ApiEnum = {
     method: "GET",
   },
   GET_PART: { path: "/Part", method: "GET" },
-  GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
+  GET_PART_SERIAL: { path: "/VehiclePartHistory/serials", method: "GET" },
 
   // ===== Warranty Claim Actions =====
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
@@ -100,6 +100,16 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/car-back-center",
     method: "PUT",
   },
+  WARRANTY_DENIAL_REASONS: {
+    path: "/WarrantyClaim/denial-reasons",
+    method: "GET",
+  },
+  DENY_WARRANTY_CLAIM: {
+    path: "/WarrantyClaim/:claimId/deny",
+    method: "PUT",
+  },
+
+
 
   // ===== Assignments / People =====
   GET_ASSIGNED_TECHNICIANS: {

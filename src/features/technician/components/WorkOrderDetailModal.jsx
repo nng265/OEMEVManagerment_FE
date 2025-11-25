@@ -399,6 +399,7 @@ export const WorkOrderDetailModal = ({
   const showNewModelColumn = isCampaignTarget;
 
   // ========== Parts Table Handlers ==========
+  
   // them 1 hang linh kien rong
   const addPartRow = () => {
     if (isCampaignTarget || !showInspectionEditor) return;
@@ -847,7 +848,7 @@ export const WorkOrderDetailModal = ({
             >
               <div className="col action">Action</div>
               <div className="col category">Category</div>
-              <div className="col model">Model</div>
+              <div className="col model"> Part Model</div>
               <div className="col serial">Serial</div>
               {showNewModelColumn && (
                 <div className="col new-model">New Model</div>
@@ -888,7 +889,7 @@ export const WorkOrderDetailModal = ({
                         <input
                           type="text"
                           placeholder="Enter new serial"
-                          value={p.newSerial || ""}
+                          value={p.newSerial || ""} //chọn trong cái dropdown list
                           onChange={(e) =>
                             updatePart(idx, "newSerial", e.target.value)
                           }
@@ -926,6 +927,7 @@ export const WorkOrderDetailModal = ({
                           if (typeof fetchModels === "function") {
                             try {
                               const fetchedModels = await fetchModels(
+                                vehicleVin,
                                 newCategory
                               );
                               setParts((prev) => {
