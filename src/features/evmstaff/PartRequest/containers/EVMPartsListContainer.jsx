@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { request, ApiEnum } from "../../../../services/NetworkUntil";
+import {
+  request,
+  uploadFiles,
+  ApiEnum,
+} from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
 import PartsListEVM from "../components/PartsListEVM";
 import Pending from "../components/Pending";
@@ -29,16 +33,14 @@ export const EVMPartsListContainer = () => {
   useEffect(() => {
     paginationRef.current = pagination;
   }, [pagination]);
-
   useEffect(() => {
     searchRef.current = debouncedSearchQuery;
   }, [debouncedSearchQuery]);
-
   useEffect(() => {
     statusRef.current = statusFilter;
   }, [statusFilter]);
 
-  // Debounce search
+  // Debounce Search
   useEffect(() => {
     const t = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
@@ -46,39 +48,24 @@ export const EVMPartsListContainer = () => {
     return () => clearTimeout(t);
   }, [searchQuery]);
 
+  // --- FETCH DATA ---
   const fetchPartsRequests = useCallback(
     async (pageNumber = 0, pageSize, search, status) => {
       const effectivePageSize =
-        typeof pageSize === "number" && pageSize > 0
-          ? pageSize
-          : paginationRef.current.pageSize;
-
+        pageSize > 0 ? pageSize : paginationRef.current.pageSize;
       const effectiveSearch =
         typeof search === "string" ? search : searchRef.current;
-
       const effectiveStatus =
         typeof status === "string" ? status : statusRef.current;
 
       setLoading(true);
       setError(null);
-
       try {
-        const params = {
-          Page: pageNumber,
-          Size: effectivePageSize,
-        };
-
-        if (effectiveSearch && effectiveSearch.trim()) {
-          params.Search = effectiveSearch.trim();
-        }
-
-        // ⭐ NEW: add Status param
-        if (effectiveStatus && effectiveStatus.trim()) {
-          params.Status = effectiveStatus;
-        }
+        const params = { Page: pageNumber, Size: effectivePageSize };
+        if (effectiveSearch?.trim()) params.Search = effectiveSearch.trim();
+        if (effectiveStatus?.trim()) params.Status = effectiveStatus;
 
         const res = await request(ApiEnum.GET_REQUEST_PARTS, params);
-
         const { success, items, totalRecords, page, size, message } =
           normalizePagedResult(res, []);
 
@@ -98,21 +85,11 @@ export const EVMPartsListContainer = () => {
             pageSize: effectivePageSize,
             totalRecords: 0,
           });
-          setError(message || "Unable to load parts requests");
+          setError(message);
         }
       } catch (err) {
-        console.error("❌ EVMParts fetch error:", err);
-        const message =
-          err?.responseData?.message ||
-          err?.message ||
-          "Unable to load parts requests";
         setPartsRequests([]);
-        setPagination({
-          pageNumber,
-          pageSize: effectivePageSize,
-          totalRecords: 0,
-        });
-        setError(message);
+        setError(err?.message);
       } finally {
         setLoading(false);
       }
@@ -120,6 +97,7 @@ export const EVMPartsListContainer = () => {
     []
   );
 
+  // --- USE EFFECT (FIXED DEPENDENCY) ---
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
     fetchPartsRequests(
@@ -128,26 +106,11 @@ export const EVMPartsListContainer = () => {
       debouncedSearchQuery,
       statusFilter
     );
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, statusFilter, fetchPartsRequests]);
 
-  useEffect(() => {
-    setPagination((prev) => ({ ...prev, pageNumber: 0 }));
-    fetchPartsRequests(
-      0,
-      paginationRef.current.pageSize,
-      searchRef.current,
-      statusFilter
-    );
-  }, [statusFilter]);
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value || "");
-  };
-
-  // ⭐ NEW: status filter change
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value || "");
-  };
+  // --- HANDLERS ---
+  const handleSearchChange = (e) => setSearchQuery(e.target.value || "");
+  const handleStatusFilterChange = (e) => setStatusFilter(e.target.value || "");
 
   const handlePageChange = useCallback(
     (page, size) => {
@@ -165,6 +128,7 @@ export const EVMPartsListContainer = () => {
     );
   }, [fetchPartsRequests]);
 
+  // --- ACTIONS ---
   const handleSetRequestedDate = async (orderId, requestedDate) => {
     setIsActionLoading(true);
     try {
@@ -172,13 +136,11 @@ export const EVMPartsListContainer = () => {
         params: { orderId },
         expectedDate: requestedDate,
       });
-
-      const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize, searchRef.current, statusRef.current);
+      handleRefresh();
       setSelectedRequest(null);
-      toast.success("Expected date updated successfully!");
+      toast.success("Updated successfully!");
     } catch {
-      toast.warning("Error: Please select a valid date");
+      toast.warning("Error updating date");
     } finally {
       setIsActionLoading(false);
     }
@@ -187,34 +149,48 @@ export const EVMPartsListContainer = () => {
   const handleConfirmAndPrepare = async (orderId) => {
     setIsActionLoading(true);
     try {
-      await request(ApiEnum.CONFIRM_PREPARE, {
-        params: { orderId },
-      });
-
-      const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize, searchRef.current, statusRef.current);
+      await request(ApiEnum.CONFIRM_PREPARE, { params: { orderId } });
+      handleRefresh();
       setSelectedRequest(null);
-      toast.success("Request confirmed and moved to preparation!");
+      toast.success("Confirmed!");
     } catch {
-      toast.error("Error: Unable to confirm request");
+      toast.error("Error confirming");
     } finally {
       setIsActionLoading(false);
     }
   };
 
-  const handleDelivered = async (orderId) => {
+  // === VALIDATE SHIPMENT (UPLOAD EXCEL) ===
+  const handleValidateShipment = async (orderId, file) => {
     setIsActionLoading(true);
     try {
-      await request(ApiEnum.DELIVERED_CLICK, {
+      // Gọi API Validate (Dùng API mới trong NetworkUntil.js)
+      const response = await uploadFiles(ApiEnum.VALIDATE_SHIPMENT, {
         params: { orderId },
+        file: file,
       });
+      return response;
+    } catch (error) {
+      console.error(error);
+      const msg = error.responseData?.message || "Error validating file";
+      return { success: false, message: msg };
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
 
-      const { pageNumber, pageSize } = paginationRef.current;
-      fetchPartsRequests(pageNumber, pageSize, searchRef.current, statusRef.current);
+  // === CONFIRM SHIPMENT (GỬI HÀNG) ===
+  const handleConfirmShipment = async (orderId) => {
+    setIsActionLoading(true);
+    try {
+      // Gọi API Confirm Shipment để chuyển trạng thái sang In Transit
+      await request(ApiEnum.CONFIRM_SHIPMENT, { params: { orderId } }, "PUT");
+
+      handleRefresh();
       setSelectedRequest(null);
-      toast.success("Request marked as delivered!");
+      toast.success("Shipment confirmed! Status: In Transit.");
     } catch {
-      toast.error("Error: Unable to mark request as delivered");
+      toast.error("Error confirming shipment");
     } finally {
       setIsActionLoading(false);
     }
@@ -233,7 +209,6 @@ export const EVMPartsListContainer = () => {
         refreshing={loading}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
-
         statusFilter={statusFilter}
         onStatusFilterChange={handleStatusFilterChange}
       />
@@ -258,11 +233,13 @@ export const EVMPartsListContainer = () => {
         />
       )}
 
+      {/* MODAL CONFIRMED (Đã update logic validate & ship) */}
       {selectedRequest?.status === "Confirmed" && (
         <Confirmed
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onDelivered={handleDelivered}
+          onValidate={handleValidateShipment}
+          onDelivered={handleConfirmShipment} // Gọi hàm Ship
           isLoading={isActionLoading}
         />
       )}
@@ -271,7 +248,6 @@ export const EVMPartsListContainer = () => {
         <Delivered
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onDelivered={handleDelivered}
           isLoading={isActionLoading}
         />
       )}

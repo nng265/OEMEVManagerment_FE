@@ -196,3 +196,125 @@
 .popup-card.delivered .popup-header {
   border-color: #48bb78;
 }
+
+/* ... Code cũ giữ nguyên ... */
+
+/* === Timeline === */
+.timeline-container {
+  position: absolute;
+  right: -280px; /* Đẩy timeline sang bên phải modal nếu màn hình rộng */
+  top: 0;
+  width: 250px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+/* Nếu không muốn timeline bay ra ngoài, để nó nằm trong body */
+.timeline-inline {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 20px;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 24px;
+  bottom: -24px;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
+
+.timeline-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #cbd5e0;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px #e2e8f0;
+}
+
+.timeline-item.active .timeline-icon {
+  background: #3182ce;
+  box-shadow: 0 0 0 2px #bee3f8;
+}
+
+.timeline-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+
+.timeline-content p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+/* === Validation Section === */
+.validation-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e0;
+}
+
+.file-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-upload {
+  background: #4299e1;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.validation-result {
+  font-size: 0.9rem;
+}
+
+.validation-success {
+  color: #38a169;
+  padding: 10px;
+  background: #f0fff4;
+  border-radius: 6px;
+  border: 1px solid #c6f6d5;
+}
+
+.validation-error {
+  color: #e53e3e;
+  padding: 10px;
+  background: #fff5f5;
+  border-radius: 6px;
+  border: 1px solid #fed7d7;
+}
+
+.error-list {
+  margin: 5px 0 0 20px;
+  font-size: 0.85rem;
+}
