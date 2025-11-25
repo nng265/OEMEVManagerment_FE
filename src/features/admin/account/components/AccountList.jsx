@@ -8,9 +8,9 @@ const AccountList = ({
   data = [],
   loading = false,
   error = null,
-  pagination = {}, // <-- KHÔI PHỤC LẠI
+  pagination = {},
   serverSide = false,
-  onPageChange, // <-- KHÔI PHỤC LẠI
+  onPageChange,
   onSearch,
   onFilterStatus,
   onRefresh,
@@ -42,7 +42,6 @@ const AccountList = ({
             />
           </Button>
 
-          {/* EDIT */}
           <Button
             size="small"
             variant="light"
@@ -73,16 +72,13 @@ const AccountList = ({
 
   return (
     <div className="account-table">
-      <div
-        className="account-table__header"
-        style={{ display: "flex", alignItems: "center" }}
-      >
-        <h2 className="size-h1">Account Management</h2>
+      <div className="account-table__header">
+        <h1 className="size-h1">Account Management</h1>
+
         <Button
           size="small"
           variant="light"
           onClick={() => onCreateAccount?.()}
-          style={{ marginLeft: "auto" }}
         >
           <img
             src="../../../../../public/add.png"
@@ -96,19 +92,12 @@ const AccountList = ({
         columns={columns}
         isLoading={loading}
         searchable={false}
-        pagination={true} // Vẫn bật
-        serverSide={serverSide} // Vẫn false
-        // --- KHÔI PHỤC CÁC PROPS PHÂN TRANG ---
-        // DataTable cần biết tổng số record (từ container)
+        pagination={true}
+        serverSide={serverSide}
         totalRecords={pagination.totalRecords ?? rows.length}
-        // DataTable cần biết trang hiện tại (từ container)
         currentPage={pagination.pageNumber ?? 0}
-        // DataTable cần biết kích thước trang (từ container)
         pageSize={pagination.pageSize ?? 10}
-        // DataTable cần gọi hàm này khi người dùng bấm (từ container)
         onPageChange={onPageChange}
-        // ------------------------------------
-
         noDataMessage={error ? String(error) : "No accounts found"}
         onRefresh={onRefresh}
         refreshing={refreshing}
@@ -118,7 +107,6 @@ const AccountList = ({
   );
 };
 
-// --- KHÔI PHỤC LẠI propTypes ---
 AccountList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
   loading: PropTypes.bool,

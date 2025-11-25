@@ -1,4 +1,3 @@
-/* === Overlay === */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -14,7 +13,6 @@
   backdrop-filter: blur(2px);
 }
 
-/* === Popup Card === */
 .popup-card {
   background-color: #ffffff;
   border-radius: 14px;
@@ -29,7 +27,6 @@
   position: relative;
 }
 
-/* === Header === */
 .popup-header {
   display: flex;
   justify-content: space-between;
@@ -54,11 +51,11 @@
   cursor: pointer;
   transition: color 0.2s ease;
 }
+
 .close-btn:hover {
   color: #e53e3e;
 }
 
-/* === Body === */
 .popup-body {
   display: flex;
   flex-direction: column;
@@ -69,14 +66,14 @@
 .info-row {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px dashed #e2e8f0;
+  border-bottom: 1px;
   padding: 4px 0;
 }
+
 .info-row strong {
   color: #2b6cb0;
 }
 
-/* === Table === */
 .parts-detail {
   width: 100%;
   border-collapse: collapse;
@@ -101,7 +98,6 @@
   background-color: #f9fafb;
 }
 
-/* === Input & Date === */
 .expected-date {
   display: flex;
   align-items: center;
@@ -121,12 +117,12 @@
   font-size: 0.95rem;
   transition: border-color 0.2s ease;
 }
+
 .expected-date input[type="date"]:focus {
   border-color: #3182ce;
   outline: none;
 }
 
-/* === Buttons === */
 .popup-actions {
   display: flex;
   justify-content: flex-end;
@@ -148,6 +144,7 @@
   background-color: #edf2f7;
   color: #2d3748;
 }
+
 .btn-secondary:hover {
   background-color: #e2e8f0;
 }
@@ -156,20 +153,20 @@
   background-color: #3182ce;
   color: #fff;
 }
+
 .btn-confirm:hover {
   background-color: #2b6cb0;
 }
 
-/* Push the Cancel button to the left */
 .btn-cancel {
   margin-right: auto;
 }
 
-/* === Animation === */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -180,19 +177,114 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* === Status Color Bar (optional) === */
 .popup-card.pending .popup-header {
   border-color: #ecc94b;
 }
+
 .popup-card.waiting .popup-header {
   border-color: #63b3ed;
 }
+
 .popup-card.delivered .popup-header {
   border-color: #48bb78;
+}
+
+/* AddPartOrder specific tweaks */
+.pl-container.add-part-order .pl-header h3 {
+  font-size: 1.3rem;
+}
+
+.po-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ffffff;
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.po-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 40px;
+  gap: 10px;
+  align-items: center;
+}
+
+.po-input {
+  padding: 6px 8px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 140px;
+}
+
+.po-input.qty {
+  width: 80px;
+  text-align: center;
+}
+
+.po-input:focus {
+  outline: none;
+  border-color: #3182ce;
+}
+
+.po-add-btn {
+  align-self: flex-start;
+  background: #edf2f7;
+  color: #2d3748;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background .2s ease;
+}
+
+.po-add-btn:hover {
+  background: #e2e8f0;
+}
+
+.po-remove-btn {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e0;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .18s ease;
+}
+
+.po-remove-btn:hover:not(:disabled) {
+  background: #ffe5e5;
+  color: #c53030;
+  border-color: #fca5a5;
+}
+
+.po-remove-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.po-error {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #fed7d7;
+  color: #c53030;
+  border: 1px solid #fc8181;
+  border-radius: 8px;
+  font-size: 13px;
 }

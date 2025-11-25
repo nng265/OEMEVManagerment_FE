@@ -1,5 +1,5 @@
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_D;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_D;
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
@@ -229,6 +229,35 @@ export const ApiEnum = {
   CREATE_ACCOUNT: { path: "/Employee/createAccount", method: "POST" },
   UPDATE_ACCOUNT: { path: "/Employee/updateAccount/:id", method: "PUT" },
   DELETE_ACCOUNT: { path: "/Employee/deleteAccount/:id", method: "DELETE" },
+  // ==== Admin Parts Request =====
+  PART_ORDER_STATUSES: { path: "/PartOrder/statuses", method: "GET" },
+  GET_REASON: { path: "/PartOrder/return-reasons", method: "GET" },
+  GET_CANCEL: { path: "/PartOrder/cancellation-reasons", method: "GET" },
+  GET_PART_ORDERS: { path: "/PartOrder/:orderID", method: "GET" },
+  CANCEL_SHIPEMENT: {
+    path: "/PartOrder/:orderID/cancel-shipment",
+    method: "POST",
+  },
+  //=== DISCREPANCY
+  RESOLVE_DISCREPANCY_OPTIONS: {
+    path: "/PartOrder/discrepancy-resolution-options",
+    method: "GET",
+  },
+  RESOLVE_DISCREPANCY: {
+    path: "/PartOrder/:orderID/resolve-discrepancy",
+    method: "POST",
+  },
+
+  // === EVM Staff Parts Request =====
+  CREATE_PART_ORDER_BY_EVM: {
+    path: "/PartOrder/create-by-evm",
+    method: "POST",
+  },
+  RETURN_SHIPMENT: {
+    path: "/PartOrder/:orderID/return-shipment",
+    method: "POST",
+  },
+  GET_PART_ORDER_BY_ID: { path: "/PartOrder/:orderID", method: "GET" },
 };
 /**
  * @param {Object} endpoint - Định nghĩa endpoint (path + method)

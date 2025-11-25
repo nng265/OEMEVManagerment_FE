@@ -122,7 +122,7 @@ export const PartsRequestDetailModal = ({
 
       <DetailSection title="Timeline">{renderTimeline()}</DetailSection>
 
-      <DetailModalActions onBack={onClose} backLabel="Close">
+      <DetailModalActions onBack={onClose} backLabel="Cancel">
         {(currentStatus === "delivered" || currentStatus === "deliverd") && (
           <Button
             variant="success"

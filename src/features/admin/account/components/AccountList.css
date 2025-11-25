@@ -6,12 +6,16 @@
 }
 
 .account-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid #eef2f7;
+  border-bottom: 1px;
 }
 
+
+
 .size-h1 {
-  margin: 0;
   font-size: 2rem;
   color: #0f172a;
   font-weight: 700;
@@ -54,18 +58,15 @@
   align-items: center;
 }
 
-/* icon size */
 .eye-svg {
   width: 20px;
   height: 20px;
 }
 
-/* Table row hover (DataTable class names may differ; keep it generic) */
 .table-row:hover {
   background: #fbfdff;
 }
 
-/* Make table cells wrap long text for conditions */
 .table-cell-conditions {
   white-space: pre-wrap;
   max-width: 320px;

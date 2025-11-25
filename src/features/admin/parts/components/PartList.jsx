@@ -5,9 +5,23 @@ import { Button } from "../../../../components/atoms/Button/Button";
 import { Input } from "../../../../components/atoms/Input/Input";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { formatDate } from "../../../../services/helpers";
-import "./PartsListEVM.css";
+import "./PartList.css";
 
-export default function PartsListEVM({
+// Default fallback status options (used only when container doesn't provide dynamic list)
+const DEFAULT_STATUS_OPTIONS = [
+  "Pending",
+  "Waiting",
+  "Confirmed",
+  "In Transit",
+  "Delivered",
+  "Done",
+  "Cancelled",
+  "Returning",
+  "Return Inspection",
+  "Discrepancy Review",
+];
+
+export default function PartList({
   data = [],
   loading = false,
   error = null,
@@ -20,8 +34,10 @@ export default function PartsListEVM({
   onSearchChange,
   statusFilter = "",
   onStatusFilterChange,
-  statusOptions = [], // dynamic statuses from API (array of string or {value,label})
-  onAdd,
+  // dynamic statuses provided by container: array of {value,label} or array of strings
+  statusOptions = [],
+  loadingStatuses = false,
+  statusesError = "",
 }) {
   const items = Array.isArray(data)
     ? data
@@ -67,19 +83,11 @@ export default function PartsListEVM({
       label: "Status",
       sortable: true,
       render: (value) => {
-        const normalizedStatus = (value || "unknown").trim().toLowerCase();
-        const statusClass = normalizedStatus.replace(/\s+/g, "-");
-        // Display mapping for corrected typos without breaking filtering
-        const displayMapping = {
-          "Retuen Inspection": "Return Inspection",
-        };
-        const original = value || "Unknown";
-        const displayText = displayMapping[original] || original;
-
+        const normalized = (value || "unknown").trim().toLowerCase();
+        const statusClass = normalized.replace(/\s+/g, "-");
+        const text = value ? value : "Unknown";
         return (
-          <span className={`status-badge status-${statusClass}`}>
-            {displayText}
-          </span>
+          <span className={`status-badge status-${statusClass}`}>{text}</span>
         );
       },
     },
@@ -96,7 +104,7 @@ export default function PartsListEVM({
           <img
             src="../../../../../public/eye.png"
             className="eye-svg"
-            style={{ width: "22px" }}
+            style={{ width: 22 }}
           />
         </Button>
       ),
@@ -131,34 +139,16 @@ export default function PartsListEVM({
     })) ?? [];
 
   return (
-    <div style={{ padding: 8 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 30,
-          marginBottom: 30,
-        }}
-      >
-        <h1 style={{ margin: 0 }}>Parts Requests from Service Centers</h1>
+    <div style={{ padding: 18, background: "#ffffff" }}>
+      <h1 className="size-p1">Parts Requests from Service Centers</h1>
 
-        <Button variant="light" onClick={onAdd}>
-          <img
-            src="../../../../../public/add.png"
-            alt="Create Part Order"
-            style={{ width: "50px" }}
-          />
-        </Button>
-      </div>
-
-      {/* Search Bar + Status Filter */}
+      {/* Search + Status Filter */}
       <div
-        className="parts-search-filter"
+        className="pl-search-filter"
         style={{
           display: "flex",
           gap: 12,
-          marginBottom: "20px",
+          marginBottom: 20,
           alignItems: "flex-end",
         }}
       >
@@ -178,22 +168,27 @@ export default function PartsListEVM({
             type="select"
             value={statusFilter}
             onChange={onStatusFilterChange}
-            options={[
-              { value: "", label: "All Status" },
-              ...(Array.isArray(statusOptions) && statusOptions.length
-                ? statusOptions.map((s) =>
-                    typeof s === "string"
-                      ? { value: s, label: s }
-                      : { value: s.value, label: s.label }
-                  )
-                : [
-                    { value: "Pending", label: "Pending" },
-                    { value: "Approved", label: "Approved" },
-                    { value: "Delivered", label: "Delivered" },
-                    { value: "Closed", label: "Closed" },
-                    { value: "In Transit", label: "In Transit" },
-                  ]),
-            ]}
+            options={(() => {
+              const base = [{ value: "", label: "All Status" }];
+              if (Array.isArray(statusOptions) && statusOptions.length > 0) {
+                const mapped = statusOptions
+                  .map((s) => {
+                    if (!s) return null;
+                    if (typeof s === "string") return { value: s, label: s };
+                    if (typeof s === "object")
+                      return {
+                        value: s.value ?? s.label ?? "",
+                        label: s.label ?? s.value ?? "",
+                      };
+                    return null;
+                  })
+                  .filter(Boolean);
+                return base.concat(mapped);
+              }
+              return base.concat(
+                DEFAULT_STATUS_OPTIONS.map((s) => ({ value: s, label: s }))
+              );
+            })()}
             fullWidth
             size="md"
           />
@@ -202,13 +197,12 @@ export default function PartsListEVM({
 
       <div style={{ position: "relative" }}>
         {loading && (
-          <div className="data-table-loading">
+          <div className="pl-table-loading">
             <LoadingSpinner size="lg" />
-            <p className="data-table-loading-message">
-              Loading parts requests...
-            </p>
+            <p className="pl-loading-msg">Loading parts requests...</p>
           </div>
         )}
+
         <DataTable
           data={rows}
           columns={columns}
@@ -224,14 +218,13 @@ export default function PartsListEVM({
           selectable={false}
           onRefresh={onRefresh}
           refreshing={refreshing}
-          onAdd={onAdd}
         />
       </div>
     </div>
   );
 }
 
-PartsListEVM.propTypes = {
+PartList.propTypes = {
   data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   loading: PropTypes.bool,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -248,14 +241,4 @@ PartsListEVM.propTypes = {
   onSearchChange: PropTypes.func,
   statusFilter: PropTypes.string,
   onStatusFilterChange: PropTypes.func,
-  statusOptions: PropTypes.arrayOf(
-    PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.shape({
-        value: PropTypes.string.isRequired,
-        label: PropTypes.string.isRequired,
-      }),
-    ])
-  ),
-  onAdd: PropTypes.func,
 };

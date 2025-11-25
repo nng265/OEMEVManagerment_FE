@@ -28,6 +28,7 @@ import CampaignDetailPage from "../features/evmstaff/CampaignEVM/components/Camp
 import OverViewContainer from "../features/dashboard/containers/OverViewContainer.jsx";
 import PolicyContainers from "../features/admin/policy/containers/PolicyContainer.jsx";
 import AccountContainers from "../features/admin/account/containers/AccountContainer.jsx";
+import { PartContainer } from "../features/admin/parts/containers/PartContainer.jsx";
 export const publicRoutes = [
   {
     path: "/login",
@@ -152,6 +153,10 @@ export const privateRoutes = [
       {
         path: "account_management",
         element: <AccountContainers />,
+      },
+      {
+        path: "parts_management",
+        element: <PartContainer />,
       },
     ],
   },

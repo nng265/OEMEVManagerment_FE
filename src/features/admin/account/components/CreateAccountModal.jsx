@@ -6,15 +6,13 @@ import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/Co
 import { toast } from "react-toastify";
 import "./AccountModal.css";
 
-// Định nghĩa các Role
 const ROLES = ["SC_STAFF", "SC_TECH", "EVM_STAFF", "ADMIN"];
 
-// Đổi tên component
 export const CreateAccountModal = ({
   isOpen,
   onClose,
   onCreate,
-  organizations = [], // Thêm prop 'organizations'
+  organizations = [],
 }) => {
   // Đổi state ban đầu
   const initialForm = {
@@ -31,7 +29,6 @@ export const CreateAccountModal = ({
   const pendingPayloadRef = useRef(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Reset form khi modal mở
   useEffect(() => {
     if (isOpen) setForm(initialForm);
   }, [isOpen]);
@@ -58,7 +55,7 @@ export const CreateAccountModal = ({
       return;
     }
 
-    // 💡 BẮT ĐẦU: Logic kiểm tra Confirm Password
+    // BẮT ĐẦU: Logic kiểm tra Confirm Password
     if (!confirmPassword) {
       toast.error("Confirm Password is required");
       return;
@@ -69,7 +66,7 @@ export const CreateAccountModal = ({
       setForm((prev) => ({ ...prev, confirmPassword: "" }));
       return;
     }
-    // 💡 KẾT THÚC: Logic kiểm tra Confirm Password
+    // KẾT THÚC: Logic kiểm tra Confirm Password
 
     if (!nameVal) {
       toast.error("Name is required");
@@ -181,10 +178,17 @@ export const CreateAccountModal = ({
             </option>
           ))}
         </select>
-        <div className="modal-footer">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "16px",
+          }}
+        >
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>
+
           <Button
             variant="primary"
             onClick={handleSubmit}

@@ -10,6 +10,11 @@ export const roleScreens = {
       label: "Account Management",
       component: "AccountContainer",
     },
+    {
+      id: "parts_management",
+      label: "Parts Management",
+      component: "PartContainer",
+    },
   ],
   SC_STAFF: [
     { id: "dashboard", label: "Dashboard" },

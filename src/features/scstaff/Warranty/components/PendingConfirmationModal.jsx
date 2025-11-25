@@ -194,7 +194,7 @@ export const PendingConfirmationModal = ({
       warrantyData={warrantyData}
       additionalContent={requestMoreInfoSection}
       showBackButton={!showInputSection}
-      backButtonLabel="Back"
+      backButtonLabel="Cancel"
     >
       {actionButtons}
     </WarrantyClaimDetailModal>
