@@ -196,6 +196,11 @@ export const ApiEnum = {
   },
   CLOSE_CAMPAIGN: { path: "/Campaign/:id/close", method: "PUT" },
 
+  CAMPAIGN_VEHICLE_TECH: {
+    path: "/CampaignVehicle/:campaignVehicleId/assigned-techs",
+    method: "GET",
+  },
+
   // ===== Organization / Account / Policy =====
   ORGANIZATION: { path: "/Organization", method: "GET" },
   APPOINTMENT: { path: "/Appointment", method: "GET" },

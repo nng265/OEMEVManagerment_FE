@@ -45,29 +45,32 @@ export const EVMStaffConfirmationModal = ({
     warrantyData.policyList ||
     [];
   const policies = Array.isArray(rawPolicies) ? rawPolicies : [rawPolicies];
-  const handleApproveClick = () => {
-    // If approve select is not shown yet, open it (and hide other forms)
-    if (!showApproveSelect) {
-      if (showReasonInput) {
-        setShowReasonInput(false);
-        setReason("");
-      }
-      if (showDenyReasonInput) {
-        setShowDenyReasonInput(false);
-        setSelectedDenyReason("");
-        setDenyReasonDetail("");
-      }
-      setShowApproveSelect(true);
-      return;
-    }
 
-    // If select is already shown, validate selection then open confirm
-    if (vehicleWarrantyId) {
-      setShowConfirmApprove(true);
-    } else {
-      toast.warning("Please select a warranty policy to approve.");
-    }
-  };
+  const handleApproveClick = () => {
+  // TẮT NEED MORE INFO
+  setShowReasonInput(false);
+  setReason("");
+
+  // TẮT DENY
+  setShowDenyReasonInput(false);
+  setSelectedDenyReason("");
+  setDenyReasonDetail("");
+
+  // Toggle approve select
+  if (!showApproveSelect) {
+    setShowApproveSelect(true);
+    return;
+  }
+
+  if (!vehicleWarrantyId) {
+    toast.warning("Please select a warranty policy to approve.");
+    return;
+  }
+
+  setShowConfirmApprove(true);
+};
+
+
 
   const confirmApprove = async () => {
     setIsApproveProcessing(true);
@@ -76,7 +79,6 @@ export const EVMStaffConfirmationModal = ({
       setShowConfirmApprove(false);
       setvehicleWarrantyId("");
       setShowApproveSelect(false);
-      // Container's onApprove will close modal by clearing selected claim and show toast
     } catch (err) {
       console.error("Approve failed", err);
       setShowConfirmApprove(false);
@@ -87,47 +89,48 @@ export const EVMStaffConfirmationModal = ({
   };
 
   // Xử lý khi nhấn nút Deny
-  const handleDenyClick = async () => {
-    // Tắt ô Need more info nếu đang mở
-    if (showReasonInput) {
-      setShowReasonInput(false);
-      setReason("");
+const handleDenyClick = async () => {
+  // TẮT APPROVE
+  setShowApproveSelect(false);
+  setvehicleWarrantyId("");
+
+  // TẮT NEED MORE INFO
+  setShowReasonInput(false);
+  setReason("");
+
+  // Nếu deny chưa mở → mở + load API
+  if (!showDenyReasonInput) {
+    setShowDenyReasonInput(true);
+    setSelectedDenyReason("");
+    setDenyReasonDetail("");
+    setIsLoadingDenialReasons(true);
+
+    try {
+      const res = await request(ApiEnum.WARRANTY_DENIAL_REASONS);
+      setDenialReasons(res?.data || []);
+    } catch (err) {
+      toast.error("Failed to load denial reasons");
+    } finally {
+      setIsLoadingDenialReasons(false);
     }
 
-    // Nếu form chưa mở → mở form và load API denial reasons
-    if (!showDenyReasonInput) {
-      setShowDenyReasonInput(true);
-      setSelectedDenyReason("");
-      setDenyReasonDetail("");
-      setIsLoadingDenialReasons(true);
+    return;
+  }
 
-      try {
-        const res = await request(ApiEnum.WARRANTY_DENIAL_REASONS);
-        setDenialReasons(res?.data || []);
-      } catch (err) {
-        console.error("Failed to load denial reasons", err);
-        toast.error("Failed to load denial reasons");
-      } finally {
-        setIsLoadingDenialReasons(false);
-      }
-      return;
-    }
+  // Validate
+  if (!selectedDenyReason) {
+    toast.warning("Please select a denial reason.");
+    return;
+  }
 
-    // Nếu đã mở nhưng chưa chọn lý do
-    if (!selectedDenyReason) {
-      toast.warning("Please select a denial reason.");
-      return;
-    }
+  if (selectedDenyReason === "Other" && denyReasonDetail.trim() === "") {
+    toast.warning("Please enter the reason detail.");
+    return;
+  }
 
-    // Nếu chọn Other nhưng chưa nhập lý do
-    if (selectedDenyReason === "Other" && denyReasonDetail.trim() === "") {
-      toast.warning("Please enter the reason detail.");
-      return;
-    }
+  setShowConfirmDeny(true);
+};
 
-    // Show confirmation dialog
-    setShowConfirmDeny(true);
-  };
 
   // Confirm deny action
   const confirmDeny = async () => {
@@ -156,25 +159,30 @@ export const EVMStaffConfirmationModal = ({
   };
 
   // Xử lý khi nhấn nút Need More Info
-  const handleNeedMoreInfoClick = () => {
-    // Tắt ô Deny nếu đang mở
-    if (showDenyReasonInput) {
-      setShowDenyReasonInput(false);
-      setSelectedDenyReason("");
-      setDenyReasonDetail("");
-    }
-    // Nếu ô Need more info chưa mở → mở nó
-    if (!showReasonInput) {
-      setShowReasonInput(true);
-      return;
-    }
-    // Nếu ô Need more info đã mở → validate and show confirm
-    if (!reason.trim()) {
-      toast.warning("Please provide a reason.");
-      return;
-    }
-    setShowConfirmNeedMoreInfo(true);
-  };
+const handleNeedMoreInfoClick = () => {
+  // TẮT APPROVE
+  setShowApproveSelect(false);
+  setvehicleWarrantyId("");
+
+  // TẮT DENY
+  setShowDenyReasonInput(false);
+  setSelectedDenyReason("");
+  setDenyReasonDetail("");
+
+  // Toggle need more info
+  if (!showReasonInput) {
+    setShowReasonInput(true);
+    return;
+  }
+
+  if (!reason.trim()) {
+    toast.warning("Please provide a reason.");
+    return;
+  }
+
+  setShowConfirmNeedMoreInfo(true);
+};
+
 
   // Confirm need more info action
   const confirmNeedMoreInfo = async () => {
