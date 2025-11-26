@@ -90,8 +90,6 @@ export const ApiEnum = {
     method: "PUT",
   },
 
-
-
   // ===== Assignments / People =====
   GET_ASSIGNED_TECHNICIANS: {
     path: "/workOrder/assigned-techs",
@@ -237,7 +235,7 @@ export const ApiEnum = {
   ACCOUNT_MANAGEMENT: { path: "/Employee/accounts", method: "GET" },
   CREATE_ACCOUNT: { path: "/Employee/createAccount", method: "POST" },
   UPDATE_ACCOUNT: { path: "/Employee/updateAccount/:id", method: "PUT" },
-  DELETE_ACCOUNT: { path: "/Employee/deleteAccount/:id", method: "DELETE" },
+  DELETE_ACCOUNT: { path: "/Employee/deactivateAccount/:id", method: "PATCH" },
 
   // ==================================================
   // ===== PARTS REQUESTS (ĐÃ SỬA ĐƯỜNG DẪN) =====

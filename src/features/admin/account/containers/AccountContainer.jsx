@@ -163,6 +163,12 @@ const AccountContainer = () => {
     async (payload) => {
       setLoading(true);
       setError(null);
+
+      console.log(
+        "Payload to CREATE_ACCOUNT API:",
+        JSON.stringify(payload, null, 2)
+      );
+
       try {
         // payload đã khớp API createAccount
         await request(ApiEnum.CREATE_ACCOUNT, payload);
@@ -190,42 +196,36 @@ const AccountContainer = () => {
       const { email, name, password, confirmPassword, role, orgId } =
         formValues;
 
-      // validate email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (email && !emailRegex.test(email)) {
-        toast.error("Email không hợp lệ");
-        return;
-      }
-
-      // validate password
-      const passwordPolicyRegex =
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+      const body = {
+        email,
+        name,
+        role,
+        orgId,
+      };
 
       if (password || confirmPassword) {
         if (password !== confirmPassword) {
           toast.error("Mật khẩu không khớp");
           return;
         }
+
+        const passwordPolicyRegex =
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
         if (!passwordPolicyRegex.test(password)) {
           toast.error("Mật khẩu yếu");
           return;
         }
-      }
 
-      // Build đúng body
-      const body = {};
-
-      if (email && email !== selectedAccount.email) body.email = email;
-      if (name && name !== selectedAccount.name) body.name = name;
-      if (role && role !== selectedAccount.role) body.role = role;
-      if (orgId && orgId !== selectedAccount.orgId) body.orgId = orgId;
-
-      if (password || confirmPassword) {
         body.password = password;
         body.confirmPassword = confirmPassword;
       }
 
-      setLoading(true);
+      console.log(
+        "Payload to UPDATE_ACCOUNT API:",
+        JSON.stringify(body, null, 2)
+      );
+
       try {
         await request(ApiEnum.UPDATE_ACCOUNT, {
           params: { id: selectedAccount.userId },
@@ -238,8 +238,6 @@ const AccountContainer = () => {
       } catch (err) {
         console.error(err);
         toast.error(err.responseData?.message || "Update failed");
-      } finally {
-        setLoading(false);
       }
     },
     [selectedAccount, fetchAccounts]
@@ -250,19 +248,21 @@ const AccountContainer = () => {
     if (!selectedAccount?.userId) return;
     setLoading(true);
     setError(null);
+
     try {
       await request(ApiEnum.DELETE_ACCOUNT, {
         params: { id: selectedAccount.userId },
+        data: {}, // PATCH yêu cầu có data rỗng
       });
 
-      toast.success("Account deleted successfully!");
+      toast.success("Account deactivated successfully!");
       setShowDeleteModal(false);
       setSelectedAccount(null);
       fetchAccounts();
     } catch (err) {
-      console.error("Delete account error:", err);
+      console.error("Deactivate account error:", err);
       const serverMessage =
-        err.responseData?.message || "Failed to delete account.";
+        err.responseData?.message || "Failed to deactivate account.";
       setError(serverMessage);
       toast.error(serverMessage);
     } finally {

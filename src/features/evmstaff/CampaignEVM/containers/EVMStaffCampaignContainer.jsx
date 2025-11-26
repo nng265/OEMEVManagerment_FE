@@ -10,6 +10,7 @@ import Campaign from "../components/Campaign";
 import { AddCampaignModal } from "../components/AddCampaignModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
+import { toast } from "react-toastify";
 
 export const EVMStaffCampaignContainer = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -257,8 +258,9 @@ export const EVMStaffCampaignContainer = () => {
         endDate: newCampaign?.endDate ?? "",
       };
 
-      console.log(" Sending payload:", payload);
+      console.log("Sending payload:", payload);
 
+      // Set processing inside modal bằng cách trả về promise
       const res = await request(ApiEnum.CREATE_COMPAIGN, payload);
       console.log("API Response:", res);
 
@@ -269,8 +271,12 @@ export const EVMStaffCampaignContainer = () => {
         typeRef.current,
         statusRef.current
       );
+
+      toast.success("Campaign created successfully!"); // <-- Thêm toast thông báo thành công
     } catch (e) {
       console.error("❌ Lỗi khi tạo campaign:", e);
+      toast.error(e?.responseData?.message || "Failed to create campaign"); // <-- Thêm toast lỗi
+      throw e; // <-- Throw ra để modal vẫn giữ overlay nếu cần retry
     } finally {
       setShowAddModal(false);
     }
