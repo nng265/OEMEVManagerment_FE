@@ -1,0 +1,96 @@
+.assigned-technicians-section {
+  border: 1px solid #e6e9ee;
+  border-radius: 6px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.technicians-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.technician-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fbfcfe;
+  box-shadow: 0 0 0 1px rgba(16,24,40,0.03) inset;
+}
+
+.technician-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+}
+
+.technician-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.edit-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb; /* blue link color */
+  cursor: pointer;
+  padding: 6px 8px;
+  font-size: 0.95rem;
+}
+
+/* When editing, show the select and action buttons aligned to the right, visually outside the info box */
+.technician-actions .edit-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.technician-actions select {
+  min-width: 220px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.04);
+}
+
+.technician-actions .btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+/* Make the edit controls visually stand out and appear to the right */
+.technician-item > .technician-meta {
+  flex: 1 1 auto;
+}
+
+.technician-item .technician-icon {
+  margin-right: 8px;
+}
+
+.reassign-section {
+  margin-top: 12px;
+}
+
+.loading-text {
+  color: #64748b;
+  font-size: 0.95rem;
+}

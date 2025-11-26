@@ -67,18 +67,6 @@ export default function PartList({
           : "-",
     },
     {
-      key: "expectedDate",
-      label: "Expected Delivery",
-      render: (val) =>
-        val
-          ? formatDate(val, "en-US", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })
-          : "-",
-    },
-    {
       key: "status",
       label: "Status",
       sortable: true,

@@ -120,7 +120,7 @@ export const TechnicianVehicleStatusContainer = () => {
       if (!vin) return [];
       const response = await request(ApiEnum.GET_PART_CATEGORIES, {
         vin: vin,
-      });//truyền vào số vin sửa đây nek 
+      }); //truyền vào số vin sửa đây nek
 
       const raw = Array.isArray(response)
         ? response
@@ -143,7 +143,7 @@ export const TechnicianVehicleStatusContainer = () => {
       return [];
     }
   }, []);
-  
+
   useEffect(() => {
     if (selectedWorkOrder?.vin) {
       fetchCategories(selectedWorkOrder.vin);
@@ -267,11 +267,11 @@ export const TechnicianVehicleStatusContainer = () => {
     }
   };
 
-//   useEffect(() => {
-//   if (selectedWorkOrder?.vin, selectedWorkOrder?.categoryName) {
-//     fetchModels(selectedWorkOrder.vin, selectedWorkOrder.categoryName);
-//   }
-// }, [fetchModels, selectedWorkOrder]); //mới sửa
+  //   useEffect(() => {
+  //   if (selectedWorkOrder?.vin, selectedWorkOrder?.categoryName) {
+  //     fetchModels(selectedWorkOrder.vin, selectedWorkOrder.categoryName);
+  //   }
+  // }, [fetchModels, selectedWorkOrder]); //mới sửa
 
   const fetchSerial = async (vin, modelName) => {
     try {

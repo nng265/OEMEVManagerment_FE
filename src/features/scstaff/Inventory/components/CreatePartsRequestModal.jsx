@@ -51,6 +51,9 @@ export const CreatePartsRequestModal = ({
   ]);
 
   const handleAddPart = () => {
+    if (addedParts.length >= 20)
+      return setError("You can only add up to 20 parts per request.");
+
     if (!currentModel) return setError("Please select a part model.");
     if (currentQuantity < 1) return setError("Quantity must be at least 1.");
 
@@ -66,11 +69,16 @@ export const CreatePartsRequestModal = ({
     setAddedParts(updated);
     setCurrentModel("");
     setCurrentQuantity(1);
+    setError(""); // clear old error
   };
 
   const handleSubmit = () => {
-    const finalParts = [...addedParts];
+    let finalParts = [...addedParts];
+
     if (currentModel && currentQuantity > 0) {
+      if (finalParts.length >= 20)
+        return setError("You can only have up to 20 parts total.");
+
       const exists = finalParts.findIndex((p) => p.model === currentModel);
       if (exists !== -1) finalParts[exists].quantity += currentQuantity;
       else finalParts.push({ model: currentModel, quantity: currentQuantity });
@@ -182,7 +190,13 @@ export const CreatePartsRequestModal = ({
                 required
               />
             </div>
-            <Button variant="secondary" onClick={handleAddPart} fullWidth>
+            <Button
+              variant="secondary"
+              onClick={handleAddPart}
+              fullWidth
+              disabled={addedParts.length >= 20}
+              title={addedParts.length >= 20 ? "Maximum 20 parts allowed" : ""}
+            >
               + Add Part
             </Button>
           </div>

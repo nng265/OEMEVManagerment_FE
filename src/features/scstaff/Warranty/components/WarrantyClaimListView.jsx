@@ -55,6 +55,7 @@ export const WarrantyClaimListView = ({
   onCloseDoneWarrantyModal,
 
   onAction,
+  onReassignSubmit,
 
   technicians,
   onFetchTechnicians,
@@ -216,6 +217,10 @@ export const WarrantyClaimListView = ({
             warrantyData={selectedClaim}
             assignedTechnicians={assignedTechnicians}
             loadingAssignedTechs={loadingAssignedTechs}
+            technicians={technicians}
+            onFetchTechnicians={onFetchTechnicians}
+            loadingTechnicians={loadingTechnicians}
+            onReassignSubmit={onReassignSubmit}
           />
         )}
 
@@ -283,6 +288,7 @@ WarrantyClaimListView.propTypes = {
   onCloseDoneWarrantyModal: PropTypes.func.isRequired,
 
   onAction: PropTypes.func.isRequired,
+  onReassignSubmit: PropTypes.func,
   technicians: PropTypes.array,
   onFetchTechnicians: PropTypes.func,
   loadingTechnicians: PropTypes.bool,

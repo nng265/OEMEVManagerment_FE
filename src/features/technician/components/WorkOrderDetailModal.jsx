@@ -4,6 +4,7 @@ import { Button } from "../../../components/atoms/Button/Button";
 import { Modal } from "../../../components/molecules/Modal/Modal";
 import { LoadingSpinner } from "../../../components/atoms/LoadingSpinner/LoadingSpinner";
 import { formatDate } from "../../../services/helpers";
+import { request, ApiEnum } from "../../../services/NetworkUntil";
 import "./WorkOrderDetailModal.css";
 
 import { ConfirmDialog } from "../../../components/molecules/ConfirmDialog/ConfirmDialog";
@@ -390,6 +391,58 @@ export const WorkOrderDetailModal = ({
       isCancelled = true;
     };
   }, [isCampaignTarget, campaignModelName, fetchCategoryByModel]);
+
+  // Prefetch in-stock serials for parts that have a model but no in-stock list yet
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        for (let i = 0; i < parts.length; i++) {
+          const p = parts[i];
+          if (!p || !p.model) continue;
+          // skip if already fetched (including empty array)
+          if (Array.isArray(p.availableSerialsInStock)) continue;
+
+          try {
+            const vin = workOrderData?.vin;
+            const resp = await request(ApiEnum.GET_SERIAL_IN_STOCK, {
+              vin,
+              model: p.model,
+            });
+            const list = Array.isArray(resp)
+              ? resp
+              : resp?.success && Array.isArray(resp.data)
+              ? resp.data
+              : Array.isArray(resp?.data)
+              ? resp.data
+              : [];
+
+            if (cancelled) return;
+            setParts((prev) => {
+              const copy = [...prev];
+              copy[i] = { ...copy[i], availableSerialsInStock: list };
+              return copy;
+            });
+          } catch (err) {
+            console.error("Error fetching in-stock serials for model", p.model, err);
+            // set as empty array to avoid refetch loop
+            setParts((prev) => {
+              const copy = [...prev];
+              copy[i] = { ...copy[i], availableSerialsInStock: [] };
+              return copy;
+            });
+          }
+        }
+      } catch (err) {
+        /* ignore outer errors */
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parts]);
 
   const isInspection =
     (workOrderData.type || "").toLowerCase() === "inspection";
@@ -886,14 +939,24 @@ export const WorkOrderDetailModal = ({
                     )}
                     {showNewSerialColumn && (
                       <div className="col new-serial">
-                        <input
-                          type="text"
-                          placeholder="Enter new serial"
-                          value={p.newSerial || ""} //chọn trong cái dropdown list
+                        <select
+                          value={p.newSerial || ""}
                           onChange={(e) =>
                             updatePart(idx, "newSerial", e.target.value)
                           }
-                        />
+                          disabled={!p.model}
+                        >
+                          <option value="">
+                            {p.availableSerialsInStock && p.availableSerialsInStock.length > 0
+                              ? "Select new serial"
+                              : "No serials available"}
+                          </option>
+                          {(p.availableSerialsInStock || []).map((s, i) => (
+                            <option key={i} value={s}>
+                              {s}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     )}
                     <div className="col actions-col"></div>
@@ -971,14 +1034,40 @@ export const WorkOrderDetailModal = ({
                                 vin,
                                 newModel
                               );
-                              setParts((prev) => {
-                                const copy = [...prev];
-                                copy[idx] = {
-                                  ...copy[idx],
-                                  availableSerials: fetchedSerials || [],
-                                };
-                                return copy;
-                              });
+                              // also fetch in-stock serials for selection
+                              try {
+                                const inStockResp = await request(ApiEnum.GET_SERIAL_IN_STOCK, {
+                                  vin,
+                                  model: newModel,
+                                });
+                                const inStockList = Array.isArray(inStockResp)
+                                  ? inStockResp
+                                  : inStockResp?.success && Array.isArray(inStockResp.data)
+                                  ? inStockResp.data
+                                  : Array.isArray(inStockResp?.data)
+                                  ? inStockResp.data
+                                  : [];
+
+                                setParts((prev) => {
+                                  const copy = [...prev];
+                                  copy[idx] = {
+                                    ...copy[idx],
+                                    availableSerials: fetchedSerials || [],
+                                    availableSerialsInStock: inStockList || [],
+                                  };
+                                  return copy;
+                                });
+                              } catch (e) {
+                                // fallback: only set fetchedSerials
+                                setParts((prev) => {
+                                  const copy = [...prev];
+                                  copy[idx] = {
+                                    ...copy[idx],
+                                    availableSerials: fetchedSerials || [],
+                                  };
+                                  return copy;
+                                });
+                              }
                             } catch (err) {
                               console.error("Error fetching serials:", err);
                             }
@@ -1025,14 +1114,24 @@ export const WorkOrderDetailModal = ({
                     {showNewSerialColumn && (
                       <div className="col new-serial">
                         {p.action === "Replace" ? (
-                          <input
-                            type="text"
-                            placeholder="Enter new serial"
+                          <select
                             value={p.newSerial || ""}
                             onChange={(e) =>
                               updatePart(idx, "newSerial", e.target.value)
                             }
-                          />
+                            disabled={!p.model}
+                          >
+                            <option value="">
+                              {p.availableSerialsInStock && p.availableSerialsInStock.length > 0
+                                ? "Select new serial"
+                                : "No serials available"}
+                            </option>
+                            {(p.availableSerialsInStock || []).map((s, i) => (
+                              <option key={i} value={s}>
+                                {s}
+                              </option>
+                            ))}
+                          </select>
                         ) : (
                           <div className="empty-new-serial">-</div>
                         )}
@@ -1073,14 +1172,24 @@ export const WorkOrderDetailModal = ({
                     {showNewSerialColumn && (
                       <div className="col new-serial">
                         {p.action === "Replace" ? (
-                          <input
-                            type="text"
-                            placeholder="Enter new serial"
+                          <select
                             value={p.newSerial || ""}
                             onChange={(e) =>
                               updatePart(idx, "newSerial", e.target.value)
                             }
-                          />
+                            disabled={!p.model}
+                          >
+                            <option value="">
+                              {p.availableSerialsInStock && p.availableSerialsInStock.length > 0
+                                ? "Select new serial"
+                                : "No serials available"}
+                            </option>
+                            {(p.availableSerialsInStock || []).map((s, i) => (
+                              <option key={i} value={s}>
+                                {s}
+                              </option>
+                            ))}
+                          </select>
                         ) : (
                           <div className="empty-new-serial">-</div>
                         )}

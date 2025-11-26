@@ -48,6 +48,7 @@ export const ApiEnum = {
   GET_WARRANTY_STATUSES: { path: "/WarrantyClaim/status", method: "GET" },
   GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
 
+  REASSIGN_TECHNICIAN: { path: "/WorkOrder/reassign", method: "POST" },
   // ===== Inventory / Parts Catalog =====
   GET_PART_CATEGORIES: { path: "/Part/categories", method: "GET" },
   GET_PART_MODELS: { path: "/Part/models", method: "GET" },
@@ -58,6 +59,7 @@ export const ApiEnum = {
   GET_PART: { path: "/Part", method: "GET" },
   GET_PART_SERIAL: { path: "/VehiclePartHistory/serials", method: "GET" },
 
+  GET_SERIAL_IN_STOCK: { path: "/Part/serials-in-stock", method: "GET" },
   // ===== Warranty Claim Actions =====
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
   SEND_CLAIM_TO_MANUFACTURER: {
