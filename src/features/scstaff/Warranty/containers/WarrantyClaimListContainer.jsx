@@ -385,6 +385,18 @@ export const WarrantyClaimListContainer = () => {
     setIsConfirmOpen(true);
   };
 
+  // ========================== REASSIGN TECHNICIAN ==========================
+  const handleReassignSubmit = (claimId, technicianIds = []) => {
+    if (!claimId) return;
+    pendingActionRef.current = {
+      type: "reassign",
+      payload: { claimId, technicianIds },
+    };
+    setConfirmTitle("Confirm Reassign");
+    setConfirmMessage(`Reassign technician(s) for claim #${claimId}?`);
+    setIsConfirmOpen(true);
+  };
+
   // ========================== CLAIM ACTIONS (MAIN) ==========================
   const handleClaimAction = (action, payload) => {
     if (!selectedWarrantyClaim || !selectedWarrantyClaim.claimId) {
@@ -397,39 +409,39 @@ export const WarrantyClaimListContainer = () => {
     const labelMap = {
       sendToManufacturer: {
         title: "Confirm Send",
-        message: `Send claim #${selectedWarrantyClaim.claimId} to manufacturer?`,
+        message: `Send claim to manufacturer?`,
         success: "Sent to manufacturer successfully!",
       },
       reject: {
         title: "Confirm Reject",
-        message: `Reject claim #${selectedWarrantyClaim.claimId}?`,
+        message: ` Are you sure to reject this claim?`,
         success: "Claim rejected successfully!",
       },
       needMoreInfo: {
         title: "Confirm Send Back",
-        message: `Send claim #${selectedWarrantyClaim.claimId} back for more info?`,
+        message: `Send claim back for more info?`,
         success: "Requested more information successfully!",
       },
       doneWarranty: {
         title: "Confirm Complete",
-        message: `Mark claim #${selectedWarrantyClaim.claimId} as completed?`,
+        message: `Mark claim as completed?`,
         success: "Marked as completed successfully!",
       },
       carBackHome: {
         title: "Confirm Return",
-        message: `Mark vehicle returned to customer for claim #${selectedWarrantyClaim.claimId}?`,
+        message: `Mark vehicle returned to customer for claim`,
         success: "Marked vehicle returned to customer!",
       },
       carBackCenter: {
         title: "Confirm Return",
-        message: `Mark vehicle returned to center for claim #${selectedWarrantyClaim.claimId}?`,
+        message: `Mark vehicle returned to center for claim`,
         success: "Marked vehicle returned to center!",
       },
     };
 
     const cfg = labelMap[action] || {
       title: "Confirm",
-      message: `Proceed with action for claim #${selectedWarrantyClaim.claimId}?`,
+      message: `Proceed with action for claim`,
       success: "Action completed successfully!",
     };
 
@@ -543,6 +555,63 @@ export const WarrantyClaimListContainer = () => {
           setError(msg);
           toast.error(msg);
         }
+      } else if (pending.type === "reassign") {
+        // payload: { claimId, technicianIds }
+        const { claimId, technicianIds } = pending.payload || {};
+        if (!claimId) {
+          setError("Missing claim id for reassign");
+          return;
+        }
+        try {
+          const reqData = {
+            target: "Warranty",
+            targetId: claimId,
+            technicianIds: Array.isArray(technicianIds)
+              ? technicianIds
+              : [technicianIds],
+          };
+
+          // Use explicit endpoint object to avoid runtime issues where ApiEnum entry
+          // might not be passed correctly to request(...) and trigger "Invalid endpoint format".
+          const reassignEndpoint = {
+            path: "/WorkOrder/reassign",
+            method: "POST",
+          };
+
+          const res = await request(reassignEndpoint, reqData);
+          if (res && res.success) {
+            toast.success("Technicians reassigned successfully!");
+            // refresh list
+            const { pageNumber, pageSize } = paginationRef.current;
+            fetchWarrantyClaims(
+              pageNumber,
+              pageSize,
+              statusFilterRef.current,
+              searchRef.current
+            );
+            // Also refresh assigned technicians for the currently-open claim so the modal
+            // immediately shows the updated technician names.
+            try {
+              await fetchAssignedTechnicians(claimId);
+            } catch (e) {
+              // non-fatal; we've already shown success toast
+              console.warn("Failed to refresh assigned technicians:", e);
+            }
+          } else {
+            const msg =
+              (res && (res.message || res.error)) || "Reassign failed";
+            setError(msg);
+            toast.error(msg);
+          }
+        } catch (err) {
+          console.error("Error reassigning technicians:", err);
+          const msg =
+            err?.responseData?.message ||
+            err?.message ||
+            "An error occurred while reassigning";
+          setError(msg);
+          toast.error(msg);
+        }
       }
     } catch (err) {
       console.error("Error performing action:", err);
@@ -619,6 +688,7 @@ export const WarrantyClaimListContainer = () => {
         technicians={technicians}
         onFetchTechnicians={fetchTechnicians}
         loadingTechnicians={loadingTechnicians}
+        onReassignSubmit={handleReassignSubmit}
         // Assigned Technicians (for under inspection/repair)
         assignedTechnicians={assignedTechnicians}
         loadingAssignedTechs={loadingAssignedTechs}

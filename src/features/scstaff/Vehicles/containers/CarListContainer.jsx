@@ -158,11 +158,13 @@ export const CarListContainer = () => {
     setIsActionLoading(true);
     try {
       const response = await request(ApiEnum.CREATE_WARRANTY_CLAIM, payload);
+
+      setShowWarrantyModal(false); // luôn đóng modal
+      setIsConfirmOpen(false);
+      setSelectedVehicle(null);
+      setPendingFormData(null);
+
       if (response.success) {
-        setShowWarrantyModal(false);
-        setIsConfirmOpen(false);
-        setSelectedVehicle(null);
-        setPendingFormData(null);
         toast.success("Warranty claim created successfully!");
       } else {
         const msg = response.message || "Unable to create warranty claim.";
@@ -173,6 +175,10 @@ export const CarListContainer = () => {
       console.error("Error creating warranty claim:", err);
       const msg = "System error. Please try again later.";
       setSubmitError(msg);
+      setShowWarrantyModal(false); // luôn đóng modal
+      setIsConfirmOpen(false);
+      setSelectedVehicle(null);
+      setPendingFormData(null);
       toast.error(msg);
     } finally {
       setIsActionLoading(false);
@@ -217,6 +223,8 @@ export const CarListContainer = () => {
               style={{ width: "22px" }}
             />
           </Button>
+          {/* Chỉ hiển thị nút tạo claim khi KHÔNG có active claim */}
+        {!row.hasActiveWarrantyClaim && (
           <Button
             className="light"
             size="small"
@@ -231,10 +239,12 @@ export const CarListContainer = () => {
               style={{ width: "20px" }}
             />
           </Button>
+        )}
         </div>
       ),
     },
   ];
+  
 
   return (
     <>
@@ -254,7 +264,6 @@ export const CarListContainer = () => {
           setPendingFormData(null);
         }}
         pagination={pagination}
-        // ✅ Gọi lại API khi đổi trang hoặc page size
         onPageChange={handlePageChange}
         onRefresh={handleRefresh}
         refreshing={loading}

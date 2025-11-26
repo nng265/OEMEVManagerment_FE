@@ -18,7 +18,7 @@ export const TechnicianVehicleStatusContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
-
+  const [selectedSerials, setSelectedSerials] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [targetFilter, setTargetFilter] = useState("");
@@ -115,9 +115,13 @@ export const TechnicianVehicleStatusContainer = () => {
     },
   ];
 
-  const fetchCategories = useCallback(async () => {
+  const fetchCategories = useCallback(async (vin) => {
     try {
-      const response = await request(ApiEnum.GET_PART_CATEGORIES);
+      if (!vin) return [];
+      const response = await request(ApiEnum.GET_PART_CATEGORIES, {
+        vin: vin,
+      }); //truyền vào số vin sửa đây nek
+
       const raw = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
@@ -139,6 +143,12 @@ export const TechnicianVehicleStatusContainer = () => {
       return [];
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedWorkOrder?.vin) {
+      fetchCategories(selectedWorkOrder.vin);
+    }
+  }, [fetchCategories, selectedWorkOrder]); // mới sửa
 
   const fetchWorkOrders = useCallback(
     async (pageNumber = 0, pageSize, search, target, type) => {
@@ -219,10 +229,6 @@ export const TechnicianVehicleStatusContainer = () => {
   );
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
-  useEffect(() => {
     setPagination((prev) => ({ ...prev, pageNumber: 0 }));
     fetchWorkOrders(
       0,
@@ -233,38 +239,49 @@ export const TechnicianVehicleStatusContainer = () => {
     );
   }, [fetchWorkOrders, debouncedSearchQuery, targetFilter, typeFilter]);
 
-  const fetchModels = async (categoryName) => {
+  const fetchModels = async (vin, categoryName) => {
     try {
-      if (!categoryName) {
+      if (!vin || !categoryName) {
         setModels([]);
         return [];
       }
+
       const response = await request(ApiEnum.GET_PART_MODELS, {
+        vin: vin,
         category: categoryName,
       });
-      const mods = Array.isArray(response)
+
+      const data = Array.isArray(response)
         ? response
         : response?.success && Array.isArray(response.data)
         ? response.data
         : Array.isArray(response?.data)
         ? response.data
         : [];
-      setModels(mods);
-      return mods;
+      setModels(data);
+      return data;
     } catch (error) {
       console.error("Error fetching models:", error);
+      setModels([]);
       return [];
     }
   };
 
-  const fetchSerial = async (vin, modelName) => {
+  //   useEffect(() => {
+  //   if (selectedWorkOrder?.vin, selectedWorkOrder?.categoryName) {
+  //     fetchModels(selectedWorkOrder.vin, selectedWorkOrder.categoryName);
+  //   }
+  // }, [fetchModels, selectedWorkOrder]); //mới sửa
+
+  // fetchSerial optionally accepts an array of serials to exclude (to prevent selecting duplicates)
+  const fetchSerial = async (vin, modelName, excludeSerials = []) => {
     try {
       if (!vin || !modelName) {
         setSerials([]);
         return [];
       }
 
-      const response = await request(ApiEnum.GET_PART_SERIAL, {
+      const response = await request(ApiEnum.GET_PART_SERIAL_TECH, {
         vin: vin,
         model: modelName,
       });
@@ -276,8 +293,13 @@ export const TechnicianVehicleStatusContainer = () => {
         : Array.isArray(response?.data)
         ? response.data
         : [];
-      setSerials(sers);
-      return sers;
+
+      const excludes = Array.isArray(excludeSerials) ? excludeSerials : [];
+      const filtered = sers.filter((s) => !excludes.includes(s));
+
+      // keep the component-level serials list reflective of the last fetch (filtered)
+      setSerials(filtered);
+      return filtered;
     } catch (error) {
       console.error("Error fetching serials:", error);
       setSerials([]);

@@ -1,16 +1,15 @@
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_D;
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_D;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const ApiEnum = {
   LOGIN: { path: "/auth/login", method: "POST" },
   LOGIN_GOOGLE: { path: "/auth/google-login", method: "POST" },
 
-  // ===== Dashboard (SC) =====
+  // ===== Dashboard =====
   GET_DASHBOARD_SC_SUMMARY: { path: "/Dashboard/sc/summary", method: "GET" },
-  // ===== Dashboard (EVM) =====
   GET_DASHBOARD_EVM_SUMMARY: { path: "/Dashboard/evm/summary", method: "GET" },
 
-  // — EVM Metrics (Dashboard widgets)
+  // — EVM Metrics
   API_GET_TOTAL_WARRANTY_CLAIMS: {
     path: "/WarrantyClaim/count/sent-to-manufacturer",
     method: "GET",
@@ -45,25 +44,10 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:targetId/assign-techs",
     method: "POST",
   },
-
-  // ===== Employees / Technicians =====
-  GET_TECHNICIANS: { path: "/Employee", method: "GET" },
-
-  // ===== Technician Tasks (Work Orders) =====
-  GET_WORK_ORDERS_BY_TECH: { path: "/workOrder", method: "GET" },
-  GET_WORK_ORDER_TASK_COUNTS: { path: "/WorkOrder/task-counts", method: "GET" },
-  GET_WORK_ORDER_TASK_GROUP_COUNTS: {
-    path: "/WorkOrder/task-group-counts",
-    method: "GET",
-  },
-  GET_INSPECTION_ORDERS: {
-    path: "/WorkOrder/by-tech/inspection",
-    method: "GET",
-  },
-
   GET_WARRANTY_STATUSES: { path: "/WarrantyClaim/status", method: "GET" },
   GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
 
+  REASSIGN_TECHNICIAN: { path: "/WorkOrder/reassign", method: "POST" },
   // ===== Inventory / Parts Catalog =====
   GET_PART_CATEGORIES: { path: "/Part/categories", method: "GET" },
   GET_PART_MODELS: { path: "/Part/models", method: "GET" },
@@ -72,17 +56,15 @@ export const ApiEnum = {
     method: "GET",
   },
   GET_PART: { path: "/Part", method: "GET" },
-  GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
+  GET_PART_SERIAL_TECH: { path: "/VehiclePartHistory/serials", method: "GET" },
 
+  GET_SERIAL_IN_STOCK: { path: "/Part/serials-in-stock", method: "GET" },
   // ===== Warranty Claim Actions =====
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },
-  CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
-  UPLOAD_IMAGE: { path: "/Image/multi/:claimId", method: "POST" },
   SEND_CLAIM_TO_MANUFACTURER: {
     path: "/WarrantyClaim/:claimId/send-to-manufacturer",
     method: "PUT",
   },
-  SUBMIT_PART_REQUEST: { path: "/PartOrderItem", method: "POST" },
   DENY_WARRANTY_CLAIM: { path: "/WarrantyClaim/:claimId/deny", method: "PUT" },
   CUSTOMER_GET_CAR: {
     path: "/WarrantyClaim/:claimId/customer-get-car",
@@ -98,6 +80,14 @@ export const ApiEnum = {
   },
   CAR_BACK_CENTER: {
     path: "/WarrantyClaim/:claimId/car-back-center",
+    method: "PUT",
+  },
+  WARRANTY_DENIAL_REASONS: {
+    path: "/WarrantyClaim/denial-reasons",
+    method: "GET",
+  },
+  DENY_WARRANTY_CLAIM: {
+    path: "/WarrantyClaim/:claimId/deny",
     method: "PUT",
   },
 
@@ -118,10 +108,6 @@ export const ApiEnum = {
   },
 
   // ===== Warranty Processing =====
-  GET_VEHICLE_POLICIES: {
-    path: "/warrantyClaim/vehicle-policies/:vin",
-    method: "GET",
-  },
   APPROVE_WARRANTY_CLAIM: {
     path: "/WarrantyClaim/:claimId/approve",
     method: "PUT",
@@ -132,20 +118,25 @@ export const ApiEnum = {
     path: "/WarrantyClaim/:claimId/inspection",
     method: "PUT",
   },
-  GET_REQUEST_PARTS: { path: "/PartOrder", method: "GET" },
-
-  // ===== Parts Requests (Orders) =====
-  CONFIRM_PREPARE: { path: "/PartOrder/:orderId/confirm", method: "PUT" },
-  DELIVERED_CLICK: { path: "/PartOrder/:orderId/delivery", method: "PUT" },
-  UPDATE_REQUESTED_DATE: {
-    path: "/PartOrder/:orderId/expected-date",
-    method: "PUT",
-  },
   WARRANTY_REPAIR: { path: "/WarrantyClaim/:claimId/repair", method: "PUT" },
-  CONFIRM_PART_ORDER_DELIVERED: {
-    path: "/PartOrder/:orderId/confirm-delivery",
-    method: "PUT",
+
+  // ===== Employees / Work Orders =====
+  GET_TECHNICIANS: { path: "/Employee", method: "GET" },
+  GET_WORK_ORDERS_BY_TECH: { path: "/workOrder", method: "GET" },
+  GET_WORK_ORDER_TASK_COUNTS: { path: "/WorkOrder/task-counts", method: "GET" },
+  GET_WORK_ORDER_TASK_GROUP_COUNTS: {
+    path: "/WorkOrder/task-group-counts",
+    method: "GET",
   },
+  GET_INSPECTION_ORDERS: {
+    path: "/WorkOrder/by-tech/inspection",
+    method: "GET",
+  },
+  CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
+  SUBMIT_PART_REQUEST: { path: "/PartOrderItem", method: "POST" },
+  UPLOAD_IMAGE: { path: "/Image/multi/:claimId", method: "POST" },
+
+  GET_VEHICLE_PARTS: (vehicleId) => `/VehiclePart/vehicle/${vehicleId}`,
 
   // ===== Campaigns =====
   CREATE_CAMPAIGN: { path: "/Campaign", method: "POST" },
@@ -173,17 +164,19 @@ export const ApiEnum = {
     path: "/CampaignVehicle/:id/repaired",
     method: "PUT",
   },
-
   GET_CAMPAIGN_VEHICLE_STATUSES: {
     path: "/CampaignVehicle/statuses",
     method: "GET",
   },
   CLOSE_CAMPAIGN: { path: "/Campaign/:id/close", method: "PUT" },
 
-  // ===== Organization =====
-  ORGANIZATION: { path: "/Organization", method: "GET" },
+  CAMPAIGN_VEHICLE_TECH: {
+    path: "/CampaignVehicle/:campaignVehicleId/assigned-techs",
+    method: "GET",
+  },
 
-  // ===== Appointments =====
+  // ===== Organization / Account / Policy =====
+  ORGANIZATION: { path: "/Organization", method: "GET" },
   APPOINTMENT: { path: "/Appointment", method: "GET" },
   APPOINTMENT_TIMESLOTS: {
     path: "/Appointment/available-timeslots",
@@ -191,7 +184,6 @@ export const ApiEnum = {
   },
   APPOINTMENT_CREATE_CUS: { path: "/Appointment", method: "POST" },
   APPOINTMENT_CREATE: { path: "/Appointment/evm", method: "POST" },
-
   APPOINTMENT_CONFIRM: {
     path: "/Appointment/:appointmentId/confirm",
     method: "PUT",
@@ -213,8 +205,6 @@ export const ApiEnum = {
     path: "/Appointment/:appointmentId/cancel",
     method: "PUT",
   },
-
-  // ===== Policy Management =====
   POLICY_MANAGEMENT: { path: "/WarrantyPolicy", method: "GET" },
   CREATE_POLICY: { path: "/WarrantyPolicy", method: "POST" },
   UPDATE_POLICY: { path: "/WarrantyPolicy/:id", method: "PUT" },
@@ -223,107 +213,255 @@ export const ApiEnum = {
     method: "PATCH",
   },
   DELETE_POLICY: { path: "/WarrantyPolicy/:id", method: "DELETE" },
-
-  // ===== Account Management =====
   ACCOUNT_MANAGEMENT: { path: "/Employee/accounts", method: "GET" },
   CREATE_ACCOUNT: { path: "/Employee/createAccount", method: "POST" },
   UPDATE_ACCOUNT: { path: "/Employee/updateAccount/:id", method: "PUT" },
-  DELETE_ACCOUNT: { path: "/Employee/deleteAccount/:id", method: "DELETE" },
+  DELETE_ACCOUNT: { path: "/Employee/deactivateAccount/:id", method: "PATCH" },
+
+  // ==================================================
+  // ===== PARTS REQUESTS (EVM & SC) =====
+  // ==================================================
+
+  GET_REQUEST_PARTS: { path: "/PartOrder", method: "GET" },
+  CREATE_PART_ORDER_SC: { path: "/PartOrder", method: "POST" },
+  GET_PART_ORDER_DETAIL: (orderId) => `/PartOrder/${orderId}`,
+
+  // --- EVM Actions ---
+  CONFIRM_PREPARE: { path: "/PartOrder/:orderId/confirm", method: "PUT" },
+  UPDATE_REQUESTED_DATE: {
+    path: "/PartOrder/:orderId/expected-date",
+    method: "PUT",
+  },
+  VALIDATE_SHIPMENT: {
+    path: "/PartOrder/:orderId/validate-shipment",
+    method: "POST",
+  },
+  CONFIRM_SHIPMENT: {
+    path: "/PartOrder/:orderId/confirm-shipment",
+    method: "PUT",
+  },
+
+  // --- SC Actions ---
+  ACKNOWLEDGE_RECEIPT: {
+    path: "/PartOrder/:orderId/acknowledge-receipt",
+    method: "PUT",
+  },
+  VALIDATE_RECEIPT: {
+    path: "/PartOrder/:orderId/validate-receipt",
+    method: "POST",
+  },
+  CONFIRM_RECEIPT: {
+    path: "/PartOrder/:orderId/confirm-receipt",
+    method: "POST",
+  },
+  CONFIRM_PART_ORDER_DELIVERED: {
+    path: "/PartOrder/:orderId/confirm-delivery",
+    method: "PUT",
+  },
+
+  GET_SHIPMENT_MODELS: {
+    path: "/PartOrder/:orderId/shipment-models",
+    method: "GET",
+  },
+
+  // 2. SC Staff - Lấy serials theo model
+  GET_SHIPMENT_SERIALS: {
+    path: "/PartOrder/:orderId/shipment-serials",
+    method: "GET",
+  },
+
+  // 3. EVM Staff - Lấy models hàng trả về
+  GET_RETURN_SHIPMENT_MODELS: {
+    path: "/PartOrder/:orderId/return-shipment-models",
+    method: "GET",
+  },
+
+  // 4. EVM Staff - Lấy serials hàng trả về
+  GET_RETURN_SHIPMENT_SERIALS: {
+    path: "/PartOrder/:orderId/return-shipment-serials",
+    method: "GET",
+  },
+
+  // --- EXCEPTIONS & RETURN FLOW (QUAN TRỌNG) ---
+  CANCEL_SHIPMENT: {
+    path: "/PartOrder/:orderId/cancel-shipment",
+    method: "POST",
+  },
+  // [1] Báo trả hàng
+  RETURN_SHIPMENT: {
+    path: "/PartOrder/:orderId/return-shipment",
+    method: "POST",
+  },
+
+  // =======================================================================
+  // [ĐÃ THÊM MỚI] API BẠN ĐANG THIẾU
+  // =======================================================================
+  ACKNOWLEDGE_RETURN_RECEIPT: {
+    path: "/PartOrder/:orderId/acknowledge-return-receipt",
+    method: "PUT",
+  },
+  // =======================================================================
+
+  // [3] Validate hàng nhận về
+  VALIDATE_RETURN: {
+    path: "/PartOrder/:orderId/validate-return-receipt",
+    method: "POST",
+  },
+  // [4] Xác nhận cuối cùng
+  CONFIRM_RETURN: {
+    path: "/PartOrder/:orderId/confirm-return-receipt",
+    method: "POST",
+  },
+
+  // Legacy / Admin / Other
+  DELIVERED_CLICK: { path: "/PartOrder/:orderId/delivery", method: "PUT" },
+  GET_PART_HISTORY: { path: "/VehiclePartHistory", method: "GET" },
+  GET_PART_STATUS: { path: "/VehiclePartHistory/statuses", method: "GET" },
+  GET_PART_CONDITION: { path: "/VehiclePartHistory/conditions", method: "GET" },
+
+  PART_ORDER_STATUSES: { path: "/PartOrder/statuses", method: "GET" },
+  GET_REASON: { path: "/PartOrder/return-reasons", method: "GET" },
+  GET_CANCEL: { path: "/PartOrder/cancellation-reasons", method: "GET" },
+  GET_PART_ORDERS: { path: "/PartOrder/:orderID", method: "GET" },
+
+  CANCEL_SHIPEMENT: {
+    path: "/PartOrder/:orderID/cancel-shipment",
+    method: "POST",
+  },
+
+  // Discrepancy
+  RESOLVE_DISCREPANCY_OPTIONS: {
+    path: "/PartOrder/discrepancy-resolution-options",
+    method: "GET",
+  },
+  RESOLVE_DISCREPANCY: {
+    path: "/PartOrder/:orderID/resolve-discrepancy",
+    method: "POST",
+  },
+
+  // EVM Create
+  CREATE_PART_ORDER_BY_EVM: {
+    path: "/PartOrder/create-by-evm",
+    method: "POST",
+  },
+  // Lấy chi tiết (dự phòng nếu không có ở trên)
+  GET_PART_ORDER_BY_ID: { path: "/PartOrder/:orderID", method: "GET" },
 };
-/**
- * @param {Object} endpoint - Định nghĩa endpoint (path + method)
- * @param {Object} [data] - Payload (query hoặc body)
- * @param {Object} [extraHeaders] - Headers bổ sung
- */
+
+// ... (Giữ nguyên phần export function request và uploadFiles bên dưới)
 export async function request(endpoint, data = {}, extraHeaders = {}) {
-  let url = `${API_BASE_URL}${endpoint.path}`;
-  const token = localStorage.getItem("token");
+  let url = "";
+  let method = "GET";
+  let headers = {};
 
-  const shouldSkipAuth = Boolean(extraHeaders.skipAuth);
-  if (shouldSkipAuth) delete extraHeaders.skipAuth;
-
-  // Thay placeholder trong path nếu có (vd: /user/:id -> /user/123)
-  if (data.params) {
-    Object.entries(data.params).forEach(([key, value]) => {
-      url = url.replace(`:${key}`, encodeURIComponent(value));
-    });
-    delete data.params; // tránh gửi params vào body hoặc query
+  if (typeof extraHeaders === "string") {
+    method = extraHeaders;
+    headers = {};
+  } else {
+    headers = extraHeaders || {};
   }
 
-  const headers = {
+  if (typeof endpoint === "string") {
+    url = endpoint.startsWith("http") ? endpoint : `${API_BASE_URL}${endpoint}`;
+  } else if (endpoint && endpoint.path) {
+    url = `${API_BASE_URL}${endpoint.path}`;
+    method = endpoint.method || method;
+  } else {
+    throw new Error("Invalid endpoint format");
+  }
+
+  const token = localStorage.getItem("token");
+  const shouldSkipAuth = Boolean(headers.skipAuth);
+  if (shouldSkipAuth) delete headers.skipAuth;
+
+  // Replace params trong URL (ví dụ :orderId)
+  if (data.params) {
+    Object.entries(data.params).forEach(([key, value]) => {
+      url = url.replace(
+        new RegExp(`:${key}\\b`, "g"),
+        encodeURIComponent(value)
+      );
+    });
+    delete data.params;
+  }
+
+  const finalHeaders = {
     "Content-Type": "application/json",
     "ngrok-skip-browser-warning": "true",
     ...(token && !shouldSkipAuth && { Authorization: `Bearer ${token}` }),
-    ...extraHeaders,
+    ...headers,
   };
 
-  const options = { method: endpoint.method, headers };
+  const options = { method: method.toUpperCase(), headers: finalHeaders };
 
-  if (endpoint.method.toUpperCase() === "GET" && Object.keys(data).length) {
+  if (options.method === "GET" && Object.keys(data).length) {
     const queryString = new URLSearchParams(data).toString();
     if (queryString) url += `?${queryString}`;
-  } else if (
-    ["POST", "PUT", "PATCH", "DELETE"].includes(endpoint.method.toUpperCase())
-  ) {
+  } else if (["POST", "PUT", "PATCH", "DELETE"].includes(options.method)) {
     if (Object.keys(data).length) options.body = JSON.stringify(data);
   }
 
   try {
     const response = await fetch(url, options);
     const responseData = await response.json();
-
     if (!response.ok) throw { responseData };
     return responseData;
   } catch (error) {
-    if (error instanceof TypeError) {
+    if (error instanceof TypeError)
       throw {
         success: false,
         code: 1000,
-        message: "Network error. Please try again later.",
+        message: "Network error.",
         data: null,
       };
-    }
     throw error;
   }
 }
 
-/**
- * @param {Object} endpoint - Định nghĩa endpoint (path + method)
- * @param {FormData|Object} data - FormData object hoặc object chứa files và fields
- * @param {Object} [extraHeaders] - Headers bổ sung
- */
-export async function uploadFiles(endpoint, data = {}, extraHeaders = {}) {
-  let url = `${API_BASE_URL}${endpoint.path}`;
-  const token = localStorage.getItem("token");
+export async function uploadFiles(endpoint, dataInput = {}, extraHeaders = {}) {
+  let url = "";
+  let method = "POST";
 
-  // Thay placeholder trong path nếu có (vd: /Image/multi/:warrantyId)
+  if (typeof endpoint === "string") {
+    url = endpoint.startsWith("http") ? endpoint : `${API_BASE_URL}${endpoint}`;
+  } else if (endpoint && endpoint.path) {
+    url = `${API_BASE_URL}${endpoint.path}`;
+    method = endpoint.method || method;
+  }
+
+  const data = { ...dataInput };
   if (data.params) {
     Object.entries(data.params).forEach(([key, value]) => {
-      url = url.replace(`:${key}`, encodeURIComponent(value));
+      url = url.replace(
+        new RegExp(`:${key}\\b`, "g"),
+        encodeURIComponent(value)
+      );
     });
     delete data.params;
   }
 
+  const token = localStorage.getItem("token");
   const headers = {
     "ngrok-skip-browser-warning": "true",
     ...(token && { Authorization: `Bearer ${token}` }),
     ...extraHeaders,
   };
-
-  // Không set Content-Type khi gửi FormData, browser sẽ tự động set
-  // với boundary phù hợp
+  delete headers["Content-Type"];
 
   let formData;
   if (data instanceof FormData) {
     formData = data;
   } else {
-    // Tạo FormData từ object nếu cần
     formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
+      if (value === null || value === undefined) return;
       if (value instanceof FileList) {
         Array.from(value).forEach((file) => formData.append(key, file));
-      } else if (Array.isArray(value) && value[0] instanceof File) {
-        value.forEach((file) => formData.append(key, file));
+      } else if (Array.isArray(value)) {
+        value.forEach((item) => {
+          if (item instanceof File) formData.append(key, item);
+          else formData.append(key, item);
+        });
       } else if (value instanceof File) {
         formData.append(key, value);
       } else {
@@ -332,27 +470,17 @@ export async function uploadFiles(endpoint, data = {}, extraHeaders = {}) {
     });
   }
 
-  const options = {
-    method: endpoint.method,
-    headers,
-    body: formData,
-  };
+  const options = { method: method.toUpperCase(), headers, body: formData };
 
   try {
     const response = await fetch(url, options);
     const responseData = await response.json();
-
     if (!response.ok) throw { responseData };
     return responseData;
   } catch (error) {
-    if (error instanceof TypeError) {
-      throw {
-        success: false,
-        code: 1000,
-        message: "Network error. Please try again later.",
-        data: null,
-      };
-    }
+    console.error("Upload Error:", error);
+    if (error instanceof TypeError)
+      throw { success: false, message: "Network error" };
     throw error;
   }
 }

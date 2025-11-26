@@ -16,6 +16,27 @@ export const DeniedOrRepairedClaimModal = ({
 
   const handleCustomerGetCarClick = () => onAction?.("doneWarranty");
 
+  const denialContent = warrantyData?.denialReason ? (
+    <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
+      <div className="detail-item">
+       <h5>Denial Reason:</h5>
+        <div className="value" style={{ marginTop: "8px" }}>
+          {/* Chỉ show detail nếu reason = Other */}
+        {warrantyData.denialReason === "Other" && (
+          <div style={{ marginTop: "6px" }}>
+            {warrantyData.denialReasonDetail}
+          </div>
+        )}
+        {warrantyData.denialReason !== "Other" && (
+          <div style={{ marginTop: "6px" }}>
+            {warrantyData.denialReason}
+          </div>
+        )}
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   const handleViewBill = () => {
     setShowBillModal(true);
   };
@@ -30,6 +51,7 @@ export const DeniedOrRepairedClaimModal = ({
         isOpen={isOpen}
         onClose={onClose}
         warrantyData={warrantyData}
+        additionalContent={denialContent}
       >
         <Button variant="light" onClick={handleViewBill}>
           View Bill

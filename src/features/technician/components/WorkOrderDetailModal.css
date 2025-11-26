@@ -67,7 +67,6 @@
   letter-spacing: 0.2px;
 }
 
-
 .badge.status-repair {
   background-color: #fef3c7;
   color: #92400e;
@@ -104,8 +103,7 @@
   color: #475569;
 }
 
-
-.badge+.badge {
+.badge + .badge {
   margin-left: 6px;
 }
 
@@ -115,7 +113,6 @@
 .badge.status-under-inspection {
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
-
 
 .text-block {
   grid-column: 1 / -1;
@@ -340,7 +337,7 @@
 }
 
 .parts-row .col select:disabled {
-  opacity: .55;
+  opacity: 0.55;
   background-color: #f1f5f9;
 }
 
@@ -391,7 +388,6 @@
   margin: 8px 0 12px;
   font-size: 14px;
 }
-
 
 .new-serial-input {
   width: 100%;

@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
+import ConfirmDialog from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
+import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import "./WarrantyClaimDetailModal.css";
 
 export const PendingConfirmationModal = ({
@@ -19,10 +22,25 @@ export const PendingConfirmationModal = ({
   const [selectedDropdowns, setSelectedDropdowns] = useState([
     { id: 1, selectedValue: "" },
   ]);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [showRejectSection, setShowRejectSection] = useState(false);
+  const [selectedReason, setSelectedReason] = useState("");
+  const [reasonDetail, setReasonDetail] = useState("");
+  const [denialReasons, setDenialReasons] = useState([]);
+  const [isLoadingDenialReasons, setIsLoadingDenialReasons] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   if (!warrantyData) return null;
 
+  // ------------------- Request More Info Handlers -------------------
   const handleRequestMoreInfoClick = () => {
+    // Ẩn Reject form nếu đang mở
+    if (showRejectSection) {
+      setShowRejectSection(false);
+      setSelectedReason("");
+      setReasonDetail("");
+    }
+
     setShowInputSection(true);
     setDescription("");
     setSelectedDropdowns([{ id: 1, selectedValue: "" }]);
@@ -51,20 +69,9 @@ export const PendingConfirmationModal = ({
     setSelectedDropdowns([{ id: 1, selectedValue: "" }]);
   };
 
-  const handleAddTechnician = () => {
-    const newId =
-      (selectedDropdowns[selectedDropdowns.length - 1]?.id || 0) + 1;
-    setSelectedDropdowns([
-      ...selectedDropdowns,
-      { id: newId, selectedValue: "" },
-    ]);
-  };
-
   const handleRemoveTechnician = (idToRemove) => {
     if (selectedDropdowns.length > 1)
-      setSelectedDropdowns(
-        selectedDropdowns.filter((t) => t.id !== idToRemove)
-      );
+      setSelectedDropdowns(selectedDropdowns.filter((t) => t.id !== idToRemove));
   };
 
   const handleTechSelectionChange = (rowId, selectedUserId) => {
@@ -74,9 +81,90 @@ export const PendingConfirmationModal = ({
     setSelectedDropdowns(updated);
   };
 
-  const handleApproveClick = () => onAction?.("sendToManufacturer");
-  const handleRejectClick = () => onAction?.("reject");
+  // ------------------- Reject Handlers -------------------
+  const handleRejectClick = async () => {
+    // Ẩn Request More Info nếu đang mở
+    if (showInputSection) {
+      setShowInputSection(false);
+      setDescription("");
+      setSelectedDropdowns([{ id: 1, selectedValue: "" }]);
+    }
 
+    // Nếu form chưa mở → mở form và load API
+    if (!showRejectSection) {
+      setShowRejectSection(true);
+      setSelectedReason("");
+      setReasonDetail("");
+      setIsLoadingDenialReasons(true);
+
+      try {
+        const res = await request(ApiEnum.WARRANTY_DENIAL_REASONS);
+        setDenialReasons(res?.data || []);
+      } catch (err) {
+        console.error("Failed to load denial reasons", err);
+        alert("Failed to load denial reasons");
+      } finally {
+        setIsLoadingDenialReasons(false);
+      }
+      return;
+    }
+
+    // Nếu đã mở nhưng chưa chọn lý do
+    if (!selectedReason) {
+      alert("Please select a denial reason.");
+      return;
+    }
+
+    // Nếu chọn Other nhưng chưa nhập lý do
+    if (selectedReason === "Other" && reasonDetail.trim() === "") {
+      alert("Please enter the reason detail.");
+      return;
+    }
+
+    // Open confirmation dialog instead of calling API directly
+    setShowConfirmDialog(true);
+  };
+
+  const handleCancelReject = () => {
+    setShowRejectSection(false);
+    setSelectedReason("");
+    setReasonDetail("");
+  };
+
+  // Confirm dialog -> perform API deny
+  const confirmReject = async () => {
+    setIsRejecting(true);
+    try {
+      const payload = { reason: selectedReason };
+      if (selectedReason === "Other") {
+        payload.reasonDetail = reasonDetail.trim();
+      }
+
+      await request(
+        {
+          ...ApiEnum.DENY_WARRANTY_CLAIM,
+          path: ApiEnum.DENY_WARRANTY_CLAIM.path.replace(":claimId", warrantyData.claimId),
+        },
+        payload
+      );
+
+      // API success: close both dialogs and show toast
+      setShowConfirmDialog(false);
+      onClose();
+      toast.success("Claim rejected successfully!");
+    } catch (err) {
+      console.error("Reject failed", err);
+      setShowConfirmDialog(false);
+      toast.error(err?.responseData?.message || "Failed to reject claim.");
+    } finally {
+      setIsRejecting(false);
+    }
+  };
+
+  // ------------------- Approve Handler -------------------
+  const handleApproveClick = () => onAction?.("sendToManufacturer");
+
+  // ------------------- Request More Info Section -------------------
   const requestMoreInfoSection = showInputSection ? (
     <DetailSection title="Request More Information">
       <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
@@ -141,15 +229,6 @@ export const PendingConfirmationModal = ({
                   </div>
                 );
               })}
-              <Button
-                type="button"
-                variant="secondary"
-                size="small"
-                onClick={handleAddTechnician}
-                style={{ marginTop: "0.5rem" }}
-              >
-                + Add Technician
-              </Button>
             </div>
           ) : (
             <p className="no-technicians">No technicians available.</p>
@@ -173,7 +252,71 @@ export const PendingConfirmationModal = ({
     </DetailSection>
   ) : null;
 
-  const actionButtons = !showInputSection && (
+  // ------------------- Reject Section -------------------
+  const rejectSection = showRejectSection ? (
+    <DetailSection title="Reject Claim">
+      <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
+        {/* DROPDOWN */}
+        <div className="detail-item">
+          <span className="label">Select Reason:</span>
+          <select
+            className="form-select"
+            value={selectedReason}
+            onChange={(e) => setSelectedReason(e.target.value)}
+            disabled={isLoadingDenialReasons}
+            style={{ width: "100%", marginTop: "8px" }}
+          >
+            <option value="">
+              {isLoadingDenialReasons ? "Loading..." : "-- Select Reason --"}
+            </option>
+            {denialReasons.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.description}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* CUSTOM TEXTAREA - HIỂN THỊ KHI CHỌN OTHER */}
+        {selectedReason === "Other" && (
+          <div className="detail-item">
+            <span className="label">Reason Detail:</span>
+            <textarea
+              className="form-textarea"
+              rows={4}
+              value={reasonDetail}
+              onChange={(e) => setReasonDetail(e.target.value)}
+              placeholder="Enter reason detail for rejection..."
+              style={{ width: "100%", marginTop: "8px" }}
+            />
+          </div>
+        )}
+
+        <div
+          style={{
+            marginTop: "12px",
+            display: "flex",
+            gap: "10px",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button variant="secondary" onClick={handleCancelReject}>
+            Cancel
+          </Button>
+            <Button
+              variant="danger"
+              onClick={handleRejectClick}
+              disabled={isLoadingDenialReasons || isRejecting}
+            >
+              {isRejecting ? "Rejecting..." : "Reject"}
+            </Button>
+        </div>
+      </div>
+    </DetailSection>
+  ) : null;
+
+  // ------------------- Action Buttons -------------------
+  const actionButtons = !showInputSection && !showRejectSection && (
     <>
       <Button variant="warning" onClick={handleRequestMoreInfoClick}>
         Request More Information
@@ -187,17 +330,45 @@ export const PendingConfirmationModal = ({
     </>
   );
 
+  // ------------------- Return Modal -------------------
   return (
-    <WarrantyClaimDetailModal
-      isOpen={isOpen}
-      onClose={onClose}
-      warrantyData={warrantyData}
-      additionalContent={requestMoreInfoSection}
-      showBackButton={!showInputSection}
-      backButtonLabel="Back"
-    >
-      {actionButtons}
-    </WarrantyClaimDetailModal>
+    <>
+      <WarrantyClaimDetailModal
+        isOpen={isOpen}
+        onClose={onClose}
+        warrantyData={warrantyData}
+        additionalContent={
+          <>
+            {requestMoreInfoSection}
+            {rejectSection}
+          </>
+        }
+        showBackButton={!showInputSection && !showRejectSection}
+        backButtonLabel="Cancel"
+      >
+        {actionButtons}
+      </WarrantyClaimDetailModal>
+
+      {/* Confirm dialog for rejecting */}
+      <ConfirmDialog
+        isOpen={showConfirmDialog}
+        title="Confirm Reject"
+        message={
+          selectedReason
+            ? `Are you sure you want to reject this claim? Reason: ${selectedReason}${
+                selectedReason === "Other" && reasonDetail
+                  ? ` - ${reasonDetail}`
+                  : ""
+              }`
+            : "Are you sure you want to reject this claim?"
+        }
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={confirmReject}
+        onCancel={() => setShowConfirmDialog(false)}
+        isLoading={isRejecting}
+      />
+    </>
   );
 };
 

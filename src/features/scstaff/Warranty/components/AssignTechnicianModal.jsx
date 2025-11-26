@@ -76,7 +76,7 @@ export const AssignTechnicianModal = (props) => {
   if (!claimData) return null;
 
   const detailsForTechnicianSection = claimData.notes && (
-    <DetailSection title="Details for Technician">
+    <DetailSection title="Details for Staff">
       <div className="detail-grid" style={{ gridTemplateColumns: "1fr" }}>
         <div className="detail-item">
           <span

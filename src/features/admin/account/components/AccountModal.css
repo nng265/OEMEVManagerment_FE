@@ -58,7 +58,6 @@
   margin-top: 16px;
 }
 
-/* Form & modal improvements */
 .account-form {
   display: flex;
   flex-direction: column;
@@ -91,15 +90,12 @@
   gap: 8px;
   align-items: center;
   margin-top: 8px;
-  /* Layout: first child (Cancel) -> left; other actions -> right */
-  /* Using `margin-right: auto` on the first child pushes the rest to the right */
 }
 
-.modal-footer > *:first-child {
+.modal-footer>*:first-child {
   margin-right: auto;
 }
 
-/* Button visual tweaks for consistency */
 .modal-footer button {
   padding: 8px 14px;
   border-radius: 6px;
@@ -107,7 +103,6 @@
   cursor: pointer;
 }
 
-/* Small responsive helper */
 @media (max-width: 640px) {
   .account-info-block {
     min-width: 100%;
@@ -116,5 +111,45 @@
   .account-form input,
   .account-form textarea {
     font-size: 0.95rem;
+  }
+}
+
+.account-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2364748B' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  padding-right: 36px;
+}
+
+.account-form select:hover {
+  border-color: #64748b;
+}
+
+.account-form select:focus {
+  outline: none;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(7, 55, 159, 0.2);
+}
+
+.account-form select option:disabled {
+  color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .account-form select {
+    font-size: 0.95rem;
+    padding: 8px 10px;
+    padding-right: 36px;
   }
 }

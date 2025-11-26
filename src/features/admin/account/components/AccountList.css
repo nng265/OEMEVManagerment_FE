@@ -1,17 +1,24 @@
 .account-table {
-  padding: 18px;
+      /* padding-top: 18px; */
+    padding-right: 18px;
+    padding-bottom: 18px;
+    padding-left: 18px;
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .account-table__header {
-  padding-bottom: 12px;
+    /* padding-top: 18px; */
+    padding-right: 18px;
+    padding-bottom: 18px;
+    padding-left: 18px;
   border-bottom: 1px solid #eef2f7;
 }
 
+
+
 .size-h1 {
-  margin: 0;
   font-size: 2rem;
   color: #0f172a;
   font-weight: 700;
@@ -54,18 +61,15 @@
   align-items: center;
 }
 
-/* icon size */
 .eye-svg {
   width: 20px;
   height: 20px;
 }
 
-/* Table row hover (DataTable class names may differ; keep it generic) */
 .table-row:hover {
   background: #fbfdff;
 }
 
-/* Make table cells wrap long text for conditions */
 .table-cell-conditions {
   white-space: pre-wrap;
   max-width: 320px;

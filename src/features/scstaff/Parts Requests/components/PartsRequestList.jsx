@@ -1,4 +1,3 @@
-// src/features/partsRequest/components/PartsRequestList.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { DataTable } from "../../../../components/organisms/DataTable/DataTable";
@@ -9,11 +8,9 @@ export const PartsRequestList = ({
   data = [],
   columns = [],
   loading = false,
-  error,
   pagination,
   onPageChange,
   onRefresh,
-  refreshing = false,
 }) => {
   const totalRecords = pagination?.totalRecords ?? data.length;
   const currentPage = pagination?.pageNumber ?? 0;
@@ -22,26 +19,36 @@ export const PartsRequestList = ({
   return (
     <ErrorBoundary>
       <div className="warranty-claim-list-view">
-        <h1 className="size-h1">Parts Requests</h1>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h1 className="size-h1">Parts Requests</h1>
+        </div>
 
         {loading ? (
-          <div className="loading-container">
+          <div
+            className="loading-container"
+            style={{ textAlign: "center", padding: "20px" }}
+          >
             <LoadingSpinner size="lg" />
-            <p>Loading parts requests...</p>
+            <p>Loading...</p>
           </div>
-        ) : error ? (
-          <div className="error-message">{error}</div>
         ) : (data || []).length === 0 ? (
-          <div className="empty-state">
-            <p>No parts requests found</p>
+          <div
+            className="empty-state"
+            style={{ textAlign: "center", padding: "40px", color: "#64748b" }}
+          >
+            <p>No requests found</p>
           </div>
         ) : (
           <DataTable
             data={data}
             columns={columns}
             isLoading={loading}
-            noDataMessage={error || "No requests found matching your criteria"}
-            searchable={true}
             pagination={true}
             serverSide={true}
             totalRecords={totalRecords}
@@ -52,7 +59,6 @@ export const PartsRequestList = ({
             hoverable={true}
             striped={true}
             onRefresh={onRefresh}
-            refreshing={refreshing}
           />
         )}
       </div>
@@ -61,18 +67,12 @@ export const PartsRequestList = ({
 };
 
 PartsRequestList.propTypes = {
-  data: PropTypes.array.isRequired,
-  columns: PropTypes.array.isRequired,
+  data: PropTypes.array,
+  columns: PropTypes.array,
   loading: PropTypes.bool,
-  error: PropTypes.string,
-  pagination: PropTypes.shape({
-    pageNumber: PropTypes.number,
-    pageSize: PropTypes.number,
-    totalRecords: PropTypes.number,
-  }),
+  pagination: PropTypes.object,
   onPageChange: PropTypes.func,
   onRefresh: PropTypes.func,
-  refreshing: PropTypes.bool,
 };
 
 export default PartsRequestList;

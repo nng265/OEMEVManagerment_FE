@@ -96,13 +96,15 @@ export const Campaign = ({
     <div className="campaign-container">
       <div className="campaign-header">
         <h1>Campaign Management</h1>
-        <Button variant="light" onClick={onAdd}>
-          <img
-            src="../../../../../public/add.png"
-            alt="Create campaign"
-            style={{ width: "50px" }}
-          />{" "}
-        </Button>
+        <div className="account-table__right">
+          <Button variant="light" onClick={onAdd}>
+            <img
+              src="../../../../../public/add.png"
+              alt="Create campaign"
+              style={{ width: "50px" }}
+            />{" "}
+          </Button>
+        </div>
       </div>
 
       {/* Search Bar and Filters */}

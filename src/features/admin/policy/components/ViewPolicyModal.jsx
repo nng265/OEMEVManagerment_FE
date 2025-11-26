@@ -50,9 +50,9 @@ export const ViewPolicyModal = ({ isOpen, onClose, policy }) => {
           </div>
         </div>
 
-        <div className="policy-footer">
+        <div>
           <Button variant="secondary" onClick={onClose}>
-            Close
+            Cancel
           </Button>
         </div>
       </div>

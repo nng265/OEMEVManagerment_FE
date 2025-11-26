@@ -10,6 +10,12 @@ export const roleScreens = {
       label: "Account Management",
       component: "AccountContainer",
     },
+    { id: "accessory_admin", label: "Accessory", component: "EVMAccessory" },
+    {
+      id: "parts_management",
+      label: "Parts Management",
+      component: "PartContainer",
+    },
   ],
   SC_STAFF: [
     { id: "dashboard", label: "Dashboard" },
@@ -33,9 +39,10 @@ export const roleScreens = {
     },
     {
       id: "status_campaign",
-      label: "CampaignVehicle",
+      label: "Campaign Vehicle",
       component: "StatusCampaign",
     },
+    { id: "accessory_scstaff", label: "Accessory", component: "EVMAccessory" },
   ],
   SC_TECH: [
     {
@@ -67,5 +74,6 @@ export const roleScreens = {
       component: "ManufacturerInventory",
     },
     { id: "evm_campaigns", label: "Campaign", component: "EVMStaffCampaign" },
+    { id: "accessory_evmstaff", label: "Accessory", component: "EVMAccessory" },
   ],
 };

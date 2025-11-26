@@ -2,8 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
-// import "./AccountList.css"; // <-- Lỗi: Import sai CSS
-import "./AccountModal.css"; // <-- Sửa: Nên dùng file CSS chung cho modal
+import "./AccountModal.css";
 
 export const ViewAccountModal = ({ isOpen, onClose, account }) => {
   if (!account) return null;
@@ -12,15 +11,13 @@ export const ViewAccountModal = ({ isOpen, onClose, account }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={account.email || "Account Detail"} // <-- Sửa: Dùng email làm tiêu đề
-      size="xl" // <-- Sửa: "xl" là quá lớn, dùng "md" (medium)
-      showFooter={false} // Dùng footer tùy chỉnh bên dưới
+      title={account.email || "Account Detail"}
+      size="xl"
+      showFooter={false}
     >
       <div className="account-modal">
-        {/* === Section 1: Account Information === */}
         <h3 className="account-section-title">Account Information</h3>
 
-        {/* --- Hiển thị Email --- */}
         <div className="account-info-row">
           <div className="account-info-block full-width">
             <span className="info-block-label">Email</span>
@@ -28,7 +25,6 @@ export const ViewAccountModal = ({ isOpen, onClose, account }) => {
           </div>
         </div>
 
-        {/* --- Hiển thị Role --- */}
         <div className="account-info-row">
           <div className="account-info-block full-width">
             <span className="info-block-label">Role</span>
@@ -36,7 +32,6 @@ export const ViewAccountModal = ({ isOpen, onClose, account }) => {
           </div>
         </div>
 
-        {/* --- Hiển thị Organization --- */}
         <div className="account-info-row">
           <div className="account-info-block full-width">
             <span className="info-block-label">Organization</span>
@@ -44,7 +39,6 @@ export const ViewAccountModal = ({ isOpen, onClose, account }) => {
           </div>
         </div>
 
-        {/* --- Hiển thị User ID (Tùy chọn) --- */}
         <div className="account-info-row">
           <div className="account-info-block full-width">
             <span className="info-block-label">User ID</span>
@@ -52,9 +46,6 @@ export const ViewAccountModal = ({ isOpen, onClose, account }) => {
           </div>
         </div>
 
-        {/* (Đã xóa các section "Coverage Details" và "Conditions" bị thừa) */}
-
-        {/* === Footer === */}
         <div className="account-footer">
           <Button variant="secondary" onClick={onClose}>
             Close
@@ -68,7 +59,7 @@ export const ViewAccountModal = ({ isOpen, onClose, account }) => {
 ViewAccountModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  account: PropTypes.object, // <-- Sửa: từ 'policy' thành 'account'
+  account: PropTypes.object,
 };
 
 export default ViewAccountModal;

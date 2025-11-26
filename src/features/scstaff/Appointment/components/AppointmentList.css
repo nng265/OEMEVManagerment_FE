@@ -102,3 +102,24 @@
   color: #555;
   border-color: #ddd;
 }
+
+/* HEADER: Title bên trái – Hint + Add bên phải */
+.appointment-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+/* Right side (hint + add) */
+.appointment-table__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.appointment-table__hint {
+  font-size: 18px;
+  color: #475569;
+}

@@ -12,7 +12,7 @@ export const WarrantyClaimDetailModal = ({
   title,
   children,
   showBackButton = true,
-  backButtonLabel = "Back",
+  backButtonLabel = "Cancel",
   additionalContent,
 }) => {
   if (!warrantyData) return null;

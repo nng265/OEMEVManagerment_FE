@@ -50,7 +50,7 @@ const AppointmentViewModal = ({
   const status = appointment.status ?? "-";
 
   const createdAt = formatDateOnly(appointment?.createdAt);
-  const note = appointment.note ?? appointment.description ?? "-";
+
   const appointmentId = appointment.appointmentId ?? appointment.id ?? null;
 
   const handleCancel = async () => {
@@ -187,10 +187,8 @@ const AppointmentViewModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={
-        appointmentId ? `Appointment ${appointmentId}` : "Appointment Details"
-      }
-      size="xl"
+      title={appointmentId ? `Appointment - ${status}` : "Appointment Details"}
+      size="lg"
       showFooter={false}
     >
       <div className="appointment-modal">
@@ -210,7 +208,7 @@ const AppointmentViewModal = ({
           </div>
         </div>
 
-        <h3 className="appointment-section-title">Vehicle & Appointment</h3>
+        <h3 className="appointment-section-title">Vehicle</h3>
         <div className="appointment-info-row">
           <div className="appointment-info-block">
             <span className="info-block-label">VIN</span>
@@ -224,6 +222,10 @@ const AppointmentViewModal = ({
             <span className="info-block-label">Year</span>
             <span className="info-block-value">{year}</span>
           </div>
+        </div>
+
+        <h3 className="appointment-section-title">Appointment</h3>
+        <div className="appointment-info-row">
           <div className="appointment-info-block">
             <span className="info-block-label">Type</span>
             <span className="info-block-value">{type}</span>
@@ -236,26 +238,12 @@ const AppointmentViewModal = ({
             <span className="info-block-label">Slot</span>
             <span className="info-block-value">{slot}</span>
           </div>
-          <div className="appointment-info-block">
-            <span className="info-block-label">Status</span>
-            <span className="info-block-value">{status}</span>
-          </div>
+
           <div className="appointment-info-block">
             <span className="info-block-label">Created At</span>
             <span className="info-block-value">{createdAt}</span>
           </div>
         </div>
-
-        {note && note !== "-" && (
-          <>
-            <h3 className="appointment-section-title">Notes</h3>
-            <div className="appointment-info-row">
-              <div className="appointment-info-block full-width">
-                <span className="info-block-value">{note}</span>
-              </div>
-            </div>
-          </>
-        )}
 
         <div className="appointment-footer">
           <div style={{ display: "flex", gap: 10, marginLeft: "auto" }}>

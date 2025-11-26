@@ -35,3 +35,24 @@
 .campaign-header .btn-success:hover {
   background: #005fcc;
 }
+
+/* HEADER: Title bên trái – Hint + Add bên phải */
+.account-table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+/* Right side (hint + add) */
+.account-table__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-table__hint {
+  font-size: 18px;
+  color: #475569;
+}

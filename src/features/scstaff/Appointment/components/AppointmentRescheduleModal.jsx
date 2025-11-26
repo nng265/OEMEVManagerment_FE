@@ -17,15 +17,15 @@ const formatDate = (dateStr) => {
   }
 };
 
-const formatDateTime = (iso) => {
-  if (!iso) return "-";
-  try {
-    return new Date(iso).toLocaleString();
-  } catch (e) {
-    console.error("formatDateTime error:", e);
-    return iso;
-  }
-};
+// const formatDateTime = (iso) => {
+//   if (!iso) return "-";
+//   try {
+//     return new Date(iso).toLocaleString();
+//   } catch (e) {
+//     console.error("formatDateTime error:", e);
+//     return iso;
+//   }
+// };
 
 const AppointmentRescheduleModal = ({
   isOpen,
@@ -56,7 +56,7 @@ const AppointmentRescheduleModal = ({
   const type = appointment?.appointmentType ?? appointment?.type ?? "-";
   const date = formatDate(appointment?.appointmentDate ?? appointment?.date);
   const slot = appointment?.slot ?? "-";
-  const status = appointment?.status ?? "-";
+  // const status = appointment?.status ?? "-";
   const createdAt = formatDate(appointment?.createdAt);
 
   const { minDateStr } = useMemo(() => {
@@ -141,14 +141,14 @@ const AppointmentRescheduleModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      title="Reschedule Appointment"
+      title="Appointment - Reschedule"
+      // title={appointmentId ? `Appointment - ${status}` : "Appointment Details"}
       onClose={onClose}
       showFooter={false}
       size="lg"
     >
-      <div className="appointment-modal-body">
-        <h3 className="appointment-section-title">Current Appointment</h3>
-
+      <div className="appointment-modal">
+        <h3 className="appointment-section-title">Customer Information</h3>
         <div className="appointment-info-row">
           <div className="appointment-info-block">
             <span className="info-block-label">Customer</span>
@@ -164,7 +164,8 @@ const AppointmentRescheduleModal = ({
           </div>
         </div>
 
-        <div className="appointment-info-row" style={{ marginTop: 16 }}>
+        <h3 className="appointment-section-title">Vehicle</h3>
+        <div className="appointment-info-row">
           <div className="appointment-info-block">
             <span className="info-block-label">VIN</span>
             <span className="info-block-value">{vin}</span>
@@ -177,91 +178,88 @@ const AppointmentRescheduleModal = ({
             <span className="info-block-label">Year</span>
             <span className="info-block-value">{year}</span>
           </div>
+        </div>
+
+        <h3 className="appointment-section-title">Appointment</h3>
+        <div className="appointment-info-row">
           <div className="appointment-info-block">
             <span className="info-block-label">Type</span>
             <span className="info-block-value">{type}</span>
           </div>
           <div className="appointment-info-block">
-            <span className="info-block-label">Current Date</span>
+            <span className="info-block-label">Appointment Date</span>
             <span className="info-block-value">{date}</span>
           </div>
           <div className="appointment-info-block">
-            <span className="info-block-label">Current Slot</span>
+            <span className="info-block-label">Slot</span>
             <span className="info-block-value">{slot}</span>
           </div>
-          <div className="appointment-info-block">
-            <span className="info-block-label">Status</span>
-            <span className="info-block-value">{status}</span>
-          </div>
+
           <div className="appointment-info-block">
             <span className="info-block-label">Created At</span>
             <span className="info-block-value">{createdAt}</span>
           </div>
         </div>
+      </div>
 
-        <div className="step-box" style={{ marginTop: 20 }}>
-          <h3 className="step-title">Select New Date</h3>
-          <input
-            type="date"
-            className="form-input"
-            min={minDateStr}
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-          />
+      <div className="step-box" style={{ marginTop: 20 }}>
+        <h3 className="step-title">Select New Date</h3>
+        <input
+          type="date"
+          className="form-input"
+          min={minDateStr}
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
 
-          {selectedDate && (
-            <>
-              <h3 className="step-title" style={{ marginTop: 24 }}>
-                Select New Time Slot
-              </h3>
+        {selectedDate && (
+          <>
+            <h3 className="step-title" style={{ marginTop: 24 }}>
+              Select New Time Slot
+            </h3>
 
-              <div className="time-grid">
-                {isLoading ? (
-                  <p>Loading available slots...</p>
-                ) : timeSlots.length > 0 ? (
-                  timeSlots.map((t) => {
-                    const label =
-                      t.time || t.slot || t.startTime || t.label || "";
-                    const disabled =
-                      t.isBooked || t.booked || t.disabled || t.isTaken;
+            <div className="time-grid">
+              {isLoading ? (
+                <p>Loading available slots...</p>
+              ) : timeSlots.length > 0 ? (
+                timeSlots.map((t) => {
+                  const label =
+                    t.time || t.slot || t.startTime || t.label || "";
+                  const disabled =
+                    t.isBooked || t.booked || t.disabled || t.isTaken;
 
-                    return (
-                      <button
-                        key={label}
-                        className={`time-slot-btn ${
-                          selectedSlot === t ? "selected" : ""
-                        }`}
-                        disabled={disabled}
-                        onClick={() => setSelectedSlot(t)}
-                      >
-                        {label}
-                      </button>
-                    );
-                  })
-                ) : (
-                  <p>No available slots for this date.</p>
-                )}
-              </div>
-            </>
-          )}
+                  return (
+                    <button
+                      key={label}
+                      className={`time-slot-btn ${
+                        selectedSlot === t ? "selected" : ""
+                      }`}
+                      disabled={disabled}
+                      onClick={() => setSelectedSlot(t)}
+                    >
+                      {label}
+                    </button>
+                  );
+                })
+              ) : (
+                <p>No available slots for this date.</p>
+              )}
+            </div>
+          </>
+        )}
 
-          <div className="actions">
-            <Button
-              variant="secondary"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
+        <div className="actions">
+          <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
+            Cancel
+          </Button>
 
-            <Button
-              onClick={handleSubmit}
-              disabled={!selectedSlot || isSubmitting}
-              isLoading={isSubmitting}
-            >
-              Save
-            </Button>
-          </div>
+          <Button
+            onClick={handleSubmit}
+            disabled={!selectedSlot || isSubmitting}
+            isLoading={isSubmitting}
+          >
+            Save
+          </Button>
         </div>
       </div>
     </Modal>

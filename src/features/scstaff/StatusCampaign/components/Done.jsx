@@ -21,14 +21,12 @@ const Done = ({ open, onClose, data }) => {
     <Modal
       isOpen={open}
       onClose={onClose}
-      title="Campaign Done"
-      size="xl"
+      title={campaign ? `Vehicle - ${campaign.status}` : "Done Details"}
+      size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">
-        <h3 className="campaign-section-title">
-          Customer & Vehicle Information
-        </h3>
+        <h3 className="campaign-section-title">Customer</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block">
             <span className="info-block-label">Customer Name</span>
@@ -43,9 +41,11 @@ const Done = ({ open, onClose, data }) => {
             </span>
           </div>
         </div>
+
+        <h3 className="campaign-section-title">Vehicle Information</h3>
         <div className="campaign-info-row">
           <div className="campaign-info-block">
-            <span className="info-block-label">Vehicle Model</span>
+            <span className="info-block-label">Model</span>
             <span className="info-block-value">
               {displayValue(vehicle.model)}
             </span>
@@ -74,12 +74,6 @@ const Done = ({ open, onClose, data }) => {
           </div>
         </div>
         <div className="campaign-info-row">
-          <div className="campaign-info-block">
-            <span className="info-block-label">Status</span>
-            <span className="info-block-value">
-              {displayValue(campaign.status)}
-            </span>
-          </div>
           <div className="campaign-info-block">
             <span className="info-block-label">Campaign Type</span>
             <span className="info-block-value">

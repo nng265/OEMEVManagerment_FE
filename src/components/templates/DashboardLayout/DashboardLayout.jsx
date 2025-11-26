@@ -49,6 +49,15 @@ export const DashboardLayout = ({ children }) => {
         return "/policy_management";
       case "account_management":
         return "/account_management";
+      case "accessory_admin":
+        return "/accessory_admin";
+      case "accessory_scstaff":
+        return "/accessory_scstaff";
+      case "accessory_evmstaff":
+        return "/accessory_evmstaff";
+        
+      case "parts_management":
+        return "/parts_management";
       default:
         console.warn(`No path found for screen ID: ${screenId}`);
         return null;

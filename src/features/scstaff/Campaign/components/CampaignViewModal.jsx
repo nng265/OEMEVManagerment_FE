@@ -31,7 +31,7 @@ export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
       isOpen={isOpen}
       onClose={onClose}
       title={campaign.title || "Campaign Detail"}
-      size="xl"
+      size="lg"
       showFooter={false}
     >
       <div className="campaign-modal">
@@ -97,7 +97,7 @@ export const CampaignViewModal = ({ isOpen, onClose, campaign }) => {
 
         <div className="campaign-footer">
           <Button variant="secondary" onClick={onClose}>
-            Close Campaign
+            Cancel
           </Button>
         </div>
       </div>

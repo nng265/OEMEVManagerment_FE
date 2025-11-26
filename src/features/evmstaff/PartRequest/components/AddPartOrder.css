@@ -1,0 +1,233 @@
+/* ------------------- Overlay ------------------- */
+.pl-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+/* ------------------- Popup Container ------------------- */
+.pl-container.add-part-order {
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px 32px;
+    border: 1px solid #e2e8f0;
+    animation: slideUp 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+}
+
+/* ------------------- Header ------------------- */
+.pl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.pl-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.pl-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #a0aec0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.pl-close-btn:hover {
+    color: #e53e3e;
+}
+
+/* ------------------- Form content ------------------- */
+.pl-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 0.95rem;
+}
+
+/* Receiver row */
+.pl-info-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+}
+
+.pl-info-row strong {
+    flex: 0 0 160px;
+    display: inline-block;
+    color: #2b6cb0;
+}
+
+.pl-info-row select,
+.pl-info-row input,
+.pl-info-row .po-input {
+    flex: 1 1 auto;
+    min-width: 140px;
+}
+
+/* ------------------- Parts table / list ------------------- */
+.po-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #ffffff;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+/* Row */
+.po-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: nowrap;
+    min-height: 36px;
+    /* cố định chiều cao */
+}
+
+/* Category / Model / Qty / Remove */
+.po-row select.category {
+    width: 140px;
+    flex-shrink: 0;
+}
+
+.po-row select.model {
+    width: 180px;
+    flex-shrink: 0;
+}
+
+.po-row input.qty {
+    width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.po-remove-btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.po-remove-btn:hover:not(:disabled) {
+    background: #ffe5e5;
+    color: #c53030;
+    border-color: #fca5a5;
+}
+
+.po-remove-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Inputs */
+.po-input {
+    padding: 6px 8px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.po-input:focus {
+    outline: none;
+    border-color: #3182ce;
+}
+
+/* Add button */
+.po-add-btn {
+    background: #edf2f7;
+    color: #2d3748;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+    height: 36px;
+}
+
+.po-add-btn:hover {
+    background: #e2e8f0;
+}
+
+/* Error */
+.po-error {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: #fed7d7;
+    color: #c53030;
+    border: 1px solid #fc8181;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* Footer buttons */
+.pl-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

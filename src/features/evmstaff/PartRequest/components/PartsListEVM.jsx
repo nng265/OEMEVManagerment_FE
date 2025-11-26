@@ -20,8 +20,9 @@ export default function PartsListEVM({
   onSearchChange,
   statusFilter = "",
   onStatusFilterChange,
+  statusOptions = [], // dynamic statuses from API (array of string or {value,label})
+  onAdd,
 }) {
-
   const items = Array.isArray(data)
     ? data
     : data?.data?.items ?? data?.items ?? [];
@@ -68,10 +69,12 @@ export default function PartsListEVM({
       render: (value) => {
         const normalizedStatus = (value || "unknown").trim().toLowerCase();
         const statusClass = normalizedStatus.replace(/\s+/g, "-");
-        const displayText =
-          value && value.length > 0
-            ? value.charAt(0).toUpperCase() + value.slice(1)
-            : "Unknown";
+        // Display mapping for corrected typos without breaking filtering
+        const displayMapping = {
+          "Retuen Inspection": "Return Inspection",
+        };
+        const original = value || "Unknown";
+        const displayText = displayMapping[original] || original;
 
         return (
           <span className={`status-badge status-${statusClass}`}>
@@ -129,14 +132,35 @@ export default function PartsListEVM({
 
   return (
     <div style={{ padding: 8 }}>
-      <h1 style={{ marginBottom: 30, marginTop: 30 }}>
-        Parts Requests from Service Centers
-      </h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: 30,
+          marginBottom: 30,
+        }}
+      >
+        <h1 style={{ margin: 0 }}>Parts Requests from Service Centers</h1>
+
+        <Button variant="light" onClick={onAdd}>
+          <img
+            src="../../../../../public/add.png"
+            alt="Create Part Order"
+            style={{ width: "50px" }}
+          />
+        </Button>
+      </div>
 
       {/* Search Bar + Status Filter */}
       <div
         className="parts-search-filter"
-        style={{ display: "flex", gap: 12, marginBottom: "20px", alignItems: "flex-end" }}
+        style={{
+          display: "flex",
+          gap: 12,
+          marginBottom: "20px",
+          alignItems: "flex-end",
+        }}
       >
         <div style={{ flex: 2 }}>
           <Input
@@ -156,10 +180,19 @@ export default function PartsListEVM({
             onChange={onStatusFilterChange}
             options={[
               { value: "", label: "All Status" },
-              { value: "Pending", label: "Pending" },
-              { value: "Approved", label: "Approved" },
-              { value: "Delivered", label: "Delivered" },
-              { value: "Closed", label: "Closed" },
+              ...(Array.isArray(statusOptions) && statusOptions.length
+                ? statusOptions.map((s) =>
+                    typeof s === "string"
+                      ? { value: s, label: s }
+                      : { value: s.value, label: s.label }
+                  )
+                : [
+                    { value: "Pending", label: "Pending" },
+                    { value: "Approved", label: "Approved" },
+                    { value: "Delivered", label: "Delivered" },
+                    { value: "Closed", label: "Closed" },
+                    { value: "In Transit", label: "In Transit" },
+                  ]),
             ]}
             fullWidth
             size="md"
@@ -191,6 +224,7 @@ export default function PartsListEVM({
           selectable={false}
           onRefresh={onRefresh}
           refreshing={refreshing}
+          onAdd={onAdd}
         />
       </div>
     </div>
@@ -212,4 +246,16 @@ PartsListEVM.propTypes = {
   refreshing: PropTypes.bool,
   searchQuery: PropTypes.string,
   onSearchChange: PropTypes.func,
+  statusFilter: PropTypes.string,
+  onStatusFilterChange: PropTypes.func,
+  statusOptions: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
+      }),
+    ])
+  ),
+  onAdd: PropTypes.func,
 };

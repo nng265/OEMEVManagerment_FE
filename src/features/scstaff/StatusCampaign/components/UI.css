@@ -469,6 +469,83 @@ button {
 }
 
 /* ===========================
+   TECHNICIANS LIST STYLES
+   =========================== */
+.technicians-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.technician-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.technician-item:hover {
+  border-color: #d0d7de;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.technician-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #f0f0f0;
+  border-radius: 50%;
+}
+
+.technician-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.technician-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 2px;
+}
+
+.technician-email {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  word-break: break-word;
+}
+
+.no-technicians {
+  font-size: 14px;
+  color: #999;
+  padding: 16px 12px;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 6px;
+  border: 1px dashed #ddd;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: #666;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+/* ===========================
    RESPONSIVE DESIGN
    =========================== */
 @media (max-width: 768px) {
@@ -551,4 +628,68 @@ button {
 
 .replacement-table tr:last-child td {
   border-bottom: none;
+}
+
+/* Edit controls container (dropdown + Save + Cancel) */
+.technician-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* khoảng cách giữa select và nút */
+}
+
+.technician-actions select {
+  flex: 1;
+  /* chiếm hết chỗ còn lại */
+  min-width: 180px;
+  /* tránh quá nhỏ */
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 0.95rem;
+  color: #0f172a;
+  transition: all 0.2s;
+}
+
+.technician-actions select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Save button */
+.technician-actions .btn-primary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.technician-actions .btn-primary:hover:enabled {
+  background-color: #1e40af;
+}
+
+.technician-actions .btn-primary:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Cancel button */
+.technician-actions .btn-secondary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f8f9fa;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.technician-actions .btn-secondary:hover {
+  background-color: #e2e6ea;
 }

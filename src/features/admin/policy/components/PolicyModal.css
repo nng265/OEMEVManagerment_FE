@@ -52,11 +52,6 @@
     border: 1px solid #e2e8f0;
 }
 
-.policy-footer {
-    display: flex;
-    justify-content: start;
-    margin-top: 16px;
-}
 
 .policy-form {
     display: flex;

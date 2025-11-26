@@ -56,10 +56,10 @@ export const CreateWarrantyClaimModal = ({
     fetchTechnicians();
   }, [assignTech]);
 
-  const handleAddTechnician = () => {
-    const newId = (technicians[technicians.length - 1]?.id || 0) + 1;
-    setTechnicians([...technicians, { id: newId, selectedValue: "" }]);
-  };
+  // const handleAddTechnician = () => {
+  //   const newId = (technicians[technicians.length - 1]?.id || 0) + 1;
+  //   setTechnicians([...technicians, { id: newId, selectedValue: "" }]);
+  // };
 
   const handleRemoveTechnician = (id) => {
     if (technicians.length > 1) {
@@ -229,15 +229,6 @@ export const CreateWarrantyClaimModal = ({
                       </div>
                     );
                   })}
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="small"
-                    onClick={handleAddTechnician}
-                    className="mt-2"
-                  >
-                    Add Technician
-                  </Button>
                 </>
               )}
             </div>

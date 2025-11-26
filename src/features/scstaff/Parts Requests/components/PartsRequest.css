@@ -1,10 +1,9 @@
-/* ========== GENERAL MODAL STYLING ========== */
+/* ========== GENERAL ========== */
 .modal-status-badge-wrapper {
   margin-bottom: 16px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e5e7eb;
 }
-
 .size-h1 {
   margin-bottom: 24px;
   font-size: 1.8rem;
@@ -12,7 +11,7 @@
   font-weight: 700;
 }
 
-/* ========== STATUS BADGE BASE ========== */
+/* ========== STATUS BADGE ========== */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -22,103 +21,39 @@
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: capitalize;
-  transition: all 0.25s ease-in-out;
-  letter-spacing: 0.3px;
-  min-width: 130px;
+  min-width: 120px;
   text-align: center;
   border: 1px solid transparent;
 }
-
-/* === STATUS COLORS === */
-
-/* 🕐 Pending */
-.status-badge.status-pending {
+.status-pending {
   background: #fff7e6;
   color: #b45309;
   border-color: #fcd34d;
-  box-shadow: 0 1px 4px rgba(180, 83, 9, 0.15);
 }
-
-/* ⏳ Waiting */
-.status-badge.status-waiting {
+.status-waiting {
   background: #e0f2fe;
   color: #0369a1;
   border-color: #7dd3fc;
-  box-shadow: 0 1px 4px rgba(3, 105, 161, 0.15);
 }
-
-/* ✅ Confirmed */
-.status-badge.status-confirmed {
+.status-confirmed {
   background: #ecfdf5;
   color: #047857;
   border-color: #6ee7b7;
-  box-shadow: 0 1px 4px rgba(4, 120, 87, 0.15);
 }
-
-/* 🚚 Delivered */
-.status-badge.status-delivered,
-.status-badge.status-deliverd {
+.status-delivered {
   background: #f0fdf4;
   color: #15803d;
   border-color: #86efac;
-  box-shadow: 0 1px 4px rgba(22, 163, 74, 0.15);
 }
-
-/* ❌ Cancelled / Error */
-.status-badge.status-cancelled,
-.status-badge.status-error {
-  background: #fee2e2;
-  color: #b91c1c;
-  border-color: #fecaca;
-  box-shadow: 0 1px 4px rgba(185, 28, 28, 0.15);
+.status-cancelled {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fca5a5;
 }
-
-/* 💤 Default / Unknown */
-.status-badge.status-unknown {
-  background: #f4f4f5;
-  color: #52525b;
-  border-color: #e4e4e7;
-}
-
-/* === Hover effect === */
-.status-badge:hover {
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* ========== TABLE STYLING ========== */
-.parts-request-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-}
-
-.parts-request-table thead {
-  background-color: #f8fafc;
-}
-
-.parts-request-table th {
-  padding: 12px 14px;
-  text-align: left;
-  font-size: 0.9rem;
-  color: #475569;
-  border-bottom: 1px solid #e2e8f0;
-  font-weight: 600;
-}
-
-.parts-request-table td {
-  padding: 10px 14px;
-  font-size: 0.9rem;
-  color: #1e293b;
-  border-bottom: 1px solid #f1f5f9;
-  background-color: #ffffff;
-}
-
-.parts-request-table tr:hover td {
-  background-color: #f8fafc;
-  transition: background-color 0.2s ease-in-out;
+.status-returning {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: #fdba74;
 }
 
 /* ========== TIMELINE ========== */
@@ -127,13 +62,13 @@
   margin-top: 20px;
   padding-left: 24px;
   border-left: 2px solid #e5e7eb;
+  width: 100%;
+  display: block;
 }
-
 .timeline-item {
   position: relative;
   margin-bottom: 20px;
 }
-
 .timeline-dot {
   position: absolute;
   left: -7px;
@@ -144,7 +79,6 @@
   border-radius: 50%;
   box-shadow: 0 0 0 4px #dbeafe;
 }
-
 .timeline-content {
   margin-left: 16px;
   background: #f9fafb;
@@ -153,46 +87,298 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s ease;
 }
-
 .timeline-content:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
-
 .timeline-title {
   font-weight: 600;
   color: #1e40af;
   margin-bottom: 4px;
 }
-
 .timeline-date {
   font-size: 0.85rem;
   color: #64748b;
   margin-bottom: 4px;
 }
 
-.timeline-notes {
-  font-size: 0.85rem;
-  color: #475569;
-  margin: 0;
+/* ========== REQUESTED PARTS TABLE ========== */
+.parts-request-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.parts-request-table th {
+  text-align: left;
+  padding: 14px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #334155;
+}
+.parts-request-table td {
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
 }
 
-.timeline-empty {
+/* ========== INVENTORY / FORM ========== */
+.inventory-section {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0;
+  margin-top: 24px;
+  overflow: hidden;
+}
+
+/* --- UPLOAD BOX --- */
+.import-excel-wrapper {
+  padding: 24px;
+  background-color: #fff;
+  border-bottom: 1px solid #e2e8f0;
+}
+.upload-dashed-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  padding: 32px;
   text-align: center;
-  color: #94a3b8;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.upload-dashed-box:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+.upload-icon {
+  font-size: 2rem;
+}
+.upload-btn-label {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  transition: background 0.2s;
+}
+.upload-btn-label:hover {
+  background-color: #2563eb;
+}
+.upload-hint {
+  font-size: 0.85rem;
+  color: #64748b;
   font-style: italic;
 }
 
-/* ========== BUTTON ENHANCEMENT ========== */
-.detail-modal-actions .btn-success {
-  background-color: #16a34a;
-  border-color: #16a34a;
-  color: white;
-  font-weight: 600;
+/* --- INCIDENT REPORT --- */
+.incident-report-container {
+  padding: 24px;
+  background-color: #fff;
+}
+.incident-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+  padding: 20px;
+  border: 1px solid #f1f5f9;
   border-radius: 8px;
-  transition: all 0.2s ease-in-out;
+  background-color: #fff;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+}
+.form-input,
+.form-select {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  height: 44px;
+  width: 100%;
+  font-size: 0.95rem;
+}
+.image-upload-box {
+  width: 100%;
+  height: 44px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: all 0.2s;
+}
+.image-upload-box:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+.preview-image-mini {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.btn-remove-row {
+  height: 44px;
+  width: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ef4444;
+  transition: all 0.2s;
+}
+.btn-remove-row:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
 }
 
-.detail-modal-actions .btn-success:hover {
-  background-color: #15803d;
-  box-shadow: 0 3px 6px rgba(21, 128, 61, 0.25);
+/* ============================================================ */
+/* NEW: VALIDATION ERROR TABLE STYLES (PORTED FROM EVM STAFF)   */
+/* ============================================================ */
+
+/* Wrapper tổng của báo lỗi */
+.validation-error {
+  background-color: #ffffff;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+/* Header màu đỏ nhạt */
+.validation-error-header {
+  padding: 16px 20px;
+  background-color: #fff1f2;
+  border-bottom: 1px solid #fecaca;
+  color: #991b1b;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Container cho bảng có scroll */
+.error-table-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Table Style */
+.error-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.error-table thead th {
+  background-color: #f8fafc;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.error-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+}
+.error-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.error-table td {
+  padding: 16px 24px;
+  vertical-align: top;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+/* Specific Columns */
+.col-model {
+  font-weight: 600;
+  color: #1e293b;
+  width: 25%;
+}
+.col-serial {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  color: #475569;
+  width: 30%;
+}
+.col-message {
+  width: 45%;
+}
+
+/* Badge (Not In Stock, Wrong Model...) */
+.error-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.error-text {
+  display: block;
+  font-size: 0.85rem;
+  color: #ef4444;
+  line-height: 1.4;
+}
+
+/* Footer ghi chú */
+.validation-footer {
+  padding: 12px 20px;
+  background-color: #fff;
+  border-top: 1px solid #f1f5f9;
+  color: #c53030;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Success Message */
+.validation-success {
+  color: #166534;
+  background: #f0fdf4;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 600;
 }

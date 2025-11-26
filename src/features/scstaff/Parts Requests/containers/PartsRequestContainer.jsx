@@ -1,289 +1,140 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { PartsRequestList } from "../components/PartsRequestList";
 import { PartsRequestDetailModal } from "../components/PartsRequestDetailModal";
 import { Button } from "../../../../components/atoms/Button/Button";
-import { formatDate } from "../../../../services/helpers";
-import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { toast } from "react-toastify";
 
 export const PartsRequestContainer = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
+  // Modal State
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isActionLoading, setIsActionLoading] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [confirmTitle, setConfirmTitle] = useState("");
-  const [confirmMessage, setConfirmMessage] = useState("");
-  const pendingRequestIdRef = useRef(null);
 
+  // Pagination
   const [pagination, setPagination] = useState({
-    pageNumber: 0,
+    pageNumber: 1,
     pageSize: 10,
     totalRecords: 0,
   });
-  const latestRequestRef = useRef(0);
-  const paginationRef = useRef(pagination);
 
-  useEffect(() => {
-    paginationRef.current = pagination;
-  }, [pagination]);
+  // --- 1. FETCH LIST ---
+  const fetchPartsRequests = useCallback(async (page, size) => {
+    setLoading(true);
+    try {
+      const response = await request(
+        ApiEnum.GET_REQUEST_PARTS,
+        { Page: page, Size: size },
+        "GET"
+      );
 
-  const fetchPartsRequests = useCallback(
-    async (pageNumber, size) => {
-      const effectivePage =
-        typeof pageNumber === "number" && pageNumber >= 0 ? pageNumber : 0;
-      const effectiveSize =
-        typeof size === "number" && size > 0 ? size : pagination.pageSize;
-
-      const requestId = latestRequestRef.current + 1;
-      latestRequestRef.current = requestId;
-
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await request(ApiEnum.GET_REQUEST_PARTS, {
-          Page: effectivePage,
-          Size: effectiveSize,
+      if (response.success && response.data) {
+        setRequests(response.data.items || []);
+        setPagination({
+          pageNumber: response.data.pageNumber,
+          pageSize: response.data.pageSize,
+          totalRecords: response.data.totalRecords,
         });
-
-        if (requestId !== latestRequestRef.current) {
-          return;
-        }
-
-        if (response.success && response.data) {
-          const items = response.data.items || [];
-          const processedItems = items.map((request) => ({
-            ...request,
-            totalQuantity:
-              request.totalItems ??
-              (Array.isArray(request.partOrderItems)
-                ? request.partOrderItems.length
-                : 0),
-          }));
-          setRequests(processedItems);
-          const total = response.data.totalRecords ?? processedItems.length;
-          setPagination({
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: typeof total === "number" ? total : 0,
-          });
-        } else {
-          setError(response.message || "Unable to load parts requests");
-          setRequests([]);
-          setPagination({
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: 0,
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching parts requests:", err);
-        if (requestId === latestRequestRef.current) {
-          setError("An error occurred while loading the request list.");
-          setRequests([]);
-          setPagination({
-            pageNumber: effectivePage,
-            pageSize: effectiveSize,
-            totalRecords: 0,
-          });
-        }
-      } finally {
-        if (requestId === latestRequestRef.current) {
-          setLoading(false);
-        }
+      } else {
+        setRequests([]);
       }
-    },
-    [pagination.pageSize]
-  );
+    } catch (err) {
+      console.error(err);
+      toast.error("Error loading parts requests");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchPartsRequests(pagination.pageNumber, pagination.pageSize);
-  }, [fetchPartsRequests, pagination.pageNumber, pagination.pageSize]);
+  }, [pagination.pageNumber, pagination.pageSize, fetchPartsRequests]);
 
-  const handlePageChange = (pageIndex, newSize) => {
-    const nextSize =
-      typeof newSize === "number" && newSize > 0
-        ? newSize
-        : pagination.pageSize;
-    const nextPage = Math.max(0, typeof pageIndex === "number" ? pageIndex : 0);
-
-    if (
-      pagination.pageNumber === nextPage &&
-      pagination.pageSize === nextSize
-    ) {
-      return;
-    }
-
-    setPagination((prev) => ({
-      ...prev,
-      pageNumber: nextPage,
-      pageSize: nextSize,
-    }));
-  };
-
-  const handleRefresh = useCallback(() => {
-    fetchPartsRequests(
-      paginationRef.current.pageNumber,
-      paginationRef.current.pageSize
-    );
-  }, [fetchPartsRequests]);
-
-  const handleViewDetail = (requestData) => {
+  // --- 2. PREPARE DATA FOR MODAL ---
+  const handleViewDetail = (row) => {
+    // Tạo timeline giả lập từ dữ liệu row (nếu BE chưa trả về list timeline)
     const timelineEvents = [];
-    const currentStatus = (requestData.status || "").trim().toLowerCase();
-    if (requestData.requestDate) {
-      timelineEvents.push({
-        status: "Request Created",
-        date: requestData.requestDate,
-      });
-    }
-    if (requestData.approvedDate) {
-      timelineEvents.push({
-        status: "Confirmed by EVM",
-        date: requestData.approvedDate,
-      });
-    }
-    if (requestData.shippedDate) {
-      timelineEvents.push({
-        status: "Shipped by Manufacturer",
-        date: requestData.shippedDate,
-      });
-    }
-    if (
-      requestData.partDelivery &&
-      (currentStatus === "deliverd" || currentStatus === "deliverd")
-    ) {
-      timelineEvents.push({
-        status: "Parts Delivered",
-        date: requestData.partDelivery,
-      });
-    }
 
+    if (row.requestDate)
+      timelineEvents.push({ status: "Request Created", date: row.requestDate });
+    if (row.approvedDate)
+      timelineEvents.push({ status: "Confirmed", date: row.approvedDate });
+    if (row.shippedDate)
+      timelineEvents.push({ status: "In Transit", date: row.shippedDate });
+    if (row.partDelivery)
+      timelineEvents.push({ status: "Delivered", date: row.partDelivery });
+    if (row.status === "Done" || row.status === "Closed")
+      timelineEvents.push({
+        status: row.status,
+        date: row.updatedAt || new Date().toISOString(),
+      });
+
+    // Chuẩn hóa dữ liệu để truyền vào Modal
+    // QUAN TRỌNG: Map orderId -> requestID để Modal gọi API
     const normalizedData = {
-      ...requestData,
-      requestID: requestData.orderId,
+      ...row,
+      requestID: row.orderId,
       timeline: timelineEvents,
-      expectedDate: requestData.expectedDate,
     };
 
     setSelectedRequest(normalizedData);
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedRequest(null);
-  };
-  const handleConfirmDelivered = (requestId) => {
-    // Open confirmation dialog first
-    pendingRequestIdRef.current = requestId;
-    setConfirmTitle("Confirm Delivery");
-    setConfirmMessage(`Mark parts request #${requestId} as delivered?`);
-    setIsConfirmOpen(true);
-  };
-
-  const performConfirmDelivered = async () => {
-    const requestId = pendingRequestIdRef.current;
-    if (!requestId) {
-      setIsConfirmOpen(false);
-      return;
-    }
-    setIsActionLoading(true);
-    try {
-      const response = await request(ApiEnum.CONFIRM_PART_ORDER_DELIVERED, {
-        params: { orderId: requestId },
-      });
-      if (response.success) {
-        toast.success("Confirmation successful!");
-        handleCloseModal();
-        fetchPartsRequests(pagination.pageNumber, pagination.pageSize);
-      } else {
-        const msg =
-          response.message || "Confirmation failed. Please try again.";
-        toast.error(msg);
-      }
-    } catch (err) {
-      console.error("Error confirming receipt:", err);
-      const msg = err.responseData?.message || err.message || "Unknown error";
-      toast.error(`An error occurred: ${msg}`);
-    } finally {
-      setIsActionLoading(false);
-      setIsConfirmOpen(false);
-      pendingRequestIdRef.current = null;
-    }
-  };
-
+  // --- 3. COLUMN CONFIGURATION ---
   const columns = useMemo(
     () => [
       {
-        key: "totalQuantity",
-        label: "Items",
+        key: "serviceCenterName",
+        label: "Service Center",
         sortable: true,
-        render: (val) => `${val || 0} part(s)`,
       },
       {
         key: "requestDate",
-        label: "Requested Date",
-        sortable: true,
+        label: "Created Date",
         render: (val) =>
-          val
-            ? formatDate(val, "vi-VN", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })
-            : "-",
+          val ? new Date(val).toLocaleDateString("en-US") : "-",
       },
       {
         key: "expectedDate",
-        label: "Expected Delivery",
-        sortable: true,
+        label: "Expected Date",
         render: (val) =>
-          val
-            ? formatDate(val, "vi-VN", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })
-            : "-",
+          val ? new Date(val).toLocaleDateString("en-US") : "N/A",
       },
       {
         key: "status",
         label: "Status",
-        sortable: true,
         render: (value) => {
-          const normalizedStatus = (value || "unknown").trim().toLowerCase();
-          const statusClass = normalizedStatus.replace(/\s+/g, "-");
-          const displayText =
-            value && value.length > 0
-              ? value.charAt(0).toUpperCase() + value.slice(1)
-              : "Unknown";
+          const s = (value || "").toLowerCase().trim();
+          let className = "status-badge";
 
-          return (
-            <span className={`status-badge status-${statusClass}`}>
-              {displayText}
-            </span>
-          );
+          // Map status với class CSS trong PartsRequest.css
+          if (s === "pending") className += " status-pending"; // Vàng
+          else if (s === "waiting")
+            className += " status-waiting"; // Xanh dương nhạt
+          else if (s === "confirmed")
+            className += " status-confirmed"; // Xanh lá mạ
+          else if (s === "in transit")
+            className += " status-waiting"; // Xanh dương (dùng chung waiting)
+          else if (s === "delivered")
+            className += " status-delivered"; // Xanh lá đậm
+          else if (s === "done" || s === "closed")
+            className += " status-delivered"; // Xanh lá đậm
+          else if (s === "cancelled") className += " status-cancelled"; // Đỏ
+          else if (s === "returning") className += " status-returning"; // Cam
+
+          return <span className={className}>{value}</span>;
         },
       },
       {
         key: "actions",
         label: "Actions",
-        sortable: false,
         render: (_, row) => (
           <Button
             variant="light"
-            size="sm"
+            size="small"
             onClick={(e) => {
               e.stopPropagation();
               handleViewDetail(row);
@@ -292,6 +143,7 @@ export const PartsRequestContainer = () => {
             <img
               src="../../../../../public/eye.png"
               className="eye-svg"
+              alt="View"
               style={{ width: "22px" }}
             />
           </Button>
@@ -307,33 +159,28 @@ export const PartsRequestContainer = () => {
         data={requests}
         columns={columns}
         loading={loading}
-        error={error}
         pagination={pagination}
-        onPageChange={handlePageChange}
-        onRefresh={handleRefresh}
-        refreshing={loading}
+        onPageChange={(p, s) =>
+          setPagination((prev) => ({ ...prev, pageNumber: p, pageSize: s }))
+        }
+        onRefresh={() =>
+          fetchPartsRequests(pagination.pageNumber, pagination.pageSize)
+        }
       />
 
       {isModalOpen && selectedRequest && (
         <PartsRequestDetailModal
           isOpen={isModalOpen}
-          onClose={handleCloseModal}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedRequest(null);
+          }}
           requestData={selectedRequest}
-          onConfirmDelivered={handleConfirmDelivered}
-          isConfirming={isActionLoading}
+          onRefresh={() =>
+            fetchPartsRequests(pagination.pageNumber, pagination.pageSize)
+          }
         />
       )}
-
-      <ConfirmDialog
-        isOpen={isConfirmOpen}
-        title={confirmTitle}
-        message={confirmMessage}
-        confirmLabel="Delivered"
-        cancelLabel="Cancel"
-        onConfirm={performConfirmDelivered}
-        onCancel={() => setIsConfirmOpen(false)}
-        isLoading={isActionLoading}
-      />
     </>
   );
 };

@@ -6,6 +6,7 @@ import ViewAccountModal from "../components/ViewAccountModal";
 import CreateAccountModal from "../components/CreateAccountModal";
 import EditAccountModal from "../components/EditAccountModal";
 import DeleteAccountModal from "../components/DeleteAccountModal";
+import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 
 const AccountContainer = () => {
   const [accounts, setAccounts] = useState([]);
@@ -162,6 +163,12 @@ const AccountContainer = () => {
     async (payload) => {
       setLoading(true);
       setError(null);
+
+      console.log(
+        "Payload to CREATE_ACCOUNT API:",
+        JSON.stringify(payload, null, 2)
+      );
+
       try {
         // payload đã khớp API createAccount
         await request(ApiEnum.CREATE_ACCOUNT, payload);
@@ -183,39 +190,57 @@ const AccountContainer = () => {
 
   // --- API: Cập nhật Account ---
   const handleUpdateAccount = useCallback(
-    async (payload) => {
-      // <-- 'payload' là data mới từ form
+    async (formValues) => {
       if (!selectedAccount?.userId) return;
 
-      setLoading(true);
-      setError(null);
-      try {
-        // --- SỬA LỖI 1 & 2: Xây dựng payload đúng ---
-        const finalPayload = {
-          userId: selectedAccount.userId,
-          Email: payload.email, // Lấy 'email' mới từ 'payload'
-          PasswordHash: selectedAccount.__raw?.passwordHash || "", // Giữ hash cũ
-          Role: payload.role, // Lấy 'role' mới từ 'payload'
-          orgId: payload.orgId, // Lấy 'orgId' mới từ 'payload'
-        };
-        // ----------------------------------------
+      const { email, name, password, confirmPassword, role, orgId } =
+        formValues;
 
+      const body = {
+        email,
+        name,
+        role,
+        orgId,
+      };
+
+      if (password || confirmPassword) {
+        if (password !== confirmPassword) {
+          toast.error("Mật khẩu không khớp");
+          return;
+        }
+
+        const passwordPolicyRegex =
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
+        if (!passwordPolicyRegex.test(password)) {
+          toast.error("Mật khẩu yếu");
+          return;
+        }
+
+        body.password = password;
+        body.confirmPassword = confirmPassword;
+      }
+
+      console.log(
+        "Payload to UPDATE_ACCOUNT API:",
+        JSON.stringify(body, null, 2)
+      );
+
+      try {
         await request(ApiEnum.UPDATE_ACCOUNT, {
           params: { id: selectedAccount.userId },
-          data: finalPayload, // <-- SỬA LỖI 1: Gửi 'finalPayload' đi
+          data: body,
         });
 
         toast.success("Account updated successfully!");
         setShowEditModal(false);
         fetchAccounts();
       } catch (err) {
-        console.error("Update account failed:", err);
+        console.error(err);
         toast.error(err.responseData?.message || "Update failed");
-      } finally {
-        setLoading(false);
       }
     },
-    [fetchAccounts, selectedAccount] // Cần 'selectedAccount' để lấy userId và __raw
+    [selectedAccount, fetchAccounts]
   );
 
   // --- API: Xóa Account ---
@@ -223,19 +248,21 @@ const AccountContainer = () => {
     if (!selectedAccount?.userId) return;
     setLoading(true);
     setError(null);
+
     try {
       await request(ApiEnum.DELETE_ACCOUNT, {
         params: { id: selectedAccount.userId },
+        data: {}, // PATCH yêu cầu có data rỗng
       });
 
-      toast.success("Account deleted successfully!");
+      toast.success("Account deactivated successfully!");
       setShowDeleteModal(false);
       setSelectedAccount(null);
       fetchAccounts();
     } catch (err) {
-      console.error("Delete account error:", err);
+      console.error("Deactivate account error:", err);
       const serverMessage =
-        err.responseData?.message || "Failed to delete account.";
+        err.responseData?.message || "Failed to deactivate account.";
       setError(serverMessage);
       toast.error(serverMessage);
     } finally {
@@ -244,7 +271,7 @@ const AccountContainer = () => {
   }, [selectedAccount, fetchAccounts]);
 
   return (
-    <div style={{ marginTop: 40, padding: "20px" }}>
+    <div>
       <AccountList
         data={filteredAccounts} // Hiển thị data đã lọc
         loading={loading}
@@ -285,15 +312,16 @@ const AccountContainer = () => {
         onClose={() => setShowEditModal(false)}
         account={selectedAccount}
         onUpdate={handleUpdateAccount}
-        organizations={organizations} // Truyền Org list
-        onDelete={handleDeleteAccount} // <-- Sửa: nên truyền hàm vào đây
+        organizations={organizations}
+        onDelete={handleDeleteAccount}
       />
 
-      <DeleteAccountModal
+      <ConfirmDialog
         isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        account={selectedAccount}
-        onDelete={handleConfirmDelete}
+        title="Delete Account"
+        message={`Are you sure you want to delete account "${selectedAccount?.email}"?`}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );
