@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
-import { Button } from "../../../../components/atoms/Button/Button";
+import "./UnderInspectionModal.css"; // dùng chung CSS luôn cho đồng nhất
 
 export const UnderRepairModal = ({
   isOpen,
@@ -12,174 +12,128 @@ export const UnderRepairModal = ({
   loadingAssignedTechs = false,
   onReassignSuccess,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingTechId, setEditingTechId] = useState(null);
+  const [editingSelectedTechId, setEditingSelectedTechId] = useState("");
   const [availableTechs, setAvailableTechs] = useState([]);
-  const [techSelections, setTechSelections] = useState([]);
-  const [loadingTechs, setLoadingTechs] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+  const [loadingTechnicians, setLoadingTechnicians] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isOpen && isEditing) {
-      // fetch available technicians
-      const fetchTechs = async () => {
-        try {
-          setLoadingTechs(true);
-          setError(null);
-          const response = await request(ApiEnum.GET_TECHNICIANS);
-          if (response && response.success) {
-            setAvailableTechs(response.data || []);
-          } else {
-            setError("Unable to load technicians");
-          }
-        } catch (err) {
-          console.error(err);
-          setError("Error loading technicians");
-        } finally {
-          setLoadingTechs(false);
-        }
-      };
-
-      fetchTechs();
-      // initialize selections to current assigned set (keep same count)
-      const initial = assignedTechnicians.map((t, idx) => ({
-        id: idx + 1,
-        selectedValue: t.userId || "",
-      }));
-      setTechSelections(initial);
+    if (isOpen && editingTechId) {
+      fetchTechnicians();
     }
-    if (!isOpen) {
-      setIsEditing(false);
-    }
-  }, [isOpen, isEditing, assignedTechnicians]);
+  }, [isOpen, editingTechId]);
 
-  const handleChange = (id, value) => {
-    setTechSelections((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, selectedValue: value } : p))
-    );
+  const fetchTechnicians = async () => {
+    try {
+      setLoadingTechnicians(true);
+      const response = await request(ApiEnum.GET_TECHNICIANS);
+
+      if (response?.success) {
+        setAvailableTechs(response.data || []);
+      }
+    } finally {
+      setLoadingTechnicians(false);
+    }
   };
 
-  const handleStartEdit = () => setIsEditing(true);
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setError(null);
-  };
+  const handleSaveEdit = async () => {
+    if (!editingSelectedTechId) return;
+    if (!warrantyData || !warrantyData.id) return;
 
-  const handleSubmit = async (e) => {
-    e && e.preventDefault();
-    setError(null);
-    const technicianIds = techSelections.map((t) => t.selectedValue).filter(Boolean);
-
-    // must match current assigned count
-    if (technicianIds.length !== assignedTechnicians.length) {
-      setError("Please select the same number of technicians as currently assigned.");
-      return;
-    }
-
-    if (!warrantyData || !warrantyData.id) {
-      setError("Invalid warranty target.");
-      return;
-    }
+    const technicianIds = [editingSelectedTechId];
+    setIsSubmitting(true);
 
     try {
-      setSubmitting(true);
       const body = {
         target: "Warranty",
         targetId: warrantyData.id,
         technicianIds,
       };
 
-      const res = await request("/WorkOrder/reassign", body, { method: "POST" });
+      const res = await request("/WorkOrder/reassign", body, {
+        method: "POST",
+      });
 
-      if (res && res.success) {
-        setIsEditing(false);
-        if (typeof onReassignSuccess === "function") onReassignSuccess(res.data);
-        // optionally close modal
-        // onClose();
+      if (res?.success) {
+        if (typeof onReassignSuccess === "function")
+          onReassignSuccess(res.data);
+        setEditingTechId(null);
+        setEditingSelectedTechId("");
       } else {
-        setError(res?.message || "Failed to reassign technicians");
+        console.error(res);
       }
-    } catch (err) {
-      console.error(err);
-      const msg = err?.responseData?.message || err?.message || "Network error";
-      setError(msg);
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
   const assignedTechniciansSection = (
     <div className="detail-section assigned-technicians-section">
       <h4>Assigned Technicians</h4>
+
       {loadingAssignedTechs ? (
         <p className="loading-text">Loading assigned technicians...</p>
       ) : assignedTechnicians.length > 0 ? (
         <div className="technicians-list">
           {assignedTechnicians.map((tech, index) => (
             <div key={tech.userId || index} className="technician-item">
-              <div className="technician-icon">👤</div>
-              <div className="technician-info">
-                <span className="technician-name">{tech.name}</span>
+              <div className="technician-meta">
+                <div className="technician-icon">👤</div>
+                <div className="technician-name">{tech.name}</div>
+              </div>
+
+              <div className="technician-actions">
+                {editingTechId === tech.userId ? (
+                  <div className="edit-controls">
+                    <select
+                      value={editingSelectedTechId}
+                      onChange={(e) => setEditingSelectedTechId(e.target.value)}
+                      disabled={loadingTechnicians}
+                    >
+                      <option value="">-- Select technician --</option>
+                      {availableTechs.map((t) => (
+                        <option key={t.userId || t.id} value={t.userId || t.id}>
+                          {t.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={handleSaveEdit}
+                      disabled={isSubmitting || !editingSelectedTechId}
+                    >
+                      Save
+                    </button>
+
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        setEditingTechId(null);
+                        setEditingSelectedTechId("");
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className=" edit-btn"
+                    onClick={() => {
+                      setEditingTechId(tech.userId);
+                      setEditingSelectedTechId(tech.userId);
+                    }}
+                  >
+                    Edit
+                  </button>
+                )}
               </div>
             </div>
           ))}
         </div>
       ) : (
         <p className="no-technicians">No technicians assigned yet.</p>
-      )}
-
-      {!isEditing && (
-        <div style={{ marginTop: "12px" }}>
-          <Button variant="secondary" size="small" onClick={handleStartEdit}>
-            Edit
-          </Button>
-        </div>
-      )}
-
-      {isEditing && (
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginTop: "12px" }}>
-            {loadingTechs ? (
-              <p>Loading technicians...</p>
-            ) : (
-              <div className="technicians-edit-list">
-                {techSelections.map((sel) => (
-                  <div key={sel.id} style={{ marginBottom: "8px" }}>
-                    <select
-                      className="form-select tech-select"
-                      value={sel.selectedValue}
-                      onChange={(e) => handleChange(sel.id, e.target.value)}
-                      required
-                    >
-                      <option value="">Select technician</option>
-                      {availableTechs.map((opt) => {
-                        const isSelectedElsewhere = techSelections
-                          .filter((s) => s.id !== sel.id)
-                          .some((s) => s.selectedValue === opt.userId);
-                        // prevent selecting same tech twice
-                        if (isSelectedElsewhere) return null;
-                        return (
-                          <option key={opt.userId} value={opt.userId}>
-                            {opt.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                ))}
-              </div>
-            )}
-            {error && <div style={{ color: "red", marginTop: "8px" }}>{error}</div>}
-            <div style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
-              <Button type="submit" variant="primary" size="small" disabled={submitting}>
-                {submitting ? "Saving..." : "Save"}
-              </Button>
-              <Button type="button" variant="danger" size="small" onClick={handleCancelEdit} disabled={submitting}>
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </form>
       )}
     </div>
   );
@@ -192,7 +146,7 @@ export const UnderRepairModal = ({
       showBackButton={true}
       backButtonLabel="Cancel"
       additionalContent={assignedTechniciansSection}
-    ></WarrantyClaimDetailModal>
+    />
   );
 };
 
@@ -202,4 +156,5 @@ UnderRepairModal.propTypes = {
   warrantyData: PropTypes.object,
   assignedTechnicians: PropTypes.array,
   loadingAssignedTechs: PropTypes.bool,
+  onReassignSuccess: PropTypes.func,
 };

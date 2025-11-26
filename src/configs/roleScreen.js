@@ -13,7 +13,7 @@ export const roleScreens = {
     { id: "accessory_admin", label: "Accessory", component: "EVMAccessory" },
     {
       id: "parts_management",
-      label: "Defect Management",
+      label: "Parts Management",
       component: "PartContainer",
     },
   ],

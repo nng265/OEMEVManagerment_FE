@@ -87,7 +87,7 @@ export const UnderInspectionModal = ({
                   </div>
                 ) : (
                   <button
-                    className="btn btn-link edit-btn"
+                    className=" edit-btn"
                     onClick={() => {
                       setEditingTechId(tech.userId);
                       setEditingSelectedTechId(tech.userId);

@@ -22,7 +22,7 @@ export const CreatePartsRequestModal = ({
   preselectedModel = "",
 }) => {
   const [currentModel, setCurrentModel] = useState("");
-  const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [currentQuantity, setCurrentQuantity] = useState("1"); // string
   const [addedParts, setAddedParts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [error, setError] = useState("");
@@ -33,12 +33,11 @@ export const CreatePartsRequestModal = ({
     if (isOpen) {
       setAddedParts([]);
       setCurrentModel(preselectedModel || "");
-      setCurrentQuantity(1);
+      setCurrentQuantity("1");
       setSelectedCategory(preselectedCategory || "");
       setError("");
       setHasUserChangedCategory(false);
 
-      // If preselected category exists, fetch its models
       if (preselectedCategory) {
         fetchPartModelsByCategory(preselectedCategory);
       }
@@ -51,37 +50,28 @@ export const CreatePartsRequestModal = ({
   ]);
 
   const handleAddPart = () => {
-    if (addedParts.length >= 20)
-      return setError("You can only add up to 20 parts per request.");
+    const qty = parseInt(currentQuantity);
 
     if (!currentModel) return setError("Please select a part model.");
-    if (currentQuantity < 1) return setError("Quantity must be at least 1.");
+    if (qty < 1) return setError("Quantity must be at least 1.");
+    if (qty > 20) return setError("Quantity cannot exceed 20.");
 
-    const existing = addedParts.findIndex((p) => p.model === currentModel);
     const updated = [...addedParts];
-
-    if (existing !== -1) {
-      updated[existing].quantity += currentQuantity;
-    } else {
-      updated.push({ model: currentModel, quantity: currentQuantity });
-    }
+    updated.push({ model: currentModel, quantity: qty });
 
     setAddedParts(updated);
     setCurrentModel("");
-    setCurrentQuantity(1);
-    setError(""); // clear old error
+    setCurrentQuantity("1");
+    setError("");
   };
 
   const handleSubmit = () => {
     let finalParts = [...addedParts];
+    const qty = parseInt(currentQuantity);
 
-    if (currentModel && currentQuantity > 0) {
-      if (finalParts.length >= 20)
-        return setError("You can only have up to 20 parts total.");
-
-      const exists = finalParts.findIndex((p) => p.model === currentModel);
-      if (exists !== -1) finalParts[exists].quantity += currentQuantity;
-      else finalParts.push({ model: currentModel, quantity: currentQuantity });
+    if (currentModel && qty > 0) {
+      if (qty > 20) return setError("Quantity cannot exceed 20.");
+      finalParts.push({ model: currentModel, quantity: qty });
     }
 
     if (finalParts.length === 0)
@@ -136,11 +126,8 @@ export const CreatePartsRequestModal = ({
                   const newCategory = e.target.value;
                   setSelectedCategory(newCategory);
                   setHasUserChangedCategory(true);
-
-                  // Clear preselected model when user changes category
                   setCurrentModel("");
 
-                  // Only fetch models when a category is selected
                   if (newCategory) {
                     fetchPartModelsByCategory(newCategory);
                   }
@@ -183,20 +170,29 @@ export const CreatePartsRequestModal = ({
                 label="Quantity"
                 name="quantity"
                 value={currentQuantity}
-                onChange={(e) =>
-                  setCurrentQuantity(parseInt(e.target.value) || 1)
-                }
+                onChange={(e) => {
+                  let val = e.target.value;
+
+                  if (val === "") {
+                    setCurrentQuantity("");
+                    return;
+                  }
+
+                  let num = parseInt(val);
+                  if (isNaN(num)) return;
+
+                  if (num > 20) num = 20;
+                  if (num < 1) num = 1;
+
+                  setCurrentQuantity(num.toString());
+                }}
                 min="1"
+                max="20"
                 required
               />
             </div>
-            <Button
-              variant="secondary"
-              onClick={handleAddPart}
-              fullWidth
-              disabled={addedParts.length >= 20}
-              title={addedParts.length >= 20 ? "Maximum 20 parts allowed" : ""}
-            >
+
+            <Button variant="secondary" onClick={handleAddPart} fullWidth>
               + Add Part
             </Button>
           </div>

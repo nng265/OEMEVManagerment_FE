@@ -49,10 +49,6 @@ export default function AddPartOrder({
   };
 
   const addRow = () => {
-    if (items.length >= 20) {
-      setError("You can only add up to 20 parts per order.");
-      return;
-    }
     setItems((prev) => [...prev, { category: "", model: "", quantity: 1 }]);
   };
 
@@ -232,12 +228,30 @@ export default function AddPartOrder({
                     <input
                       type="number"
                       min="1"
+                      max="20"
                       className="po-input qty"
                       value={it.quantity}
                       title={`Quantity: ${it.quantity}`}
-                      onChange={(e) =>
-                        updateItem(idx, { quantity: Number(e.target.value) })
-                      }
+                      onChange={(e) => {
+                        let val = e.target.value;
+
+                        // Nếu rỗng → cho phép ""
+                        if (val === "") {
+                          updateItem(idx, { quantity: "" });
+                          return;
+                        }
+
+                        let num = parseInt(val);
+
+                        // Không phải số → bỏ qua
+                        if (isNaN(num)) return;
+
+                        // Giới hạn min/max
+                        if (num < 1) num = 1;
+                        if (num > 20) num = 20;
+
+                        updateItem(idx, { quantity: num });
+                      }}
                     />
 
                     {/* REMOVE */}
@@ -254,12 +268,7 @@ export default function AddPartOrder({
               })}
 
               {/* ADD ROW */}
-              <button
-                className="po-add-btn"
-                onClick={addRow}
-                disabled={items.length >= 20}
-                title={items.length >= 20 ? "Maximum 20 parts allowed" : ""}
-              >
+              <button className="po-add-btn" onClick={addRow}>
                 + Add Part
               </button>
             </div>
