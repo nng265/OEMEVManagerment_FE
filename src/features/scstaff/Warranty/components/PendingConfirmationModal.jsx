@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import { Button } from "../../../../components/atoms/Button/Button";
 import { WarrantyClaimDetailModal } from "./WarrantyClaimDetailModal";
 import { DetailSection } from "../../../../components/molecules/DetailSection/DetailSection";
+import ConfirmDialog from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import "./WarrantyClaimDetailModal.css";
 
@@ -26,6 +28,7 @@ export const PendingConfirmationModal = ({
   const [reasonDetail, setReasonDetail] = useState("");
   const [denialReasons, setDenialReasons] = useState([]);
   const [isLoadingDenialReasons, setIsLoadingDenialReasons] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   if (!warrantyData) return null;
 
@@ -64,15 +67,6 @@ export const PendingConfirmationModal = ({
     setShowInputSection(false);
     setDescription("");
     setSelectedDropdowns([{ id: 1, selectedValue: "" }]);
-  };
-
-  const handleAddTechnician = () => {
-    const newId =
-      (selectedDropdowns[selectedDropdowns.length - 1]?.id || 0) + 1;
-    setSelectedDropdowns([
-      ...selectedDropdowns,
-      { id: newId, selectedValue: "" },
-    ]);
   };
 
   const handleRemoveTechnician = (idToRemove) => {
@@ -127,39 +121,44 @@ export const PendingConfirmationModal = ({
       return;
     }
 
-    /// CALL API DENY
-try {
-  setIsRejecting(true);
-
-  const payload = { reason: selectedReason };
-  if (selectedReason === "Other") {
-    payload.reasonDetail = reasonDetail.trim();
-  }
-
-  await request(
-    {
-      ...ApiEnum.DENY_WARRANTY_CLAIM,
-      path: ApiEnum.DENY_WARRANTY_CLAIM.path.replace(":claimId", warrantyData.claimId)
-    },
-    payload
-  );
-
-  onAction?.("rejectSuccess");
-  onClose(); // đóng popup
-
-} catch (err) {
-  console.error("Reject failed", err);
-  alert("Failed to reject claim.");
-} finally {
-  setIsRejecting(false);
-}
-
+    // Open confirmation dialog instead of calling API directly
+    setShowConfirmDialog(true);
   };
 
   const handleCancelReject = () => {
     setShowRejectSection(false);
     setSelectedReason("");
     setReasonDetail("");
+  };
+
+  // Confirm dialog -> perform API deny
+  const confirmReject = async () => {
+    setIsRejecting(true);
+    try {
+      const payload = { reason: selectedReason };
+      if (selectedReason === "Other") {
+        payload.reasonDetail = reasonDetail.trim();
+      }
+
+      await request(
+        {
+          ...ApiEnum.DENY_WARRANTY_CLAIM,
+          path: ApiEnum.DENY_WARRANTY_CLAIM.path.replace(":claimId", warrantyData.claimId),
+        },
+        payload
+      );
+
+      // API success: close both dialogs and show toast
+      setShowConfirmDialog(false);
+      onClose();
+      toast.success("Claim rejected successfully!");
+    } catch (err) {
+      console.error("Reject failed", err);
+      setShowConfirmDialog(false);
+      toast.error(err?.responseData?.message || "Failed to reject claim.");
+    } finally {
+      setIsRejecting(false);
+    }
   };
 
   // ------------------- Approve Handler -------------------
@@ -230,15 +229,6 @@ try {
                   </div>
                 );
               })}
-              <Button
-                type="button"
-                variant="secondary"
-                size="small"
-                onClick={handleAddTechnician}
-                style={{ marginTop: "0.5rem" }}
-              >
-                + Add Technician
-              </Button>
             </div>
           ) : (
             <p className="no-technicians">No technicians available.</p>
@@ -342,21 +332,43 @@ try {
 
   // ------------------- Return Modal -------------------
   return (
-    <WarrantyClaimDetailModal
-      isOpen={isOpen}
-      onClose={onClose}
-      warrantyData={warrantyData}
-      additionalContent={
-        <>
-          {requestMoreInfoSection}
-          {rejectSection}
-        </>
-      }
-      showBackButton={!showInputSection && !showRejectSection}
-      backButtonLabel="Cancel"
-    >
-      {actionButtons}
-    </WarrantyClaimDetailModal>
+    <>
+      <WarrantyClaimDetailModal
+        isOpen={isOpen}
+        onClose={onClose}
+        warrantyData={warrantyData}
+        additionalContent={
+          <>
+            {requestMoreInfoSection}
+            {rejectSection}
+          </>
+        }
+        showBackButton={!showInputSection && !showRejectSection}
+        backButtonLabel="Cancel"
+      >
+        {actionButtons}
+      </WarrantyClaimDetailModal>
+
+      {/* Confirm dialog for rejecting */}
+      <ConfirmDialog
+        isOpen={showConfirmDialog}
+        title="Confirm Reject"
+        message={
+          selectedReason
+            ? `Are you sure you want to reject this claim? Reason: ${selectedReason}${
+                selectedReason === "Other" && reasonDetail
+                  ? ` - ${reasonDetail}`
+                  : ""
+              }`
+            : "Are you sure you want to reject this claim?"
+        }
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        onConfirm={confirmReject}
+        onCancel={() => setShowConfirmDialog(false)}
+        isLoading={isRejecting}
+      />
+    </>
   );
 };
 

@@ -56,7 +56,7 @@ export const ApiEnum = {
     method: "GET",
   },
   GET_PART: { path: "/Part", method: "GET" },
-  GET_PART_SERIAL: { path: "/VehiclePartHistory/serials", method: "GET" },
+  GET_PART_SERIAL_TECH: { path: "/VehiclePartHistory/serials", method: "GET" },
 
   // ===== Warranty Claim Actions =====
   BACK_WARRANTY_CLAIM: { path: "/BackWarrantyClaim/:claimId", method: "POST" },

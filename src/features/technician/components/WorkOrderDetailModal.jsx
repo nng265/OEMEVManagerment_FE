@@ -420,6 +420,12 @@ export const WorkOrderDetailModal = ({
       return copy;
     });
   };
+
+  // return serials selected in other rows (used to exclude duplicates)
+  const getOtherSelectedSerials = (index) =>
+    parts
+      .map((pp, i) => (i !== index && pp.serial ? pp.serial : null))
+      .filter(Boolean);
   const handleSubmitInspection = async () => {
     const hasExistingAttachments =
       Array.isArray(warrantyInfo?.attachments) &&
@@ -737,7 +743,7 @@ export const WorkOrderDetailModal = ({
                 )}
               {workOrderData.warrantyClaim?.notes && (
                 <div className="description-block">
-                  <h5> Inspection Notes for Tech</h5>
+                  <h5>Technician's Inspection Notes</h5>
                   <div className="text-block">
                     <div className="content">
                       {workOrderData.warrantyClaim.notes}
@@ -961,15 +967,19 @@ export const WorkOrderDetailModal = ({
                         title={p.model || ""}
                         onChange={async (e) => {
                           const newModel = e.target.value;
+                          // clear model/serial at this index first
                           updatePart(idx, "model", newModel);
                           updatePart(idx, "serial", "");
+
                           const vin = workOrderData?.vin;
 
                           if (typeof fetchSerial === "function") {
                             try {
+                              const excludes = getOtherSelectedSerials(idx);
                               const fetchedSerials = await fetchSerial(
                                 vin,
-                                newModel
+                                newModel,
+                                excludes
                               );
                               setParts((prev) => {
                                 const copy = [...prev];
@@ -999,9 +1009,21 @@ export const WorkOrderDetailModal = ({
                       <select
                         value={p.serial}
                         title={p.serial || ""}
-                        onChange={(e) =>
-                          updatePart(idx, "serial", e.target.value)
-                        }
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const otherSelected = getOtherSelectedSerials(idx);
+                          if (otherSelected.includes(val)) {
+                            setConfirmDialog({
+                              isOpen: true,
+                              title: "Duplicate Serial",
+                              message:
+                                "This serial is already selected in another row. Please choose a different serial.",
+                              onConfirm: () => setConfirmDialog((d) => ({ ...d, isOpen: false })),
+                            });
+                            return;
+                          }
+                          updatePart(idx, "serial", val);
+                        }}
                         disabled={!p.model}
                       >
                         {!p.serial && <option value="">Select Serial</option>}
@@ -1126,7 +1148,7 @@ export const WorkOrderDetailModal = ({
           ))}
         </datalist>
 
-        {/* <div>
+        <div className="modal-footer">
           <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
             Close
           </Button>
@@ -1154,46 +1176,6 @@ export const WorkOrderDetailModal = ({
               {isSubmitting ? "Submitting..." : "Save Repair"}
             </Button>
           )}
-        </div> */}
-
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginTop: "16px",
-            alignItems: "center",
-          }}
-        >
-          {/* Nút Close bên trái */}
-          <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>
-            Cancel
-          </Button>
-
-          {/* Các nút Save sẽ được đẩy sang phải */}
-          <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
-            {showInspectionEditor && (
-              <Button
-                variant="primary"
-                onClick={handleSubmitInspection}
-                disabled={
-                  (!inspectionDesc.trim() && attachments.length === 0) ||
-                  isSubmitting
-                }
-              >
-                {isSubmitting ? "Submitting..." : "Save Inspection"}
-              </Button>
-            )}
-
-            {isRepair && (
-              <Button
-                variant="primary"
-                onClick={handleSubmitRepair}
-                disabled={parts.length === 0 || isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Save Repair"}
-              </Button>
-            )}
-          </div>
         </div>
       </div>
       <ConfirmDialog
