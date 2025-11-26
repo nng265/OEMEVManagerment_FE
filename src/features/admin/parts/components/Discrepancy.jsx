@@ -156,6 +156,29 @@ export default function Discrepancy({
                   {it.serial})
                 </strong>
 
+                {/* SHOW IMAGE NẾU CÓ */}
+                {(() => {
+                  const receipt = (request.receipts || []).find(
+                    (r) => r.serialNumber === it.serial
+                  );
+                  if (receipt?.imageUrl) {
+                    return (
+                      <div style={{ marginTop: 8 }}>
+                        <img
+                          src={receipt.imageUrl}
+                          alt={`Image of ${it.serial}`}
+                          style={{
+                            maxWidth: "150px",
+                            maxHeight: "150px",
+                            borderRadius: 8,
+                          }}
+                        />
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
                 {/* responsible party */}
                 <div className="pl-field">
                   <label className="pl-label">Responsible Party</label>
