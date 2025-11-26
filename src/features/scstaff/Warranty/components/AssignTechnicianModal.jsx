@@ -141,7 +141,7 @@ export const AssignTechnicianModal = (props) => {
               )}
             </div>
           ))}
-          <Button
+          {/* <Button
             type="button"
             variant="secondary"
             size="small"
@@ -149,7 +149,7 @@ export const AssignTechnicianModal = (props) => {
             className="mt-2"
           >
             Add Technician
-          </Button>
+          </Button> */}
           {error && (
             <div
               className="select-error"

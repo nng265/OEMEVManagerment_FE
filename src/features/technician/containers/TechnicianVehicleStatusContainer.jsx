@@ -18,7 +18,7 @@ export const TechnicianVehicleStatusContainer = () => {
     pageSize: 10,
     totalRecords: 0,
   });
-
+  const [selectedSerials, setSelectedSerials] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [targetFilter, setTargetFilter] = useState("");
@@ -273,14 +273,15 @@ export const TechnicianVehicleStatusContainer = () => {
   //   }
   // }, [fetchModels, selectedWorkOrder]); //mới sửa
 
-  const fetchSerial = async (vin, modelName) => {
+  // fetchSerial optionally accepts an array of serials to exclude (to prevent selecting duplicates)
+  const fetchSerial = async (vin, modelName, excludeSerials = []) => {
     try {
       if (!vin || !modelName) {
         setSerials([]);
         return [];
       }
 
-      const response = await request(ApiEnum.GET_PART_SERIAL, {
+      const response = await request(ApiEnum.GET_PART_SERIAL_TECH, {
         vin: vin,
         model: modelName,
       });
@@ -292,8 +293,13 @@ export const TechnicianVehicleStatusContainer = () => {
         : Array.isArray(response?.data)
         ? response.data
         : [];
-      setSerials(sers);
-      return sers;
+
+      const excludes = Array.isArray(excludeSerials) ? excludeSerials : [];
+      const filtered = sers.filter((s) => !excludes.includes(s));
+
+      // keep the component-level serials list reflective of the last fetch (filtered)
+      setSerials(filtered);
+      return filtered;
     } catch (error) {
       console.error("Error fetching serials:", error);
       setSerials([]);

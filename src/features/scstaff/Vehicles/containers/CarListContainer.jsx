@@ -223,6 +223,8 @@ export const CarListContainer = () => {
               style={{ width: "22px" }}
             />
           </Button>
+          {/* Chỉ hiển thị nút tạo claim khi KHÔNG có active claim */}
+        {!row.hasActiveWarrantyClaim && (
           <Button
             className="light"
             size="small"
@@ -237,10 +239,12 @@ export const CarListContainer = () => {
               style={{ width: "20px" }}
             />
           </Button>
+        )}
         </div>
       ),
     },
   ];
+  
 
   return (
     <>

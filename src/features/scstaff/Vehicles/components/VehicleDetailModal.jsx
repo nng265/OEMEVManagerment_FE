@@ -182,11 +182,6 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
         warrantyRecords={vehicle.policyInformation || []}
       />
 
-      {/* Phần hiển thị danh sách phụ tùng từ API */}
-      <DetailSection title="Part Replacement History">
-        {renderPartList()}
-      </DetailSection>
-
       <DetailModalActions onBack={onClose} backLabel="Close" />
     </Modal>
   );

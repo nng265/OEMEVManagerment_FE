@@ -152,14 +152,14 @@ export const EVMStaffWarrantyListContainer = () => {
     }
   };
 
-  const handleDeny = async (claimId) => {
+  const handleDeny = async (payload) => {
     setIsActionLoading(true);
     try {
-      await request(ApiEnum.DENY_WARRANTY, { params: { claimId } });
+      await request(ApiEnum.DENY_WARRANTY, payload);
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
       fetchClaims(pageNumber, pageSize, searchRef.current, statusFilterRef.current);
-      toast.success("Claim denied successfully!");
+      // toast.success("Claim denied successfully!");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to deny";
       toast.error(`Error: ${errorMsg}`);
@@ -176,7 +176,7 @@ export const EVMStaffWarrantyListContainer = () => {
       setSelectedClaim(null);
       const { pageNumber, pageSize } = paginationRef.current;
       fetchClaims(pageNumber, pageSize, searchRef.current, statusFilterRef.current);
-      toast.success("Reason submitted. Request sent back for more info.");
+      // toast.success("Reason submitted. Request sent back for more info.");
     } catch (err) {
       const errorMsg = err.responseData?.message || "Failed to send back";
       toast.error(`Error: ${errorMsg}`);

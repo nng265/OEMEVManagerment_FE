@@ -21,11 +21,15 @@ export const DeniedOrRepairedClaimModal = ({
       <div className="detail-item">
        <h5>Denial Reason:</h5>
         <div className="value" style={{ marginTop: "8px" }}>
-          {warrantyData.denialReason}
           {/* Chỉ show detail nếu reason = Other */}
         {warrantyData.denialReason === "Other" && (
           <div style={{ marginTop: "6px" }}>
             {warrantyData.denialReasonDetail}
+          </div>
+        )}
+        {warrantyData.denialReason !== "Other" && (
+          <div style={{ marginTop: "6px" }}>
+            {warrantyData.denialReason}
           </div>
         )}
         </div>
