@@ -8,32 +8,41 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { LoadingSpinner } from "../../../../components/atoms/LoadingSpinner/LoadingSpinner";
 
 export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
-  // State lưu danh sách phụ tùng
   const [partList, setPartList] = useState([]);
   const [loadingParts, setLoadingParts] = useState(false);
 
-  // Gọi API khi Modal mở ra và có vehicle ID
   useEffect(() => {
-    // 1. Lấy ID an toàn: kiểm tra cả 'id' và 'vehicleId'
+    if (!show || !vehicle) return;
+
+    // --- LOGIC MỚI ---
+    // 1. Ưu tiên kiểm tra xem trong object vehicle đã có sẵn installedParts chưa
+    // (Dựa vào JSON bạn gửi, API List Vehicle đã trả về cục này rồi)
+    if (vehicle.installedParts && Array.isArray(vehicle.installedParts)) {
+      console.log(
+        "Using existing parts from vehicle prop:",
+        vehicle.installedParts
+      );
+      setPartList(vehicle.installedParts);
+      setLoadingParts(false);
+      return;
+    }
+
+    // 2. Nếu trong props không có, mới đi gọi API (Fallback)
     const vehicleId = vehicle?.id || vehicle?.vehicleId;
 
-    if (show && vehicleId) {
-      console.log("Fetching parts for Vehicle ID:", vehicleId); // Log kiểm tra ID
-
+    if (vehicleId) {
+      console.log("Fetching parts for Vehicle ID (Fallback):", vehicleId);
       const fetchVehicleParts = async () => {
         setLoadingParts(true);
         try {
-          // 2. Gọi hàm tạo URL từ ApiEnum
           const url = ApiEnum.GET_VEHICLE_PARTS(vehicleId);
-
-          // 3. Gọi request
           const response = await request(url, {}, "GET");
 
-          if (response.success) {
-            console.log("Parts loaded:", response.data); // Log kiểm tra dữ liệu trả về
-            setPartList(response.data || []);
+          if (response.isSuccess || response.success) {
+            const listData =
+              response.data?.installedParts || response.data || [];
+            setPartList(listData);
           } else {
-            console.warn("Failed to load parts:", response.message);
             setPartList([]);
           }
         } catch (error) {
@@ -46,16 +55,12 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
 
       fetchVehicleParts();
     } else {
-      // Reset data khi đóng modal
-      if (!show) {
-        setPartList([]);
-      }
+      setPartList([]);
     }
   }, [show, vehicle]);
 
   if (!vehicle) return null;
 
-  // Hàm render nội dung bảng phụ tùng
   const renderPartList = () => {
     if (loadingParts) {
       return (
@@ -85,7 +90,6 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
 
     return (
       <div className="table-responsive">
-        {/* Sử dụng class vehicles-table có sẵn để đồng bộ giao diện */}
         <table
           className="table vehicles-table"
           style={{ marginTop: 0, boxShadow: "none" }}
@@ -93,27 +97,24 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
           <thead>
             <tr>
               <th style={{ padding: "12px 16px", backgroundColor: "#f8fafc" }}>
-                Part Model
-              </th>
-              <th style={{ padding: "12px 16px", backgroundColor: "#f8fafc" }}>
-                Part Name
+                Model
               </th>
               <th style={{ padding: "12px 16px", backgroundColor: "#f8fafc" }}>
                 Serial Number
               </th>
               <th style={{ padding: "12px 16px", backgroundColor: "#f8fafc" }}>
-                Replaced Date
+                Installed Date
+              </th>
+              <th style={{ padding: "12px 16px", backgroundColor: "#f8fafc" }}>
+                Status
               </th>
             </tr>
           </thead>
           <tbody>
             {partList.map((part, index) => (
-              <tr key={part.id || index}>
-                <td style={{ padding: "12px 16px" }}>
-                  {part.partModel || part.modelCode || "N/A"}
-                </td>
-                <td style={{ padding: "12px 16px" }}>
-                  {part.partName || "N/A"}
+              <tr key={index}>
+                <td style={{ padding: "12px 16px", fontWeight: "500" }}>
+                  {part.model || part.partName || "N/A"}
                 </td>
                 <td
                   style={{
@@ -125,9 +126,27 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
                   {part.serialNumber || "N/A"}
                 </td>
                 <td style={{ padding: "12px 16px" }}>
-                  {part.replacedDate
-                    ? new Date(part.replacedDate).toLocaleDateString("en-GB") // Format dd/mm/yyyy
+                  {part.installedAt
+                    ? new Date(part.installedAt).toLocaleDateString("en-GB")
+                    : part.replacedDate
+                    ? new Date(part.replacedDate).toLocaleDateString("en-GB")
                     : "-"}
+                </td>
+                <td style={{ padding: "12px 16px" }}>
+                  <span
+                    style={{
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      backgroundColor:
+                        part.status === "OnVehicle" ? "#def7ec" : "#f1f5f9",
+                      color:
+                        part.status === "OnVehicle" ? "#03543f" : "#475569",
+                      fontSize: "0.85rem",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {part.status || "Unknown"}
+                  </span>
                 </td>
               </tr>
             ))}
@@ -177,10 +196,11 @@ export const VehicleDetailModal = ({ show, onClose, vehicle }) => {
         </div>
       </DetailSection>
 
-      {/* Kiểm tra null/undefined cho mảng policy để tránh lỗi crash */}
       <WarrantyRecordsSection
         warrantyRecords={vehicle.policyInformation || []}
       />
+
+      <DetailSection title="Part Installed">{renderPartList()}</DetailSection>
 
       <DetailModalActions onBack={onClose} backLabel="Close" />
     </Modal>

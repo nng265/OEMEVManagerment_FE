@@ -196,8 +196,6 @@
   border-color: #48bb78;
 }
 
-
-
 /* AddPartOrder specific tweaks */
 .pl-container.add-part-order .pl-header h3 {
   font-size: 1.3rem;
@@ -247,7 +245,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background .2s ease;
+  transition: background 0.2s ease;
 }
 
 .po-add-btn:hover {
@@ -267,7 +265,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all .18s ease;
+  transition: all 0.18s ease;
 }
 
 .po-remove-btn:hover:not(:disabled) {
@@ -277,7 +275,7 @@
 }
 
 .po-remove-btn:disabled {
-  opacity: .45;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -291,16 +289,12 @@
   font-size: 13px;
 }
 
-
-
-/* ... Code cũ giữ nguyên ... */
-
 /* === Timeline === */
 .timeline-container {
   position: absolute;
-  right: -280px; /* Đẩy timeline sang bên phải modal nếu màn hình rộng */
+
   top: 0;
-  width: 250px;
+  width: 700px;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
@@ -308,7 +302,6 @@
   border: 1px solid #e2e8f0;
 }
 
-/* Nếu không muốn timeline bay ra ngoài, để nó nằm trong body */
 .timeline-inline {
   margin-top: 20px;
   padding-top: 20px;
@@ -413,4 +406,192 @@
 .error-list {
   margin: 5px 0 0 20px;
   font-size: 0.85rem;
+}
+
+.import-excel-wrapper {
+  padding: 10px 0 20px 0;
+}
+
+.upload-dashed-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.upload-dashed-box:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.upload-btn-label {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  transition: background 0.2s;
+}
+
+.upload-btn-label:hover {
+  background-color: #2563eb;
+}
+
+.upload-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* Điều chỉnh lại validation-section để bỏ viền cũ đi cho đẹp */
+.validation-section {
+  margin-top: 20px;
+  padding: 20px; /* Tăng padding */
+  background: #fff; /* Đổi nền thành trắng */
+  border-radius: 12px;
+  border: 1px solid #e2e8f0; /* Viền liền thay vì nét đứt cũ */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+* Container tổng của phần lỗi */ .validation-result .validation-error {
+  background-color: #fff;
+  border: 1px solid #fee2e2; /* Viền đỏ rất nhạt */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Tiêu đề lỗi */
+.validation-error-title {
+  color: #991b1b; /* Đỏ đậm sang trọng */
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* Wrapper bảng có scroll */
+.error-table-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Custom Scrollbar cho đẹp */
+.error-table-wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.error-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.error-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* Table Style */
+.error-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+/* Header Bảng */
+.error-table thead th {
+  background-color: #f8fafc; /* Xám nhạt */
+  color: #64748b; /* Chữ xám đậm */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Dòng trong bảng */
+.error-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+.error-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.error-table tbody tr:hover {
+  background-color: #fff1f2; /* Hover màu đỏ phấn cực nhạt */
+}
+
+.error-table td {
+  padding: 14px 16px;
+  vertical-align: top;
+  color: #334155;
+}
+
+/* Cột Model */
+.col-model {
+  font-weight: 600;
+  color: #1e293b;
+  width: 25%;
+}
+
+/* Cột Serial (Dùng font code) */
+.col-serial {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  color: #475569;
+  width: 30%;
+}
+
+/* Cột Error Message */
+.col-message {
+  width: 45%;
+}
+
+/* Badge cho Loại lỗi */
+.error-type-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  border: 1px solid #fecaca;
+}
+
+/* Nội dung chi tiết lỗi */
+.error-message-text {
+  display: block;
+  font-size: 0.85rem;
+  color: #ef4444;
+  line-height: 1.4;
 }
