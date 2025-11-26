@@ -1,0 +1,237 @@
+/* ================================
+   OVERLAY
+================================ */
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.25s ease-out;
+}
+
+/* ================================
+   POPUP CARD
+================================ */
+.popup-card {
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 800px;
+    padding: 24px 28px;
+    border: 1px solid #e2e8f0;
+    animation: scaleIn 0.25s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* ================================
+   HEADER
+================================ */
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.popup-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+/* ================================
+   BODY
+================================ */
+.popup-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    font-size: 0.95rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #e2e8f0;
+    padding: 6px 0;
+}
+
+.info-row strong {
+    color: #2b6cb0;
+}
+
+.info-column {
+    flex: 1;
+}
+
+.info-column h4 {
+    margin: 0 0 6px 0;
+}
+
+.info-column div {
+    margin-top: 6px;
+}
+
+/* ================================
+   TIMELINE
+================================ */
+.timeline-container {
+    position: relative;
+    padding-left: 18px;
+    border-left: 2px solid #e5e7eb;
+    margin-top: 10px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -7px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background: #2563eb;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px #dbeafe;
+}
+
+.timeline-content {
+    margin-left: 16px;
+    background: #f9fafb;
+    padding: 12px 16px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.popup-body {
+    padding: 18px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* quan trọng: chặn scroll ngang */
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 14px 20px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #0f172a;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 500px) {
+    .popup-card {
+        width: 95%;
+    }
+
+    .info-column {
+        margin-left: 0;
+    }
+}
+
+/* 2 Column Layout */
+.two-column-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+}
+
+.left-panel,
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-section div {
+    margin-top: 6px;
+    margin-left: 10px;
+}
+
+.right-panel {
+    border-left: 2px solid #e5e7eb;
+    padding-left: 16px;
+}
+
+/* Limit scroll height */
+.popup-body {
+    max-height: calc(90vh - 160px);
+    overflow-y: auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .two-column-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .right-panel {
+        border-left: none;
+        padding-left: 0;
+    }
+}
