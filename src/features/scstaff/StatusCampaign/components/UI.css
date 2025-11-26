@@ -629,3 +629,67 @@ button {
 .replacement-table tr:last-child td {
   border-bottom: none;
 }
+
+/* Edit controls container (dropdown + Save + Cancel) */
+.technician-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* khoảng cách giữa select và nút */
+}
+
+.technician-actions select {
+  flex: 1;
+  /* chiếm hết chỗ còn lại */
+  min-width: 180px;
+  /* tránh quá nhỏ */
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 0.95rem;
+  color: #0f172a;
+  transition: all 0.2s;
+}
+
+.technician-actions select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Save button */
+.technician-actions .btn-primary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.technician-actions .btn-primary:hover:enabled {
+  background-color: #1e40af;
+}
+
+.technician-actions .btn-primary:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Cancel button */
+.technician-actions .btn-secondary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #f8f9fa;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.technician-actions .btn-secondary:hover {
+  background-color: #e2e6ea;
+}

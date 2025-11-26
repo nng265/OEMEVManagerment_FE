@@ -173,12 +173,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background-image: linear-gradient(
-    135deg,
-    var(--color-success) 0%,
-    var(--color-success) 60%,
-    var(--color-success) 100%
-  );
+  background-image: linear-gradient(135deg,
+      var(--color-success) 0%,
+      var(--color-success) 60%,
+      var(--color-success) 100%);
 }
 
 .btn-refresh:hover {
