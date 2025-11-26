@@ -317,8 +317,9 @@ export const PartsRequestDetailModal = ({
   };
 
   const renderReceiptProcess = () => {
-    if (currentStatus !== "Delivered" && currentStatus !== "In Transit")
-      return null;
+    // --- SỬA LOGIC Ở ĐÂY ---
+    // Chỉ hiện form validate/upload khi trạng thái là "Delivered"
+    if (currentStatus !== "Delivered") return null;
 
     return (
       <div className="inventory-section">
@@ -577,10 +578,11 @@ export const PartsRequestDetailModal = ({
       {/* 1. TIMELINE */}
       <DetailSection title="Timeline">{renderTimeline()}</DetailSection>
 
-      {/* 2. PROCESS FORM */}
+      {/* 2. PROCESS FORM (Chỉ hiện khi Delivered) */}
       {renderReceiptProcess()}
 
       <DetailModalActions onBack={onClose} backLabel="Close">
+        {/* Nút Acknowledge chỉ hiện khi In Transit */}
         {currentStatus === "In Transit" && (
           <div style={{ marginRight: "auto" }}>
             <Button
