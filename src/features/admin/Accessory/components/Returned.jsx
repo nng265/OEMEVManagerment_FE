@@ -44,6 +44,7 @@ export default function Returned({ item, onClose }) {
               <div style={{ marginTop: 12, marginLeft: 24  }}>Serial: {item.serialNumber}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Model: {item.model}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Condition: {item.condition}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Service Center Name: {item.serviceCenterName}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>PeriodMonths: {item.warrantyPeriodMonths}</div>
             </div>
           </div>

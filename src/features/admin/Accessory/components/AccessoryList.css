@@ -166,9 +166,9 @@
 
 /* In Stock → xanh lá */
 .status-instock {
-  background: #e6f8e7;
-  color: #1b8c24;
-  border: 1px solid #b6e6bb;
+  background: #efe1c9;
+  color: #f1ae03;
+  border: 1px solid #f1c06b;
 }
 
 /* On Vehicle → xanh dương */
@@ -183,6 +183,13 @@
   background: #ffe8e8;
   color: #d12f2f;
   border: 1px solid #ffcccc;
+}
+
+/* InTransit →  */
+.status-intransit {
+  background: #d2f8d8;
+  color: #1be704;
+  border: 1px solid #76f58b;
 }
 
 .status-badge {

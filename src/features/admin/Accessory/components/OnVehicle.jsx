@@ -13,7 +13,7 @@ export default function OnVehicle({ item, onClose }) {
     <div className="popup-overlay">
       <div className="popup-card onvehicle">
         <div className="popup-header">
-          <h1>On Vehicle</h1>
+          <h1 style={{marginLeft: 10}}>On Vehicle</h1>
         </div>
 
         <div className="popup-body">
@@ -45,6 +45,9 @@ export default function OnVehicle({ item, onClose }) {
               <div style={{ marginTop: 6, marginLeft: 24  }}>Part Model: {item.model}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Condition: {item.condition}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>PeriodMonths: {item.warrantyPeriodMonths} </div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Production Date: {formatDate(item.productionDate)}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Service Center Name: {item.serviceCenterName}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Warranty End Date: {formatDate(item.warrantyEndDate)}</div>
             </div>
           </div>
           <div className="info-row">
@@ -65,22 +68,22 @@ export default function OnVehicle({ item, onClose }) {
                 <div className="timeline-item">
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
-                    <div className="timeline-title">Requested Day</div>
+                    <div className="timeline-title">Uninstalled At</div>
                     <div className="timeline-date">
-                      {item.productionDate ? new Date(item.productionDate).toLocaleDateString("vi-VN") : "N/A"}
+                      {item.uninstalledAt ? new Date(item.uninstalledAt).toLocaleDateString("vi-VN") : "N/A"}
                     </div>
                   </div>
                 </div>
 
-                <div className="timeline-item">
+                {/* <div className="timeline-item">
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
-                    <div className="timeline-title">Expected Day</div>
+                    <div className="timeline-title">Production Date</div>
                     <div className="timeline-date">
-                      {item.warrantyEndDate ? new Date(item.warrantyEndDate).toLocaleDateString("vi-VN") : "N/A"}
+                      {item.productionDate ? new Date(item.productionDate).toLocaleDateString("vi-VN") : "N/A"}
                     </div>
                   </div>
-                </div>
+                </div> */}
               
             </div>
           </div>

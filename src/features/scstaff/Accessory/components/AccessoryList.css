@@ -22,7 +22,7 @@
   border-radius: 16px;
   padding: 28px 26px;
   text-align: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   animation: scaleIn 0.25s ease-out;
 }
 
@@ -87,19 +87,30 @@
    ANIMATIONS
 ================================ */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .timeline-container {
   position: relative;
   margin-top: 20px;
-  padding-left: 24px;
   border-left: 2px solid #e5e7eb;
 }
 
@@ -141,4 +152,46 @@
 .timeline-date {
   font-size: 0.85rem;
   color: #64748b;
+}
+
+/* STATUS BADGES */
+.status-badge {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+/* In Stock → xanh lá */
+.status-instock {
+  background: #efe1c9;
+  color: #f1ae03;
+  border: 1px solid #f1c06b;
+}
+
+/* On Vehicle → xanh dương */
+.status-onvehicle {
+  background: #e8f1ff;
+  color: #235bdb;
+  border: 1px solid #c4d8ff;
+}
+
+/* Returned → đỏ */
+.status-returned {
+  background: #ffe8e8;
+  color: #d12f2f;
+  border: 1px solid #ffcccc;
+}
+
+/* InTransit →  */
+.status-intransit {
+  background: #d2f8d8;
+  color: #1be704;
+  border: 1px solid #76f58b;
+}
+
+.status-badge {
+  border-radius: 100px;
 }

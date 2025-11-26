@@ -21,8 +21,14 @@ export default function AccessoryList({
   statusFilter = "",
   onStatusFilterChange,
 
-  // conditionFilter = "",
-  // onConditionFilterChange,
+  conditionFilter = "",
+  onConditionFilterChange,
+
+  orgFilter = "",
+  onOrgFilterChange,
+  statusOptions = null,
+  conditionOptions = null,
+  orgOptions = null,
 }) {
   const items = Array.isArray(data)
     ? data
@@ -82,25 +88,49 @@ export default function AccessoryList({
           value={statusFilter}
           onChange={onStatusFilterChange}
           fullWidth
-          options={[
-            { value: "", label: "All Status" },
-            { value: "InStock", label: "In Stock" },
-            { value: "OnVehicle", label: "On Vehicle" },
-            { value: "Returned", label: "Returned" },
-          ]}
+          options={
+            Array.isArray(statusOptions) && statusOptions.length
+              ? statusOptions
+              : [
+                  { value: "", label: "All Status" },
+                  { value: "InStock", label: "In Stock" },
+                  { value: "OnVehicle", label: "On Vehicle" },
+                  { value: "Returned", label: "Returned" },
+                ]
+          }
         />
-        {/* <Input
+        <Input
           type="select"
           value={conditionFilter}
           onChange={onConditionFilterChange}
           fullWidth
-          options={[
-            { value: "", label: "All Conditions" },
-            { value: "New", label: "New" },
-            { value: "Refurbished", label: "Refurbished" },
-            { value: "Used", label: "Used" },
-          ]}
-        /> */}
+          options={
+            Array.isArray(conditionOptions) && conditionOptions.length
+              ? conditionOptions
+              : [
+                  { value: "", label: "All Conditions" },
+                  { value: "New", label: "New" },
+                  { value: "Refurbished", label: "Refurbished" },
+                  { value: "Used", label: "Used" },
+                ]
+          }
+        />
+        <Input
+          type="select"
+          value={orgFilter}
+          onChange={onOrgFilterChange}
+          fullWidth
+          options={
+            Array.isArray(orgOptions) && orgOptions.length
+              ? orgOptions
+              : [
+                  { value: "", label: "All Organizations" },
+                  { value: "New", label: "New" },
+                  { value: "Refurbished", label: "Refurbished" },
+                  { value: "Used", label: "Used" },
+                ]
+          }
+        />
       </div>
 
       {/* TABLE */}

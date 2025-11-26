@@ -44,16 +44,15 @@ export default function Returned({ item, onClose }) {
               <div style={{ marginTop: 12, marginLeft: 24  }}>Serial: {item.serialNumber}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Model: {item.model}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Condition: {item.condition}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Service Center Name: {item.serviceCenterName}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>PeriodMonths: {item.warrantyPeriodMonths}</div>
-              <div style={{ marginTop: 6, marginLeft: 24  }}>Note: {item.note}</div>
             </div>
           </div>
           <div className="info-row">
-            <div>
+            <div className="parent-container">
               <h4>
                 <strong>Time Line</strong>
               </h4>
-              <div className="timeline-container">
                 <div className="timeline-item">
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
@@ -83,7 +82,7 @@ export default function Returned({ item, onClose }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              
             </div>
           </div>
           <div className="popup-actions">
