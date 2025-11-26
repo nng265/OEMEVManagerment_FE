@@ -1,99 +1,94 @@
+
 import React from "react";
-import "./Accessory.css";
+import "./AccessoryList.css";
+
+function formatDate(d) {
+  if (!d) return "";
+  return new Date(d).toISOString().split("T")[0];
+}
 
 export default function OnVehicle({ item, onClose }) {
   if (!item) return null;
-
   return (
     <div className="popup-overlay">
-      <div className="popup-card installed">
-        {/* Close Button */}
-        <button className="popup-close" onClick={onClose}>
-          ✕
-        </button>
+      <div className="popup-card onvehicle">
         <div className="popup-header">
-          <h1>OnVehicle</h1>
+          <h1>On Vehicle</h1>
         </div>
 
-        {/* 2 COLUMNS LAYOUT */}
-        <div className="popup-body two-column-layout">
-          {/* LEFT SIDE */}
-          <div className="left-panel">
-            {/* Customer Info */}
-            <div className="info-section">
+        <div className="popup-body">
+          <div className="info-row">
+            <div>
               <h4>
                 <strong>Customer Information</strong>
               </h4>
-              <div>Name: {item.customerName}</div>
-              <div>Phone: {item.customerPhone}</div>
-              <div>Email: {item.customerEmail}</div>
+              <div style={{ marginTop: 12, marginLeft: 24  }}>Name: {item.customerName}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Phone: {item.customerPhone}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Email: {item.customerEmail}</div>
             </div>
-
-            {/* Vehicle Info */}
-            <div className="info-section">
+            <div style={{ textAlign: "right" }}>
               <h4>
                 <strong>Vehicle Information</strong>
               </h4>
-              <div>Vin: {item.vin}</div>
-              <div>Model: {item.carModel}</div>
-              <div>Year: {item.carYear}</div>
+              <div style={{ marginTop: 12, textAlign: "left", marginLeft: 24  }}>Vin: {item.vin}</div>
+              <div style={{ marginTop: 6, textAlign: "left", marginLeft: 24  }}>Model: {item.carModel}</div>
+              <div style={{ marginTop: 6, textAlign: "left", marginLeft: 24  }}>Year: {item.carYear}</div>
             </div>
+          </div>
 
-            {/* Detail */}
-            <div className="info-section">
+          <div className="info-row">
+            <div>
               <h4>
                 <strong>Detail</strong>
               </h4>
-              <div>Serial: {item.serialNumber}</div>
-              <div>Model: {item.model}</div>
-              <div>Condition: {item.condition}</div>
-              <div>Warranty Months: {item.warrantyPeriodMonths}</div>
-              <div>Note: {item.note}</div>
+              <div style={{ marginTop: 12, marginLeft: 24  }}>Serial: {item.serialNumber}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Part Model: {item.model}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Condition: {item.condition}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>PeriodMonths: {item.warrantyPeriodMonths} </div>
             </div>
           </div>
-
-          {/* RIGHT SIDE — Timeline */}
-          {/* RIGHT SIDE — Timeline */}
-          <div className="timeline-section">
-            <h4>
-              <strong>History Timeline</strong>
-            </h4>
-
-            {[
-              {
-                label: "Installed At",
-                date: item.installedAt
-                  ? new Date(item.installedAt).toLocaleDateString("vi-VN")
-                  : "N/A",
-              },
-              {
-                label: "Requested Day",
-                date: item.productionDate
-                  ? new Date(item.productionDate).toLocaleDateString("vi-VN")
-                  : "N/A",
-              },
-              {
-                label: "Expected Day",
-                date: item.warrantyEndDate
-                  ? new Date(item.warrantyEndDate).toLocaleDateString("vi-VN")
-                  : "N/A",
-              },
-            ].map((e, i) => (
-              <div key={i} className="timeline-item">
-                <div className="timeline-dot"></div>
-                <div className="timeline-content">
-                  <div className="timeline-title">{e.label}</div>
-                  <div className="timeline-date">{e.date}</div>
+          <div className="info-row">
+            <div className="parent-container">
+              <h4>
+                <strong>Time Line</strong>
+              </h4>
+                <div className="timeline-item">
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <div className="timeline-title">Installed At</div>
+                    <div className="timeline-date">
+                      {item.installedAt ? new Date(item.installedAt).toLocaleDateString("vi-VN") : "N/A"}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div className="popup-actions">
-          <button className="btn-secondary btn-cancel" onClick={onClose}>
-            Back
-          </button>
+                <div className="timeline-item">
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <div className="timeline-title">Requested Day</div>
+                    <div className="timeline-date">
+                      {item.productionDate ? new Date(item.productionDate).toLocaleDateString("vi-VN") : "N/A"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="timeline-item">
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <div className="timeline-title">Expected Day</div>
+                    <div className="timeline-date">
+                      {item.warrantyEndDate ? new Date(item.warrantyEndDate).toLocaleDateString("vi-VN") : "N/A"}
+                    </div>
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+          <div className="popup-actions">
+            <button className="btn-secondary btn-cancel" onClick={onClose}>
+              Back
+            </button>
+          </div>
         </div>
       </div>
     </div>

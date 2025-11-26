@@ -1,5 +1,5 @@
 import React from "react";
-import "./Accessory.css";
+import "./AccessoryList.css";
 
 export default function InStock({ item, onClose }) {
   if (!item) return null;
@@ -16,11 +16,10 @@ export default function InStock({ item, onClose }) {
           <div className="info-row">
             <div className="info-column">
               <h4>Detail</h4>
-              <div>Serial: {item.serialNumber}</div>
-              <div>Model: {item.model}</div>
-              <div>Condition: {item.condition}</div>
-              <div>Warranty Period: {item.warrantyPeriodMonths}</div>
-              <div>Note: {item.note}</div>
+              <div style={{ marginTop: 12, marginLeft: 24  }}>Serial: {item.serialNumber}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Part Model: {item.model}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Condition: {item.condition}</div>
+              <div style={{ marginTop: 6, marginLeft: 24  }}>Warranty Period: {item.warrantyPeriodMonths}</div>
             </div>
           </div>
 
@@ -30,7 +29,6 @@ export default function InStock({ item, onClose }) {
               <h4>
                 <strong>Time Line</strong>
               </h4>
-              <div className="timeline-container">
                 <div className="timeline-item">
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
@@ -60,7 +58,7 @@ export default function InStock({ item, onClose }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              
             </div>
           </div>
 

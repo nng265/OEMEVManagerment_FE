@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "../../../../components/molecules/Modal/Modal";
 import { Button } from "../../../../components/atoms/Button/Button";
+import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import "../components/UI.css";
 
 const UnderRepair = ({ open, onClose, data }) => {
+  const [assignedTechs, setAssignedTechs] = useState([]);
+  const [loadingTechs, setLoadingTechs] = useState(false);
+  const [techError, setTechError] = useState(null);
+
   // === Dùng các hàm helper giống CampaignViewModal ===
   const displayValue = (value) => {
     if (value === 0 || value === null || value === undefined || value === "") {
@@ -17,6 +22,37 @@ const UnderRepair = ({ open, onClose, data }) => {
   const campaign = data?.raw ?? {};
   const vehicle = campaign.vehicle ?? {};
   const customer = campaign.customer ?? {};
+
+  // Fetch assigned technicians when modal opens
+  useEffect(() => {
+    if (open && data?.id) {
+      const fetchAssignedTechs = async () => {
+        try {
+          setLoadingTechs(true);
+          setTechError(null);
+          const endpoint = ApiEnum.CAMPAIGN_VEHICLE_TECH.path.replace(
+            ":campaignVehicleId",
+            data.id
+          );
+          const response = await request(endpoint);
+          if (response && response.success) {
+            setAssignedTechs(response.data || []);
+          } else {
+            setTechError("Unable to load technicians");
+          }
+        } catch (err) {
+          console.error("Error fetching assigned technicians:", err);
+          setTechError("Error loading technicians");
+        } finally {
+          setLoadingTechs(false);
+        }
+      };
+      fetchAssignedTechs();
+    } else {
+      setAssignedTechs([]);
+      setTechError(null);
+    }
+  }, [open, data?.id]);
 
   return (
     <Modal
@@ -90,6 +126,28 @@ const UnderRepair = ({ open, onClose, data }) => {
             </span>
           </div>
         </div>
+
+        {/* === Section 3: Assigned Technicians === */}
+        <h3 className="campaign-section-title">Assigned Technicians</h3>
+        {loadingTechs ? (
+          <p className="loading-text">Loading assigned technicians...</p>
+        ) : techError ? (
+          <p style={{ color: "red" }}>{techError}</p>
+        ) : assignedTechs.length > 0 ? (
+          <div className="technicians-list">
+            {assignedTechs.map((tech, index) => (
+              <div key={tech.userId || index} className="technician-item">
+                <div className="technician-icon">👤</div>
+                <div className="technician-info">
+                  <span className="technician-name">{tech.name}</span>
+                  <span className="technician-email">{tech.email}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="no-technicians">No technicians assigned yet.</p>
+        )}
 
         {/* === Footer === */}
         <div className="campaign-footer">

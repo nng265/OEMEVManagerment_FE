@@ -21,8 +21,8 @@ export default function AccessoryList({
   statusFilter = "",
   onStatusFilterChange,
 
-  conditionFilter = "",
-  onConditionFilterChange,
+  // conditionFilter = "",
+  // onConditionFilterChange,
 }) {
   const items = Array.isArray(data)
     ? data
@@ -31,9 +31,7 @@ export default function AccessoryList({
   const columns = [
     { key: "vin", label: "VIN" },
     { key: "serial", label: "Serial" },
-    { key: "model", label: "Model" },
-    { key: "condition", label: "Condition" },
-
+    { key: "model", label: "Part Model" },
     {
       key: "status",
       label: "Status",
@@ -73,7 +71,7 @@ export default function AccessoryList({
       <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
         <Input
           type="text"
-          placeholder="Search VIN or model..."
+          placeholder="Search vin or serial or part model....."
           value={search}
           onChange={onSearchChange}
           fullWidth
@@ -91,7 +89,7 @@ export default function AccessoryList({
             { value: "Returned", label: "Returned" },
           ]}
         />
-        <Input
+        {/* <Input
           type="select"
           value={conditionFilter}
           onChange={onConditionFilterChange}
@@ -102,7 +100,7 @@ export default function AccessoryList({
             { value: "Refurbished", label: "Refurbished" },
             { value: "Used", label: "Used" },
           ]}
-        />
+        /> */}
       </div>
 
       {/* TABLE */}

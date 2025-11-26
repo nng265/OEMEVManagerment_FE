@@ -153,3 +153,38 @@
   font-size: 0.85rem;
   color: #64748b;
 }
+
+/* STATUS BADGES */
+.status-badge {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+/* In Stock → xanh lá */
+.status-instock {
+  background: #e6f8e7;
+  color: #1b8c24;
+  border: 1px solid #b6e6bb;
+}
+
+/* On Vehicle → xanh dương */
+.status-onvehicle {
+  background: #e8f1ff;
+  color: #235bdb;
+  border: 1px solid #c4d8ff;
+}
+
+/* Returned → đỏ */
+.status-returned {
+  background: #ffe8e8;
+  color: #d12f2f;
+  border: 1px solid #ffcccc;
+}
+
+.status-badge {
+  border-radius: 100px;
+}
