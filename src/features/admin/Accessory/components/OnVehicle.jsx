@@ -7,6 +7,10 @@ export default function OnVehicle({ item, onClose }) {
   return (
     <div className="popup-overlay">
       <div className="popup-card installed">
+        {/* Close Button */}
+        <button className="popup-close" onClick={onClose}>
+          ✕
+        </button>
         <div className="popup-header">
           <h1>OnVehicle</h1>
         </div>
@@ -49,52 +53,40 @@ export default function OnVehicle({ item, onClose }) {
           </div>
 
           {/* RIGHT SIDE — Timeline */}
-          <div className="right-panel">
+          {/* RIGHT SIDE — Timeline */}
+          <div className="timeline-section">
             <h4>
               <strong>History Timeline</strong>
             </h4>
 
-            <div className="timeline-container">
-              <div className="timeline-item">
+            {[
+              {
+                label: "Installed At",
+                date: item.installedAt
+                  ? new Date(item.installedAt).toLocaleDateString("vi-VN")
+                  : "N/A",
+              },
+              {
+                label: "Requested Day",
+                date: item.productionDate
+                  ? new Date(item.productionDate).toLocaleDateString("vi-VN")
+                  : "N/A",
+              },
+              {
+                label: "Expected Day",
+                date: item.warrantyEndDate
+                  ? new Date(item.warrantyEndDate).toLocaleDateString("vi-VN")
+                  : "N/A",
+              },
+            ].map((e, i) => (
+              <div key={i} className="timeline-item">
                 <div className="timeline-dot"></div>
                 <div className="timeline-content">
-                  <div className="timeline-title">Installed At</div>
-                  <div className="timeline-date">
-                    {item.installedAt
-                      ? new Date(item.installedAt).toLocaleDateString("vi-VN")
-                      : "N/A"}
-                  </div>
+                  <div className="timeline-title">{e.label}</div>
+                  <div className="timeline-date">{e.date}</div>
                 </div>
               </div>
-
-              <div className="timeline-item">
-                <div className="timeline-dot"></div>
-                <div className="timeline-content">
-                  <div className="timeline-title">Requested Day</div>
-                  <div className="timeline-date">
-                    {item.productionDate
-                      ? new Date(item.productionDate).toLocaleDateString(
-                          "vi-VN"
-                        )
-                      : "N/A"}
-                  </div>
-                </div>
-              </div>
-
-              <div className="timeline-item">
-                <div className="timeline-dot"></div>
-                <div className="timeline-content">
-                  <div className="timeline-title">Expected Day</div>
-                  <div className="timeline-date">
-                    {item.warrantyEndDate
-                      ? new Date(item.warrantyEndDate).toLocaleDateString(
-                          "vi-VN"
-                        )
-                      : "N/A"}
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 

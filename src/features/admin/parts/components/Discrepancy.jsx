@@ -12,9 +12,6 @@ export default function Discrepancy({
 }) {
   if (!request) return null;
 
-  /** --------------------------------------------------------
-   * Build issues list from order items
-   * -------------------------------------------------------- */
   const issues = (request.partOrderItems || []).flatMap((item) => {
     const arr = [];
 
@@ -65,9 +62,6 @@ export default function Discrepancy({
     return arr;
   });
 
-  /** --------------------------------------------------------
-   * STATE: store decision per issue row
-   * -------------------------------------------------------- */
   const [decisions, setDecisions] = React.useState(
     issues.map(() => ({
       responsibleParty: "",
@@ -84,9 +78,6 @@ export default function Discrepancy({
     setDecisions(newArr);
   };
 
-  /** --------------------------------------------------------
-   * Handle Submit
-   * -------------------------------------------------------- */
   const handleSubmit = () => {
     const partResolutions = issues.map((it, idx) => ({
       serialNumber: it.serial,
@@ -105,10 +96,6 @@ export default function Discrepancy({
       overallNote,
     });
   };
-
-  /** --------------------------------------------------------
-   * Dropdown data mapping
-   * -------------------------------------------------------- */
   const {
     discrepancyTypes = [],
     responsibleParties = [],
@@ -139,9 +126,6 @@ export default function Discrepancy({
         </div>
 
         <div className="pl-content">
-          {/* ----------------------- */}
-          {/*       BASIC INFO        */}
-          {/* ----------------------- */}
           <div className="pl-info-row">
             <strong>Ticket #:</strong> {request.orderId}
           </div>
@@ -149,9 +133,6 @@ export default function Discrepancy({
             <strong>Service Center:</strong> {request.serviceCenterName}
           </div>
 
-          {/* ----------------------- */}
-          {/*       ISSUES TABLE      */}
-          {/* ----------------------- */}
           <h3 className="pl-section-title">Issues Summary</h3>
 
           {loadingOptions && <div>Loading options…</div>}
@@ -228,9 +209,6 @@ export default function Discrepancy({
             );
           })}
 
-          {/* ------------------------ */}
-          {/*      Overall Note        */}
-          {/* ------------------------ */}
           <h3 className="pl-section-title">Overall Notes</h3>
           <textarea
             className="pl-textarea"
@@ -239,14 +217,16 @@ export default function Discrepancy({
             onChange={(e) => setOverallNote(e.target.value)}
           />
 
-          {/* ------------------------ */}
-          {/*         Actions          */}
-          {/* ------------------------ */}
           <div className="pl-actions" style={{ display: "flex", gap: 12 }}>
             <button className="pl-btn-secondary" onClick={onClose}>
               Close
             </button>
-            <button className="pl-btn-primary" onClick={handleSubmit}>
+
+            <button
+              className="pl-btn-primary"
+              onClick={handleSubmit}
+              style={{ marginLeft: "auto" }}
+            >
               Submit Resolution
             </button>
           </div>
