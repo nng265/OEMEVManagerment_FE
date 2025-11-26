@@ -3,11 +3,7 @@ import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { PartsRequestList } from "../components/PartsRequestList";
 import { PartsRequestDetailModal } from "../components/PartsRequestDetailModal";
 import { Button } from "../../../../components/atoms/Button/Button";
-// import { formatDate } from "../../../../services/helpers";
 import { toast } from "react-toastify";
-
-// --- CONFIG CONSTANTS ---
-const MAX_PART_QUANTITY = 50;
 
 export const PartsRequestContainer = () => {
   const [requests, setRequests] = useState([]);
@@ -19,7 +15,7 @@ export const PartsRequestContainer = () => {
 
   // Pagination
   const [pagination, setPagination] = useState({
-    pageNumber: 0,
+    pageNumber: 1,
     pageSize: 10,
     totalRecords: 0,
   });
@@ -58,6 +54,7 @@ export const PartsRequestContainer = () => {
 
   // --- 2. PREPARE DATA FOR MODAL ---
   const handleViewDetail = (row) => {
+    // Tạo timeline giả lập từ dữ liệu row (nếu BE chưa trả về list timeline)
     const timelineEvents = [];
 
     if (row.requestDate)
@@ -68,9 +65,14 @@ export const PartsRequestContainer = () => {
       timelineEvents.push({ status: "In Transit", date: row.shippedDate });
     if (row.partDelivery)
       timelineEvents.push({ status: "Delivered", date: row.partDelivery });
-    if (row.status === "Done" && !row.partDelivery)
-      timelineEvents.push({ status: "Done", date: new Date().toISOString() });
+    if (row.status === "Done" || row.status === "Closed")
+      timelineEvents.push({
+        status: row.status,
+        date: row.updatedAt || new Date().toISOString(),
+      });
 
+    // Chuẩn hóa dữ liệu để truyền vào Modal
+    // QUAN TRỌNG: Map orderId -> requestID để Modal gọi API
     const normalizedData = {
       ...row,
       requestID: row.orderId,
@@ -81,7 +83,7 @@ export const PartsRequestContainer = () => {
     setIsModalOpen(true);
   };
 
-  // --- 3. COLUMN CONFIGURATION (Đã bỏ Quantity & Giờ) ---
+  // --- 3. COLUMN CONFIGURATION ---
   const columns = useMemo(
     () => [
       {
@@ -89,18 +91,15 @@ export const PartsRequestContainer = () => {
         label: "Service Center",
         sortable: true,
       },
-      // ĐÃ XÓA CỘT QUANTITY Ở ĐÂY
       {
         key: "requestDate",
         label: "Created Date",
-        // Chỉ hiện ngày (MM/DD/YYYY)
         render: (val) =>
           val ? new Date(val).toLocaleDateString("en-US") : "-",
       },
       {
         key: "expectedDate",
         label: "Expected Date",
-        // Chỉ hiện ngày (MM/DD/YYYY)
         render: (val) =>
           val ? new Date(val).toLocaleDateString("en-US") : "N/A",
       },
@@ -108,17 +107,25 @@ export const PartsRequestContainer = () => {
         key: "status",
         label: "Status",
         render: (value) => {
-          const s = (value || "").toLowerCase();
-          let className = "status-unknown";
+          const s = (value || "").toLowerCase().trim();
+          let className = "status-badge";
 
-          if (s === "waiting") className = "status-waiting";
-          else if (s === "confirmed") className = "status-confirmed";
-          else if (s === "in transit") className = "status-waiting";
-          else if (s === "delivered") className = "status-delivered";
-          else if (s === "done") className = "status-success";
-          else if (s === "cancelled") className = "status-cancelled";
+          // Map status với class CSS trong PartsRequest.css
+          if (s === "pending") className += " status-pending"; // Vàng
+          else if (s === "waiting")
+            className += " status-waiting"; // Xanh dương nhạt
+          else if (s === "confirmed")
+            className += " status-confirmed"; // Xanh lá mạ
+          else if (s === "in transit")
+            className += " status-waiting"; // Xanh dương (dùng chung waiting)
+          else if (s === "delivered")
+            className += " status-delivered"; // Xanh lá đậm
+          else if (s === "done" || s === "closed")
+            className += " status-delivered"; // Xanh lá đậm
+          else if (s === "cancelled") className += " status-cancelled"; // Đỏ
+          else if (s === "returning") className += " status-returning"; // Cam
 
-          return <span className={`status-badge ${className}`}>{value}</span>;
+          return <span className={className}>{value}</span>;
         },
       },
       {
@@ -136,6 +143,7 @@ export const PartsRequestContainer = () => {
             <img
               src="../../../../../public/eye.png"
               className="eye-svg"
+              alt="View"
               style={{ width: "22px" }}
             />
           </Button>
@@ -176,3 +184,5 @@ export const PartsRequestContainer = () => {
     </>
   );
 };
+
+export default PartsRequestContainer;

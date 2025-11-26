@@ -1,5 +1,4 @@
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL_D;
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const ApiEnum = {
@@ -85,12 +84,6 @@ export const ApiEnum = {
     path: "/WarrantyClaim/denial-reasons",
     method: "GET",
   },
-  DENY_WARRANTY_CLAIM: {
-    path: "/WarrantyClaim/:claimId/deny",
-    method: "PUT",
-  },
-
-
 
   // ===== Assignments / People =====
   GET_ASSIGNED_TECHNICIANS: {
@@ -109,10 +102,6 @@ export const ApiEnum = {
   },
 
   // ===== Warranty Processing =====
-  GET_VEHICLE_POLICIES: {
-    path: "/warrantyClaim/vehicle-policies/:vin",
-    method: "GET",
-  },
   APPROVE_WARRANTY_CLAIM: {
     path: "/WarrantyClaim/:claimId/approve",
     method: "PUT",
@@ -137,31 +126,10 @@ export const ApiEnum = {
     path: "/WorkOrder/by-tech/inspection",
     method: "GET",
   },
-  GET_REPAIR_ORDERS: { path: "/WorkOrder/by-tech/repair", method: "GET" },
-  GET_ASSIGNED_TECHNICIANS: {
-    path: "/workOrder/assigned-techs",
-    method: "GET",
-  },
-
-  // ===== Inventory / Parts =====
-  GET_PART_CATEGORIES: { path: "/Part/categories", method: "GET" },
-  GET_PART_MODELS: { path: "/Part/models", method: "GET" },
-  GET_PART_CATEGORY_BY_MODEL: {
-    path: "/Part/category-by-model",
-    method: "GET",
-  },
-  GET_PART: { path: "/Part", method: "GET" },
-  GET_PART_SERIAL: { path: "/VehiclePart/serials", method: "GET" },
   CREATE_PART_ORDER_ITEM: { path: "/PartOrderItem", method: "POST" },
   SUBMIT_PART_REQUEST: { path: "/PartOrderItem", method: "POST" },
   UPLOAD_IMAGE: { path: "/Image/multi/:claimId", method: "POST" },
-  DELETE_IMAGE: { path: "/Image/:imageId", method: "DELETE" },
-  GET_VEHICLES: { path: "/vehicle", method: "GET" },
-  GET_VEHICLE_POLICIES: {
-    path: "/warrantyClaim/vehicle-policies/:vin",
-    method: "GET",
-  },
-  // [SỬA] API lấy phụ tùng xe
+
   GET_VEHICLE_PARTS: (vehicleId) => `/VehiclePart/vehicle/${vehicleId}`,
 
   // ===== Campaigns =====
@@ -240,15 +208,14 @@ export const ApiEnum = {
   DELETE_ACCOUNT: { path: "/Employee/deleteAccount/:id", method: "DELETE" },
 
   // ==================================================
-  // ===== PARTS REQUESTS (ĐÃ SỬA ĐƯỜNG DẪN) =====
+  // ===== PARTS REQUESTS (EVM & SC) =====
   // ==================================================
-  // Bỏ "/api" ở đầu tất cả các path này
 
   GET_REQUEST_PARTS: { path: "/PartOrder", method: "GET" },
   CREATE_PART_ORDER_SC: { path: "/PartOrder", method: "POST" },
   GET_PART_ORDER_DETAIL: (orderId) => `/PartOrder/${orderId}`,
 
-  // EVM Actions
+  // --- EVM Actions ---
   CONFIRM_PREPARE: { path: "/PartOrder/:orderId/confirm", method: "PUT" },
   UPDATE_REQUESTED_DATE: {
     path: "/PartOrder/:orderId/expected-date",
@@ -263,7 +230,7 @@ export const ApiEnum = {
     method: "PUT",
   },
 
-  // SC Actions
+  // --- SC Actions ---
   ACKNOWLEDGE_RECEIPT: {
     path: "/PartOrder/:orderId/acknowledge-receipt",
     method: "PUT",
@@ -281,44 +248,77 @@ export const ApiEnum = {
     method: "PUT",
   },
 
-  // Get Serials
-  GET_SHIPMENT_SERIALS: (orderId) => `/PartOrder/${orderId}/shipment-serials`,
+  GET_SHIPMENT_MODELS: {
+    path: "/PartOrder/:orderId/shipment-models",
+    method: "GET",
+  },
 
-  // Exceptions
+  // 2. SC Staff - Lấy serials theo model
+  GET_SHIPMENT_SERIALS: {
+    path: "/PartOrder/:orderId/shipment-serials",
+    method: "GET",
+  },
+
+  // 3. EVM Staff - Lấy models hàng trả về
+  GET_RETURN_SHIPMENT_MODELS: {
+    path: "/PartOrder/:orderId/return-shipment-models",
+    method: "GET",
+  },
+
+  // 4. EVM Staff - Lấy serials hàng trả về
+  GET_RETURN_SHIPMENT_SERIALS: {
+    path: "/PartOrder/:orderId/return-shipment-serials",
+    method: "GET",
+  },
+
+  // --- EXCEPTIONS & RETURN FLOW (QUAN TRỌNG) ---
   CANCEL_SHIPMENT: {
     path: "/PartOrder/:orderId/cancel-shipment",
     method: "POST",
   },
+  // [1] Báo trả hàng
   RETURN_SHIPMENT: {
     path: "/PartOrder/:orderId/return-shipment",
     method: "POST",
   },
+
+  // =======================================================================
+  // [ĐÃ THÊM MỚI] API BẠN ĐANG THIẾU
+  // =======================================================================
+  ACKNOWLEDGE_RETURN_RECEIPT: {
+    path: "/PartOrder/:orderId/acknowledge-return-receipt",
+    method: "PUT",
+  },
+  // =======================================================================
+
+  // [3] Validate hàng nhận về
   VALIDATE_RETURN: {
     path: "/PartOrder/:orderId/validate-return-receipt",
     method: "POST",
   },
+  // [4] Xác nhận cuối cùng
   CONFIRM_RETURN: {
     path: "/PartOrder/:orderId/confirm-return-receipt",
     method: "POST",
   },
 
-  // Legacy
+  // Legacy / Admin / Other
   DELIVERED_CLICK: { path: "/PartOrder/:orderId/delivery", method: "PUT" },
-
-  // ===== Accessory  =====
   GET_PART_HISTORY: { path: "/VehiclePartHistory", method: "GET" },
   GET_PART_STATUS: { path: "/VehiclePartHistory/statuses", method: "GET" },
   GET_PART_CONDITION: { path: "/VehiclePartHistory/conditions", method: "GET" },
-  // ==== Admin Parts Request =====
+
   PART_ORDER_STATUSES: { path: "/PartOrder/statuses", method: "GET" },
   GET_REASON: { path: "/PartOrder/return-reasons", method: "GET" },
   GET_CANCEL: { path: "/PartOrder/cancellation-reasons", method: "GET" },
   GET_PART_ORDERS: { path: "/PartOrder/:orderID", method: "GET" },
+
   CANCEL_SHIPEMENT: {
     path: "/PartOrder/:orderID/cancel-shipment",
     method: "POST",
   },
-  //=== DISCREPANCY
+
+  // Discrepancy
   RESOLVE_DISCREPANCY_OPTIONS: {
     path: "/PartOrder/discrepancy-resolution-options",
     method: "GET",
@@ -328,22 +328,16 @@ export const ApiEnum = {
     method: "POST",
   },
 
-  // === EVM Staff Parts Request =====
+  // EVM Create
   CREATE_PART_ORDER_BY_EVM: {
     path: "/PartOrder/create-by-evm",
     method: "POST",
   },
-  RETURN_SHIPMENT: {
-    path: "/PartOrder/:orderID/return-shipment",
-    method: "POST",
-  },
+  // Lấy chi tiết (dự phòng nếu không có ở trên)
   GET_PART_ORDER_BY_ID: { path: "/PartOrder/:orderID", method: "GET" },
 };
-/**
- * @param {Object} endpoint - Định nghĩa endpoint (path + method)
- * @param {Object} [data] - Payload (query hoặc body)
- * @param {Object} [extraHeaders] - Headers bổ sung
- */
+
+// ... (Giữ nguyên phần export function request và uploadFiles bên dưới)
 export async function request(endpoint, data = {}, extraHeaders = {}) {
   let url = "";
   let method = "GET";
@@ -369,9 +363,13 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
   const shouldSkipAuth = Boolean(headers.skipAuth);
   if (shouldSkipAuth) delete headers.skipAuth;
 
+  // Replace params trong URL (ví dụ :orderId)
   if (data.params) {
     Object.entries(data.params).forEach(([key, value]) => {
-      url = url.replace(`:${key}`, encodeURIComponent(value));
+      url = url.replace(
+        new RegExp(`:${key}\\b`, "g"),
+        encodeURIComponent(value)
+      );
     });
     delete data.params;
   }
@@ -409,7 +407,6 @@ export async function request(endpoint, data = {}, extraHeaders = {}) {
   }
 }
 
-// === HÀM UPLOAD FILE (FIXED) ===
 export async function uploadFiles(endpoint, dataInput = {}, extraHeaders = {}) {
   let url = "";
   let method = "POST";
@@ -424,7 +421,10 @@ export async function uploadFiles(endpoint, dataInput = {}, extraHeaders = {}) {
   const data = { ...dataInput };
   if (data.params) {
     Object.entries(data.params).forEach(([key, value]) => {
-      url = url.replace(`:${key}`, encodeURIComponent(value));
+      url = url.replace(
+        new RegExp(`:${key}\\b`, "g"),
+        encodeURIComponent(value)
+      );
     });
     delete data.params;
   }
@@ -460,8 +460,6 @@ export async function uploadFiles(endpoint, dataInput = {}, extraHeaders = {}) {
   }
 
   const options = { method: method.toUpperCase(), headers, body: formData };
-
-  console.log("🚀 Uploading to:", url);
 
   try {
     const response = await fetch(url, options);
