@@ -115,7 +115,7 @@ export default function AccessoryList({
                 ]
           }
         />
-        <Input
+        {/* <Input
           type="select"
           value={orgFilter}
           onChange={onOrgFilterChange}
@@ -130,7 +130,7 @@ export default function AccessoryList({
                   { value: "Used", label: "Used" },
                 ]
           }
-        />
+        /> */}
       </div>
 
       {/* TABLE */}

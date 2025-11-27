@@ -44,6 +44,16 @@ export const AssignTechnicianModal = (props) => {
   }, [isOpen]);
 
   const handleAddTechnician = () => {
+    // Do not allow adding multiple technicians when claim is in waiting-for-unassigned state
+    const statusNormalized = (claimData?.status || "")
+      .toLowerCase()
+      .replace(/[_\s]+/g, " ")
+      .trim();
+    const isWaitingForUnassigned =
+      statusNormalized === "waiting for unassigned";
+
+    if (isWaitingForUnassigned) return;
+
     const newId = (technicians[technicians.length - 1]?.id || 0) + 1;
     setTechnicians([...technicians, { id: newId }]);
   };
@@ -74,6 +84,13 @@ export const AssignTechnicianModal = (props) => {
   const selectedIds = technicians.map((t) => t.selectedValue).filter(Boolean);
 
   if (!claimData) return null;
+
+  const statusNormalized = (claimData?.status || "")
+    .toLowerCase()
+    .replace(/[_\s]+/g, " ")
+    .trim();
+  const isWaitingForUnassigned =
+    statusNormalized === "waiting for unassigned";
 
   const detailsForTechnicianSection = claimData.notes && (
     <DetailSection title="Details for Staff">
@@ -141,15 +158,17 @@ export const AssignTechnicianModal = (props) => {
               )}
             </div>
           ))}
-          <Button
-            type="button"
-            variant="secondary"
-            size="small"
-            onClick={handleAddTechnician}
-            className="mt-2"
-          >
-            Add Technician
-          </Button>
+          {!isWaitingForUnassigned && (
+            <Button
+              type="button"
+              variant="secondary"
+              size="small"
+              onClick={handleAddTechnician}
+              className="mt-2"
+            >
+              Add Technician
+            </Button>
+          )}
           {error && (
             <div
               className="select-error"
