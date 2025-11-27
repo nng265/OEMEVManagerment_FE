@@ -3,6 +3,7 @@ import AccessoryList from "../components/AccessoryList";
 import InStock from "../components/InStock";
 import Installed from "../components/OnVehicle";
 import Removed from "../components/Returned";
+import InTransit from "../components/InTransit";
 
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";

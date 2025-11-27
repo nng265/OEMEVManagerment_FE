@@ -119,14 +119,14 @@ const CusAppointmentForm = () => {
     loadSlots();
   }, [selectedCenter, selectedDate]);
 
-  const currentYear = new Date().getFullYear();
-  const isYearValid =
-    /^\d{4}$/.test(info.year) &&
-    Number(info.year) >= 2000 &&
-    Number(info.year) <= currentYear + 1;
+  // const currentYear = new Date().getFullYear();
+  // const isYearValid =
+  //   /^\d{4}$/.test(info.year) &&
+  //   Number(info.year) >= 2000 &&
+  //   Number(info.year) <= currentYear + 1;
 
   const isInfoValid =
-    info.vin.trim() !== "" && info.model.trim() !== "" && isYearValid;
+    info.vin.trim() !== "" ;
 
   const handleInfoChange = (field) => (e) =>
     setInfo((prev) => ({ ...prev, [field]: e.target.value }));
@@ -142,11 +142,11 @@ const CusAppointmentForm = () => {
     const payload = {
       appointmentDate: selectedDate,
       appointmentType: appointmentType.toUpperCase(),
-      model: info.model.trim(),
+      // model: info.model.trim(),
       serviceCenterId: String(selectedCenter.id),
       slot: slotCode,
       vin: info.vin.trim().toUpperCase(),
-      year: Number(info.year),
+      // year: Number(info.year),
     };
 
     try {
