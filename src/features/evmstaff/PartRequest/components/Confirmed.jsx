@@ -560,7 +560,7 @@ export default function Confirmed({
   // --- BUTTON 1: CHỈ VALIDATE ---
   const handleValidateOnly = async () => {
     if (!selectedFile) {
-      toast.warning("Please select an Excel file first.");
+      toast.warning("Please select a file first.");
       return;
     }
 
@@ -736,7 +736,7 @@ export default function Confirmed({
                         borderBottom: "2px solid #fbd38d",
                       }}
                     >
-                      Result
+                      Missing
                     </th>
                   </>
                 )}
@@ -776,7 +776,7 @@ export default function Confirmed({
                           ) : statusData.difference < 0 ? (
                             // Thiếu -> Hiện Missing + số dương
                             <span style={{ color: "red", fontWeight: "bold" }}>
-                              Missing {Math.abs(statusData.difference)}
+                              {Math.abs(statusData.difference)}
                             </span>
                           ) : (
                             // Thừa -> Hiện Extra
@@ -850,7 +850,7 @@ export default function Confirmed({
                 <div className="upload-btn-label">
                   {selectedFile
                     ? "📂 Change File"
-                    : "📤 Upload Excel to Validate"}
+                    : "📤 Upload File to Validate"}
                 </div>
                 <div className="upload-hint">
                   *Upload Excel file to validate serials before shipping
@@ -950,6 +950,148 @@ export default function Confirmed({
                     >
                       * Also check the "Requested Parts" table above for
                       quantity mismatches.
+                    </div>
+                  )}
+
+                  {/* MISSING PARTS SECTION */}
+                  {request.parts && request.parts.length > 0 && (
+                    <div
+                      style={{
+                        marginTop: "20px",
+                        paddingTop: "16px",
+                        borderTop: "2px solid #fed7d7",
+                      }}
+                    >
+                      <h5
+                        style={{
+                          margin: "0 0 12px 0",
+                          color: "#c53030",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        📦 Missing Parts Summary
+                      </h5>
+                      <table
+                        className="parts-detail"
+                        style={{ width: "100%", borderCollapse: "collapse" }}
+                      >
+                        <thead>
+                          <tr style={{ background: "#fff5f5" }}>
+                            <th
+                              style={{
+                                textAlign: "left",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                              }}
+                            >
+                              Part Model
+                            </th>
+                            <th
+                              style={{
+                                textAlign: "center",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                                width: "80px",
+                              }}
+                            >
+                              Required
+                            </th>
+                            <th
+                              style={{
+                                textAlign: "center",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                                width: "80px",
+                              }}
+                            >
+                              Provided
+                            </th>
+                            <th
+                              style={{
+                                textAlign: "center",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                                width: "80px",
+                                color: "#c53030",
+                              }}
+                            >
+                              Missing
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {request.parts.map((part, idx) => {
+                            const statusData = getRowStatus(
+                              part.model,
+                              part.requestedQty
+                            );
+                            const missing =
+                              statusData && statusData.difference < 0
+                                ? Math.abs(statusData.difference)
+                                : 0;
+
+                            // Chỉ hiển thị các dòng có missing
+                            if (!missing) return null;
+
+                            return (
+                              <tr key={idx} style={{ background: "#fffaf7" }}>
+                                <td
+                                  style={{
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                    fontWeight: 500,
+                                  }}
+                                >
+                                  {part.model}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                  }}
+                                >
+                                  {part.requestedQty}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                    fontWeight: 500,
+                                  }}
+                                >
+                                  {statusData?.validProvided || 0}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                    color: "#c53030",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  -{missing}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                      <div
+                        style={{
+                          marginTop: "10px",
+                          padding: "10px",
+                          background: "#fff5f5",
+                          borderRadius: "6px",
+                          color: "#c53030",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        <strong>⚠️ Action Required:</strong> Resolve missing
+                        items before shipping or contact supplier.
+                      </div>
                     </div>
                   )}
                 </div>
