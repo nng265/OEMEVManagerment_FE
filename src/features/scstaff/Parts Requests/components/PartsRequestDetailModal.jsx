@@ -135,7 +135,7 @@
 //   };
 
 //   const handleValidateReceipt = async () => {
-//     if (!selectedFile) return toast.warning("Please select an Excel file");
+//     if (!selectedFile) return toast.warning("Please select an Csv file");
 //     setIsLoading(true);
 //     try {
 //       const payload = { params: { orderId: requestID }, file: selectedFile };
@@ -317,7 +317,7 @@
 //     return (
 //       <div className="inventory-section">
 //         {/* Phần 1: Upload File */}
-//         <div className="import-excel-wrapper">
+//         <div className="import-csv-wrapper">
 //           <h4 style={{ marginBottom: "16px", color: "#334155" }}>
 //             1. Validate Receipt
 //           </h4>
@@ -758,7 +758,7 @@ export const PartsRequestDetailModal = ({
         Object.values(quantityDiscrepancies).find((d) => d.model === modelName);
     }
 
-    let totalProvidedInExcel = discrepancy
+    let totalProvidedInCsv = discrepancy
       ? discrepancy.provided
       : isActuallyValid
       ? requestedQty
@@ -768,7 +768,7 @@ export const PartsRequestDetailModal = ({
       ? serialErrors.filter((err) => err.model === modelName).length
       : 0;
 
-    const validProvided = Math.max(0, totalProvidedInExcel - invalidCount);
+    const validProvided = Math.max(0, totalProvidedInCsv - invalidCount);
     const difference = validProvided - requestedQty;
 
     return {
@@ -1245,7 +1245,7 @@ export const PartsRequestDetailModal = ({
     return (
       <div className="inventory-section">
         {/* Upload File */}
-        <div className="import-excel-wrapper">
+        <div className="import-csv-wrapper">
           <h4 style={{ marginBottom: "16px", color: "#334155" }}>
             1. Validate Receipt
           </h4>
@@ -1254,7 +1254,7 @@ export const PartsRequestDetailModal = ({
               type="file"
               ref={fileInputRef}
               onChange={handleFileChange}
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-csv"
               className="hidden-file-input"
               id="receipt-file"
               style={{ display: "none" }}
