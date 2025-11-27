@@ -816,7 +816,7 @@ export const PartsRequestDetailModal = ({
 
   // --- API ACTIONS ---
   const handleValidateReceipt = async () => {
-    if (!selectedFile) return toast.warning("Please select an Excel file");
+    if (!selectedFile) return toast.warning("Please select a file");
     setIsLoading(true);
     setValidationResult(null);
 
