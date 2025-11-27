@@ -312,15 +312,15 @@ function AppointmentForm({
               onChange={handleInfoChange("vin")}
             />
 
-            <label>Model</label>
+            {/* <label>Model</label>
             <input
               type="text"
               className="form-input"
               value={info.model}
               onChange={handleInfoChange("model")}
-            />
+            /> */}
 
-            <label>Year of Manufacture</label>
+            {/* <label>Year of Manufacture</label>
             <input
               type="text"
               className="form-input"
@@ -332,7 +332,7 @@ function AppointmentForm({
               <small className="error-message">
                 Invalid year. Please enter between 2000 - {currentYear + 1}.
               </small>
-            )}
+            )} */}
           </div>
 
           <div className="actions">

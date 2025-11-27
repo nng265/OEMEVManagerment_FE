@@ -373,14 +373,14 @@ const CusAppointmentForm = () => {
                 onChange={handleInfoChange("vin")}
               />
 
-              <label>Model</label>
+              {/* <label>Model</label>
               <input
                 className="form-input"
                 value={info.model}
                 onChange={handleInfoChange("model")}
-              />
+              /> */}
 
-              <label>Year</label>
+              {/* <label>Year</label>
               <input
                 className="form-input"
                 placeholder="YYYY"
@@ -391,7 +391,7 @@ const CusAppointmentForm = () => {
                 <small className="error-message">
                   Invalid year. Must be 2000 - {currentYear + 1}
                 </small>
-              )}
+              )} */}
             </div>
 
             <div className="actions">
