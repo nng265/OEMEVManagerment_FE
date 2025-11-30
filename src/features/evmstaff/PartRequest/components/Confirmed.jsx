@@ -1,469 +1,3 @@
-// import React, { useState, useRef } from "react";
-// import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
-// import { toast } from "react-toastify";
-// import "./PartsListEVM.css";
-
-// const formatDateTime = (dateStr) => {
-//   if (!dateStr) return "";
-//   const d = new Date(dateStr);
-//   return d.toLocaleString("en-US", {
-//     month: "short",
-//     day: "numeric",
-//     year: "numeric",
-//     hour: "numeric",
-//     minute: "numeric",
-//     hour12: true,
-//   });
-// };
-
-// const Timeline = ({ request }) => {
-//   if (!request) return null;
-//   const steps = [
-//     { label: "Request Created", date: request.requestDate, active: true },
-//     {
-//       label: "Confirmed by EVM",
-//       date: request.approvedDate,
-//       active: !!request.approvedDate,
-//     },
-//     {
-//       label: "Parts Shipped",
-//       date: request.shippedDate,
-//       active: !!request.shippedDate,
-//     },
-//   ];
-
-//   return (
-//     <div
-//       className="timeline-inline"
-//       style={{ marginTop: "0", paddingTop: "0", borderTop: "none" }}
-//     >
-//       <h4 style={{ marginBottom: "15px", color: "#4a5568" }}>
-//         Request Timeline
-//       </h4>
-//       <div style={{ display: "flex", flexDirection: "column", gap: "0px" }}>
-//         {steps.map((step, idx) => (
-//           <div
-//             key={idx}
-//             className={`timeline-item ${step.active ? "active" : ""}`}
-//           >
-//             <div className="timeline-icon"></div>
-//             <div className="timeline-content">
-//               <h4>{step.label}</h4>
-//               {step.date ? (
-//                 <p>{formatDateTime(step.date)}</p>
-//               ) : (
-//                 <p style={{ fontStyle: "italic", fontSize: "0.8rem" }}>
-//                   Pending...
-//                 </p>
-//               )}
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default function Confirmed({
-//   request,
-//   onClose,
-//   onValidate,
-//   onDelivered,
-//   isLoading,
-// }) {
-//   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-//   const [selectedFile, setSelectedFile] = useState(null);
-//   const [validationResult, setValidationResult] = useState(null);
-//   const [isValidating, setIsValidating] = useState(false);
-//   const fileInputRef = useRef(null);
-
-//   if (!request) return null;
-
-//   const handleFileChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       setSelectedFile(file);
-//       setValidationResult(null); // Reset kết quả cũ khi chọn file mới
-//     }
-//   };
-
-//   // --- LOGIC GỘP: VALIDATE TRƯỚC RỒI MỚI SHIP ---
-//   const handleValidateAndShip = async () => {
-//     if (!selectedFile) {
-//       toast.warning("Please select an Excel file first.");
-//       return;
-//     }
-
-//     // 1. Bắt đầu Validate
-//     setIsValidating(true);
-//     const res = await onValidate(request.orderId, selectedFile);
-//     setIsValidating(false);
-
-//     // 2. Xử lý kết quả Validate
-//     if (res.success) {
-//       setValidationResult(res.data);
-
-//       if (res.data.isValid) {
-//         // Validate thành công -> Mở Confirm Dialog ngay lập tức
-//         setIsConfirmOpen(true);
-//       } else {
-//         // Validate thất bại -> Hiện lỗi đỏ
-//         toast.error("Validation failed. Please check errors below.");
-//       }
-//     } else {
-//       // Lỗi API
-//       if (res.data || res.errors || res.quantityDiscrepancies) {
-//         setValidationResult(res.data || res);
-//       }
-//       toast.error(res.message || "Validation error.");
-//     }
-//   };
-
-//   const handleConfirmDialog = () => {
-//     setIsConfirmOpen(false);
-//     onDelivered(request.orderId); // Gọi API Ship thật
-//   };
-
-//   // --- HELPER: Lấy dữ liệu Discrepancy cho từng Model ---
-//   const getDiscrepancyInfo = (modelName) => {
-//     if (!validationResult || !validationResult.quantityDiscrepancies)
-//       return null;
-//     const disc = Object.values(validationResult.quantityDiscrepancies).find(
-//       (d) => d.model === modelName
-//     );
-//     return disc;
-//   };
-
-//   return (
-//     <div className="popup-overlay">
-//       <div className="popup-card">
-//         <div className="popup-header">
-//           <h3>Parts Request Details - {request.status}</h3>
-//         </div>
-
-//         <div className="popup-body">
-//           {/* 1. Thông tin chung */}
-//           <div
-//             style={{
-//               display: "grid",
-//               gridTemplateColumns: "1fr 1fr",
-//               gap: "20px",
-//               marginBottom: "10px",
-//             }}
-//           >
-//             <div>
-//               <div
-//                 className="info-row"
-//                 style={{
-//                   display: "flex",
-//                   justifyContent: "space-between",
-//                   alignItems: "center",
-//                 }}
-//               >
-
-//               </div>
-//               <div className="info-row">
-//                 <strong>Service Center:</strong> {request.serviceCenter}
-//               </div>
-//               <div className="info-row">
-//                 <strong>Requested By:</strong> {request.requestedBy}
-//               </div>
-//               <div className="info-row">
-//                 <strong>Requested Date:</strong>{" "}
-//                 {formatDateTime(request.requestDate)}
-//               </div>
-//             </div>
-//             <div>
-//               {request.notes && (
-//                 <div
-//                   style={{
-//                     background: "#edf2f7",
-//                     padding: "10px",
-//                     borderRadius: "6px",
-//                   }}
-//                 >
-//                   <strong>Note:</strong>{" "}
-//                   <span style={{ fontSize: "0.9rem" }}>{request.notes}</span>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//           {/* 2. Bảng hàng hóa */}
-//           <h4 style={{ marginTop: "10px", marginBottom: "5px" }}>
-//             Requested Parts
-//           </h4>
-//           <table className="parts-detail">
-//             <thead>
-//               <tr>
-//                 <th>Part Model</th>
-//                 <th style={{ textAlign: "center" }}>Req Qty</th>
-//                 <th style={{ textAlign: "center" }}>OEM Stock</th>
-
-//                 {/* Chỉ hiện cột này khi đã Validate và có lỗi số lượng */}
-//                 {validationResult && !validationResult.isValid && (
-//                   <>
-//                     <th
-//                       style={{
-//                         textAlign: "center",
-//                         background: "#fff5f5",
-//                         color: "#c53030",
-//                       }}
-//                     >
-//                       Provided
-//                     </th>
-//                     <th
-//                       style={{
-//                         textAlign: "center",
-//                         background: "#fff5f5",
-//                         color: "#c53030",
-//                       }}
-//                     >
-//                       Diff
-//                     </th>
-//                   </>
-//                 )}
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {request.parts?.map((p, i) => {
-//                 const disc = getDiscrepancyInfo(p.model);
-//                 return (
-//                   <tr key={i}>
-//                     <td>{p.model}</td>
-//                     <td style={{ textAlign: "center" }}>{p.requestedQty}</td>
-//                     <td style={{ textAlign: "center" }}>{p.oemStock}</td>
-
-//                     {validationResult && !validationResult.isValid && (
-//                       <>
-//                         <td
-//                           style={{
-//                             textAlign: "center",
-//                             background: "#fff5f5",
-//                             fontWeight: "bold",
-//                           }}
-//                         >
-//                           {disc ? disc.provided : "-"}
-//                         </td>
-//                         <td
-//                           style={{ textAlign: "center", background: "#fff5f5" }}
-//                         >
-//                           {disc ? (
-//                             <span
-//                               style={{
-//                                 color: disc.difference < 0 ? "red" : "blue",
-//                                 fontWeight: "bold",
-//                               }}
-//                             >
-//                               {disc.difference > 0
-//                                 ? `+${disc.difference}`
-//                                 : disc.difference}
-//                             </span>
-//                           ) : (
-//                             <span style={{ color: "green" }}>OK</span>
-//                           )}
-//                         </td>
-//                       </>
-//                     )}
-//                   </tr>
-//                 );
-//               })}
-//             </tbody>
-//           </table>
-
-//           <div
-//             className="info-row"
-//             style={{ marginTop: "15px", fontSize: "1rem" }}
-//           >
-//             <strong>Expected Delivery Date:</strong>{" "}
-//             <span style={{ color: "#2b6cb0" }}>
-//               {request.expectedDate || "Not set"}
-//             </span>
-//           </div>
-
-//           {/* 3. Timeline */}
-//           <div
-//             style={{
-//               marginTop: "20px",
-//               padding: "15px",
-//               border: "1px solid #e2e8f0",
-//               borderRadius: "8px",
-//               background: "#fafbfc",
-//             }}
-//           >
-//             <Timeline request={request} />
-//           </div>
-
-//           {/* 4. VALIDATION SECTION */}
-//           <div className="validation-section">
-//             <h4 style={{ margin: "0 0 12px 0", color: "#2d3748" }}>
-//               Process Shipment
-//             </h4>
-
-//             <div className="import-excel-wrapper">
-//               {/* Box Upload có thể click */}
-//               <div
-//                 className="upload-dashed-box"
-//                 onClick={() => fileInputRef.current.click()}
-//               >
-//                 <input
-//                   type="file"
-//                   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-//                   ref={fileInputRef}
-//                   onChange={handleFileChange}
-//                   style={{ display: "none" }}
-//                 />
-//                 <div className="upload-icon">☁️</div>
-
-//                 <div>
-//                   {selectedFile ? (
-//                     <div style={{ fontWeight: 600, color: "#0f172a" }}>
-//                       📄 {selectedFile.name}
-//                     </div>
-//                   ) : (
-//                     <span style={{ color: "#64748b" }}>No file selected</span>
-//                   )}
-//                 </div>
-
-//                 <div className="upload-btn-label">
-//                   {selectedFile
-//                     ? "📂 Change File"
-//                     : "📤 Upload Excel to Validate"}
-//                 </div>
-//                 <div className="upload-hint">
-//                   *Upload Excel file to validate serials before shipping
-//                 </div>
-//               </div>
-
-//               {/* Đã xóa nút Validate ở giữa - chỉ còn nút Ship ở Footer */}
-//             </div>
-
-//             {/* KẾT QUẢ VALIDATE (Chỉ hiện khi có kết quả) */}
-//             {validationResult && (
-//               <div className="validation-result" style={{ marginTop: "12px" }}>
-//                 {validationResult.isValid ? (
-//                   <div className="validation-success">
-//                     ✅ <strong>Validation Passed!</strong> Ready to ship.
-//                   </div>
-//                 ) : (
-//                   <div className="validation-error">
-//                     <strong style={{ display: "block", marginBottom: "5px" }}>
-//                       ⚠️ Validation Failed:
-//                     </strong>
-
-//                     {/* 1. Lỗi chung */}
-//                     {validationResult.errors?.length > 0 && (
-//                       <ul className="error-list">
-//                         {validationResult.errors.map((err, idx) => (
-//                           <li key={idx}>{err}</li>
-//                         ))}
-//                       </ul>
-//                     )}
-
-//                     {/* 2. Lỗi Serial */}
-//                     {validationResult.serialErrors &&
-//                       validationResult.serialErrors.length > 0 && (
-//                         <div style={{ marginTop: "10px" }}>
-//                           <strong
-//                             style={{ color: "#c53030", fontSize: "0.9rem" }}
-//                           >
-//                             Serial Number Errors:
-//                           </strong>
-//                           <div
-//                             style={{
-//                               marginTop: "5px",
-//                               maxHeight: "150px",
-//                               overflowY: "auto",
-//                               border: "1px solid #fed7d7",
-//                               borderRadius: "6px",
-//                             }}
-//                           >
-//                             <table
-//                               className="parts-detail"
-//                               style={{ margin: 0, background: "white" }}
-//                             >
-//                               <thead style={{ position: "sticky", top: 0 }}>
-//                                 <tr>
-//                                   <th>Model</th>
-//                                   <th>Serial</th>
-//                                   <th>Message</th>
-//                                 </tr>
-//                               </thead>
-//                               <tbody>
-//                                 {validationResult.serialErrors.map(
-//                                   (err, idx) => (
-//                                     <tr key={idx}>
-//                                       <td style={{ fontWeight: 500 }}>
-//                                         {err.model}
-//                                       </td>
-//                                       <td style={{ fontFamily: "monospace" }}>
-//                                         {err.serialNumber}
-//                                       </td>
-//                                       <td style={{ color: "#e53e3e" }}>
-//                                         {err.message}
-//                                       </td>
-//                                     </tr>
-//                                   )
-//                                 )}
-//                               </tbody>
-//                             </table>
-//                           </div>
-//                         </div>
-//                       )}
-//                   </div>
-//                 )}
-//               </div>
-//             )}
-//           </div>
-
-//           {/* 5. Footer Actions */}
-//           <div className="popup-actions">
-//             <button
-//               className="btn-secondary btn-cancel"
-//               onClick={onClose}
-//               disabled={isLoading}
-//             >
-//               Close
-//             </button>
-
-//             {/* Nút duy nhất: Ship Parts
-//                 - Nếu chưa chọn file -> Disabled
-//                 - Nếu đang validating -> Hiện Loading
-//                 - Nếu đã validate thành công -> Vẫn là nút này để gọi ConfirmDialog
-//             */}
-//             <button
-//               className="btn-confirm"
-//               onClick={handleValidateAndShip}
-//               disabled={isLoading || isValidating || !selectedFile}
-//               style={{
-//                 opacity: isLoading || isValidating || !selectedFile ? 0.6 : 1,
-//                 cursor:
-//                   isLoading || isValidating || !selectedFile
-//                     ? "not-allowed"
-//                     : "pointer",
-//                 minWidth: "160px",
-//               }}
-//             >
-//               {isValidating ? "Validating..." : "Ship Parts 🚚"}
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       <ConfirmDialog
-//         isOpen={isConfirmOpen}
-//         title="Confirm Shipment"
-//         message="All serial numbers are valid. Are you sure you want to confirm shipment?"
-//         confirmLabel="Yes, Ship It"
-//         cancelLabel="Cancel"
-//         onConfirm={handleConfirmDialog}
-//         onCancel={() => setIsConfirmOpen(false)}
-//         isLoading={isLoading}
-//       />
-//     </div>
-//   );
-// }
-
 import React, { useState, useRef } from "react";
 import { ConfirmDialog } from "../../../../components/molecules/ConfirmDialog/ConfirmDialog";
 import { toast } from "react-toastify";
@@ -560,7 +94,7 @@ export default function Confirmed({
   // --- BUTTON 1: CHỈ VALIDATE ---
   const handleValidateOnly = async () => {
     if (!selectedFile) {
-      toast.warning("Please select an Excel file first.");
+      toast.warning("Please select a file first.");
       return;
     }
 
@@ -613,14 +147,14 @@ export default function Confirmed({
 
     const { quantityDiscrepancies = {}, serialErrors = [] } = validationResult;
 
-    // 1. Tổng số lượng tìm thấy trong file Excel (bao gồm cả lỗi serial)
+    // 1. Tổng số lượng tìm thấy trong file Csv (bao gồm cả lỗi serial)
     let discrepancy =
       quantityDiscrepancies[modelName] ||
       Object.values(quantityDiscrepancies).find((d) => d.model === modelName);
 
     // Mặc định: nếu validate OK hoặc không có discrepancy, giả sử provided = requested.
     // Nếu có discrepancy, lấy số lượng thực tế từ file.
-    let totalProvidedInExcel = discrepancy
+    let totalProvidedInCsv = discrepancy
       ? discrepancy.provided
       : validationResult.isValid
       ? requestedQty
@@ -632,7 +166,7 @@ export default function Confirmed({
     ).length;
 
     // 3. Số lượng hợp lệ thực tế = Tổng provided - Số lượng lỗi
-    const validProvided = Math.max(0, totalProvidedInExcel - invalidCount);
+    const validProvided = Math.max(0, totalProvidedInCsv - invalidCount);
 
     // 4. Tính độ lệch
     const difference = validProvided - requestedQty;
@@ -736,7 +270,7 @@ export default function Confirmed({
                         borderBottom: "2px solid #fbd38d",
                       }}
                     >
-                      Result
+                      Missing
                     </th>
                   </>
                 )}
@@ -776,7 +310,7 @@ export default function Confirmed({
                           ) : statusData.difference < 0 ? (
                             // Thiếu -> Hiện Missing + số dương
                             <span style={{ color: "red", fontWeight: "bold" }}>
-                              Missing {Math.abs(statusData.difference)}
+                              {Math.abs(statusData.difference)}
                             </span>
                           ) : (
                             // Thừa -> Hiện Extra
@@ -824,14 +358,14 @@ export default function Confirmed({
               Process Shipment
             </h4>
 
-            <div className="import-excel-wrapper">
+            <div className="import-csv-wrapper">
               <div
                 className="upload-dashed-box"
                 onClick={() => fileInputRef.current.click()}
               >
                 <input
                   type="file"
-                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-csv"
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   onClick={onInputClick}
@@ -850,10 +384,10 @@ export default function Confirmed({
                 <div className="upload-btn-label">
                   {selectedFile
                     ? "📂 Change File"
-                    : "📤 Upload Excel to Validate"}
+                    : "📤 Upload File to Validate"}
                 </div>
                 <div className="upload-hint">
-                  *Upload Excel file to validate serials before shipping
+                  *Upload Csv file to validate serials before shipping
                 </div>
               </div>
 
@@ -950,6 +484,148 @@ export default function Confirmed({
                     >
                       * Also check the "Requested Parts" table above for
                       quantity mismatches.
+                    </div>
+                  )}
+
+                  {/* MISSING PARTS SECTION */}
+                  {request.parts && request.parts.length > 0 && (
+                    <div
+                      style={{
+                        marginTop: "20px",
+                        paddingTop: "16px",
+                        borderTop: "2px solid #fed7d7",
+                      }}
+                    >
+                      <h5
+                        style={{
+                          margin: "0 0 12px 0",
+                          color: "#c53030",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        📦 Missing Parts Summary
+                      </h5>
+                      <table
+                        className="parts-detail"
+                        style={{ width: "100%", borderCollapse: "collapse" }}
+                      >
+                        <thead>
+                          <tr style={{ background: "#fff5f5" }}>
+                            <th
+                              style={{
+                                textAlign: "left",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                              }}
+                            >
+                              Part Model
+                            </th>
+                            <th
+                              style={{
+                                textAlign: "center",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                                width: "80px",
+                              }}
+                            >
+                              Required
+                            </th>
+                            <th
+                              style={{
+                                textAlign: "center",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                                width: "80px",
+                              }}
+                            >
+                              Provided
+                            </th>
+                            <th
+                              style={{
+                                textAlign: "center",
+                                padding: "8px",
+                                borderBottom: "1px solid #fed7d7",
+                                width: "80px",
+                                color: "#c53030",
+                              }}
+                            >
+                              Missing
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {request.parts.map((part, idx) => {
+                            const statusData = getRowStatus(
+                              part.model,
+                              part.requestedQty
+                            );
+                            const missing =
+                              statusData && statusData.difference < 0
+                                ? Math.abs(statusData.difference)
+                                : 0;
+
+                            // Chỉ hiển thị các dòng có missing
+                            if (!missing) return null;
+
+                            return (
+                              <tr key={idx} style={{ background: "#fffaf7" }}>
+                                <td
+                                  style={{
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                    fontWeight: 500,
+                                  }}
+                                >
+                                  {part.model}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                  }}
+                                >
+                                  {part.requestedQty}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                    fontWeight: 500,
+                                  }}
+                                >
+                                  {statusData?.validProvided || 0}
+                                </td>
+                                <td
+                                  style={{
+                                    textAlign: "center",
+                                    padding: "8px",
+                                    borderBottom: "1px solid #fed7d7",
+                                    color: "#c53030",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  -{missing}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                      <div
+                        style={{
+                          marginTop: "10px",
+                          padding: "10px",
+                          background: "#fff5f5",
+                          borderRadius: "6px",
+                          color: "#c53030",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        <strong>⚠️ Action Required:</strong> Resolve missing
+                        items before shipping or contact supplier.
+                      </div>
                     </div>
                   )}
                 </div>

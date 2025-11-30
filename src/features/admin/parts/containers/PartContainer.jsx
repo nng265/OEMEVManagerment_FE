@@ -10,7 +10,7 @@ import Waiting from "../components/Waiting";
 import Confirmed from "../components/Confirmed";
 import Delivered from "../components/Delivered";
 import Cancelled from "../components/Cancelled";
-
+import Done from "../components/Done";
 import { toast } from "react-toastify";
 
 export const PartContainer = () => {
@@ -514,6 +514,13 @@ export const PartContainer = () => {
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
           isLoading={isActionLoading}
+        />
+      )}
+
+      {selectedRequest?.status === "Done" && (
+        <Done
+          request={selectedRequest}
+          onClose={() => setSelectedRequest(null)}
         />
       )}
     </>

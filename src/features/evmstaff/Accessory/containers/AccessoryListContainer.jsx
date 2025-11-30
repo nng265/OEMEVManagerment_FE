@@ -3,6 +3,7 @@ import AccessoryList from "../components/AccessoryList";
 import InStock from "../components/InStock";
 import Installed from "../components/OnVehicle";
 import Removed from "../components/Returned";
+import InTransit from "../components/InTransit";
 
 import { request, ApiEnum } from "../../../../services/NetworkUntil";
 import { normalizePagedResult } from "../../../../services/helpers";
@@ -101,7 +102,7 @@ export function AccessoryListContainer() {
     const fetchOptions = async () => {
       try {
         const [orgData, statusData, condData] = await Promise.all([
-          retryRequest(ApiEnum.ORGANIZATION),
+          retryRequest(ApiEnum.ORGANIZATION_ALL),
           retryRequest(ApiEnum.GET_PART_STATUS),
           retryRequest(ApiEnum.GET_PART_CONDITION),
         ]);
@@ -262,7 +263,8 @@ useEffect(() => {
 
       {selected?.status === "InStock" && <InStock item={selected} onClose={() => setSelected(null)} />}
       {selected?.status === "OnVehicle" && <Installed item={selected} onClose={() => setSelected(null)} />}
-      {selected?.status === "Returned" && <Removed item={selected} onClose={() => setSelected(null)} />}        
+      {selected?.status === "Returned" && <Removed item={selected} onClose={() => setSelected(null)} />}    
+      {selected?.status === "InTransit" && <InTransit item={selected} onClose={() => setSelected(null)} />}
     </div>
   );
 }

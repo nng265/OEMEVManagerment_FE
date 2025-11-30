@@ -38,7 +38,7 @@ const Login = () => {
       if (loginResult && loginResult.success) {
         const userData = JSON.parse(localStorage.getItem("user"));
 
-        if (userData && userData.role === "EVM_STAFF") {
+        if (userData && (userData.role === "EVM_STAFF" || userData.role === "ADMIN")) {
           navigate("/dashboardevmstaff");
         } else if (userData && userData.role === "SC_TECH") {
           navigate("/overview");

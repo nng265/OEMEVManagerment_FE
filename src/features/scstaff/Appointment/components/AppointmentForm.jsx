@@ -67,7 +67,7 @@ function AppointmentForm({
     Number(info.year) >= 2000 &&
     Number(info.year) <= currentYear + 1;
   const isInfoValid =
-    info.vin.trim() !== "" && info.model.trim() !== "" && isYearValid;
+    info.vin.trim() !== "";
 
   const handleInfoChange = (field) => (e) =>
     setInfo((prev) => ({ ...prev, [field]: e.target.value }));
@@ -87,16 +87,16 @@ function AppointmentForm({
       toast.error("Please select a valid time slot.");
       return;
     }
-    if (!info.vin || !info.model || !info.year) {
+    if (!info.vin ) {
       toast.error("Please fill in all vehicle information.");
       return;
     }
 
-    const yearNum = Number(info.year);
-    if (isNaN(yearNum) || yearNum < 2000 || yearNum > currentYear + 1) {
-      toast.error(`Year must be between 2000 and ${currentYear + 1}.`);
-      return;
-    }
+    // const yearNum = Number(info.year);
+    // if (isNaN(yearNum) || yearNum < 2000 || yearNum > currentYear + 1) {
+    //   toast.error(`Year must be between 2000 and ${currentYear + 1}.`);
+    //   return;
+    // }
 
     const slotCode =
       selectedSlot?.slot ||
@@ -112,11 +112,11 @@ function AppointmentForm({
     const payload = {
       appointmentDate: selectedDate,
       appointmentType: appointmentType.toUpperCase(),
-      model: info.model.trim(),
+      // model: info.model.trim(),
       serviceCenterId: String(selectedCenter.id),
       slot: slotCode,
       vin: info.vin.trim().toUpperCase(),
-      year: yearNum,
+      // year: yearNum,
     };
 
     try {
@@ -312,15 +312,15 @@ function AppointmentForm({
               onChange={handleInfoChange("vin")}
             />
 
-            <label>Model</label>
+            {/* <label>Model</label>
             <input
               type="text"
               className="form-input"
               value={info.model}
               onChange={handleInfoChange("model")}
-            />
+            /> */}
 
-            <label>Year of Manufacture</label>
+            {/* <label>Year of Manufacture</label>
             <input
               type="text"
               className="form-input"
@@ -332,7 +332,7 @@ function AppointmentForm({
               <small className="error-message">
                 Invalid year. Please enter between 2000 - {currentYear + 1}.
               </small>
-            )}
+            )} */}
           </div>
 
           <div className="actions">

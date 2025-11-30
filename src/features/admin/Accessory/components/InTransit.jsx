@@ -7,17 +7,17 @@ function formatDate(d) {
   return new Date(d).toISOString().split("T")[0];
 }
 
-export default function OnVehicle({ item, onClose }) {
+export default function InTransit({ item, onClose }) {
   if (!item) return null;
   return (
     <div className="popup-overlay">
-      <div className="popup-card onvehicle">
+      <div className="popup-card intransit">
         <div className="popup-header">
-          <h1 style={{marginLeft: 10}}>On Vehicle</h1>
+          <h1 style={{marginLeft: 10}}>In Transit</h1>
         </div>
 
         <div className="popup-body">
-          <div className="info-row">
+          {/* <div className="info-row">
             <div>
               <h4>
                 <strong>Customer Information</strong>
@@ -34,7 +34,7 @@ export default function OnVehicle({ item, onClose }) {
               <div style={{ marginTop: 6, textAlign: "left", marginLeft: 24  }}>Model: {item.carModel}</div>
               <div style={{ marginTop: 6, textAlign: "left", marginLeft: 24  }}>Year: {item.carYear}</div>
             </div>
-          </div>
+          </div> */}
 
           <div className="info-row">
             <div>

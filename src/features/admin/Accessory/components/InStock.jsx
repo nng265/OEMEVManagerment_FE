@@ -19,9 +19,9 @@ export default function InStock({ item, onClose }) {
               <div style={{ marginTop: 12, marginLeft: 24  }}>Serial: {item.serialNumber}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Part Model: {item.model}</div>
               <div style={{ marginTop: 6, marginLeft: 24  }}>Condition: {item.condition}</div>
-              <div style={{ marginTop: 6, marginLeft: 24  }}>Warranty Period: {item.warrantyPeriodMonths}</div>
+              {/* <div style={{ marginTop: 6, marginLeft: 24  }}>Warranty Period: {item.warrantyPeriodMonths}</div> */}
               <div style={{ marginTop: 6, marginLeft: 24  }}>Service Center Name: {item.serviceCenterName}</div>
-              <div style={{ marginTop: 6, marginLeft: 24  }}>Warranty End Date: {item.warrantyEndDate}</div>
+              {/* <div style={{ marginTop: 6, marginLeft: 24  }}>Warranty End Date: {item.warrantyEndDate}</div> */}
             </div>
           </div>
 

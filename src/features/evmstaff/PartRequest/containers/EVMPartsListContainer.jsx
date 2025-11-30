@@ -239,7 +239,7 @@
 //     }
 //   };
 
-//   // === VALIDATE SHIPMENT (UPLOAD EXCEL) ===
+//   // === VALIDATE SHIPMENT (UPLOAD CSV) ===
 //   const handleValidateShipment = async (orderId, file) => {
 //     setIsActionLoading(true);
 //     try {
@@ -902,7 +902,7 @@ export const EVMPartsListContainer = () => {
     }
   };
 
-  // === VALIDATE SHIPMENT (UPLOAD EXCEL) - SỬA LẠI ĐỂ TRẢ VỀ DATA LỖI ===
+  // === VALIDATE SHIPMENT (UPLOAD CSV) - SỬA LẠI ĐỂ TRẢ VỀ DATA LỖI ===
   const handleValidateShipment = async (orderId, file) => {
     setIsActionLoading(true);
     try {

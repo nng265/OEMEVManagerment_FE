@@ -190,7 +190,7 @@ export default function ReturnInspection({
 
   // --- API ACTIONS ---
   const handleValidateReturn = async () => {
-    if (!selectedFile) return toast.warning("Please select an Excel file");
+    if (!selectedFile) return toast.warning("Please select a file");
     setIsLoading(true);
     setValidationResult(null);
 
@@ -485,7 +485,7 @@ export default function ReturnInspection({
                       📄 {selectedFile.name}
                     </div>
                   ) : (
-                    "Select Excel File"
+                    "Select File"
                   )}
                 </div>
                 <div className="upload-btn-label">Upload File</div>
